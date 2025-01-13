@@ -1,14 +1,14 @@
 #ifndef __NVBOARD_H__
 #define __NVBOARD_H__
 
-#include <pins.h>
-#include <font.h>
-#include <render.h>
-#include <component.h>
-#include <configs.h>
-#include <string>
-#include <SDL.h>
-#include <SDL_image.h>
+#include <include/pins.h>
+#include <include/font.h>
+#include <include/render.h>
+#include <include/component.h>
+#include <include/configs.h>
+#include <include/string>
+#include <include/SDL.h>
+#include <include/SDL_image.h>
 
 #define VERSION_STR "v1.0 (2024.01.10)"
 
