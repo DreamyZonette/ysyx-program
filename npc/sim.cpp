@@ -3,16 +3,16 @@
 #include <assert.h>
 #include "verilated.h"
 #include "Vtop.h"
-#include "include/nvboard.h"
+// #include "include/nvboard.h"
 
-static TOP_NAME dut;
+// static TOP_NAME dut;
 
-void nvboard_bind_all_pins(TOP_NAME* top);
+// void nvboard_bind_all_pins(TOP_NAME* top);
 
-static void single_cycle() { 
+/*static void single_cycle() { 
 	dut.clk = 0; dut.eval();
 	dut.clk = 1; dut.eval(); 
-}
+}*/
 
 int main(int argc,char** argv)
 {
@@ -20,8 +20,8 @@ int main(int argc,char** argv)
 	contextp->commandArgs(argc, argv);
 	Vtop* top = new Vtop{contextp};
 
-	nvboard_bind_all_pins(&dut);
-	nvboard_init();
+	//nvboard_bind_all_pins(&dut);
+	//nvboard_init();
 
 while ((!contextp->gotFinish()) {
   int a = rand() & 1;
@@ -36,10 +36,10 @@ while ((!contextp->gotFinish()) {
 delete top;
 delete contextp;
 
-while(1){
+/*while(1){
 	nvboard_update();
 	single_cycle();
-	}
+	}*/
 
 return 0;
 }
