@@ -1,7 +1,7 @@
 #ifndef __VGA_H__
 #define __VGA_H__
 
-#include <component.h>
+#include <include/component.h>
 
 #define VGA_DEFAULT_WIDTH  640
 #define VGA_DEFAULT_HEIGHT 480

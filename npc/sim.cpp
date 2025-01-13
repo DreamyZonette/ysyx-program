@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "verilated.h"
 #include "Vtop.h"
-#include "nvboard.h"
+#include "include/nvboard.h"
 
 static TOP_NAME dut;
 
