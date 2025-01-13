@@ -23,7 +23,7 @@ int main(int argc,char** argv)
 	//nvboard_bind_all_pins(&dut);
 	//nvboard_init();
 
-while ((!contextp->gotFinish()) {
+while (!contextp->gotFinish()) {
   int a = rand() & 1;
   int b = rand() & 1;
   top->a = a;
