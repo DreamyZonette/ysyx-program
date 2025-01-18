@@ -55,7 +55,36 @@ static int cmd_q(char *args) {
 static int cmd_help(char *args);
 
 static int cmd_si(char *args){
+	int N;
+	int i;
+	if (args == NULL){
+		N = 1;
+	}else {
+		N = atoi(args);
+	}
+	for (i = 0 ; i < N ; i++){
+		//
+	}
+
 	//等待完成
+	return 0;
+}
+/*
+static int cmd_info(char *args){
+	if( strcmp( args , 'c' ) == 0){
+		//se
+	}
+	else if( strcmp( args , 'w') == 0 )	{
+// 需要完善监视点信息
+	}
+	else {
+	printf("Invalid argument");
+	}
+	return 0;
+}*/
+
+static int cmd_x (char *args){
+	//
 	return 0;
 }
 
@@ -69,8 +98,9 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-	{ "si", "", cmd_si },
-
+	{ "si", "step", cmd_si },
+	//{ "info", "Display status", cmd_info },
+	{ "x" , "Display memery" , cmd_x }
 };
 
 #define NR_CMD ARRLEN(cmd_table)
