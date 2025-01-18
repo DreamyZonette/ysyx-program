@@ -63,7 +63,7 @@ static int cmd_si(char *args){
 		N = atoi(args);
 	}
 	for (i = 0 ; i < N ; i++){
-		cpu_exec(1);
+		cpu_exec(N);
 	}
 
 	//等待完成
