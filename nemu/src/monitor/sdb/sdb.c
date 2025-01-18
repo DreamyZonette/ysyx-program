@@ -63,18 +63,17 @@ static int cmd_si(char *args){
 		N = atoi(args);
 	}
 	for (i = 0 ; i < N ; i++){
-		cpu_exec(2);
+		cpu_exec(1);// nemu/src/cpu/cpu-exec.c 
 	}
-
-	//等待完成
 	return 0;
 }
 /*
 static int cmd_info(char *args){
-	if( strcmp( args , 'c' ) == 0){
+	char* Arg = strtok(args," ");
+	if( strcmp( Arg , 'c' ) == 0){
 		//se
 	}
-	else if( strcmp( args , 'w') == 0 )	{
+	else if( strcmp( Arg , 'w') == 0 )	{
 // 需要完善监视点信息
 	}
 	else {
@@ -84,7 +83,7 @@ static int cmd_info(char *args){
 }*/
 
 static int cmd_x (char *args){
-	//
+	// need to be finished
 	return 0;
 }
 
@@ -98,7 +97,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-	{ "si", "step", cmd_si },
+	{ "si", "Execuit one step", cmd_si },
 	//{ "info", "Display status", cmd_info },
 	{ "x" , "Display memery" , cmd_x }
 };
