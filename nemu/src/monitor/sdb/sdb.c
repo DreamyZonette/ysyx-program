@@ -67,20 +67,20 @@ static int cmd_si(char *args){
 	}
 	return 0;
 }
-/*
+
 static int cmd_info(char *args){
 	char* Arg = strtok(args," ");
-	if( strcmp( Arg , 'c' ) == 0){
-		//se
+	if(strcmp( Arg , "r") == 0){
+		isa_reg_display();	
 	}
-	else if( strcmp( Arg , 'w') == 0 )	{
+	else if(strcmp( Arg , "w") == 0 )	{
 // 需要完善监视点信息
 	}
 	else {
 	printf("Invalid argument");
 	}
 	return 0;
-}*/
+}
 
 static int cmd_x (char *args){
 	// need to be finished
@@ -97,8 +97,8 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-	{ "si", "Execuit one step", cmd_si },
-	//{ "info", "Display status", cmd_info },
+	{ "si", "Execute one step", cmd_si },
+	{ "info", "Display status", cmd_info },
 	{ "x" , "Display memery" , cmd_x }
 };
 
