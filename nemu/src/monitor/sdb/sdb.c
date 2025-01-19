@@ -54,6 +54,39 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+static int cmd_si(char *args){
+	int N;
+	int i;
+	if (args == NULL){
+		N = 1;
+	}else {
+		N = atoi(args);
+	}
+	for (i = 0 ; i < N ; i++){
+		cpu_exec(1);// nemu/src/cpu/cpu-exec.c 
+	}
+	return 0;
+}
+
+static int cmd_info(char *args){
+	char* Arg = strtok(args," ");
+	if(strcmp( Arg , "r") == 0){
+		isa_reg_display();	
+	}
+	else if(strcmp( Arg , "w") == 0 )	{
+// 需要完善监视点信息
+	}
+	else {
+	printf("Invalid argument");
+	}
+	return 0;
+}
+
+static int cmd_x (char *args){
+	// need to be finished
+	return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -64,7 +97,9 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-
+	{ "si", "Execute one step", cmd_si },
+	{ "info", "Display status", cmd_info },
+	{ "x" , "Display memery" , cmd_x }
 };
 
 #define NR_CMD ARRLEN(cmd_table)
