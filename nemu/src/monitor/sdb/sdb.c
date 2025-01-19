@@ -109,7 +109,7 @@ static int cmd_x (char *args){
 	}
 //need to be finished	
 	for(int i = 0 ; i < N ; i++){
-		printf("%d\n",paddr_read(addr,4));
+		printf("%d\n",paddr_read(addr,2));
 	}
 	return 0;
 }
