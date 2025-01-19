@@ -18,11 +18,11 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
-
 static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
+word_t paddr_read(paddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -75,6 +75,7 @@ static int cmd_info(char *args){
 	}
 	else if(strcmp( Arg , "w") == 0 )	{
 // 需要完善监视点信息
+		// sdb_watchpoint_display();
 	}
 	else {
 	printf("Invalid argument");
@@ -83,7 +84,34 @@ static int cmd_info(char *args){
 }
 
 static int cmd_x (char *args){
-	// need to be finished
+	//printf("%s\n",args);	
+	//获得次数
+	const char delim[] = " ";
+	char* N_str = strtok(args, delim);
+	int N;
+	if (N_str) {
+		N = atoi(N_str);
+		printf("N: %d\t",N);
+	}
+	else {
+		printf("Invalid number");
+		return -1;
+	}
+//获得地址	
+	char *endptr;
+	char* addr_str = strtok(NULL, delim);
+	long addr = strtol(addr_str, &endptr, 16);
+	if (*endptr == '\0') {
+	printf("addr: %lx\n",addr);
+	}
+	else {
+		printf("Parsed hex string. Stopped at: %s\n", endptr);
+	}
+//need to be finished	
+	for(int i = 0 ; i < N ; i++){
+		printf("addr:%lx --> %d\n",addr,paddr_read(addr,2));
+		addr += 4;
+	}
 	return 0;
 }
 
@@ -99,7 +127,7 @@ static struct {
   /* TODO: Add more commands */
 	{ "si", "Execute one step", cmd_si },
 	{ "info", "Display status", cmd_info },
-	{ "x" , "Display memery" , cmd_x }
+	{ "x" , "Display memory" , cmd_x }
 };
 
 #define NR_CMD ARRLEN(cmd_table)
