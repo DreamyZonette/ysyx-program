@@ -46,8 +46,8 @@ static struct rule {
 	{"-", TK_SUB},				// 减法
 	{"/", TK_DIVIDE},					// 除法
 	{"[0-9]+", TK_NUM},
-	{"[a-zA-Z]+", TK_ID}/*,
-	{"(", TK_L},
+	{"[a-zA-Z]+", TK_ID},
+	{"(", TK_L}/*,
 	{")", TK_R}*/
 };
 
