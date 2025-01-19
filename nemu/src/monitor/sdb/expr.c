@@ -14,6 +14,7 @@
 ***************************************************************************************/
 
 #include <isa.h>
+#include <assert.h>
 
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
@@ -24,8 +25,9 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-	TK_MUL, TK_SUB,
-	TK_DI
+	TK_MULTIPLY, TK_SUB,
+	TK_DIVIDE, TK_NUM,
+	TK_ID
 };
 
 static struct rule {
@@ -40,9 +42,11 @@ static struct rule {
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
-	{"\\*", TK_MUL},      // multiplied
+	{"\\*", TK_MULTIPLY},      // multiplied
 	{"-", TK_SUB},				// 减法
-	{"/", TK_DI},					// 除法
+	{"/", TK_DIVIDE},					// 除法
+	{"[0-9]+", TK_NUM},
+	{"[a-zA-Z]+", TK_ID}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -58,7 +62,7 @@ void init_regex() {
   int ret;
 
   for (i = 0; i < NR_REGEX; i ++) {
-    ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);
+    ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);// 0 表示成功
     if (ret != 0) {
       regerror(ret, &re[i], error_msg, 128);
       panic("regex compilation failed: %s\n%s", error_msg, rules[i].regex);
