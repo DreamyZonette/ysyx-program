@@ -22,6 +22,7 @@ static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
+word_t vaddr_read(vaddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -74,6 +75,7 @@ static int cmd_info(char *args){
 	}
 	else if(strcmp( Arg , "w") == 0 )	{
 // 需要完善监视点信息
+		// sdb_watchpoint_display();
 	}
 	else {
 	printf("Invalid argument");
@@ -83,6 +85,7 @@ static int cmd_info(char *args){
 
 static int cmd_x (char *args){
 	//printf("%s\n",args);	
+	//获得次数
 	const char delim[] = " ";
 	char* N_str = strtok(args, delim);
 	int N;
@@ -94,7 +97,7 @@ static int cmd_x (char *args){
 		printf("Invalid number");
 		return -1;
 	}
-	
+//获得地址	
 	char *endptr;
 	char* addr_str = strtok(NULL, delim);
 	long addr = strtol(addr_str, &endptr, 16);
@@ -104,11 +107,11 @@ static int cmd_x (char *args){
 	else {
 		printf("Parsed hex string. Stopped at: %s\n", endptr);
 	}
+	printf("%x/n",vaddr_read(addr,4));
 //need to be finished	
 /*	for(i = 0 ; i < N ; i++){
 		printf("%d\n",pmem[addr + i]);
 	}*/
-	// need to be finished
 	return 0;
 }
 

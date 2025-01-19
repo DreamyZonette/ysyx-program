@@ -27,7 +27,7 @@ void isa_reg_display() {
 	int i;
 	int len = sizeof(regs) / sizeof(regs[0]);
 	for(i = 0 ; i < len ; i++){
-		printf("%s\t",reg_name(i)); 
+		printf("%s ->\t",reg_name(i)); 
 		printf("%x",gpr(i));
 		printf("\n");
 	}
