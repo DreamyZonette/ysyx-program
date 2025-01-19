@@ -99,7 +99,7 @@ static int cmd_x (char *args){
 	char* addr_str = strtok(NULL, delim);
 	long addr = strtol(addr_str, &endptr, 16);
 	if (*endptr == '\0') {
-	printf("addr: %lx\t",addr);
+	printf("addr: %lx\n",addr);
 	}
 	else {
 		printf("Parsed hex string. Stopped at: %s\n", endptr);
