@@ -27,7 +27,7 @@ enum {
   /* TODO: Add more token types */
 	TK_MULTIPLY, TK_SUB,
 	TK_DIVIDE, TK_NUM,
-	TK_ID
+	TK_ID, TK_L, TK_R
 };
 
 static struct rule {
@@ -46,7 +46,9 @@ static struct rule {
 	{"-", TK_SUB},				// 减法
 	{"/", TK_DIVIDE},					// 除法
 	{"[0-9]+", TK_NUM},
-	{"[a-zA-Z]+", TK_ID}
+	{"[a-zA-Z]+", TK_ID},
+	{"(", TK_L},
+	{")", TK_R}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -103,6 +105,51 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
+					case '+':  
+						strcpy(tokens[i].str, "+");
+						break;
+					case TK_L:
+						strcpy(tokens[i].str, "(");
+						break;
+					case TK_R:
+						strcpy(tokens[i].str, ")");
+						break;
+					case TK_NOTYPE:
+						strcpy(tokens[i].str, "");
+						break;
+					case TK_EQ:
+						strcpy(tokens[i].str, "=");
+						break;
+					case TK_MULTIPLY:
+						strcpy(tokens[i].str, "*");
+						break;
+					case TK_SUB:
+						strcpy(tokens[i].str, "-");
+						break;
+					case TK_DIVIDE:
+						strcpy(tokens[i].str, "/");
+						break;
+						// 接下来要重点调试
+					case TK_NUM:
+						{
+						assert(pmatch.rm_so != -1);// 匹配是否成功
+						char match[pmatch.rm_eo - pmatch.rm_so + 1];
+						strncpy(match, e + position + pmatch.rm_so,pmatch.rm_eo - pmatch.rm_so);// 获得数据
+						match[pmatch.rm_eo - pmatch.rm_so] = '\0';
+						assert(sizeof(match) <= 32);
+						strcpy(tokens[i].str, "match");
+						break;
+						}
+					case TK_ID:
+						{
+						assert(pmatch.rm_so != -1);
+						char match[pmatch.rm_eo - pmatch.rm_so + 1];
+						strncpy(match, e + position + pmatch.rm_so,pmatch.rm_eo - pmatch.rm_so);
+						match[pmatch.rm_eo - pmatch.rm_so] = '\0';
+						assert(sizeof(match) <= 32);
+						strcpy(tokens[i].str, "match");
+						break;
+						}
           default: TODO();
         }
 
