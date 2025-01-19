@@ -18,7 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
-
+#include <memory/paddr.h>
 static int is_batch_mode = false;
 
 void init_regex();
@@ -83,6 +83,7 @@ static int cmd_info(char *args){
 }
 
 static int cmd_x (char *args){
+	paddr_read(0x80000000,32);
 	// need to be finished
 	return 0;
 }
