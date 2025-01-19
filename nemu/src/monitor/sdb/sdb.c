@@ -107,7 +107,7 @@ static int cmd_x (char *args){
 	else {
 		printf("Parsed hex string. Stopped at: %s\n", endptr);
 	}
-	printf("%x/n",vaddr_read(addr,4));
+	printf("%x\n",vaddr_read(addr,4));
 //need to be finished	
 /*	for(i = 0 ; i < N ; i++){
 		printf("%d\n",pmem[addr + i]);
