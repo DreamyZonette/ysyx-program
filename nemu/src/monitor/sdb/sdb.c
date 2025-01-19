@@ -22,7 +22,7 @@ static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
-word_t vaddr_read(vaddr_t addr, int len);
+word_t paddr_read(paddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -107,11 +107,10 @@ static int cmd_x (char *args){
 	else {
 		printf("Parsed hex string. Stopped at: %s\n", endptr);
 	}
-	printf("%d\n",vaddr_read(addr,4));
 //need to be finished	
-/*	for(i = 0 ; i < N ; i++){
-		printf("%d\n",pmem[addr + i]);
-	}*/
+	for(int i = 0 ; i < N ; i++){
+		printf("%d\n",paddr_read(addr,4));
+	}
 	return 0;
 }
 
