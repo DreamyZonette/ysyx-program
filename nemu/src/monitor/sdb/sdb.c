@@ -83,7 +83,7 @@ static int cmd_info(char *args){
 }
 
 static int cmd_x (char *args){
-	vaddr_read(0x8000000,1);
+	
 	// need to be finished
 	return 0;
 }
