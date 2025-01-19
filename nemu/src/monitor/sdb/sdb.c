@@ -83,7 +83,7 @@ static int cmd_info(char *args){
 }
 
 static int cmd_x (char *args){
-	paddr_read(0x80000000,32);
+	paddr_read(RESET_VECTOR,32);
 	// need to be finished
 	return 0;
 }
