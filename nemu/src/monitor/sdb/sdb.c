@@ -82,8 +82,32 @@ static int cmd_info(char *args){
 }
 
 static int cmd_x (char *args){
-	printf("%s\n",args);	
-
+	//printf("%s\n",args);	
+	const char delim[] = " ";
+	char* N_str = strtok(args, delim);
+	int N;
+	if (N_str) {
+		N = atoi(N_str);
+		printf("N: %d\t",N);
+	}
+	else {
+		printf("Invalid number");
+		return -1;
+	}
+	
+	char *endptr;
+	char* addr_str = strtok(NULL, delim);
+	long addr = strtol(addr_str, &endptr, 16);
+	if (*endptr == '\0') {
+	printf("addr: %lx\t",addr);
+	}
+	else {
+		printf("Parsed hex string. Stopped at: %s\n", endptr);
+	}
+//need to be finished	
+/*	for(i = 0 ; i < N ; i++){
+		printf("%d\n",pmem[addr + i]);
+	}*/
 	// need to be finished
 	return 0;
 }
