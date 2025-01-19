@@ -47,8 +47,8 @@ static struct rule {
 	{"/", TK_DIVIDE},					// 除法
 	{"[0-9]+", TK_NUM},
 	{"[a-zA-Z]+", TK_ID},
-	{"(", TK_L}/*,
-	{")", TK_R}*/
+	{"\\(", TK_L},
+	{"\\)", TK_R}
 };
 
 #define NR_REGEX ARRLEN(rules)
