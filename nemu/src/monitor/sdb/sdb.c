@@ -18,13 +18,11 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
-//#include "expr.c"
 static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
 word_t paddr_read(paddr_t addr, int len);
-//static bool make_token(char *e);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -118,8 +116,8 @@ static int cmd_x (char *args){
 }
 
 static int cmd_p (char* args){
+		init_regex(args);
 		//make_token(args);
-	init_regex(args);
 	return 0;
 }
 
