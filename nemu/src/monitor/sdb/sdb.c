@@ -18,7 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
-#include <memory/paddr.h>
+#include <memory/vaddr.h>
 static int is_batch_mode = false;
 
 void init_regex();
@@ -83,7 +83,7 @@ static int cmd_info(char *args){
 }
 
 static int cmd_x (char *args){
-	paddr_read(RESET_VECTOR,32);
+	vaddr_read(0x8000000,32);
 	// need to be finished
 	return 0;
 }
@@ -100,7 +100,7 @@ static struct {
   /* TODO: Add more commands */
 	{ "si", "Execute one step", cmd_si },
 	{ "info", "Display status", cmd_info },
-	{ "x" , "Display memery" , cmd_x }
+	{ "x" , "Display memory" , cmd_x }
 };
 
 #define NR_CMD ARRLEN(cmd_table)
