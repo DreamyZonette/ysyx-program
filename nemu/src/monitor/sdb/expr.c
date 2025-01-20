@@ -108,34 +108,39 @@ static bool make_token(char *e) {
 					case '+':  
 						strcpy(tokens[nr_token].str, "+");
 						tokens[nr_token].type = '+';
+						nr_token++;
 						break;
 					case TK_L:
 						strcpy(tokens[nr_token].str, "(");
 						tokens[nr_token].type = TK_L;
+						nr_token++;
 						break;
 					case TK_R:
 						strcpy(tokens[nr_token].str, ")");
 						tokens[nr_token].type = TK_R;
+						nr_token++;
 						break;
 					case TK_NOTYPE:
-						strcpy(tokens[nr_token].str, "");
-						tokens[nr_token].type = TK_NOTYPE;
 						break;
 					case TK_EQ:
 						strcpy(tokens[nr_token].str, "=");
 						tokens[nr_token].type = TK_EQ;
+						nr_token++;
 						break;
 					case TK_MULTIPLY:
 						strcpy(tokens[nr_token].str, "*");
 						tokens[nr_token].type = TK_MULTIPLY;
+						nr_token++;
 						break;
 					case TK_SUB:
 						strcpy(tokens[nr_token].str, "-");
 						tokens[nr_token].type = TK_SUB;
+						nr_token++;
 						break;
 					case TK_DIVIDE:
 						strcpy(tokens[nr_token].str, "/");
 						tokens[nr_token].type = TK_DIVIDE;
+						nr_token++;
 						break;
 						// 接下来要重点调试
 					case TK_NUM:
@@ -147,6 +152,7 @@ static bool make_token(char *e) {
 						assert(sizeof(match) <= 32);
 						strcpy(tokens[nr_token].str, match);
 						tokens[nr_token].type = TK_NUM;
+						nr_token++;
 						break;
 						}
 					case TK_ID:
@@ -158,12 +164,12 @@ static bool make_token(char *e) {
 						assert(sizeof(match) <= 32);
 						strcpy(tokens[nr_token].str, match);
 						tokens[nr_token].type = TK_ID;
+						nr_token++;
 						break;
 						}
           default: TODO(); 
         }
 				//printf();
-				nr_token++;
         break;
       }
     }
