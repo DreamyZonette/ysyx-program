@@ -147,7 +147,7 @@ static bool make_token(char *e) {
 						{
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 						char match[pmatch.rm_eo - pmatch.rm_so + 1];
-						strncpy(match, e + position + pmatch.rm_so,pmatch.rm_eo - pmatch.rm_so);// 获得数据
+						strncpy(match, e + pmatch.rm_so,pmatch.rm_eo - pmatch.rm_so);// 获得数据
 						match[pmatch.rm_eo - pmatch.rm_so] = '\0';
 						assert(sizeof(match) <= 32);
 						strcpy(tokens[nr_token].str, match);
@@ -159,7 +159,7 @@ static bool make_token(char *e) {
 						{
 						assert(pmatch.rm_so != -1);
 						char match[pmatch.rm_eo - pmatch.rm_so + 1];
-						strncpy(match, e + position + pmatch.rm_so,pmatch.rm_eo - pmatch.rm_so);
+						strncpy(match, e + pmatch.rm_so,pmatch.rm_eo - pmatch.rm_so);
 						match[pmatch.rm_eo - pmatch.rm_so] = '\0';
 						assert(sizeof(match) <= 32);
 						strcpy(tokens[nr_token].str, match);
@@ -231,7 +231,6 @@ int eval(int p, int q){
 		return eval(p + 1, q - 1);
 	}
 	else {
-		// 待完成
 		int op = -1;
 
 		int ADD = -1;
