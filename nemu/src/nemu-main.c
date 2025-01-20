@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
 #else
   init_monitor(argc, argv);
 #endif
+	printf("%d\n",argc);
 	bool success = true;// 添加的部分
 	expr(argv[1], &success);// 添加的部分
 
