@@ -31,28 +31,47 @@ static char *code_format =
 "  return 0; "
 "}";
 
-int choose () {
-	return rand() % 3;
+uint32_t choose (uint32_t n) {
+	return rand() % n;
+}
+// 待完成
+void gen_num(){
+	uint32_t num = rand() % 2147483648;
+	char str[10];
+	snprintf(str, sizeof(str), "%u", num);
+	strncat(buf, str, sizeof(buf) - strlen(buf));
 }
 
-char* gen_num(){
-	int num = rand();
-	char str[32];
-	snprintf(str, sizeof(str), "%d", num);
-	str[31] = "\0";
-	return str;
+void gen(char* str){
+	strncat(buf, str, sizeof(buf) - strlen(buf));
 }
 
-char* gen()
+void gen_blank(){
+	switch (choose(1)){
+		case 0: strncat(buf, "", sizeof(buf) - strlen(buf)); break;
+		case 1: strncat(buf, " ", sizeof(buf) - strlen(buf)); break;
+		case 2: strncat(buf, "  ", sizeof(buf) - strlen(buf)); break;
+		case 3: strncat(buf, "   ", sizeof(buf) - strlen(buf)); break;
+	}
+}
 
-char* gen_rand_op()
+void gen_rand_op(){
+	switch (choose(4)) {
+		case 0: strncat(buf, "+", sizeof(buf) - strlen(buf)); break;
+		case 1: strncat(buf, "-", sizeof(buf) - strlen(buf)); break;
+		case 2: strncat(buf, "*", sizeof(buf) - strlen(buf)); break;
+		case 3: strncat(buf, "/", sizeof(buf) - strlen(buf)); break;
+	}
+
+}
 
 static void gen_rand_expr() {
-	switch (choose()) {
-		case 0: gen_num(); break; 
-		case 1:gen('('); gen_rand_expr(); gen(')'); break;
-		default: gen_rand_expr(); gen_rand_op(); gen_rand_expr(); break;
-  buf[0] = '\0';
+	switch (choose(3)) {
+		case 0: gen_blank(); gen_num(); gen_blank(); break; 
+		case 1: gen_blank(); gen("("); gen_blank(); gen_rand_expr(); gen_blank(); gen(")"); gen_blank(); break;
+		default: gen_blank(); gen_rand_expr(); gen_blank(); gen_rand_op(); gen_blank(); gen_rand_expr(); gen_blank(); break;
+	}
+  //buf[0] = '\0';
 }
 
 int main(int argc, char *argv[]) {
@@ -84,6 +103,7 @@ int main(int argc, char *argv[]) {
     pclose(fp);
 
     printf("%u %s\n", result, buf);
+		buf[0] = '\0'; // 清除buf内容
   }
   return 0;
 }
