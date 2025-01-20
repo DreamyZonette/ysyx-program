@@ -110,7 +110,7 @@ static int cmd_x (char *args){
 	} 
 //need to be finished	
 	for(int i = 0 ; i < N  ; i++){
-		printf("addr:%lx --> %x\n",addr,paddr_read(addr,2));
+		printf("addr:%lx --> %x\n",addr,paddr_read(addr,4));
 		addr += 4;
 	}
 	return 0;
