@@ -303,7 +303,7 @@ word_t expr(char *e, bool *success) {
   /* TODO: Insert codes to evaluate the expression. */
 	//make_token(e);
 	// 计算表达式的值
-	int value = eval(0, nr_token - 1);
+	int value = eval(0, nr_token);
 	printf("Expression: %s\nResult: %d\n",e,value);
   //TODO();
 
