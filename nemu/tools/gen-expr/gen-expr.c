@@ -31,7 +31,27 @@ static char *code_format =
 "  return 0; "
 "}";
 
+int choose () {
+	return rand() % 3;
+}
+
+char* gen_num(){
+	int num = rand();
+	char str[32];
+	snprintf(str, sizeof(str), "%d", num);
+	str[31] = "\0";
+	return str;
+}
+
+char* gen()
+
+char* gen_rand_op()
+
 static void gen_rand_expr() {
+	switch (choose()) {
+		case 0: gen_num(); break; 
+		case 1:gen('('); gen_rand_expr(); gen(')'); break;
+		default: gen_rand_expr(); gen_rand_op(); gen_rand_expr(); break;
   buf[0] = '\0';
 }
 
