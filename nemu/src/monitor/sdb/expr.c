@@ -209,7 +209,7 @@ bool check_parentheses(int p, int q){
 
 int valid_index(int i, int pos_L, int pos_R, int q){
 
-	if ((i < pos_L || pos_L == -1) || (i > pos_R || pos_R == q)){
+	if ((i < pos_L || pos_L == -1) || (i > pos_R || pos_R == q + 1)){
 		return 1;
 	}
 	else {
@@ -238,7 +238,7 @@ int eval(int p, int q){
 		int MUL = -1;
 		int DIV = -1;
 		int pos_L = -1;
-		int pos_R = q;
+		int pos_R = q + 1;
 		// 确定最大括号的位置
 		for(int i = p; i <= q; i++){
 			if (tokens[i].type == TK_L && pos_L == -1) {
