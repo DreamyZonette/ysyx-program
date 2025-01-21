@@ -285,7 +285,7 @@ int eval(int p, int q){
 				return val1 - val2;
 			case TK_DIVIDE:
 				if (val2 == 0){
-					printf("除数不能为0");
+					printf("除数不能为0\n");
 					return 0;
 				}
 				else {
