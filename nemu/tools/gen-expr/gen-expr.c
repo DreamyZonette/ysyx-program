@@ -36,8 +36,8 @@ uint32_t choose (uint32_t n) {
 }
 // 待完成
 void gen_num(){
-	uint32_t num = rand() % 2147483648;
-	char str[10];
+	uint32_t num = rand() % 100;
+	char str[3];
 	snprintf(str, sizeof(str), "%u", num);
 	strncat(buf, str, sizeof(buf) - strlen(buf));
 }
