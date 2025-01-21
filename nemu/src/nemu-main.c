@@ -19,6 +19,7 @@ void init_monitor(int, char *[]);
 void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
+// word_t expr(char *e, bool *success);// 添加的部分
 
 int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
@@ -27,6 +28,9 @@ int main(int argc, char *argv[]) {
 #else
   init_monitor(argc, argv);
 #endif
+	// printf("%d\n",argc);
+	// bool success = true;// 添加的部分
+	// expr(argv[1], &success);// 添加的部分
 
   /* Start engine. */
   engine_start();
