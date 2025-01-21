@@ -218,7 +218,7 @@ int valid_index(int i, int pos_L, int pos_R, int q){
 }
 
 
-int eval(int p, int q){
+int eval(int p, int q, int* signal){
 	if (p > q){
 		printf("invalid expression: p > q\n");
 		return 0;
@@ -228,7 +228,7 @@ int eval(int p, int q){
 	}
 	else if (check_parentheses(p, q) == true){
 	
-		return eval(p + 1, q - 1);
+		return eval(p + 1, q - 1, signal);
 	}
 	else {
 		int op = -1;
@@ -273,8 +273,8 @@ int eval(int p, int q){
 			return 0;
 		}
 
-		int val1 = eval(p, op - 1);
-		int val2 = eval(op + 1, q);
+		int val1 = eval(p, op - 1, signal);
+		int val2 = eval(op + 1, q, signal);
 
 		switch (tokens[op].type){
 			case '+': 
@@ -286,6 +286,7 @@ int eval(int p, int q){
 			case TK_DIVIDE:
 				if (val2 == 0){
 					printf("除数不能为0\n");
+					*signal = 1;
 					return 0;
 				}
 				else {
@@ -308,8 +309,9 @@ word_t expr(char *e, bool *success) {
   /* TODO: Insert codes to evaluate the expression. */
 	//make_token(e);
 	// 计算表达式的值
-	int value = eval(0, nr_token - 1);
-	printf("Expression: %s\nResult: %d\n",e,value);
+	int signal = 0;
+	int value = eval(0, nr_token - 1, &signal);
+	if (signal != 1) printf("Expression: %s\nResult: %d\n",e,value);
   //TODO();
 
   return 0;
