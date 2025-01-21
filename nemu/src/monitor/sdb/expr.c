@@ -284,7 +284,13 @@ int eval(int p, int q){
 			case TK_SUB:
 				return val1 - val2;
 			case TK_DIVIDE:
+				if (val2 == 0){
+					printf("除数不能为0");
+					return 0;
+				}
+				else {
 				return val1 / val2;
+				}
 			default:
 			  printf("Unsupported operator: %d\n", tokens[op].type);
 				return 0;	
