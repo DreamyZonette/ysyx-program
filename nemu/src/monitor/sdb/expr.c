@@ -27,7 +27,9 @@ enum {
   /* TODO: Add more token types */
 	TK_MULTIPLY, TK_SUB,
 	TK_DIVIDE, TK_NUM,
-	TK_ID, TK_L, TK_R
+	TK_ID, TK_L, TK_R,
+	TK_NEQ, TK_AND, TK_HEX,
+	TK_REG,TK_EX
 };
 
 static struct rule {
@@ -48,7 +50,12 @@ static struct rule {
 	{"[0-9]+", TK_NUM},
 	{"[a-zA-Z]+", TK_ID},
 	{"\\(", TK_L},
-	{"\\)", TK_R}
+	{"\\)", TK_R},
+	{"!=", TK_NEQ},// 新加
+	{"&&", TK_AND},
+	{"0x[0-9]+", TK_HEX},
+	{"$[a-z][0-9]", TK_REG},
+	{"*", TK_EX}
 };
 
 #define NR_REGEX ARRLEN(rules)
