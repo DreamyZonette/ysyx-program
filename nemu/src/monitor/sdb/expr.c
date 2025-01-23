@@ -53,7 +53,7 @@ static struct rule {
 	{"!=", TK_NEQ},// 新加
 	{"&&", TK_AND},
 	{"0[xX][0-9]+", TK_HEX},
-	{"\\$(x([0-9]|[12]?[0-9]|3[01])|zero|ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7]|f([0-9]|[12]?[0-9]|3[01]))", TK_REG},
+	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])$", TK_REG},
 	{"\\*", TK_EXPLAIN}
 };
 
@@ -196,11 +196,19 @@ static bool make_token(char *e) {
 					case TK_REG:// 还需要修改
 						{
 						assert(pmatch.rm_so != -1);// 匹配是否成功
-						char match[pmatch.rm_eo - pmatch.rm_so + 1];
-						strncpy(match, e + position + pmatch.rm_so - 1, pmatch.rm_eo - pmatch.rm_so);// 获得数据
-						match[pmatch.rm_eo - pmatch.rm_so] = '\0';
+						char match[pmatch.rm_eo - pmatch.rm_so];
+						strncpy(match, e + position + pmatch.rm_so, pmatch.rm_eo - pmatch.rm_so - 1);// 获得数据
+						// 待检测得到的值是16进制还是10进制
+						match[pmatch.rm_eo - pmatch.rm_so - 1] = '\0';
 						assert(sizeof(match) <= 32);
-						strcpy(tokens[nr_token].str, match);
+						
+						bool success = true;
+						uint32_t val = isa_reg_str2val(match, &success);// 获得寄存器的值
+						// 将值转化为字符串
+						char str[20];
+						snprintf(str, sizeof(str), "%u", val);
+						strcpy(tokens[nr_token].str, str);
+
 						tokens[nr_token].type = TK_REG;
 						nr_token++;
 						break;

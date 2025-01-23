@@ -35,6 +35,7 @@ void isa_reg_display() {
 
 word_t isa_reg_str2val(const char *s, bool *success) {
 	if (s == NULL) {	
+		printf("invalid register");
   return 0;
 	}
 	else {
@@ -45,8 +46,12 @@ word_t isa_reg_str2val(const char *s, bool *success) {
 				index = check_reg_idx(i);
 				break;
 			}
+			if (strcmp(s, "0") == 0){
+				index = check_reg_idx(0);// 检查索引是否合法，合法就返回索引
+				break;
+			}
 		}
 		if (index == -1) return 0;
-		else return gpr(index);
+		else return gpr(index);// 返回寄存器中的值
 	}
 }
