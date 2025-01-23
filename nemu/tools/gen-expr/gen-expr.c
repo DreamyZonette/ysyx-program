@@ -20,9 +20,13 @@
 #include <assert.h>
 #include <string.h>
 
+#define MAX_EXPR_LENGTH 512
+
 // this should be enough
 static char buf[65536] = {};
+//static char buf[MAX_EXPR_LENGTH] = {};
 static char code_buf[65536 + 128] = {}; // a little larger than `buf`
+//static char code_buf[MAX_EXPR_LENGTH + 128] = {}; // a little larger than `buf`
 static char *code_format =
 "#include <stdio.h>\n"
 "int main() { "
@@ -35,14 +39,21 @@ uint32_t choose (uint32_t n) {
 	return rand() % n;
 }
 // 待完成
-void gen_num(){
+void gen_num(int* signal){
+	if (*signal == 1){
+		return;
+	}
 	uint32_t num = rand() % 100;
 	char str[3];
 	snprintf(str, sizeof(str), "%u", num);
 	strncat(buf, str, sizeof(buf) - strlen(buf));
+	*signal = 0;
 }
 
-void gen(char* str){
+void gen(char* str, int* signal){
+	if(strcmp(str , ")") == 0){
+		*signal = 1;
+	}
 	strncat(buf, str, sizeof(buf) - strlen(buf));
 }
 
@@ -66,42 +77,29 @@ void gen_rand_op(){
 }
 
 static void gen_rand_expr() {
+	int signal = 0;
 	switch (choose(3)) {
-		case 0: gen_blank();
-						gen_num();
-						gen_blank();
+		case 0: //gen_blank();
+						gen_num(&signal);
+						//gen_blank();
 						break;
-		case 1: gen_blank();
-						gen("(");
-						gen_blank();
+		case 1: //gen_blank();
+						gen("(", &signal);
+						//gen_blank();
 						gen_rand_expr();
-						gen_blank();
-						gen(")");
-						gen_blank();
+						//gen_blank();
+						gen(")", &signal);
+						//gen_blank();
 						break;
-		default: gen_blank();
+		default: //gen_blank();
 						 gen_rand_expr();
-						 gen_blank();
+						 //gen_blank();
 						 gen_rand_op();
-						 gen_blank();
+						 //gen_blank();
 						 gen_rand_expr();
-						 gen_blank();
+						 //gen_blank();
 						 break;
 	}
-	 /*char *last_operator = strrchr(buf, '/');
-    if (last_operator != NULL) {
-        // 查找除号后的数字，并确保它不为零
-        char *denominator_start = last_operator + 1;
-        if (denominator_start != NULL) {
-            // 生成一个非零的数字作为除数
-            uint32_t denominator = rand() % 100;
-            while (denominator == 0) {
-                denominator = rand() % 100;
-            }
-            // 替换除数部分
-            snprintf(denominator_start, 3, "%u", denominator);
-        }
-    }*/
   //buf[0] = '\0';
 }
 
@@ -114,6 +112,7 @@ int main(int argc, char *argv[]) {
   }
   int i;
   for (i = 0; i < loop; i ++) {
+		buf[0] = '\0'; // 清除buf内容
     gen_rand_expr();
 
     sprintf(code_buf, code_format, buf);
@@ -123,7 +122,7 @@ int main(int argc, char *argv[]) {
     fputs(code_buf, fp);
     fclose(fp);
 
-    int ret = system("gcc /tmp/.code.c -o /tmp/.expr -Wno-overflow");
+    int ret = system("gcc /tmp/.code.c -o /tmp/.expr -Wno-overflow -Werror -Wall 2> null");
     if (ret != 0) continue;
 
     fp = popen("/tmp/.expr", "r");
@@ -134,7 +133,6 @@ int main(int argc, char *argv[]) {
     pclose(fp);
 
     printf("%u %s\n", result, buf);
-		buf[0] = '\0'; // 清除buf内容
   }
   return 0;
 }

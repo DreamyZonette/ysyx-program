@@ -27,9 +27,9 @@ enum {
   /* TODO: Add more token types */
 	TK_MULTIPLY, TK_SUB,
 	TK_DIVIDE, TK_NUM,
-	TK_ID, TK_L, TK_R,
+	TK_L, TK_R,
 	TK_NEQ, TK_AND, TK_HEX,
-	TK_REG,TK_EX
+	TK_REG,TK_EXPLAIN
 };
 
 static struct rule {
@@ -48,14 +48,13 @@ static struct rule {
 	{"-", TK_SUB},				// 减法
 	{"/", TK_DIVIDE},					// 除法
 	{"[0-9]+", TK_NUM},
-	{"[a-zA-Z]+", TK_ID},
 	{"\\(", TK_L},
 	{"\\)", TK_R},
 	{"!=", TK_NEQ},// 新加
 	{"&&", TK_AND},
-	{"0x[0-9]+", TK_HEX},
-	{"$", TK_REG},
-	{"*", TK_EX}
+	{"0[xX][0-9]+", TK_HEX},
+	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])$", TK_REG},
+	{"\\*", TK_EXPLAIN}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -127,6 +126,21 @@ static bool make_token(char *e) {
 						tokens[nr_token].type = TK_R;
 						nr_token++;
 						break;
+					case TK_AND:
+						strcpy(tokens[nr_token].str, "&&");
+						tokens[nr_token].type = TK_AND;
+						nr_token++;
+						break;
+					case TK_NEQ:
+						strcpy(tokens[nr_token].str, "!=");
+						tokens[nr_token].type = TK_NEQ;
+						nr_token++;
+						break;
+					case TK_EXPLAIN:
+						strcpy(tokens[nr_token].str, "*");
+						tokens[nr_token].type = TK_EXPLAIN;
+						nr_token++;
+						break;
 					case TK_NOTYPE:
 						break;
 					case TK_EQ:
@@ -154,7 +168,7 @@ static bool make_token(char *e) {
 						{
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 						char match[pmatch.rm_eo - pmatch.rm_so + 1];
-						strncpy(match, e + position + pmatch.rm_so - 1, pmatch.rm_eo - pmatch.rm_so);// 获得数据
+						strncpy(match, e + position + pmatch.rm_so - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so);// 获得数据
 						match[pmatch.rm_eo - pmatch.rm_so] = '\0';
 						assert(sizeof(match) <= 32);
 						strcpy(tokens[nr_token].str, match);
@@ -162,15 +176,40 @@ static bool make_token(char *e) {
 						nr_token++;
 						break;
 						}
-					case TK_ID:
+					case TK_HEX:
 						{
-						assert(pmatch.rm_so != -1);
-						char match[pmatch.rm_eo - pmatch.rm_so + 1];
-						strncpy(match, e + position + pmatch.rm_so - 1, pmatch.rm_eo - pmatch.rm_so);
-						match[pmatch.rm_eo - pmatch.rm_so] = '\0';
+						assert(pmatch.rm_so != -1);// 匹配是否成功
+
+						int match_len = pmatch.rm_eo - pmatch.rm_so;
+						assert(match_len > 2); // 确保匹配长度有效（至少包含 "0x" 和一位十六进制数）
+
+						char match[pmatch.rm_eo - pmatch.rm_so - 1];
+						strncpy(match, e + position + pmatch.rm_so + 2 - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so - 2);// 获得数据
+						match[pmatch.rm_eo - pmatch.rm_so - 2] = '\0';
 						assert(sizeof(match) <= 32);
+
 						strcpy(tokens[nr_token].str, match);
-						tokens[nr_token].type = TK_ID;
+						tokens[nr_token].type = TK_HEX;
+						nr_token++;
+						break;
+						}
+					case TK_REG:// 还需要修改
+						{
+						assert(pmatch.rm_so != -1);// 匹配是否成功
+						char match[pmatch.rm_eo - pmatch.rm_so];
+						strncpy(match, e + position + pmatch.rm_so - pmatch.rm_eo + 1, pmatch.rm_eo - pmatch.rm_so - 1);// 获得数据
+						// 待检测得到的值是16进制还是10进制
+						match[pmatch.rm_eo - pmatch.rm_so - 1] = '\0';
+						assert(sizeof(match) <= 32);
+						
+						bool success = true;
+						uint32_t val = isa_reg_str2val(match, &success);// 获得寄存器的值
+						// 将值转化为字符串
+						char str[20];
+						snprintf(str, sizeof(str), "%u", val);
+						strcpy(tokens[nr_token].str, str);
+
+						tokens[nr_token].type = TK_REG;
 						nr_token++;
 						break;
 						}
