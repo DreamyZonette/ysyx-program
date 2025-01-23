@@ -168,7 +168,6 @@ static bool make_token(char *e) {
 						{
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 						char match[pmatch.rm_eo - pmatch.rm_so + 1];
-						// strncpy(match, e + position + pmatch.rm_so - 1, pmatch.rm_eo - pmatch.rm_so);// 获得数据
 						strncpy(match, e + position + pmatch.rm_so - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so);// 获得数据
 						match[pmatch.rm_eo - pmatch.rm_so] = '\0';
 						assert(sizeof(match) <= 32);
@@ -185,7 +184,7 @@ static bool make_token(char *e) {
 						assert(match_len > 2); // 确保匹配长度有效（至少包含 "0x" 和一位十六进制数）
 
 						char match[pmatch.rm_eo - pmatch.rm_so - 1];
-						strncpy(match, e + position + pmatch.rm_so + 1, pmatch.rm_eo - pmatch.rm_so - 2);// 获得数据
+						strncpy(match, e + position + pmatch.rm_so + 2 - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so - 2);// 获得数据
 						match[pmatch.rm_eo - pmatch.rm_so - 2] = '\0';
 						assert(sizeof(match) <= 32);
 
@@ -198,7 +197,7 @@ static bool make_token(char *e) {
 						{
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 						char match[pmatch.rm_eo - pmatch.rm_so];
-						strncpy(match, e + position + pmatch.rm_so, pmatch.rm_eo - pmatch.rm_so - 1);// 获得数据
+						strncpy(match, e + position + pmatch.rm_so - pmatch.rm_eo + 1, pmatch.rm_eo - pmatch.rm_so - 1);// 获得数据
 						// 待检测得到的值是16进制还是10进制
 						match[pmatch.rm_eo - pmatch.rm_so - 1] = '\0';
 						assert(sizeof(match) <= 32);
