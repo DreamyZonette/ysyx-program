@@ -361,7 +361,7 @@ word_t expr(char *e, bool *success) {
 	// 计算表达式的值
 	int signal = 0;
 	int value = eval(0, nr_token - 1, &signal);
-	if (signal != 1) printf("Expression: %s\nResult: %d\n",e,value);
+	if (signal != 1) printf("Expression: %s\nResult: %u\n",e,value);
   //TODO();
 
   return 0;
