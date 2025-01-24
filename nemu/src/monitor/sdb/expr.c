@@ -25,11 +25,11 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-	TK_MULTIPLY, TK_SUB,
+	TK_SUB,TK_MULTIPLY,// 保留类型供判断
 	TK_DIVIDE, TK_NUM,
 	TK_L, TK_R,
 	TK_NEQ, TK_AND, TK_HEX,
-	TK_REG,TK_EXPLAIN
+	TK_REG,TK_EXPLAIN// 保留……
 };
 
 static struct rule {
@@ -44,6 +44,7 @@ static struct rule {
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
+ 	//{"\\*", '*'},      // multiplied
 	{"\\*", TK_MULTIPLY},      // multiplied
 	{"-", TK_SUB},				// 减法
 	{"/", TK_DIVIDE},					// 除法
@@ -136,11 +137,6 @@ static bool make_token(char *e) {
 						tokens[nr_token].type = TK_NEQ;
 						nr_token++;
 						break;
-					case TK_EXPLAIN:
-						strcpy(tokens[nr_token].str, "*");
-						tokens[nr_token].type = TK_EXPLAIN;
-						nr_token++;
-						break;
 					case TK_NOTYPE:
 						break;
 					case TK_EQ:
@@ -148,9 +144,9 @@ static bool make_token(char *e) {
 						tokens[nr_token].type = TK_EQ;
 						nr_token++;
 						break;
-					case TK_MULTIPLY:
+					case '*':
 						strcpy(tokens[nr_token].str, "*");
-						tokens[nr_token].type = TK_MULTIPLY;
+						tokens[nr_token].type = '*';
 						nr_token++;
 						break;
 					case TK_SUB:
@@ -319,8 +315,8 @@ int eval(int p, int q, int* signal){
 			return 0;
 		}
 
-		int val1 = eval(p, op - 1, signal);
-		int val2 = eval(op + 1, q, signal);
+		uint32_t val1 = eval(p, op - 1, signal);
+		uint32_t val2 = eval(op + 1, q, signal);
 
 		switch (tokens[op].type){
 			case '+': 
@@ -353,6 +349,14 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
+	/*
+	for (int i = 0; i < nr_token; i ++) {
+
+		if (tokens[i].type == '*' && (i == 0 || tokens[i - 1].type == certurn type) ) {
+			tokens[i].type = DEREF;
+		}	
+	}
+*/
 	//make_token(e);
 	// 计算表达式的值
 	int signal = 0;
