@@ -266,7 +266,14 @@ int eval(int p, int q, int* signal){
 		return 0;
 	}
 	else if (p == q){
+		if (tokens[p].type == TK_NUM){
 		  return atoi(tokens[p].str);
+		}
+		else {
+			uint32_t value = strtoul(tokens[p].str, NULL, 16);
+			return value;
+		}
+
 	}
 	else if (p + 1 == q && tokens[p].type == TK_EXPLAIN){
 		uint32_t addr = 0;
@@ -278,7 +285,7 @@ int eval(int p, int q, int* signal){
 			//获 得地址	
 			char *endptr;
 			char* addr_str = tokens[q].str;
-			addr = strtol(addr_str, &endptr, 16);
+			addr = strtoul(addr_str, &endptr, 16);
 			if (*endptr != '\0') {			
 				printf("Parsed hex string. Stopped at: %s\n", endptr);
 				*signal = 1;
