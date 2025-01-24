@@ -376,7 +376,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-	
+	int bool_index = -1;
 	for (int i = 0; i < nr_token; i ++) {
 
 		if (tokens[i].type == '*' ) {
@@ -387,13 +387,36 @@ word_t expr(char *e, bool *success) {
 				tokens[i].type = TK_MULTIPLY;
 			}
 		}
+		// 如果存在逻辑运算符记录索引
+		if (tokens[i].type == TK_EQ || tokens[i].type == TK_AND || tokens[i].type == TK_NEQ){
+			bool_index = i;
+		}
 	}
 
-	//make_token(e);
-	// 计算表达式的值
+	// 结果合法标志
 	int signal = 0;
-	int value = eval(0, nr_token - 1, &signal);
-	if (signal != 1) printf("Expression: %s\nResult: %u\n",e,value);
+	// 判断是否存在 == 或 &&
+	// 实现表达式只存在一个逻辑运算符的情况
+	if (bool_index == -1){	
+		uint32_t value = eval(0, nr_token - 1, &signal); 
+		if (signal != 1) printf("Expression: %s\nResult: %u\n",e,value);
+	}
+	else{
+		uint32_t value1 = eval(0, bool_index - 1, &signal);
+		uint32_t value2 = eval(bool_index + 1, nr_token - 1, &signal);
+		if (tokens[bool_index].type == TK_EQ) {
+			int res = value1 == value2;
+			if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
+		}
+		if (tokens[bool_index].type == TK_NEQ) {
+			int res = value1 != value2;
+			if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
+		}
+		if (tokens[bool_index].type == TK_AND) {
+			int res = value1 && value2;
+			if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
+		}
+	}
   //TODO();
 
   return 0;
