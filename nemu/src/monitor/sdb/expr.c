@@ -21,6 +21,8 @@
  */
 #include <regex.h>
 
+word_t paddr_read(paddr_t addr, int len);
+
 enum {
   TK_NOTYPE = 256, TK_EQ,
 
@@ -52,7 +54,7 @@ static struct rule {
 	{"\\)", TK_R},
 	{"!=", TK_NEQ},// 新加
 	{"&&", TK_AND},
-	{"0[xX][0-9]+", TK_HEX},
+	{"0[xX][0-9a-fA-F]+", TK_HEX},
 	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])$", TK_REG}
 };
 
@@ -266,6 +268,27 @@ int eval(int p, int q, int* signal){
 	else if (p == q){
 		  return atoi(tokens[p].str);
 	}
+	else if (p + 1 == q && tokens[p].type == TK_EXPLAIN){
+		uint32_t addr = 0;
+
+		if (tokens[q].type == TK_NUM) {
+			addr = atoi(tokens[q].str);
+		}
+		else if (tokens[q].type == TK_HEX) {
+			//获 得地址	
+			char *endptr;
+			char* addr_str = tokens[q].str;
+			addr = strtol(addr_str, &endptr, 16);
+			if (*endptr != '\0') {			
+				printf("Parsed hex string. Stopped at: %s\n", endptr);
+				*signal = 1;
+				return 0;
+			} 
+//need to be finished
+		}
+		uint32_t mem_val = paddr_read(addr,4);
+		return mem_val;
+	}
 	else if (check_parentheses(p, q) == true){
 	
 		return eval(p + 1, q - 1, signal);
@@ -303,18 +326,17 @@ int eval(int p, int q, int* signal){
 				DIV = i;
 			}
 		}
+			if (ADD != -1) op = ADD;
+			else if (SUB != -1) op = SUB;
+			else if (MUL != -1) op = MUL;
+			else if (DIV != -1) op = DIV;
+			else {
+				printf("op Error\n");
+				return 0;
+			}
 
-		if (ADD != -1) op = ADD;
-		else if (SUB != -1) op = SUB;
-		else if (MUL != -1) op = MUL;
-		else if (DIV != -1) op = DIV;
-		else {
-			printf("op Error\n");
-			return 0;
-		}
-
-		uint32_t val1 = eval(p, op - 1, signal);
-		uint32_t val2 = eval(op + 1, q, signal);
+			uint32_t val1 = eval(p, op - 1, signal);
+			uint32_t val2 = eval(op + 1, q, signal);
 
 		switch (tokens[op].type){
 			case '+': 
