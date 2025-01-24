@@ -49,12 +49,12 @@ static struct rule {
  	{"\\*", '*'},      //有两种可能 MULTIPLY EXPLAIN 
 	{"-", TK_SUB},				// 减法
 	{"/", TK_DIVIDE},					// 除法
+	{"0[xX][0-9a-fA-F]+", TK_HEX},
 	{"[0-9]+", TK_NUM},
 	{"\\(", TK_L},
 	{"\\)", TK_R},
 	{"!=", TK_NEQ},// 新加
 	{"&&", TK_AND},
-	{"0[xX][0-9a-fA-F]+", TK_HEX},
 	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])$", TK_REG}
 };
 
