@@ -350,13 +350,14 @@ word_t expr(char *e, bool *success) {
 	
 	for (int i = 0; i < nr_token; i ++) {
 
-		if (tokens[i].type == '*' && (i == 0 || tokens[i - 1].type == '+' || tokens[i - 1].type == TK_SUB || tokens[i - 1].type == TK_MULTIPLY || tokens[i - 1].type == TK_DIVIDE || tokens[i - 1].type == TK_L) ) {
-			tokens[i].type = TK_EXPLAIN;
+		if (tokens[i].type == '*' ) {
+			if( (i == 0 || tokens[i - 1].type == '+' || tokens[i - 1].type == TK_SUB || tokens[i - 1].type == TK_MULTIPLY || tokens[i - 1].type == TK_DIVIDE || tokens[i - 1].type == TK_L)){
+				tokens[i].type = TK_EXPLAIN;
 			}
 			else {
-			tokens[i].type = TK_MULTIPLY;
+				tokens[i].type = TK_MULTIPLY;
 			}
-			
+		}
 	}
 
 	//make_token(e);
