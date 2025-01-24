@@ -44,8 +44,7 @@ static struct rule {
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
- 	//{"\\*", '*'},      // multiplied
-	{"\\*", TK_MULTIPLY},      // multiplied
+ 	{"\\*", '*'},      //有两种可能 MULTIPLY EXPLAIN 
 	{"-", TK_SUB},				// 减法
 	{"/", TK_DIVIDE},					// 除法
 	{"[0-9]+", TK_NUM},
@@ -54,8 +53,7 @@ static struct rule {
 	{"!=", TK_NEQ},// 新加
 	{"&&", TK_AND},
 	{"0[xX][0-9]+", TK_HEX},
-	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])$", TK_REG},
-	{"\\*", TK_EXPLAIN}
+	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])$", TK_REG}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -349,14 +347,18 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-	/*
+	
 	for (int i = 0; i < nr_token; i ++) {
 
-		if (tokens[i].type == '*' && (i == 0 || tokens[i - 1].type == certurn type) ) {
-			tokens[i].type = DEREF;
-		}	
+		if (tokens[i].type == '*' && (i == 0 || tokens[i - 1].type == '+' || tokens[i - 1].type == TK_SUB || tokens[i - 1].type == TK_MULTIPLY || tokens[i - 1].type == TK_DIVIDE || tokens[i - 1].type == TK_L) ) {
+			tokens[i].type = TK_EXPLAIN;
+			}
+			else {
+			tokens[i].type = TK_MULTIPLY;
+			}
+			
 	}
-*/
+
 	//make_token(e);
 	// 计算表达式的值
 	int signal = 0;
