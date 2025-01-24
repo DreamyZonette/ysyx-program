@@ -21,15 +21,17 @@
  */
 #include <regex.h>
 
+word_t paddr_read(paddr_t addr, int len);
+
 enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-	TK_MULTIPLY, TK_SUB,
+	TK_SUB,TK_MULTIPLY,// 保留类型供判断
 	TK_DIVIDE, TK_NUM,
 	TK_L, TK_R,
 	TK_NEQ, TK_AND, TK_HEX,
-	TK_REG,TK_EXPLAIN
+	TK_REG,TK_EXPLAIN// 保留……
 };
 
 static struct rule {
@@ -44,17 +46,16 @@ static struct rule {
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
-	{"\\*", TK_MULTIPLY},      // multiplied
+ 	{"\\*", '*'},      //有两种可能 MULTIPLY EXPLAIN 
 	{"-", TK_SUB},				// 减法
 	{"/", TK_DIVIDE},					// 除法
+	{"0[xX][0-9a-fA-F]+", TK_HEX},
 	{"[0-9]+", TK_NUM},
 	{"\\(", TK_L},
 	{"\\)", TK_R},
 	{"!=", TK_NEQ},// 新加
 	{"&&", TK_AND},
-	{"0[xX][0-9]+", TK_HEX},
-	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])$", TK_REG},
-	{"\\*", TK_EXPLAIN}
+	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])$", TK_REG}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -136,11 +137,6 @@ static bool make_token(char *e) {
 						tokens[nr_token].type = TK_NEQ;
 						nr_token++;
 						break;
-					case TK_EXPLAIN:
-						strcpy(tokens[nr_token].str, "*");
-						tokens[nr_token].type = TK_EXPLAIN;
-						nr_token++;
-						break;
 					case TK_NOTYPE:
 						break;
 					case TK_EQ:
@@ -148,9 +144,9 @@ static bool make_token(char *e) {
 						tokens[nr_token].type = TK_EQ;
 						nr_token++;
 						break;
-					case TK_MULTIPLY:
+					case '*':
 						strcpy(tokens[nr_token].str, "*");
-						tokens[nr_token].type = TK_MULTIPLY;
+						tokens[nr_token].type = '*';
 						nr_token++;
 						break;
 					case TK_SUB:
@@ -270,7 +266,35 @@ int eval(int p, int q, int* signal){
 		return 0;
 	}
 	else if (p == q){
+		if (tokens[p].type == TK_NUM){
 		  return atoi(tokens[p].str);
+		}
+		else {
+			uint32_t value = strtoul(tokens[p].str, NULL, 16);
+			return value;
+		}
+
+	}
+	else if (p + 1 == q && tokens[p].type == TK_EXPLAIN){
+		uint32_t addr = 0;
+
+		if (tokens[q].type == TK_NUM) {
+			addr = atoi(tokens[q].str);
+		}
+		else if (tokens[q].type == TK_HEX) {
+			//获 得地址	
+			char *endptr;
+			char* addr_str = tokens[q].str;
+			addr = strtoul(addr_str, &endptr, 16);
+			if (*endptr != '\0') {			
+				printf("Parsed hex string. Stopped at: %s\n", endptr);
+				*signal = 1;
+				return 0;
+			} 
+//need to be finished
+		}
+		uint32_t mem_val = paddr_read(addr,4);
+		return mem_val;
 	}
 	else if (check_parentheses(p, q) == true){
 	
@@ -309,18 +333,17 @@ int eval(int p, int q, int* signal){
 				DIV = i;
 			}
 		}
+			if (ADD != -1) op = ADD;
+			else if (SUB != -1) op = SUB;
+			else if (MUL != -1) op = MUL;
+			else if (DIV != -1) op = DIV;
+			else {
+				printf("op Error\n");
+				return 0;
+			}
 
-		if (ADD != -1) op = ADD;
-		else if (SUB != -1) op = SUB;
-		else if (MUL != -1) op = MUL;
-		else if (DIV != -1) op = DIV;
-		else {
-			printf("op Error\n");
-			return 0;
-		}
-
-		int val1 = eval(p, op - 1, signal);
-		int val2 = eval(op + 1, q, signal);
+			uint32_t val1 = eval(p, op - 1, signal);
+			uint32_t val2 = eval(op + 1, q, signal);
 
 		switch (tokens[op].type){
 			case '+': 
@@ -353,11 +376,24 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
+	
+	for (int i = 0; i < nr_token; i ++) {
+
+		if (tokens[i].type == '*' ) {
+			if( (i == 0 || tokens[i - 1].type == '+' || tokens[i - 1].type == TK_SUB || tokens[i - 1].type == TK_MULTIPLY || tokens[i - 1].type == TK_DIVIDE || tokens[i - 1].type == TK_L)){
+				tokens[i].type = TK_EXPLAIN;
+			}
+			else {
+				tokens[i].type = TK_MULTIPLY;
+			}
+		}
+	}
+
 	//make_token(e);
 	// 计算表达式的值
 	int signal = 0;
 	int value = eval(0, nr_token - 1, &signal);
-	if (signal != 1) printf("Expression: %s\nResult: %d\n",e,value);
+	if (signal != 1) printf("Expression: %s\nResult: %u\n",e,value);
   //TODO();
 
   return 0;
