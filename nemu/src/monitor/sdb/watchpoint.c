@@ -129,6 +129,10 @@ void create_watchpoint (char* args) {
 
 void delete_watchpoint (int NO) {
 	WP* p = head;
+	if (p == NULL){
+		printf("No watchpoint is runnig.\n");
+		return;
+	}
 	while (p->NO != NO) {
 		p = p->next;
 	}
