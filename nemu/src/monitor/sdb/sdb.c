@@ -133,7 +133,7 @@ static int cmd_p (char* args){
 static int cmd_w (char* args){
 	
 	if (args == NULL) {
-		printf("Please input argument.\n");
+		printf("Please input: w <expression>.\n");
 		return 0;
 	} 
 
@@ -143,7 +143,7 @@ static int cmd_w (char* args){
 // 待完成
 static int cmd_d (char* args){
 	if (args == NULL) {
-		printf("Please input argument.\n");
+		printf("Please input: d [number].\n");
 		return 0;
 	}
 	int NO = atoi(args);

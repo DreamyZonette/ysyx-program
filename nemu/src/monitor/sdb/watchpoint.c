@@ -14,22 +14,21 @@
 ***************************************************************************************/
 
 #include "sdb.h"
-
+/*
 #define NR_WP 32
 
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
 
-  /* TODO: Add more members if necessary */
 	bool is_used;
 	uint32_t prev_value;
 	uint32_t cur_value;
 	char expr [100];
 
 } WP;
-
-static WP wp_pool[NR_WP] = {};
+*/
+WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
 
 void init_wp_pool() {
@@ -132,17 +131,35 @@ void delete_watchpoint (int NO) {
 	if (p == NULL){
 		printf("No watchpoint is runnig.\n");
 		return;
-	}
+ 	}
 	while (p->NO != NO) {
 		p = p->next;
-	}
+ 	}
+	// 检测该监视点状态
 	if (p->is_used == false) {
 		printf("Cannot delete a free watchpoint\n");
 		return;
-	}
+ 	}
+
 	free_wp(p);
 	if (p->is_used == false){
 	printf("Delete watchpoint success.\nwatchpoint NO:%d\n", p->NO);
-	}
+ 	}
 }
+/*
+void check_watchpoint () {
+	WP* p = head;
+	if (p == NULL) return;
+	while (p != NULL) {
+		p->cur_value = eval(p->expr);
+		if (p->prev_value != p->cur_value) {
+			printf("Watchpoint %d: %s changed\n  Old value: 0x%x\n  New value: 0x%x\n",
+					p->NO, p->expr, p->prev_value, p->cur_value);
+			p->prev_value = p->cur_value;
+			nemu_state.state = NEMU_STOP;
+		}
+		p = p->next;
+	}
 
+}
+*/

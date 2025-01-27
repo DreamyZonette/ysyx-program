@@ -374,8 +374,10 @@ word_t expr(char *e, bool *success) {
 		printf("make token Error\n");
     return 0;
   }
-
+	
   /* TODO: Insert codes to evaluate the expression. */
+	*success = true;
+
 	int bool_index = -1;
 	for (int i = 0; i < nr_token; i ++) {
 
