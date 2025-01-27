@@ -100,7 +100,7 @@ static int cmd_x (char *args){
 		printf("N: %d\t",N);
 	} 
 	else {
-		printf("Invalid number");
+		printf("Invalid number\n");
 		return -1;
 	} 
 //获 得地址	
@@ -133,7 +133,7 @@ static int cmd_p (char* args){
 static int cmd_w (char* args){
 	
 	if (args == NULL) {
-		printf("Please input argument.");
+		printf("Please input argument.\n");
 		return 0;
 	} 
 
@@ -143,7 +143,7 @@ static int cmd_w (char* args){
 // 待完成
 static int cmd_d (char* args){
 	if (args == NULL) {
-		printf("Please input argument.");
+		printf("Please input argument.\n");
 		return 0;
 	}
 	int NO = atoi(args);
