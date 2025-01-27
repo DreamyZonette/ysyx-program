@@ -400,21 +400,26 @@ word_t expr(char *e, bool *success) {
 	if (bool_index == -1){	
 		uint32_t value = eval(0, nr_token - 1, &signal); 
 		if (signal != 1) printf("Expression: %s\nResult: %u\n",e,value);
+		return value;
 	}
 	else{
 		uint32_t value1 = eval(0, bool_index - 1, &signal);
 		uint32_t value2 = eval(bool_index + 1, nr_token - 1, &signal);
+		int res;
 		if (tokens[bool_index].type == TK_EQ) {
-			int res = value1 == value2;
+			res = value1 == value2;
 			if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
+			return res;
 		}
 		if (tokens[bool_index].type == TK_NEQ) {
-			int res = value1 != value2;
+			res = value1 != value2;
 			if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
+			return res;
 		}
 		if (tokens[bool_index].type == TK_AND) {
-			int res = value1 && value2;
+			res = value1 && value2;
 			if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
+			return res;
 		}
 	}
   //TODO();
