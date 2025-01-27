@@ -38,6 +38,32 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+
+#ifdef CONFIG_WATCHPOINT
+	 // 检查监视点
+	 for (int i = 0; i < NR_WP; i ++) {
+		 if (wp_pool[i].is_used) {
+			 bool success = false;
+			 wp_pool[i].cur_value = expr(wp_pool[i].expr, &success);
+			 // 判断求值是否成功
+			 if (success)
+			 {
+				 // 判断前后的值是否相同
+				if (wp_pool[i].cur_value !=  wp_pool[i].prev_value) {
+					printf("Watchpoint %d: %s changed\n  Old value: 0x%x\n  New value: 0x%x\n",
+							wp_pool[i].NO, wp_pool[i].expr, wp_pool[i].prev_value, wp_pool[i].ur_value);
+
+					wp_pool[i].prev_value = wp_pool[i].cur_value;// 更新旧值
+					nemu_state.state = NEMU_STOP;// 暂停nemu
+				}
+			 }
+			 else {
+				printf("Expr error.");
+				assert(0);
+			 }
+		 }
+	 }
+#endif
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {

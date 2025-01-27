@@ -25,6 +25,9 @@ void init_regex();
 void init_wp_pool();
 word_t paddr_read(paddr_t addr, int len);
 word_t expr(char *e, bool *success);
+void sdb_watchpoint_display ();
+void delete_watchpoint (int NO);
+void create_watchpoint (char* args);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -78,7 +81,7 @@ static int cmd_info(char *args){
 	}
 	else if(strcmp( Arg , "w") == 0 )	{
 // 需要完善监视点信息
-		// sdb_watchpoint_display();
+		sdb_watchpoint_display();
 	}
 	else {
 	printf("Invalid argument");
@@ -97,7 +100,7 @@ static int cmd_x (char *args){
 		printf("N: %d\t",N);
 	} 
 	else {
-		printf("Invalid number");
+		printf("Invalid number\n");
 		return -1;
 	} 
 //获 得地址	
@@ -126,6 +129,27 @@ static int cmd_p (char* args){
 		//make_token(args);
 	return 0;
 }
+// 待完成
+static int cmd_w (char* args){
+	
+	if (args == NULL) {
+		printf("Please input: w <expression>.\n");
+		return 0;
+	} 
+
+	create_watchpoint (args);
+	return 0;
+}
+// 待完成
+static int cmd_d (char* args){
+	if (args == NULL) {
+		printf("Please input: d [number].\n");
+		return 0;
+	}
+	int NO = atoi(args);
+	delete_watchpoint(NO);
+	return 0;
+}
 
 static struct {
   const char *name;
@@ -140,7 +164,9 @@ static struct {
 	{ "si", "Execute one step", cmd_si },
 	{ "info", "Display status", cmd_info },
 	{ "x", "Display memory" , cmd_x },
-	{"p", "Do math", cmd_p}
+	{"p", "Do math", cmd_p},
+	{"w", "Create watchpoint", cmd_w},
+	{"d", "Delete watchpoint", cmd_d}
 };
 
 #define NR_CMD ARRLEN(cmd_table)

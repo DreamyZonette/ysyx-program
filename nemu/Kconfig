@@ -214,4 +214,11 @@ config RT_CHECK
   bool "Enable runtime checking"
   default y
 
+config WATCHPOINT
+    bool "Enable watchpoint support"
+    default n
+    help
+      Enable watchpoint checking for debugging expressions.
+      This will slightly reduce emulation performance.
+
 endmenu
