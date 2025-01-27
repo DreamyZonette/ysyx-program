@@ -134,8 +134,8 @@ static int cmd_w (char* args){
 	
 	if (args == NULL) {
 		printf("Please input argument.");
-		return -1;
-	}
+		return 0;
+	} 
 
 	create_watchpoint (args);
 	return 0;
@@ -144,7 +144,7 @@ static int cmd_w (char* args){
 static int cmd_d (char* args){
 	if (args == NULL) {
 		printf("Please input argument.");
-		return -1;
+		return 0;
 	}
 	int NO = atoi(args);
 	delete_watchpoint(NO);
