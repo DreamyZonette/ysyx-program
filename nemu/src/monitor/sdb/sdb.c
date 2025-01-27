@@ -132,11 +132,20 @@ static int cmd_p (char* args){
 // 待完成
 static int cmd_w (char* args){
 	
+	if (args == NULL) {
+		printf("Please input argument.");
+		return -1;
+	}
+
 	create_watchpoint (args);
 	return 0;
 }
 // 待完成
 static int cmd_d (char* args){
+	if (args == NULL) {
+		printf("Please input argument.");
+		return -1;
+	}
 	int NO = atoi(args);
 	delete_watchpoint(NO);
 	return 0;
