@@ -128,6 +128,10 @@ static int cmd_x (char *args){
 }
 
 static int cmd_p (char* args){
+	if (args == NULL) {
+		printf("Invalid command\n");
+		printf("Please input: p <expr>");
+	}
 		init_regex(args);
 		printf("%s\n", args);
 		bool success = true;
