@@ -76,6 +76,7 @@ static int cmd_si(char *args){
 
 static int cmd_info(char *args){
 	if (args == NULL) {
+		printf("Invalid command\n");
 		printf("Please input: info [arg]\n");
 		return 0;
 	}
