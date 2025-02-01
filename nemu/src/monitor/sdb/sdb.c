@@ -75,6 +75,10 @@ static int cmd_si(char *args){
 }
 
 static int cmd_info(char *args){
+	if (args == NULL) {
+		printf("Please input: info [arg]\n");
+		return 0;
+	}
 	char* Arg = strtok(args," ");
 	if(strcmp( Arg , "r") == 0){
 		isa_reg_display();	
