@@ -101,7 +101,8 @@ static int cmd_x (char *args){
 	} 
 	else {
 		printf("Invalid number\n");
-		return -1;
+		printf("Please input: x [number] [address]\n");
+		return 0;
 	} 
 //获 得地址	
 	char *endptr;
