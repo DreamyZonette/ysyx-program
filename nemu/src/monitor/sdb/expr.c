@@ -203,7 +203,7 @@ static bool make_token(char *e) {
 						printf("%x\n",val);
 						// 将值转化为字符串
 						char str[20];
-						snprintf(str, sizeof(str), "%u", val);
+						snprintf(str, sizeof(str), "%x", val);
 						strcpy(tokens[nr_token].str, str);
 
 						tokens[nr_token].type = TK_REG;
