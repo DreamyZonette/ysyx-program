@@ -52,6 +52,9 @@ word_t isa_reg_str2val(const char *s, bool *success) {
 			}
 		}
 		if (index == -1) return 0;
-		else return gpr(index);// 返回寄存器中的值
+		else {
+			printf("%x\n",gpr(index));
+			return gpr(index);// 返回寄存器中的值
+		}
 	}
 }
