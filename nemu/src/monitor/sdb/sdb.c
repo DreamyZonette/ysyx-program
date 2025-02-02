@@ -131,6 +131,7 @@ static int cmd_p (char* args){
 	if (args == NULL) {
 		printf("Invalid command\n");
 		printf("Please input: p <expr>");
+		return 0;
 	}
 		init_regex(args);
 		printf("%s\n", args);
