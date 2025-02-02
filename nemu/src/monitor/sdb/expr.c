@@ -200,7 +200,6 @@ static bool make_token(char *e) {
 						
 						bool success = true;
 						uint32_t val = isa_reg_str2val(match, &success);// 获得寄存器的值
-						printf("%x\n",val);
 						// 将值转化为字符串
 						char str[20];
 						snprintf(str, sizeof(str), "%x", val);
