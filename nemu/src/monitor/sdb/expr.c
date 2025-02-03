@@ -259,7 +259,7 @@ int valid_index(int i, int pos_L, int pos_R, int q){
 }
 
 
-int eval(int p, int q, int* signal){
+int eval(int p, int q, bool* signal){
 	if (p > q){
 		printf("invalid expression: p > q\n");
 		return 0;
@@ -354,7 +354,7 @@ int eval(int p, int q, int* signal){
 			case TK_DIVIDE:
 				if (val2 == 0){
 					printf("除数不能为0\n");
-					*signal = 1;
+					*signal = false;
 					return 0;
 				}
 				else {
@@ -395,25 +395,25 @@ word_t expr(char *e, bool *success) {
 	}
 
 	// 结果合法标志
-	int signal = 0;
+	// int signal = 0;
 	// 判断是否存在 == 或 &&
 	// 实现表达式只存在一个逻辑运算符的情况
 	if (bool_index == -1){	
-		uint32_t value = eval(0, nr_token - 1, &signal); 
+		uint32_t value = eval(0, nr_token - 1, success); 
 		//if (signal != 1) printf("Expression: %s\nResult: %u\n",e,value);
 		return value;
 	}
 	// 存在布尔运算符的情况
 	else{
-		uint32_t value1 = eval(0, bool_index - 1, &signal);
-		uint32_t value2 = eval(bool_index + 1, nr_token - 1, &signal);
+		uint32_t value1 = eval(0, bool_index - 1, success);
+		uint32_t value2 = eval(bool_index + 1, nr_token - 1, success);
 		int res;
-		if (tokens[bool_index].type == TK_EQ) {
+		if (tokens[bool_index].type == TK_EQ) { 
 			res = value1 == value2;
 			//if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
 			return res;
 		}
-		if (tokens[bool_index].type == TK_NEQ) {
+		if (tokens[bool_index].type == TK_NEQ) { 
 			res = value1 != value2;
 			//if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
 			return res;
@@ -422,7 +422,7 @@ word_t expr(char *e, bool *success) {
 			res = value1 && value2;
 			//if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
 			return res;
-		}
+		} 
 	}
   //TODO();
 
