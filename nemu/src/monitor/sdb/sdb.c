@@ -138,7 +138,7 @@ static int cmd_p (char* args){
 		printf("%s\n", args);
 		bool success = false;
 		uint32_t result = expr(args,&success);
-		printf("Expression: %s Result: %u", args, result);
+		printf("Expression: %s Result: %u\n", args, result);
 		//make_token(args);
 	return 0;
 }
