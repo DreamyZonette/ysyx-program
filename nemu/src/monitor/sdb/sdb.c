@@ -135,7 +135,7 @@ static int cmd_p (char* args){
 		return 0;
 	}
 		init_regex(args);
-		printf("%s\n", args);
+		//printf("%s\n", args);
 		bool success = false;
 		uint32_t result = expr(args,&success);
 		printf("Expression: %s Result: %u\n", args, result);
