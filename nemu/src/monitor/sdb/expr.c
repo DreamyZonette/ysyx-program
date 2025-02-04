@@ -49,13 +49,13 @@ static struct rule {
  	{"\\*", '*'},      //有两种可能 MULTIPLY EXPLAIN 
 	{"-", TK_SUB},				// 减法
 	{"/", TK_DIVIDE},					// 除法
-	{"0[xX][0-9a-fA-F]+", TK_HEX},
-	{"[0-9]+", TK_NUM},
-	{"\\(", TK_L},
-	{"\\)", TK_R},
+	{"0[xX][0-9a-fA-F]+", TK_HEX},// 十六进制
+	{"[0-9]+", TK_NUM},// 十进制
+	{"\\(", TK_L},// 左括号
+	{"\\)", TK_R},// 右括号
 	{"!=", TK_NEQ},// 新加
-	{"&&", TK_AND},
-	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])$", TK_REG}
+	{"&&", TK_AND},// and
+	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])$", TK_REG}// 寄存器
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -84,7 +84,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[1024] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -98,11 +98,11 @@ static bool make_token(char *e) {
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
-        char *substr_start = e + position;
+        // char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+        //    i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
 
@@ -165,7 +165,7 @@ static bool make_token(char *e) {
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 						char match[pmatch.rm_eo - pmatch.rm_so + 1];
 						strncpy(match, e + position + pmatch.rm_so - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so);// 获得数据
-						match[pmatch.rm_eo - pmatch.rm_so] = '\0';
+						match[pmatch.rm_eo - pmatch.rm_so] = '\0';// 末尾添加终止符
 						assert(sizeof(match) <= 32);
 						strcpy(tokens[nr_token].str, match);
 						tokens[nr_token].type = TK_NUM;
@@ -180,7 +180,7 @@ static bool make_token(char *e) {
 						assert(match_len > 2); // 确保匹配长度有效（至少包含 "0x" 和一位十六进制数）
 
 						char match[pmatch.rm_eo - pmatch.rm_so - 1];
-						strncpy(match, e + position + pmatch.rm_so + 2 - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so - 2);// 获得数据
+						strncpy(match, e + position + pmatch.rm_so + 2 - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so - 2);// 获得0x之外的数据
 						match[pmatch.rm_eo - pmatch.rm_so - 2] = '\0';
 						assert(sizeof(match) <= 32);
 
@@ -189,12 +189,11 @@ static bool make_token(char *e) {
 						nr_token++;
 						break;
 						}
-					case TK_REG:// 还需要修改
+					case TK_REG:
 						{
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 						char match[pmatch.rm_eo - pmatch.rm_so];
 						strncpy(match, e + position + pmatch.rm_so - pmatch.rm_eo + 1, pmatch.rm_eo - pmatch.rm_so - 1);// 获得数据
-						// 待检测得到的值是16进制还是10进制
 						match[pmatch.rm_eo - pmatch.rm_so - 1] = '\0';
 						assert(sizeof(match) <= 32);
 						
@@ -202,7 +201,7 @@ static bool make_token(char *e) {
 						uint32_t val = isa_reg_str2val(match, &success);// 获得寄存器的值
 						// 将值转化为字符串
 						char str[20];
-						snprintf(str, sizeof(str), "%u", val);
+						snprintf(str, sizeof(str), "%x", val);// val是十进制，以十六进制的形式记录数据
 						strcpy(tokens[nr_token].str, str);
 
 						tokens[nr_token].type = TK_REG;
@@ -260,7 +259,7 @@ int valid_index(int i, int pos_L, int pos_R, int q){
 }
 
 
-int eval(int p, int q, int* signal){
+int eval(int p, int q, bool* signal){
 	if (p > q){
 		printf("invalid expression: p > q\n");
 		return 0;
@@ -303,12 +302,10 @@ int eval(int p, int q, int* signal){
 	else {
 		int op = -1;
 
-		int ADD = -1;
-		int SUB = -1;
-		int MUL = -1;
-		int DIV = -1;
-		int pos_L = -1;
-		int pos_R = q + 1;
+		int ADD = -1, SUB = -1, MUL = -1, DIV = -1;
+		// int pos_L = -1, pos_R = q + 1;
+		int L_count = 0, R_count = 0;
+		/*
 		// 确定最大括号的位置
 		for(int i = p; i <= q; i++){
 			if (tokens[i].type == TK_L && pos_L == -1) {
@@ -332,7 +329,25 @@ int eval(int p, int q, int* signal){
 			if (tokens[i].type == TK_DIVIDE && valid_index(i, pos_L, pos_R, q)){
 				DIV = i;
 			}
-		}
+		}*/
+		for (int i = p; i < q; i ++) {
+			if (tokens[i].type == TK_L) L_count ++;
+			if (tokens[i].type == TK_R) R_count ++;
+			
+			if (tokens[i].type == '+' && (L_count == R_count) ) {
+				ADD = i;
+			}
+			if (tokens[i].type == TK_SUB && (L_count == R_count) ) {
+				SUB = i;
+			}
+			if (tokens[i].type == TK_MULTIPLY && (L_count == R_count) ) {
+				MUL = i;
+			}
+			if (tokens[i].type == TK_DIVIDE && (L_count == R_count) ) {
+				DIV = i;
+			}
+
+	}
 			if (ADD != -1) op = ADD;
 			else if (SUB != -1) op = SUB;
 			else if (MUL != -1) op = MUL;
@@ -355,7 +370,7 @@ int eval(int p, int q, int* signal){
 			case TK_DIVIDE:
 				if (val2 == 0){
 					printf("除数不能为0\n");
-					*signal = 1;
+					*signal = false;
 					return 0;
 				}
 				else {
@@ -396,33 +411,34 @@ word_t expr(char *e, bool *success) {
 	}
 
 	// 结果合法标志
-	int signal = 0;
+	// int signal = 0;
 	// 判断是否存在 == 或 &&
 	// 实现表达式只存在一个逻辑运算符的情况
 	if (bool_index == -1){	
-		uint32_t value = eval(0, nr_token - 1, &signal); 
-		if (signal != 1) printf("Expression: %s\nResult: %u\n",e,value);
+		uint32_t value = eval(0, nr_token - 1, success); 
+		//if (signal != 1) printf("Expression: %s\nResult: %u\n",e,value);
 		return value;
 	}
+	// 存在布尔运算符的情况
 	else{
-		uint32_t value1 = eval(0, bool_index - 1, &signal);
-		uint32_t value2 = eval(bool_index + 1, nr_token - 1, &signal);
+		uint32_t value1 = eval(0, bool_index - 1, success);
+		uint32_t value2 = eval(bool_index + 1, nr_token - 1, success);
 		int res;
-		if (tokens[bool_index].type == TK_EQ) {
+		if (tokens[bool_index].type == TK_EQ) { 
 			res = value1 == value2;
-			if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
+			//if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
 			return res;
 		}
-		if (tokens[bool_index].type == TK_NEQ) {
+		if (tokens[bool_index].type == TK_NEQ) { 
 			res = value1 != value2;
-			if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
+			//if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
 			return res;
 		}
 		if (tokens[bool_index].type == TK_AND) {
 			res = value1 && value2;
-			if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
+			//if (signal != 1) printf("Expression: %s\nResult: %u\n",e,res);
 			return res;
-		}
+		} 
 	}
   //TODO();
 

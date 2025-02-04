@@ -21,6 +21,7 @@
 #include <string.h>
 
 #define MAX_EXPR_LENGTH 512
+#define MAX_TOKENS 100
 
 // this should be enough
 static char buf[65536] = {};
@@ -76,27 +77,31 @@ void gen_rand_op(){
 
 }
 
-static void gen_rand_expr() {
+static void gen_rand_expr(int* token_count) {
 	int signal = 0;
 	switch (choose(3)) {
 		case 0: //gen_blank();
 						gen_num(&signal);
+						(*token_count)++;
 						//gen_blank();
 						break;
 		case 1: //gen_blank();
 						gen("(", &signal);
+						(*token_count)++;
 						//gen_blank();
-						gen_rand_expr();
+						gen_rand_expr(token_count);
 						//gen_blank();
 						gen(")", &signal);
+						(*token_count)++;
 						//gen_blank();
 						break;
 		default: //gen_blank();
-						 gen_rand_expr();
+						 gen_rand_expr(token_count);
 						 //gen_blank();
 						 gen_rand_op();
+						(*token_count)++;
 						 //gen_blank();
-						 gen_rand_expr();
+						 gen_rand_expr(token_count);
 						 //gen_blank();
 						 break;
 	}
@@ -113,8 +118,12 @@ int main(int argc, char *argv[]) {
   int i;
   for (i = 0; i < loop; i ++) {
 		buf[0] = '\0'; // 清除buf内容
-    gen_rand_expr();
+		int token_count = 0;
+    gen_rand_expr(&token_count);
 
+		if (token_count > MAX_TOKENS) {
+			continue;
+		}
     sprintf(code_buf, code_format, buf);
 
     FILE *fp = fopen("/tmp/.code.c", "w");

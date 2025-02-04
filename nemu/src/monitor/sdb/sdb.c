@@ -46,20 +46,21 @@ static char* rl_gets() {
 
   return line_read;
 }
-
+// 继续运行
 static int cmd_c(char *args) {
   cpu_exec(-1);
   return 0;
 }
 
-
+// 退出
 static int cmd_q(char *args) {
 	nemu_state.state = NEMU_QUIT;
   return -1;
 }
-
+//帮助
 static int cmd_help(char *args);
 
+// 单步执行
 static int cmd_si(char *args){
 	int N;
 	int i;
@@ -74,13 +75,18 @@ static int cmd_si(char *args){
 	return 0;
 }
 
+// 获得信息
 static int cmd_info(char *args){
+	if (args == NULL) {
+		printf("Invalid command\n");
+		printf("Please input: info [arg]\n");
+		return 0;
+	}
 	char* Arg = strtok(args," ");
 	if(strcmp( Arg , "r") == 0){
 		isa_reg_display();	
 	}
 	else if(strcmp( Arg , "w") == 0 )	{
-// 需要完善监视点信息
 		sdb_watchpoint_display();
 	}
 	else {
@@ -89,8 +95,8 @@ static int cmd_info(char *args){
 	return 0;
 }
 
+// 扫描内存
 static int cmd_x (char *args){
-	//printf("%s\n",args);	
 	//获得次数
 	const char delim[] = " ";
 	char* N_str = strtok(args, delim);
@@ -101,7 +107,8 @@ static int cmd_x (char *args){
 	} 
 	else {
 		printf("Invalid number\n");
-		return -1;
+		printf("Please input: x [number] [address]\n");
+		return 0;
 	} 
 //获 得地址	
 	char *endptr;
@@ -113,7 +120,6 @@ static int cmd_x (char *args){
 	else {
 		printf("Parsed hex string. Stopped at: %s\n", endptr);
 	} 
-//need to be finished	
 	for(int i = 0 ; i < N  ; i++){
 		printf("addr:%lx --> %x\n",addr,paddr_read(addr,4));
 		addr += 4;
@@ -121,15 +127,23 @@ static int cmd_x (char *args){
 	return 0;
 }
 
+// 表达式求值
 static int cmd_p (char* args){
+	if (args == NULL) {
+		printf("Invalid command\n");
+		printf("Please input: p <expr>");
+		return 0;
+	}
 		init_regex(args);
-		printf("%s\n", args);
-		bool success = true;
-		expr(args,&success);
+		//printf("%s\n", args);
+		bool success = false;
+		uint32_t result = expr(args,&success);
+		if (success) printf("Expression: %s Result: %u\n", args, result);
 		//make_token(args);
 	return 0;
 }
-// 待完成
+
+// 设置监视点
 static int cmd_w (char* args){
 	
 	if (args == NULL) {
@@ -140,7 +154,8 @@ static int cmd_w (char* args){
 	create_watchpoint (args);
 	return 0;
 }
-// 待完成
+
+// 删除监视点
 static int cmd_d (char* args){
 	if (args == NULL) {
 		printf("Please input: d [number].\n");

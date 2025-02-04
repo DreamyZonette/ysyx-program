@@ -14,21 +14,20 @@
 ***************************************************************************************/
 
 #include "sdb.h"
-
+/*
 #define NR_WP 32
 
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
 
-  /* TODO: Add more members if necessary */
 	bool is_used;
 	uint32_t prev_value;
 	uint32_t cur_value;
 	char expr [100];
 
 } WP;
-
+*/
 WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
 
@@ -112,7 +111,7 @@ void sdb_watchpoint_display (){
 	char status[10] = "Running";
 	while (p != NULL){
 		if (p->is_used){
-			printf("watchpoint NO:%d expr:%s status:%s prev_value:%u cur_value:%u\n", p->NO, p->expr, status, p->prev_value, p->cur_value);
+			printf("watchpoint NO:%d expr:%s status:%s prev_value:0x%x cur_value:0x%x\n", p->NO, p->expr, status, p->prev_value, p->cur_value);
 		p = p->next;
 		}
 	}
@@ -147,7 +146,7 @@ void delete_watchpoint (int NO) {
 	printf("Delete watchpoint success.\nwatchpoint NO:%d\n", p->NO);
  	}
 }
-
+/*
 void check_watchpoint () {
 	WP* p = head;
 	if (p == NULL) return;
@@ -163,3 +162,4 @@ void check_watchpoint () {
 	}
 
 }
+*/

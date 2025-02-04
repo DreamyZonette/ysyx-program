@@ -29,5 +29,7 @@ typedef struct watchpoint {
   uint32_t cur_value;
   char expr[100];
 } WP;
+
 extern WP wp_pool[NR_WP];
+
 #endif
