@@ -350,8 +350,16 @@ int eval(int p, int q, bool* signal){
 	}
 			if (ADD != -1) op = ADD;
 			else if (SUB != -1) op = SUB;
-			else if (MUL != -1) op = MUL;
-			else if (DIV != -1) op = DIV;
+			else if (MUL != -1 || DIV != -1) {
+				// 如果有效操作符同时存在
+				if (DIV != -1 && MUL != -1){
+					op = MUL > DIV ? DIV : MUL;
+				}
+				else {
+					if(MUL != -1) op = MUL;
+					else op = DIV;
+				}
+			}
 			else {
 				printf("op Error\n");
 				return 0;
