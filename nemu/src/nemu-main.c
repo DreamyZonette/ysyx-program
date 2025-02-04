@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 #endif
 	
 	/* 测试模式 */
-///*	
+/*	
     FILE *fp = fopen("/home/long/ysyx-workbench/nemu/tools/gen-expr/input", "r");
     if (!fp) {
       perror("打开测试文件失败\n");
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
     printf("通过率: %.2f%%\n", (float)passed / total * 100);
 
     exit(has_failure ? EXIT_FAILURE : EXIT_SUCCESS);
-  //*/
+  */
 
   /* Start engine. */
   engine_start();

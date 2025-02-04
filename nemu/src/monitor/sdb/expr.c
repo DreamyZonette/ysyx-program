@@ -339,6 +339,7 @@ int eval(int p, int q, bool* signal){
 
 			if (tokens[i].type == '+' || tokens[i].type == TK_SUB) {
         op = i;
+				break;
 			}
 
 	}
@@ -351,6 +352,7 @@ int eval(int p, int q, bool* signal){
 
 				if (tokens[i].type == TK_MULTIPLY || tokens[i].type == TK_DIVIDE) {
 					op = i;
+					break;
 				}
 			}
 		}
