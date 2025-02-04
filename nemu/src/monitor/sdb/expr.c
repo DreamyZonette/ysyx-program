@@ -302,12 +302,8 @@ int eval(int p, int q, bool* signal){
 	else {
 		int op = -1;
 
-		int ADD = -1;
-		int SUB = -1;
-		int MUL = -1;
-		int DIV = -1;
-		int pos_L = -1;
-		int pos_R = q + 1;
+		int ADD = -1, SUB = -1, MUL = -1, DIV = -1;
+		int pos_L = -1, pos_R = q + 1;
 		// 确定最大括号的位置
 		for(int i = p; i <= q; i++){
 			if (tokens[i].type == TK_L && pos_L == -1) {
