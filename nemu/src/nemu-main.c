@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     if (!fp) {
       perror("打开测试文件失败\n");
       exit(EXIT_FAILURE);
-
+		}	
     char line[4096];  // 支持超长行
     uint32_t total = 0, passed = 0;
     bool has_failure = false;
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
     printf("通过率: %.2f%%\n", (float)passed / total * 100);
 
     exit(has_failure ? EXIT_FAILURE : EXIT_SUCCESS);
-  }
+  
 
   /* Start engine. */
   engine_start();
