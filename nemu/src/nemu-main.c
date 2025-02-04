@@ -31,6 +31,7 @@ int main(int argc, char *argv[]) {
 #endif
 	
 	/* 测试模式 */
+	/*
     FILE *fp = fopen("/home/long/ysyx-workbench/nemu/tools/gen-expr/input", "r");
     if (!fp) {
       perror("打开测试文件失败\n");
@@ -43,7 +44,7 @@ int main(int argc, char *argv[]) {
     printf("开始批量测试...\n");
 
     while (fgets(line, sizeof(line), fp)) {
-      /* 解析输入行 */
+      // 解析输入行
       total++;
       char *saveptr;
       char *expected_str = strtok_r(line, " \t\n", &saveptr);
@@ -54,7 +55,7 @@ int main(int argc, char *argv[]) {
         continue;
       }
 
-      /* 转换预期结果 */
+      // 转换预期结果 
       uint32_t expected;
       if (expected_str[0] == '0' && tolower(expected_str[1]) == 'x') {
         expected = strtoul(expected_str, NULL, 16);
@@ -62,18 +63,18 @@ int main(int argc, char *argv[]) {
         expected = strtoul(expected_str, NULL, 10);
       }
 
-      /* 执行表达式求值 */
+      // 执行表达式求值
       bool success = false;
       uint32_t actual = expr(expression, &success);
 
-      /* 验证结果 */
+      //
       bool match = false;
       if (success) {
         // 处理32位溢出情形
         match = (actual == (expected & 0xFFFFFFFF));
       }
 
-      /* 输出详细结果 */
+      // 输出详细结果 
       if (!success || !match) {
         if (!has_failure) {
           printf("\n测试失败详情:\n");
@@ -93,7 +94,7 @@ int main(int argc, char *argv[]) {
         passed++;
       }
 
-      /* 进度提示 */
+      // 进度提示
       if (total % 1000 == 0) {
         printf("已处理 %u 个测试用例...\n", total);
       }
@@ -101,7 +102,7 @@ int main(int argc, char *argv[]) {
 
     fclose(fp);
     
-    /* 最终报告 */
+    // 最终报告
     printf("\n测试结果总结:\n");
     printf("总用例数: %u\n", total);
     printf("通过用例: %u\n", passed);
@@ -109,7 +110,7 @@ int main(int argc, char *argv[]) {
     printf("通过率: %.2f%%\n", (float)passed / total * 100);
 
     exit(has_failure ? EXIT_FAILURE : EXIT_SUCCESS);
-  
+  */
 
   /* Start engine. */
   engine_start();
