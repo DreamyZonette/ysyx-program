@@ -431,8 +431,6 @@ word_t expr(char *e, bool *success) {
 		}
 	}
 
-	// 结果合法标志
-	// int signal = 0;
 	// 判断是否存在 == 或 &&
 	// 实现表达式只存在一个逻辑运算符的情况
 	if (bool_index == -1){	
