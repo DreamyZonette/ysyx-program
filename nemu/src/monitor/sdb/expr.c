@@ -302,7 +302,7 @@ int eval(int p, int q, bool* signal){
 	else {
 		int op = -1;
 
-		int ADD = -1, SUB = -1, MUL = -1, DIV = -1;
+		//int ADD = -1, SUB = -1, MUL = -1, DIV = -1;
 		// int pos_L = -1, pos_R = q + 1;
 		int L_count = 0, R_count = 0;
 		/*
@@ -330,24 +330,37 @@ int eval(int p, int q, bool* signal){
 				DIV = i;
 			}
 		}*/
-		for (int i = p; i < q; i ++) {
+
+		// 判断加减法
+		for (int i = q; i >= p; i --) {
 			if (tokens[i].type == TK_L) L_count ++;
 			if (tokens[i].type == TK_R) R_count ++;
-			
-			if (tokens[i].type == '+' && (L_count == R_count) ) {
-				ADD = i;
-			}
-			if (tokens[i].type == TK_SUB && (L_count == R_count) ) {
-				SUB = i;
-			}
-			if (tokens[i].type == TK_MULTIPLY && (L_count == R_count) ) {
-				MUL = i;
-			}
-			if (tokens[i].type == TK_DIVIDE && (L_count == R_count) ) {
-				DIV = i;
+			if (L_count != R_count)	continue;
+
+			if (tokens[i].type == '+' || tokens[i].type == TK_SUB) {
+        op = i;
 			}
 
 	}
+		// 判断乘除法
+		if (op == -1){
+			for (int i = q; i >= p; i --) {
+				if (tokens[i].type == TK_L) L_count ++;
+				if (tokens[i].type == TK_R) R_count ++;
+				if (L_count != R_count)	continue;
+
+				if (tokens[i].type == TK_MULTIPLY || tokens[i].type == TK_DIVIDE) {
+					op = i;
+				}
+			}
+		}
+
+// 如果还没有则报错
+			if (op == -1) {
+				printf("op Error\n");
+				return 0;
+			}
+		/*	
 			if (ADD != -1) op = ADD;
 			else if (SUB != -1) op = SUB;
 			else if (MUL != -1 || DIV != -1) {
@@ -364,7 +377,7 @@ int eval(int p, int q, bool* signal){
 				printf("op Error\n");
 				return 0;
 			}
-
+*/
 			uint32_t val1 = eval(p, op - 1, signal);
 			uint32_t val2 = eval(op + 1, q, signal);
 
