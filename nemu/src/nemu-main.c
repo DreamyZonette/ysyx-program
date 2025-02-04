@@ -31,12 +31,10 @@ int main(int argc, char *argv[]) {
 #endif
 	
 	/* 测试模式 */
-  if (argc > 1 && strcmp(argv[1], "--test") == 0) {
     FILE *fp = fopen("~/ysyx-workbench/nemu/tools/gen-expr/input", "r");
     if (!fp) {
       perror("打开测试文件失败\n");
       exit(EXIT_FAILURE);
-    }
 
     char line[4096];  // 支持超长行
     uint32_t total = 0, passed = 0;
