@@ -303,7 +303,9 @@ int eval(int p, int q, bool* signal){
 		int op = -1;
 
 		int ADD = -1, SUB = -1, MUL = -1, DIV = -1;
-		int pos_L = -1, pos_R = q + 1;
+		// int pos_L = -1, pos_R = q + 1;
+		int L_count = 0, R_count = 0;
+		/*
 		// 确定最大括号的位置
 		for(int i = p; i <= q; i++){
 			if (tokens[i].type == TK_L && pos_L == -1) {
@@ -327,7 +329,25 @@ int eval(int p, int q, bool* signal){
 			if (tokens[i].type == TK_DIVIDE && valid_index(i, pos_L, pos_R, q)){
 				DIV = i;
 			}
-		}
+		}*/
+		for (int i = p; i < q; i ++) {
+			if (tokens[i].type == TK_L) L_count ++;
+			if (tokens[i].type == TK_R) R_count ++;
+			
+			if (tokens[i].type == '+' && (L_count == R_count) ) {
+				ADD = i;
+			}
+			if (tokens[i].type == TK_SUB && (L_count == R_count) ) {
+				SUB = i;
+			}
+			if (tokens[i].type == TK_MULTIPLY && (L_count == R_count) ) {
+				MUL = i;
+			}
+			if (tokens[i].type == TK_DIVIDE && (L_count == R_count) ) {
+				DIV = i;
+			}
+
+	}
 			if (ADD != -1) op = ADD;
 			else if (SUB != -1) op = SUB;
 			else if (MUL != -1) op = MUL;
