@@ -71,7 +71,8 @@ int main(int argc, char *argv[]) {
       bool match = false;
       if (success) {
         // 处理32位溢出情形
-        match = (actual == (expected & 0xFFFFFFFF));
+        // match = (actual == (expected & 0xFFFFFFFF));
+        match = (actual == expected);
       }
 
       // 输出详细结果 
