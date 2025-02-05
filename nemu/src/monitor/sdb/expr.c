@@ -207,7 +207,7 @@ static bool make_token(char *e) {
 						uint32_t val = isa_reg_str2val(match, &success);// 获得寄存器的值
 						// 将值转化为字符串
 						char str[20];
-						snprintf(str, sizeof(str), "%u", val);// val是十进制，以十六进制的形式记录数据
+						snprintf(str, sizeof(str), "%u", val);// val是十进制，以十进制的形式记录数据
 						strcpy(tokens[nr_token].str, str);
 
 						tokens[nr_token].type = TK_REG;
