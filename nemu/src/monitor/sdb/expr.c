@@ -182,9 +182,13 @@ static bool make_token(char *e) {
 						char match[pmatch.rm_eo - pmatch.rm_so - 1];
 						strncpy(match, e + position + pmatch.rm_so + 2 - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so - 2);// 获得0x之外的数据
 						match[pmatch.rm_eo - pmatch.rm_so - 2] = '\0';
+						// 十六进制字符串转换为无符号十进制整数
+						char *endptr;
+						uint32_t val = strtoul(match, &endptr, 16);
 						assert(sizeof(match) <= 32);
-
-						strcpy(tokens[nr_token].str, match);
+						// 变成字符串类型
+						sprintf(tokens[nr_token].str, "%u", val);
+						// strcpy(tokens[nr_token].str, match);
 						tokens[nr_token].type = TK_HEX;
 						nr_token++;
 						break;
@@ -201,7 +205,7 @@ static bool make_token(char *e) {
 						uint32_t val = isa_reg_str2val(match, &success);// 获得寄存器的值
 						// 将值转化为字符串
 						char str[20];
-						snprintf(str, sizeof(str), "%x", val);// val是十进制，以十六进制的形式记录数据
+						snprintf(str, sizeof(str), "%u", val);// val是十进制，以十六进制的形式记录数据
 						strcpy(tokens[nr_token].str, str);
 
 						tokens[nr_token].type = TK_REG;
