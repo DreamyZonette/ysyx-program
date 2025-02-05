@@ -352,6 +352,7 @@ int eval(int p, int q, bool* signal){
 	}
 		// 判断乘除法
 		if (op == -1){
+			L_count = 0, R_count = 0;
 			for (int i = q; i >= p; i --) {
 				if (tokens[i].type == TK_L) L_count ++;
 				if (tokens[i].type == TK_R) R_count ++;
