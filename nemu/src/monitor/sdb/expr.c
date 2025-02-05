@@ -55,7 +55,7 @@ static struct rule {
 	{"\\)", TK_R},// 右括号
 	{"!=", TK_NEQ},// 新加
 	{"&&", TK_AND},// and
-	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])", TK_REG}// 寄存器
+	{"^\\$0|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])", TK_REG}// 寄存器
 };
 
 #define NR_REGEX ARRLEN(rules)
