@@ -186,6 +186,7 @@ static bool make_token(char *e) {
 						char *endptr;
 						uint32_t val = strtoul(match, &endptr, 16);
 						assert(sizeof(match) <= 32);
+						printf("%u\n",val);
 						// 变成字符串类型
 						sprintf(tokens[nr_token].str, "%u", val);
 						// strcpy(tokens[nr_token].str, match);
