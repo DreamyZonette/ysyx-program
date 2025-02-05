@@ -275,7 +275,8 @@ int eval(int p, int q, bool* signal){
 		  return atoi(tokens[p].str);
 		}
 		else {
-			uint32_t value = strtoul(tokens[p].str, NULL, 16);
+			//uint32_t value = strtoul(tokens[p].str, NULL, 16);
+			uint32_t value = atoi(tokens[p].str);
 			return value;
 		}
 
