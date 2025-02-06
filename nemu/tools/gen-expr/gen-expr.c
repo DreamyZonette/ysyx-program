@@ -30,9 +30,10 @@ static char code_buf[65536 + 128] = {}; // a little larger than `buf`
 
 static char *code_format =
 "#include <stdio.h>\n"
-"#include <stdint.h>\n"
+//"#include <stdint.h>\n"
 "int main() { "
-"  uint32_t result = %s; "
+"  unsigned result = %s; "
+//"  uint32_t result = %s; "
 "  printf(\"%%u\", result); "
 "  return 0; "
 "}";
@@ -53,6 +54,7 @@ void gen_num(int* signal, int allow_zero) {
     }
     char str[3];
     snprintf(str, sizeof(str), "%u", num);
+   // strncat(buf, "(uint32_t)", sizeof(buf) - strlen(buf));
     strncat(buf, str, sizeof(buf) - strlen(buf));
     *signal = 0;
 }
@@ -163,11 +165,14 @@ int main(int argc, char *argv[]) {
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
 
-    uint32_t result;
+
+    int result;
+    //uint32_t result;
     ret = fscanf(fp, "%u", &result);
     pclose(fp);
-
-    printf("%u %s\n", result, buf);
+		//if (result >= 0){
+			printf("%u %s\n", result, buf);
+		//}
   }
   return 0;
 }
