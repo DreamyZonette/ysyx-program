@@ -388,8 +388,8 @@ int eval(int p, int q, bool* signal){
 				return 0;
 			}
 */
-			uint32_t val1 = eval(p, op - 1, signal);
-			uint32_t val2 = eval(op + 1, q, signal);
+			int32_t val1 = eval(p, op - 1, signal);
+			int32_t val2 = eval(op + 1, q, signal);
 
 		switch (tokens[op].type){
 			case '+': 
