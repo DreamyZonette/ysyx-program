@@ -55,7 +55,7 @@ static struct rule {
 	{"\\)", TK_R},// 右括号
 	{"!=", TK_NEQ},// 新加
 	{"&&", TK_AND},// and
-	{"^\\$0$|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])$", TK_REG}// 寄存器
+	{"^\\$0|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])", TK_REG}// 寄存器
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -182,9 +182,15 @@ static bool make_token(char *e) {
 						char match[pmatch.rm_eo - pmatch.rm_so - 1];
 						strncpy(match, e + position + pmatch.rm_so + 2 - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so - 2);// 获得0x之外的数据
 						match[pmatch.rm_eo - pmatch.rm_so - 2] = '\0';
+						// 十六进制字符串转换为无符号十进制整数
+						char *endptr;
+						uint32_t val = strtoul(match, &endptr, 16);
 						assert(sizeof(match) <= 32);
-
-						strcpy(tokens[nr_token].str, match);
+						//printf("%u\n",val);
+						// 变成字符串类型
+						sprintf(tokens[nr_token].str, "%u", val);
+						printf("%s\n",tokens[nr_token].str);
+						// strcpy(tokens[nr_token].str, match);
 						tokens[nr_token].type = TK_HEX;
 						nr_token++;
 						break;
@@ -201,7 +207,7 @@ static bool make_token(char *e) {
 						uint32_t val = isa_reg_str2val(match, &success);// 获得寄存器的值
 						// 将值转化为字符串
 						char str[20];
-						snprintf(str, sizeof(str), "%x", val);// val是十进制，以十六进制的形式记录数据
+						snprintf(str, sizeof(str), "%u", val);// val是十进制，以十进制的形式记录数据
 						strcpy(tokens[nr_token].str, str);
 
 						tokens[nr_token].type = TK_REG;
@@ -269,7 +275,8 @@ int eval(int p, int q, bool* signal){
 		  return atoi(tokens[p].str);
 		}
 		else {
-			uint32_t value = strtoul(tokens[p].str, NULL, 16);
+			//uint32_t value = strtoul(tokens[p].str, NULL, 16);
+			uint32_t value = atoi(tokens[p].str);
 			return value;
 		}
 
@@ -302,7 +309,7 @@ int eval(int p, int q, bool* signal){
 	else {
 		int op = -1;
 
-		int ADD = -1, SUB = -1, MUL = -1, DIV = -1;
+		//int ADD = -1, SUB = -1, MUL = -1, DIV = -1;
 		// int pos_L = -1, pos_R = q + 1;
 		int L_count = 0, R_count = 0;
 		/*
@@ -330,33 +337,57 @@ int eval(int p, int q, bool* signal){
 				DIV = i;
 			}
 		}*/
-		for (int i = p; i < q; i ++) {
+
+		// 判断加减法
+		for (int i = q; i >= p; i --) {
 			if (tokens[i].type == TK_L) L_count ++;
 			if (tokens[i].type == TK_R) R_count ++;
-			
-			if (tokens[i].type == '+' && (L_count == R_count) ) {
-				ADD = i;
-			}
-			if (tokens[i].type == TK_SUB && (L_count == R_count) ) {
-				SUB = i;
-			}
-			if (tokens[i].type == TK_MULTIPLY && (L_count == R_count) ) {
-				MUL = i;
-			}
-			if (tokens[i].type == TK_DIVIDE && (L_count == R_count) ) {
-				DIV = i;
+			if (L_count != R_count)	continue;
+
+			if (tokens[i].type == '+' || tokens[i].type == TK_SUB) {
+        op = i;
+				break;
 			}
 
 	}
+		// 判断乘除法
+		if (op == -1){
+			L_count = 0, R_count = 0;
+			for (int i = q; i >= p; i --) {
+				if (tokens[i].type == TK_L) L_count ++;
+				if (tokens[i].type == TK_R) R_count ++;
+				if (L_count != R_count)	continue;
+
+				if (tokens[i].type == TK_MULTIPLY || tokens[i].type == TK_DIVIDE) {
+					op = i;
+					break;
+				}
+			}
+		}
+
+// 如果还没有则报错
+			if (op == -1) {
+				printf("op Error\n");
+				return 0;
+			}
+		/*	
 			if (ADD != -1) op = ADD;
 			else if (SUB != -1) op = SUB;
-			else if (MUL != -1) op = MUL;
-			else if (DIV != -1) op = DIV;
+			else if (MUL != -1 || DIV != -1) {
+				// 如果有效操作符同时存在
+				if (DIV != -1 && MUL != -1){
+					op = MUL > DIV ? DIV : MUL;
+				}
+				else {
+					if(MUL != -1) op = MUL;
+					else op = DIV;
+				}
+			}
 			else {
 				printf("op Error\n");
 				return 0;
 			}
-
+*/
 			uint32_t val1 = eval(p, op - 1, signal);
 			uint32_t val2 = eval(op + 1, q, signal);
 
@@ -410,8 +441,6 @@ word_t expr(char *e, bool *success) {
 		}
 	}
 
-	// 结果合法标志
-	// int signal = 0;
 	// 判断是否存在 == 或 &&
 	// 实现表达式只存在一个逻辑运算符的情况
 	if (bool_index == -1){	
