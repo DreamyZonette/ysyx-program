@@ -62,9 +62,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 						if (wp_pool[i].cur_value !=  wp_pool[i].prev_value) {
 							printf("Watchpoint %d: %s changed\n  Old value: 0x%x\n  New value: 0x%x\n",
 									wp_pool[i].NO, wp_pool[i].expr, wp_pool[i].prev_value, wp_pool[i].cur_value);
-							wp_pool[i].prev_value = wp_pool[i].cur_value;// 更新旧值
 
 							nemu_state.state = NEMU_STOP;// 暂停nemu
+							wp_pool[i].prev_value = wp_pool[i].cur_value;// 更新旧值
 						}
 					}
 					else {
