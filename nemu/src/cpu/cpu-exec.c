@@ -46,11 +46,17 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 		 if (wp_pool[i].is_used) {
 			 bool success = false;
 			 //测试断点
-				if (!wp_pool[i].is_watchpoint && success) {
+				if (!wp_pool[i].is_watchpoint) {
 					int arrive = expr(wp_pool[i].expr, &success);
-					if (arrive){
-						printf("pc达到断点值%x\n", cpu.pc);
-						nemu_state.state = NEMU_STOP;	
+					if (success){
+						if (arrive){
+							printf("pc达到断点值%x\n", cpu.pc);
+							nemu_state.state = NEMU_STOP;	
+						}
+					}
+					else {
+						printf("Expr error.");
+						assert(0);
 					}
 				}
 				//测试监视点
