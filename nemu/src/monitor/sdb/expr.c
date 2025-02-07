@@ -31,7 +31,8 @@ enum {
 	TK_DIVIDE, TK_NUM,
 	TK_L, TK_R,
 	TK_NEQ, TK_AND, TK_HEX,
-	TK_REG,TK_EXPLAIN// 保留……
+	TK_REG,TK_EXPLAIN,
+	TK_ADDR
 };
 
 static struct rule {
@@ -55,6 +56,7 @@ static struct rule {
 	{"\\)", TK_R},// 右括号
 	{"!=", TK_NEQ},// 不等于
 	{"&&", TK_AND},// and
+	{"[pP][cC]0[xX][0-9a-fA-F]+", TK_ADDR},// pc
 	{"^\\$0|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])", TK_REG}// 寄存器
 };
 
@@ -169,6 +171,29 @@ static bool make_token(char *e) {
 						assert(sizeof(match) <= 32);
 						strcpy(tokens[nr_token].str, match);
 						tokens[nr_token].type = TK_NUM;
+						nr_token++;
+						break;
+						}
+					case TK_ADDR:
+						{
+						assert(pmatch.rm_so != -1);// 匹配是否成功
+
+						int match_len = pmatch.rm_eo - pmatch.rm_so;
+						assert(match_len > 4); // 确保匹配长度有效（至少包含 "pc0x" 和一位十六进制数）
+
+						char match[pmatch.rm_eo - pmatch.rm_so - 3];
+						strncpy(match, e + position + pmatch.rm_so + 4 - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so - 4);// 获得pc0x之外的数据
+						match[pmatch.rm_eo - pmatch.rm_so - 4] = '\0';
+						// 十六进制字符串转换为无符号十进制整数
+						char *endptr;
+						uint32_t val = strtoul(match, &endptr, 16);
+						assert(sizeof(match) <= 32);
+						//printf("%u\n",val);
+						// 变成字符串类型
+						sprintf(tokens[nr_token].str, "%u", val);
+						printf("%s\n",tokens[nr_token].str);
+						// strcpy(tokens[nr_token].str, match);
+						tokens[nr_token].type = TK_HEX;
 						nr_token++;
 						break;
 						}
