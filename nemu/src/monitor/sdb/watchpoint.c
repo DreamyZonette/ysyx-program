@@ -109,9 +109,10 @@ void sdb_watchpoint_display (){
 		return;
 	}
 	char status[10] = "Running";
+	printf("以下是监视点信息:\n");
 	while (p != NULL){
 		if (p->is_used){
-			printf("\n-------------------------\n");
+			printf("\n-------------------------\n\n");
 			printf("watchpoint NO:%d \nexpr:%s \nstatus:%s \nprev_value:0x%x \ncur_value:0x%x\n", p->NO, p->expr, status, p->prev_value, p->cur_value);
 		p = p->next;
 		}
