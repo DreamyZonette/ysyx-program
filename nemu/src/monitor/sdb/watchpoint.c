@@ -111,10 +111,12 @@ void sdb_watchpoint_display (){
 	char status[10] = "Running";
 	while (p != NULL){
 		if (p->is_used){
+			printf("\n-------------------------\n");
 			printf("watchpoint NO:%d \nexpr:%s \nstatus:%s \nprev_value:0x%x \ncur_value:0x%x\n", p->NO, p->expr, status, p->prev_value, p->cur_value);
 		p = p->next;
 		}
 	}
+			printf("\n-------------------------\n");
 }
 
 void create_watchpoint (char* args) {
