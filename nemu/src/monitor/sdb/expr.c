@@ -32,7 +32,7 @@ enum {
 	TK_L, TK_R,
 	TK_NEQ, TK_AND, TK_HEX,
 	TK_REG,TK_EXPLAIN,
-	TK_ADDR
+	TK_ADDR,TK_PC
 };
 
 static struct rule {
@@ -56,7 +56,8 @@ static struct rule {
 	{"\\)", TK_R},// 右括号
 	{"!=", TK_NEQ},// 不等于
 	{"&&", TK_AND},// and
-	{"[pP][cC]0[xX][0-9a-fA-F]+", TK_ADDR},// pc
+	{"\\$pc", TK_PC},// pc
+	{"[pP][cC]0[xX][0-9a-fA-F]+", TK_ADDR},
 	{"^\\$0|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])", TK_REG}// 寄存器
 };
 
@@ -161,6 +162,15 @@ static bool make_token(char *e) {
 						tokens[nr_token].type = TK_DIVIDE;
 						nr_token++;
 						break;
+					case TK_PC:{
+						uint32_t pc_get = cpu.pc;
+						char pc_str[20];
+						sprintf(pc_str, "%u", pc_get);
+						strcpy(tokens[nr_token].str, pc_str);
+						tokens[nr_token].type = TK_PC;
+						nr_token++;
+						break;
+						}
 						// 接下来要重点调试
 					case TK_NUM:
 						{ 
