@@ -48,7 +48,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 			 uint32_t pc_check = expr(wp_pool[i].expr, &success);
 			 //测试断点
 				if (pc_check == cpu.pc && success) {
-					//printf("pc达到断点值%x\n", cpu.pc);
+					printf("pc达到断点值%x\n", cpu.pc);
 					nemu_state.state = NEMU_STOP;	
 				}
 				else{
