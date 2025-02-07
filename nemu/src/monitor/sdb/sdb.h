@@ -24,6 +24,7 @@ word_t expr(char *e, bool *success);
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
+	bool is_watchpoint;
   bool is_used;
   uint32_t prev_value;
   uint32_t cur_value;
