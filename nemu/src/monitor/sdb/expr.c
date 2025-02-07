@@ -163,7 +163,7 @@ static bool make_token(char *e) {
 						break;
 						// 接下来要重点调试
 					case TK_NUM:
-						{
+						{ 
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 						char match[pmatch.rm_eo - pmatch.rm_so + 1];
 						strncpy(match, e + position + pmatch.rm_so - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so);// 获得数据
@@ -191,14 +191,14 @@ static bool make_token(char *e) {
 						//printf("%u\n",val);
 						// 变成字符串类型
 						sprintf(tokens[nr_token].str, "%u", val);
-						printf("%s\n",tokens[nr_token].str);
+						//printf("%s\n",tokens[nr_token].str);
 						// strcpy(tokens[nr_token].str, match);
 						tokens[nr_token].type = TK_HEX;
 						nr_token++;
 						break;
 						}
 					case TK_HEX:
-						{
+						{ 
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 
 						int match_len = pmatch.rm_eo - pmatch.rm_so;
@@ -214,14 +214,14 @@ static bool make_token(char *e) {
 						//printf("%u\n",val);
 						// 变成字符串类型
 						sprintf(tokens[nr_token].str, "%u", val);
-						printf("%s\n",tokens[nr_token].str);
+						//printf("%s\n",tokens[nr_token].str);
 						// strcpy(tokens[nr_token].str, match);
 						tokens[nr_token].type = TK_HEX;
 						nr_token++;
 						break;
 						}
 					case TK_REG:
-						{
+						{ 
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 						char match[pmatch.rm_eo - pmatch.rm_so];
 						strncpy(match, e + position + pmatch.rm_so - pmatch.rm_eo + 1, pmatch.rm_eo - pmatch.rm_so - 1);// 获得数据
