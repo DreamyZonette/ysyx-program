@@ -58,7 +58,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 					nemu_state.state = NEMU_STOP;// 暂停nemu
 				}
 				if (wp_pool[i].cur_value == cpu.pc) {
-					printf("pc达到断点值%x/n", cpu.pc);
+					printf("pc达到断点值%x\n", cpu.pc);
 					nemu_state.state = NEMU_STOP;	
 				}
 			 }
