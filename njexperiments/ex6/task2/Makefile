@@ -4,7 +4,8 @@ run:
 
 trace:
 	verilator --cc --trace --exe --build -j 0 -Wall main.cpp top.v
-
+	./obj_dir/Vtop
+	
 wave:
 	gtkwave *.vcd
 
