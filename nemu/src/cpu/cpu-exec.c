@@ -45,6 +45,12 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 	 for (int i = 0; i < NR_WP; i ++) {
 		 if (wp_pool[i].is_used) {
 			 bool success = false;
+			 uint32_t pc_check = expr(wp_pool[i].expr, &success);
+				if (pc_check == cpu.pc) {
+					printf("pc达到断点值%x\n", cpu.pc);
+					nemu_state.state = NEMU_STOP;	
+					break;
+				}
 			 wp_pool[i].cur_value = expr(wp_pool[i].expr, &success);
 			 // 判断求值是否成功
 			 if (success)
@@ -56,10 +62,6 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 					wp_pool[i].prev_value = wp_pool[i].cur_value;// 更新旧值
 
 					nemu_state.state = NEMU_STOP;// 暂停nemu
-				}
-				if (wp_pool[i].cur_value == cpu.pc) {
-					printf("pc达到断点值%x\n", cpu.pc);
-					nemu_state.state = NEMU_STOP;	
 				}
 			 }
 			 else {
