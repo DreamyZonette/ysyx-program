@@ -71,7 +71,7 @@ static int cmd_si(char *args){
 	}
 	for (i = 0 ; i < N ; i++){
 		cpu_exec(1);// nemu/src/cpu/cpu-exec.c 
-		printf("%d\n",cpu.pc);
+		printf("%x\n",cpu.pc);
 	}
 	return 0;
 }
