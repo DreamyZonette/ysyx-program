@@ -57,6 +57,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 					nemu_state.state = NEMU_STOP;// 暂停nemu
 					wp_pool[i].prev_value = wp_pool[i].cur_value;// 更新旧值
 				}
+				if (wp_pool[i].cur_value == cpu.pc) {
+					printf("pc达到断点值/n");	
+				}
 			 }
 			 else {
 				printf("Expr error.");
