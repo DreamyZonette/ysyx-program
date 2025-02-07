@@ -65,7 +65,7 @@ void free_wp(WP* wp) {
 		printf("No watchpoint to free\n.");
 		return;
  	}
-	// 检查要清除监视点是否以清除
+	// 检查要清除监视点是否已清除
 	if (wp->is_used == false){
 		printf("The watchpoint has been freed in advance\n");
 		return;
@@ -111,7 +111,7 @@ void sdb_watchpoint_display (){
 	char status[10] = "Running";
 	while (p != NULL){
 		if (p->is_used){
-			printf("watchpoint NO:%d expr:%s status:%s prev_value:0x%x cur_value:0x%x\n", p->NO, p->expr, status, p->prev_value, p->cur_value);
+			printf("watchpoint NO:%d \nexpr:%s \nstatus:%s \nprev_value:0x%x \ncur_value:0x%x\n", p->NO, p->expr, status, p->prev_value, p->cur_value);
 		p = p->next;
 		}
 	}
