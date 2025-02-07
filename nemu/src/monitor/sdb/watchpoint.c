@@ -114,6 +114,7 @@ void sdb_watchpoint_display (){
 	}
 	char status[10] = "Running";
 	printf("以下是监视点(断点)信息:\n");
+	//printf("NO\tType\tStatus\texpression");
 	while (p != NULL){
 		if (p->is_used){
 			printf("\n-------------------------\n\n");
