@@ -122,7 +122,7 @@ void create_watchpoint (char* args) {
 	strcpy(p->expr, args);
 	p->is_used = true;
 	bool success = true;
-	p->prev_value = expr(p->expr, &success);
+	p->cur_value = expr(p->expr, &success);
 	printf("Create watchpoint success.\nwatchpoint NO:%d\n", p->NO);
 }
 
