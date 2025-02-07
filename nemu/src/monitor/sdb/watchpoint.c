@@ -123,7 +123,7 @@ void sdb_watchpoint_display (){
 void create_watchpoint (char* args) {
 	WP* p = new_wp();
 	strcpy(p->expr, args);
-	if (args[0] == 'p' && args[1] == 'c'){
+	if (args[1] == 'p' && args[2] == 'c'){
 		p->is_used = true;
 		bool success = false;
 		p->cur_value = expr(p->expr, &success);
