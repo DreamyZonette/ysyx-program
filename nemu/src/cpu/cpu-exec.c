@@ -50,7 +50,6 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 				if (pc_check == cpu.pc && success) {
 					printf("pc达到断点值%x\n", cpu.pc);
 					nemu_state.state = NEMU_STOP;	
-					break;
 				}
 				else{
 					success = false;

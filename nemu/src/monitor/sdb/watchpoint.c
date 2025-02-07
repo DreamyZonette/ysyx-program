@@ -123,10 +123,17 @@ void sdb_watchpoint_display (){
 void create_watchpoint (char* args) {
 	WP* p = new_wp();
 	strcpy(p->expr, args);
-	p->is_used = true;
-	//bool success = true;
-	//p->cur_value = expr(p->expr, &success);
-	printf("Create watchpoint success.\nwatchpoint NO:%d\n", p->NO);
+	if (args[0] == 'p' && args[1] == 'c'){
+		p->is_used = true;
+		bool success = false;
+		p->cur_value = expr(p->expr, &success);
+		p->prev_value = p->cur_value;
+		printf("Create breakpoint success.\nwatchpoint NO:%d\n", p->NO);
+	}
+	else {
+		p->is_used = true;
+		printf("Create watchpoint success.\nwatchpoint NO:%d\n", p->NO);
+	}
 }
 
 void delete_watchpoint (int NO) {
