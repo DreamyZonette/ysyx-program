@@ -124,8 +124,8 @@ void create_watchpoint (char* args) {
 	WP* p = new_wp();
 	strcpy(p->expr, args);
 	p->is_used = true;
-	bool success = true;
-	p->cur_value = expr(p->expr, &success);
+	//bool success = true;
+	//p->cur_value = expr(p->expr, &success);
 	printf("Create watchpoint success.\nwatchpoint NO:%d\n", p->NO);
 }
 
