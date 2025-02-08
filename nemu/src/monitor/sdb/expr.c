@@ -327,7 +327,7 @@ int eval(int p, int q, bool* signal){
 			//获 得地址	
 			char *endptr;
 			char* addr_str = tokens[q].str;
-			addr = strtoul(addr_str, &endptr, 16);
+			addr = strtoul(addr_str, &endptr, 10);
 			if (*endptr != '\0') {			
 				printf("十六进制解析错误，停止于: %s\n", endptr);
 				*signal = 1;
