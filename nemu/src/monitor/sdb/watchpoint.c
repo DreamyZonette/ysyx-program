@@ -20,7 +20,7 @@
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
-
+	bool is_watchpoint;
 	bool is_used;
 	uint32_t prev_value;
 	uint32_t cur_value;
@@ -37,6 +37,7 @@ void init_wp_pool() {
     wp_pool[i].NO = i;
     wp_pool[i].next = (i == NR_WP - 1 ? NULL : &wp_pool[i + 1]);
 		wp_pool[i].is_used = false;
+		wp_pool[i].is_watchpoint = false;
   }
 
   head = NULL;
@@ -65,12 +66,15 @@ void free_wp(WP* wp) {
 		printf("No watchpoint to free\n.");
 		return;
  	}
-	// 检查要清除监视点是否以清除
+
+	// 检查要清除监视点是否已清除
 	if (wp->is_used == false){
 		printf("The watchpoint has been freed in advance\n");
 		return;
  	}
 
+	if (wp->is_watchpoint) wp->is_watchpoint = false;
+	
 	WP* p = head;
 	// 如果要清除的监视点是第一个
 	if (p == wp) {
@@ -109,21 +113,39 @@ void sdb_watchpoint_display (){
 		return;
 	}
 	char status[10] = "Running";
+	printf("以下是监视点(断点)信息:\n");
+	//printf("NO\tType\tStatus\texpression");
 	while (p != NULL){
 		if (p->is_used){
-			printf("watchpoint NO:%d expr:%s status:%s prev_value:0x%x cur_value:0x%x\n", p->NO, p->expr, status, p->prev_value, p->cur_value);
+			printf("\n-------------------------\n\n");
+
+			if (p->is_watchpoint){
+				printf("watchpoint NO:%d \nexpr:%s \nstatus:%s \nprev_value:0x%x \ncur_value:0x%x\n", p->NO, p->expr, status, p->prev_value, p->cur_value);
+			}
+			else{
+				printf("breakpoint NO:%d \nexpr:%s \nstatus:%s \nprev_value:0x%x \ncur_value:0x%x\n", p->NO, p->expr, status, p->prev_value, p->cur_value);
+			}
 		p = p->next;
 		}
 	}
+			printf("\n-------------------------\n");
 }
 
 void create_watchpoint (char* args) {
 	WP* p = new_wp();
 	strcpy(p->expr, args);
-	p->is_used = true;
-	bool success = true;
-	p->prev_value = expr(p->expr, &success);
-	printf("Create watchpoint success.\nwatchpoint NO:%d\n", p->NO);
+	if (args[1] == 'p' && args[2] == 'c'){
+		p->is_used = true;
+		bool success = false;
+		p->cur_value = expr(p->expr, &success);
+		p->prev_value = p->cur_value;
+		printf("Create breakpoint success.\nwatchpoint NO:%d\n", p->NO);
+	}
+	else {
+		p->is_used = true;
+		p->is_watchpoint = true;
+		printf("Create watchpoint success.\nwatchpoint NO:%d\n", p->NO);
+	}
 }
 
 void delete_watchpoint (int NO) {

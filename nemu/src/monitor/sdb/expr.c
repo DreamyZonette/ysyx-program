@@ -31,7 +31,8 @@ enum {
 	TK_DIVIDE, TK_NUM,
 	TK_L, TK_R,
 	TK_NEQ, TK_AND, TK_HEX,
-	TK_REG,TK_EXPLAIN// 保留……
+	TK_REG,TK_EXPLAIN,
+	TK_ADDR,TK_PC
 };
 
 static struct rule {
@@ -53,8 +54,10 @@ static struct rule {
 	{"[0-9]+", TK_NUM},// 十进制
 	{"\\(", TK_L},// 左括号
 	{"\\)", TK_R},// 右括号
-	{"!=", TK_NEQ},// 新加
+	{"!=", TK_NEQ},// 不等于
 	{"&&", TK_AND},// and
+	{"\\$pc", TK_PC},// pc
+	{"[pP][cC]0[xX][0-9a-fA-F]+", TK_ADDR},
 	{"^\\$0|^\\$(ra|sp|gp|tp|t[0-6]|s[0-9]|s1[0-1]|a[0-7])", TK_REG}// 寄存器
 };
 
@@ -159,9 +162,18 @@ static bool make_token(char *e) {
 						tokens[nr_token].type = TK_DIVIDE;
 						nr_token++;
 						break;
+					case TK_PC:{
+						uint32_t pc_get = cpu.pc;
+						char pc_str[20];
+						sprintf(pc_str, "%u", pc_get);
+						strcpy(tokens[nr_token].str, pc_str);
+						tokens[nr_token].type = TK_PC;
+						nr_token++;
+						break;
+						}
 						// 接下来要重点调试
 					case TK_NUM:
-						{
+						{ 
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 						char match[pmatch.rm_eo - pmatch.rm_so + 1];
 						strncpy(match, e + position + pmatch.rm_so - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so);// 获得数据
@@ -172,8 +184,31 @@ static bool make_token(char *e) {
 						nr_token++;
 						break;
 						}
-					case TK_HEX:
+					case TK_ADDR:
 						{
+						assert(pmatch.rm_so != -1);// 匹配是否成功
+
+						int match_len = pmatch.rm_eo - pmatch.rm_so;
+						assert(match_len > 4); // 确保匹配长度有效（至少包含 "pc0x" 和一位十六进制数）
+
+						char match[pmatch.rm_eo - pmatch.rm_so - 3];
+						strncpy(match, e + position + pmatch.rm_so + 4 - pmatch.rm_eo, pmatch.rm_eo - pmatch.rm_so - 4);// 获得pc0x之外的数据
+						match[pmatch.rm_eo - pmatch.rm_so - 4] = '\0';
+						// 十六进制字符串转换为无符号十进制整数
+						char *endptr;
+						uint32_t val = strtoul(match, &endptr, 16);
+						assert(sizeof(match) <= 32);
+						//printf("%u\n",val);
+						// 变成字符串类型
+						sprintf(tokens[nr_token].str, "%u", val);
+						//printf("%s\n",tokens[nr_token].str);
+						// strcpy(tokens[nr_token].str, match);
+						tokens[nr_token].type = TK_HEX;
+						nr_token++;
+						break;
+						}
+					case TK_HEX:
+						{ 
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 
 						int match_len = pmatch.rm_eo - pmatch.rm_so;
@@ -189,14 +224,14 @@ static bool make_token(char *e) {
 						//printf("%u\n",val);
 						// 变成字符串类型
 						sprintf(tokens[nr_token].str, "%u", val);
-						printf("%s\n",tokens[nr_token].str);
+						//printf("%s\n",tokens[nr_token].str);
 						// strcpy(tokens[nr_token].str, match);
 						tokens[nr_token].type = TK_HEX;
 						nr_token++;
 						break;
 						}
 					case TK_REG:
-						{
+						{ 
 						assert(pmatch.rm_so != -1);// 匹配是否成功
 						char match[pmatch.rm_eo - pmatch.rm_so];
 						strncpy(match, e + position + pmatch.rm_so - pmatch.rm_eo + 1, pmatch.rm_eo - pmatch.rm_so - 1);// 获得数据
@@ -281,6 +316,7 @@ int eval(int p, int q, bool* signal){
 		}
 
 	}
+	// 解引用处理
 	else if (p + 1 == q && tokens[p].type == TK_EXPLAIN){
 		uint32_t addr = 0;
 
@@ -291,13 +327,12 @@ int eval(int p, int q, bool* signal){
 			//获 得地址	
 			char *endptr;
 			char* addr_str = tokens[q].str;
-			addr = strtoul(addr_str, &endptr, 16);
+			addr = strtoul(addr_str, &endptr, 10);
 			if (*endptr != '\0') {			
-				printf("Parsed hex string. Stopped at: %s\n", endptr);
+				printf("十六进制解析错误，停止于: %s\n", endptr);
 				*signal = 1;
 				return 0;
 			} 
-//need to be finished
 		}
 		uint32_t mem_val = paddr_read(addr,4);
 		return mem_val;
@@ -309,34 +344,7 @@ int eval(int p, int q, bool* signal){
 	else {
 		int op = -1;
 
-		//int ADD = -1, SUB = -1, MUL = -1, DIV = -1;
-		// int pos_L = -1, pos_R = q + 1;
 		int L_count = 0, R_count = 0;
-		/*
-		// 确定最大括号的位置
-		for(int i = p; i <= q; i++){
-			if (tokens[i].type == TK_L && pos_L == -1) {
-				pos_L = i;
-			}
-			if (tokens[i].type == TK_R){
-				pos_R = i;
-			}
-		}
-		// 获得有效token位置
-		for (int i = p; i <=q; i++){
-			if (tokens[i].type == '+' && valid_index(i, pos_L, pos_R, q)){
-				ADD = i;
-			}
-			if (tokens[i].type == TK_SUB && valid_index(i, pos_L, pos_R, q)){
-				SUB = i;
-			}
-			if (tokens[i].type == TK_MULTIPLY && valid_index(i, pos_L, pos_R, q)){
-				MUL = i;
-			}
-			if (tokens[i].type == TK_DIVIDE && valid_index(i, pos_L, pos_R, q)){
-				DIV = i;
-			}
-		}*/
 
 		// 判断加减法
 		for (int i = q; i >= p; i --) {
@@ -350,7 +358,7 @@ int eval(int p, int q, bool* signal){
 			}
 
 	}
-		// 判断乘除法
+		// 如果没有加减法判断乘除法
 		if (op == -1){
 			L_count = 0, R_count = 0;
 			for (int i = q; i >= p; i --) {
@@ -370,26 +378,9 @@ int eval(int p, int q, bool* signal){
 				printf("op Error\n");
 				return 0;
 			}
-		/*	
-			if (ADD != -1) op = ADD;
-			else if (SUB != -1) op = SUB;
-			else if (MUL != -1 || DIV != -1) {
-				// 如果有效操作符同时存在
-				if (DIV != -1 && MUL != -1){
-					op = MUL > DIV ? DIV : MUL;
-				}
-				else {
-					if(MUL != -1) op = MUL;
-					else op = DIV;
-				}
-			}
-			else {
-				printf("op Error\n");
-				return 0;
-			}
-*/
-			uint32_t val1 = eval(p, op - 1, signal);
-			uint32_t val2 = eval(op + 1, q, signal);
+
+			int32_t val1 = eval(p, op - 1, signal);
+			int32_t val2 = eval(op + 1, q, signal);
 
 		switch (tokens[op].type){
 			case '+': 

@@ -103,7 +103,7 @@ static int cmd_x (char *args){
 	int N;
 	if (N_str) {
 		N = atoi(N_str);
-		printf("N: %d\t",N);
+		//printf("N: %d\t",N);
 	} 
 	else {
 		printf("Invalid number\n");
@@ -138,7 +138,7 @@ static int cmd_p (char* args){
 		//printf("%s\n", args);
 		bool success = false;
 		uint32_t result = expr(args,&success);
-		if (success) printf("Expression: %s Result: %u\n", args, result);
+		if (success) printf("Expression: %s\nResult: %u\n", args, result);
 		//make_token(args);
 	return 0;
 }

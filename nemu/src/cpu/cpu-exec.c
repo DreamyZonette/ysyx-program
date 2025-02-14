@@ -45,23 +45,40 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 	 for (int i = 0; i < NR_WP; i ++) {
 		 if (wp_pool[i].is_used) {
 			 bool success = false;
-			 wp_pool[i].cur_value = expr(wp_pool[i].expr, &success);
-			 // 判断求值是否成功
-			 if (success)
-			 {
-				 // 判断前后的值是否相同
-				if (wp_pool[i].cur_value !=  wp_pool[i].prev_value) {
-					printf("Watchpoint %d: %s changed\n  Old value: 0x%x\n  New value: 0x%x\n",
-							wp_pool[i].NO, wp_pool[i].expr, wp_pool[i].prev_value, wp_pool[i].cur_value);
-
-					wp_pool[i].prev_value = wp_pool[i].cur_value;// 更新旧值
-					nemu_state.state = NEMU_STOP;// 暂停nemu
+			 //测试断点
+				if (!wp_pool[i].is_watchpoint) {
+					int arrive = expr(wp_pool[i].expr, &success);
+					if (success){
+						if (arrive){
+							printf("pc达到断点值%x\n", cpu.pc);
+							nemu_state.state = NEMU_STOP;	
+						}
+					}
+					else {
+						printf("Expr error.");
+						assert(0);
+					}
 				}
-			 }
-			 else {
-				printf("Expr error.");
-				assert(0);
-			 }
+				//测试监视点
+				else{
+					wp_pool[i].cur_value = expr(wp_pool[i].expr, &success);
+					// 判断求值是否成功
+					if (success)
+					{
+						// 判断前后的值是否相同
+						if (wp_pool[i].cur_value !=  wp_pool[i].prev_value) {
+							printf("Watchpoint %d: %s changed\n  Old value: 0x%x\n  New value: 0x%x\n",
+									wp_pool[i].NO, wp_pool[i].expr, wp_pool[i].prev_value, wp_pool[i].cur_value);
+
+							nemu_state.state = NEMU_STOP;// 暂停nemu
+							wp_pool[i].prev_value = wp_pool[i].cur_value;// 更新旧值
+						}
+					}
+					else {
+						printf("Expr error.");
+						assert(0);
+					}
+				}
 		 }
 	 }
 #endif

@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 #endif
 	
 	/* 测试模式 */
-///*	
+/*	
     FILE *fp = fopen("/home/long/ysyx-workbench/nemu/tools/gen-expr/input", "r");
     if (!fp) {
       perror("打开测试文件失败\n");
@@ -70,8 +70,6 @@ int main(int argc, char *argv[]) {
       //
       bool match = false;
       if (success) {
-        // 处理32位溢出情形
-        // match = (actual == (expected & 0xFFFFFFFF));
         match = (actual == expected);
       }
 
