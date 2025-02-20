@@ -63,15 +63,18 @@ static int cmd_help(char *args);
 // 单步执行
 static int cmd_si(char *args){
 	int N;
-	int i;
+	// int i;
 	if (args == NULL){
 		N = 1;
 	}else {
 		N = atoi(args);
 	}
+	cpu_exec(N);
+	/*
 	for (i = 0 ; i < N ; i++){
 		cpu_exec(1);// nemu/src/cpu/cpu-exec.c 
 	}
+	*/
 	return 0;
 }
 
