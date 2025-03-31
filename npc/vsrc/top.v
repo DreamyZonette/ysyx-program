@@ -1,6 +1,6 @@
 module top (
     input clk,
-    input reset,
+    input reset
 
 );
 
