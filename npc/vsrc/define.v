@@ -55,19 +55,7 @@ module MuxKeyWithDefault #(NR_KEY = 2, KEY_LEN = 1, DATA_LEN = 1) (
   MuxKeyInternal #(NR_KEY, KEY_LEN, DATA_LEN, 1) i0 (out, key, default_out, lut);
 endmodule       
 
-/* 触发器模板 */
-module Reg #(WIDTH = 1, RESET_VAL = 0) (
-  input clk,
-  input rst,
-  input [WIDTH-1:0] din,
-  output reg [WIDTH-1:0] dout,
-  input wen
-);
-  always @(posedge clk) begin
-    if (rst) dout <= RESET_VAL;
-    else if (wen) dout <= din;
-  end
-endmodule
+
 
 
 
