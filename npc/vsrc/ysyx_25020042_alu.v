@@ -11,9 +11,14 @@ module ysyx_25020042_alu #(WIDTH = 32)(
 
     always @ (*) begin
         case (op_ins)
-            8'h00: out = src1 + imm; // addi            
+            8'h00: out = src1 + imm; // addi   
+            8'h01: out = src1 + src2;     //临时    
             default: out = 0;
         endcase
     end
+    //临时
+    assign ram_signal = 0;
+    assign jump_signal = 0;
+    assign pc_next = 0;
     
 endmodule

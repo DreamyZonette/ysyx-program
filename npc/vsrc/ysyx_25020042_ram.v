@@ -34,4 +34,6 @@ module ysyx_25020042_ram #(WIDTH = 32, INS_BYTES = 4, PC_LEN = 32)(
         
     end
 
+    assign data_out = ram_mem[addr];
+
 endmodule
