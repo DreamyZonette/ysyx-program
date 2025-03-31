@@ -25,7 +25,7 @@ VL_ATTR_COLD void Vtop___024root___eval_static__TOP(Vtop___024root* vlSelf) {
     // Body
     __Vilp = 0U;
     while ((__Vilp <= 0x3ffU)) {
-        vlSelf->top__DOT__rom__DOT__rom[__Vilp] = 0U;
+        vlSelf->top__DOT__rom__DOT__rom_mem[__Vilp] = 0U;
         __Vilp = ((IData)(1U) + __Vilp);
     }
 }
@@ -100,7 +100,7 @@ VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf) {
     vlSelf->top__DOT__data = ((0x3ffU >= (0x7ffffffU 
                                           & (vlSelf->top__DOT__addr 
                                              - (IData)(0x4c4b400U))))
-                               ? vlSelf->top__DOT__rom__DOT__rom
+                               ? vlSelf->top__DOT__rom__DOT__rom_mem
                               [(0x7ffffffU & (vlSelf->top__DOT__addr 
                                               - (IData)(0x4c4b400U)))]
                                : 0U);
@@ -252,7 +252,7 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->top__DOT__jump_singnal = VL_RAND_RESET_I(1);
     vlSelf->top__DOT__ram_signal = VL_RAND_RESET_I(1);
     for (int __Vi0 = 0; __Vi0 < 1024; ++__Vi0) {
-        vlSelf->top__DOT__rom__DOT__rom[__Vi0] = VL_RAND_RESET_I(32);
+        vlSelf->top__DOT__rom__DOT__rom_mem[__Vi0] = VL_RAND_RESET_I(32);
     }
     for (int __Vi0 = 0; __Vi0 < 32; ++__Vi0) {
         vlSelf->top__DOT__gpr__DOT__reg_file[__Vi0] = VL_RAND_RESET_I(32);

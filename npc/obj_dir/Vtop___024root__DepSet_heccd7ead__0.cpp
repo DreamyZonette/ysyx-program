@@ -346,7 +346,7 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
     vlSelf->top__DOT__data = ((0x3ffU >= (0x7ffffffU 
                                           & (vlSelf->top__DOT__addr 
                                              - (IData)(0x4c4b400U))))
-                               ? vlSelf->top__DOT__rom__DOT__rom
+                               ? vlSelf->top__DOT__rom__DOT__rom_mem
                               [(0x7ffffffU & (vlSelf->top__DOT__addr 
                                               - (IData)(0x4c4b400U)))]
                                : 0U);
