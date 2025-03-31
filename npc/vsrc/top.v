@@ -8,6 +8,7 @@ wire [7:0] op_ins;
 wire [31:0] addr;
 wire [31:0] pc_next;
 wire [31:0] data;
+wire [31:0] ram_data;
 wire [4:0] rs1;
 wire [4:0] rs2;
 wire [31:0] imm;
@@ -68,7 +69,7 @@ ysyx_25020042_ram ram (
     .data_in(result),
     .addr(addr),
     .byte_en(4'b1111),
-    .data_out(data),
+    .data_out(ram_data),
     .ram_signal(ram_signal)
 );
 
