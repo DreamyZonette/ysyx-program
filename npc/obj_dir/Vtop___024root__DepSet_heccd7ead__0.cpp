@@ -16,8 +16,17 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
     if (false && vlSelf) {}  // Prevent unused
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___nba_sequent__TOP__0\n"); );
+    // Init
+    SData/*10:0*/ __Vdlyvdim0__top__DOT__ram__DOT__ram_mem__v0;
+    __Vdlyvdim0__top__DOT__ram__DOT__ram_mem__v0 = 0;
+    CData/*0:0*/ __Vdlyvset__top__DOT__ram__DOT__ram_mem__v0;
+    __Vdlyvset__top__DOT__ram__DOT__ram_mem__v0 = 0;
     // Body
+    __Vdlyvset__top__DOT__ram__DOT__ram_mem__v0 = 0U;
     if (vlSelf->reset) {
+        __Vdlyvset__top__DOT__ram__DOT__ram_mem__v0 = 1U;
+        __Vdlyvdim0__top__DOT__ram__DOT__ram_mem__v0 
+            = (0x7ffU & vlSelf->top__DOT__addr);
         vlSelf->top__DOT__addr = 0x80000000U;
         vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__31__KET____DOT__r0__dout = 0U;
         vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__30__KET____DOT__r0__dout = 0U;
@@ -340,6 +349,9 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
             vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__0__KET____DOT__r0__dout 
                 = vlSelf->top__DOT__result;
         }
+    }
+    if (__Vdlyvset__top__DOT__ram__DOT__ram_mem__v0) {
+        vlSelf->top__DOT__ram__DOT__ram_mem[__Vdlyvdim0__top__DOT__ram__DOT__ram_mem__v0] = 0U;
     }
     vlSelf->top__DOT__data = ((0x3ffU >= (0x7ffffffU 
                                           & (vlSelf->top__DOT__addr 

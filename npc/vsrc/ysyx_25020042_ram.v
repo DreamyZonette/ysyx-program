@@ -8,7 +8,7 @@ module ysyx_25020042_ram #(WIDTH = 32, INS_BYTES = 4, PC_LEN = 32)(
     input ram_signal
     );
     
-    reg [WIDTH-1:0] ram_mem [32'h80000000:32'h80000000 + 2048-1] = '{default:0};
+    reg [WIDTH-1:0] ram_mem [32'h80001024:32'h80000000 + 2048-1] = '{default:0};
 
     always @(posedge clk) begin
         if (rst) begin
