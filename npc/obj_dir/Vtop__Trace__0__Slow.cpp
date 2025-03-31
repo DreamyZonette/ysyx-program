@@ -28,21 +28,21 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->declBus(c+9,"result", false,-1, 31,0);
     tracep->declBus(c+10,"rd", false,-1, 4,0);
     tracep->declBit(c+113,"jump_singnal", false,-1);
-    tracep->declBit(c+114,"ram_signal", false,-1);
+    tracep->declBit(c+113,"ram_signal", false,-1);
     tracep->pushNamePrefix("alu ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
     tracep->declBus(c+7,"src1", false,-1, 31,0);
     tracep->declBus(c+8,"src2", false,-1, 31,0);
     tracep->declBus(c+6,"imm", false,-1, 31,0);
     tracep->declBus(c+1,"op_ins", false,-1, 7,0);
     tracep->declBus(c+9,"out", false,-1, 31,0);
-    tracep->declBit(c+114,"ram_signal", false,-1);
+    tracep->declBit(c+113,"ram_signal", false,-1);
     tracep->declBit(c+113,"jump_signal", false,-1);
     tracep->declBus(c+112,"pc_next", false,-1, 31,0);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("decoder ");
-    tracep->declBus(c+116,"INS_BYTES", false,-1, 31,0);
-    tracep->declBus(c+117,"REG_ADDR_LEN", false,-1, 31,0);
+    tracep->declBus(c+115,"INS_BYTES", false,-1, 31,0);
+    tracep->declBus(c+116,"REG_ADDR_LEN", false,-1, 31,0);
     tracep->declBus(c+3,"ins", false,-1, 31,0);
     tracep->declBus(c+10,"rd", false,-1, 4,0);
     tracep->declBus(c+4,"rs1", false,-1, 4,0);
@@ -53,9 +53,9 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->declBus(c+12,"opcode", false,-1, 6,0);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("gpr ");
-    tracep->declBus(c+117,"REG_ADDR_LEN", false,-1, 31,0);
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+115,"REGS", false,-1, 31,0);
+    tracep->declBus(c+116,"REG_ADDR_LEN", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+114,"REGS", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+4,"rs1", false,-1, 4,0);
@@ -70,8 +70,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     }
     tracep->pushNamePrefix("genblk1[0] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -80,8 +80,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[10] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -90,8 +90,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[11] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -100,8 +100,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[12] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -110,8 +110,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[13] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -120,8 +120,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[14] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -130,8 +130,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[15] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -140,8 +140,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[16] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -150,8 +150,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[17] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -160,8 +160,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[18] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -170,8 +170,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[19] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -180,8 +180,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[1] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -190,8 +190,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[20] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -200,8 +200,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[21] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -210,8 +210,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[22] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -220,8 +220,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[23] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -230,8 +230,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[24] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -240,8 +240,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[25] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -250,8 +250,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[26] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -260,8 +260,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[27] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -270,8 +270,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[28] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -280,8 +280,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[29] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -290,8 +290,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[2] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -300,8 +300,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[30] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -310,8 +310,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[31] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -320,8 +320,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[3] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -330,8 +330,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[4] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -340,8 +340,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[5] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -350,8 +350,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[6] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -360,8 +360,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[7] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -370,8 +370,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[8] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -380,8 +380,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(2);
     tracep->pushNamePrefix("genblk1[9] ");
     tracep->pushNamePrefix("r0 ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+118,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+112,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"din", false,-1, 31,0);
@@ -389,8 +389,8 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->declBit(c+109,"wen", false,-1);
     tracep->popNamePrefix(3);
     tracep->pushNamePrefix("pc ");
-    tracep->declBus(c+115,"PC_LEN", false,-1, 31,0);
-    tracep->declBus(c+116,"INS_BYTES", false,-1, 31,0);
+    tracep->declBus(c+114,"PC_LEN", false,-1, 31,0);
+    tracep->declBus(c+115,"INS_BYTES", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+112,"din", false,-1, 31,0);
@@ -398,19 +398,19 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->declBit(c+113,"jump", false,-1);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("ram ");
-    tracep->declBus(c+115,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+116,"INS_BYTES", false,-1, 31,0);
-    tracep->declBus(c+115,"PC_LEN", false,-1, 31,0);
+    tracep->declBus(c+114,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+115,"INS_BYTES", false,-1, 31,0);
+    tracep->declBus(c+114,"PC_LEN", false,-1, 31,0);
     tracep->declBit(c+110,"clk", false,-1);
     tracep->declBit(c+111,"rst", false,-1);
     tracep->declBus(c+9,"data_in", false,-1, 31,0);
     tracep->declBus(c+2,"addr", false,-1, 31,0);
-    tracep->declBus(c+119,"byte_en", false,-1, 3,0);
+    tracep->declBus(c+117,"byte_en", false,-1, 3,0);
     tracep->declBus(c+3,"data_out", false,-1, 31,0);
-    tracep->declBit(c+114,"ram_signal", false,-1);
+    tracep->declBit(c+113,"ram_signal", false,-1);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("rom ");
-    tracep->declBus(c+115,"ADDR_WIDTH", false,-1, 31,0);
+    tracep->declBus(c+114,"ADDR_WIDTH", false,-1, 31,0);
     tracep->declBus(c+2,"addr", false,-1, 31,0);
     tracep->declBus(c+3,"data", false,-1, 31,0);
     tracep->popNamePrefix(2);
@@ -456,42 +456,7 @@ VL_ATTR_COLD void Vtop___024root__trace_full_sub_0(Vtop___024root* vlSelf, Veril
     // Init
     uint32_t* const oldp VL_ATTR_UNUSED = bufp->oldp(vlSymsp->__Vm_baseCode);
     // Body
-    bufp->fullCData(oldp+1,(((0x13U == (0x7fU & vlSelf->top__DOT__data))
-                              ? ((0U == (7U & (vlSelf->top__DOT__data 
-                                               >> 0xcU)))
-                                  ? 1U : ((2U == (7U 
-                                                  & (vlSelf->top__DOT__data 
-                                                     >> 0xcU)))
-                                           ? 2U : (
-                                                   (3U 
-                                                    == 
-                                                    (7U 
-                                                     & (vlSelf->top__DOT__data 
-                                                        >> 0xcU)))
-                                                    ? 3U
-                                                    : 
-                                                   ((4U 
-                                                     == 
-                                                     (7U 
-                                                      & (vlSelf->top__DOT__data 
-                                                         >> 0xcU)))
-                                                     ? 4U
-                                                     : 
-                                                    ((6U 
-                                                      == 
-                                                      (7U 
-                                                       & (vlSelf->top__DOT__data 
-                                                          >> 0xcU)))
-                                                      ? 5U
-                                                      : 
-                                                     ((7U 
-                                                       == 
-                                                       (7U 
-                                                        & (vlSelf->top__DOT__data 
-                                                           >> 0xcU)))
-                                                       ? 6U
-                                                       : 0U))))))
-                              : 0U)),8);
+    bufp->fullCData(oldp+1,(vlSelf->top__DOT__op_ins),8);
     bufp->fullIData(oldp+2,(vlSelf->top__DOT__addr),32);
     bufp->fullIData(oldp+3,(vlSelf->top__DOT__data),32);
     bufp->fullCData(oldp+4,((0x1fU & (vlSelf->top__DOT__data 
@@ -504,9 +469,7 @@ VL_ATTR_COLD void Vtop___024root__trace_full_sub_0(Vtop___024root* vlSelf, Veril
                                   << 0xcU) | (vlSelf->top__DOT__data 
                                               >> 0x14U))
                               : 0U)),32);
-    bufp->fullIData(oldp+7,(vlSelf->top__DOT__gpr__DOT__reg_file
-                            [(0x1fU & (vlSelf->top__DOT__data 
-                                       >> 0xfU))]),32);
+    bufp->fullIData(oldp+7,(vlSelf->top__DOT__src1),32);
     bufp->fullIData(oldp+8,(vlSelf->top__DOT__gpr__DOT__reg_file
                             [(0x1fU & (vlSelf->top__DOT__data 
                                        >> 0x14U))]),32);
@@ -779,12 +742,10 @@ VL_ATTR_COLD void Vtop___024root__trace_full_sub_0(Vtop___024root* vlSelf, Veril
                                 >> 9U))));
     bufp->fullBit(oldp+110,(vlSelf->clk));
     bufp->fullBit(oldp+111,(vlSelf->reset));
-    bufp->fullIData(oldp+112,(vlSelf->top__DOT__pc_next),32);
-    bufp->fullBit(oldp+113,(vlSelf->top__DOT__jump_singnal));
-    bufp->fullBit(oldp+114,(vlSelf->top__DOT__ram_signal));
-    bufp->fullIData(oldp+115,(0x20U),32);
-    bufp->fullIData(oldp+116,(4U),32);
-    bufp->fullIData(oldp+117,(5U),32);
-    bufp->fullIData(oldp+118,(0U),32);
-    bufp->fullCData(oldp+119,(0xfU),4);
+    bufp->fullIData(oldp+112,(0U),32);
+    bufp->fullBit(oldp+113,(0U));
+    bufp->fullIData(oldp+114,(0x20U),32);
+    bufp->fullIData(oldp+115,(4U),32);
+    bufp->fullIData(oldp+116,(5U),32);
+    bufp->fullCData(oldp+117,(0xfU),4);
 }

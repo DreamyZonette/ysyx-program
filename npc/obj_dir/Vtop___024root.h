@@ -15,13 +15,12 @@ class Vtop___024root final : public VerilatedModule {
     // DESIGN SPECIFIC STATE
     VL_IN8(clk,0,0);
     VL_IN8(reset,0,0);
-    CData/*0:0*/ top__DOT__jump_singnal;
-    CData/*0:0*/ top__DOT__ram_signal;
+    CData/*7:0*/ top__DOT__op_ins;
     CData/*0:0*/ __Vtrigrprev__TOP__clk;
     CData/*0:0*/ __VactContinue;
     IData/*31:0*/ top__DOT__addr;
-    IData/*31:0*/ top__DOT__pc_next;
     IData/*31:0*/ top__DOT__data;
+    IData/*31:0*/ top__DOT__src1;
     IData/*31:0*/ top__DOT__result;
     IData/*31:0*/ top__DOT__gpr__DOT____Vcellout__genblk1__BRA__0__KET____DOT__r0__dout;
     IData/*31:0*/ top__DOT__gpr__DOT____Vcellout__genblk1__BRA__1__KET____DOT__r0__dout;
