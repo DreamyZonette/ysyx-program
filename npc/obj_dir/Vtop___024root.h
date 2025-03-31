@@ -15,7 +15,6 @@ class Vtop___024root final : public VerilatedModule {
     // DESIGN SPECIFIC STATE
     VL_IN8(clk,0,0);
     VL_IN8(reset,0,0);
-    VL_IN8(__pinNumber3,0,0);
     CData/*0:0*/ top__DOT__jump_singnal;
     CData/*0:0*/ top__DOT__ram_signal;
     CData/*0:0*/ __Vtrigrprev__TOP__clk;

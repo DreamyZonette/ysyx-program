@@ -13,7 +13,6 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , vlSymsp{new Vtop__Syms(contextp(), _vcname__, this)}
     , clk{vlSymsp->TOP.clk}
     , reset{vlSymsp->TOP.reset}
-    , __pinNumber3{vlSymsp->TOP.__pinNumber3}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context

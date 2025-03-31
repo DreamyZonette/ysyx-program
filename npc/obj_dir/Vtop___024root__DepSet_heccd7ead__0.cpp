@@ -519,7 +519,5 @@ void Vtop___024root___eval_debug_assertions(Vtop___024root* vlSelf) {
         Verilated::overWidthError("clk");}
     if (VL_UNLIKELY((vlSelf->reset & 0xfeU))) {
         Verilated::overWidthError("reset");}
-    if (VL_UNLIKELY((vlSelf->__pinNumber3 & 0xfeU))) {
-        Verilated::overWidthError("__pinNumber3");}
 }
 #endif  // VL_DEBUG
