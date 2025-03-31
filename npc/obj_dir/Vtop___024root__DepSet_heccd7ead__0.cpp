@@ -361,13 +361,9 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
         vlSelf->top__DOT__ram__DOT__ram_mem[__Vdlyvdim0__top__DOT__ram__DOT__ram_mem__v0] 
             = __Vdlyvval__top__DOT__ram__DOT__ram_mem__v0;
     }
-    vlSelf->top__DOT__data = ((0x3ffU >= (0x7ffffffU 
-                                          & (vlSelf->top__DOT__addr 
-                                             - (IData)(0x4c4b400U))))
-                               ? vlSelf->top__DOT__rom__DOT__rom_mem
-                              [(0x7ffffffU & (vlSelf->top__DOT__addr 
-                                              - (IData)(0x4c4b400U)))]
-                               : 0U);
+    vlSelf->top__DOT__data = vlSelf->top__DOT__rom__DOT__rom_mem
+        [(0x3ffU & ((vlSelf->top__DOT__addr - (IData)(0x80000000U)) 
+                    >> 2U))];
     vlSelf->top__DOT__gpr__DOT__reg_file[0x1fU] = vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__31__KET____DOT__r0__dout;
     vlSelf->top__DOT__gpr__DOT__reg_file[0x1eU] = vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__30__KET____DOT__r0__dout;
     vlSelf->top__DOT__gpr__DOT__reg_file[0x1dU] = vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__29__KET____DOT__r0__dout;
