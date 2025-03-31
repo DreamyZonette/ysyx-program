@@ -460,8 +460,12 @@ VL_ATTR_COLD void Vtop___024root__trace_full_sub_0(Vtop___024root* vlSelf, Veril
     bufp->fullCData(oldp+1,(vlSelf->top__DOT__op_ins),8);
     bufp->fullIData(oldp+2,(vlSelf->top__DOT__addr),32);
     bufp->fullIData(oldp+3,(vlSelf->top__DOT__data),32);
-    bufp->fullIData(oldp+4,(vlSelf->top__DOT__ram__DOT__ram_mem
-                            [(0x7ffU & vlSelf->top__DOT__addr)]),32);
+    bufp->fullIData(oldp+4,(((0x825U >= (0xfffU & ((IData)(0x801U) 
+                                                   + vlSelf->top__DOT__addr)))
+                              ? vlSelf->top__DOT__ram__DOT__ram_mem
+                             [(0xfffU & ((IData)(0x801U) 
+                                         + vlSelf->top__DOT__addr))]
+                              : 0U)),32);
     bufp->fullCData(oldp+5,((0x1fU & (vlSelf->top__DOT__data 
                                       >> 0xfU))),5);
     bufp->fullCData(oldp+6,((0x1fU & (vlSelf->top__DOT__data 

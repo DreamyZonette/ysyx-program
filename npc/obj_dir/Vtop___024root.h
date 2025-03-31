@@ -54,11 +54,12 @@ class Vtop___024root final : public VerilatedModule {
     IData/*31:0*/ top__DOT__gpr__DOT____Vcellout__genblk1__BRA__29__KET____DOT__r0__dout;
     IData/*31:0*/ top__DOT__gpr__DOT____Vcellout__genblk1__BRA__30__KET____DOT__r0__dout;
     IData/*31:0*/ top__DOT__gpr__DOT____Vcellout__genblk1__BRA__31__KET____DOT__r0__dout;
+    IData/*31:0*/ top__DOT__ram__DOT____Vlvbound_h09251640__0;
     IData/*31:0*/ __VstlIterCount;
     IData/*31:0*/ __VactIterCount;
     VlUnpacked<IData/*31:0*/, 1024> top__DOT__rom__DOT__rom_mem;
     VlUnpacked<IData/*31:0*/, 32> top__DOT__gpr__DOT__reg_file;
-    VlUnpacked<IData/*31:0*/, 2048> top__DOT__ram__DOT__ram_mem;
+    VlUnpacked<IData/*31:0*/, 2086> top__DOT__ram__DOT__ram_mem;
     VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
     VlTriggerVec<1> __VstlTriggered;
     VlTriggerVec<1> __VactTriggered;

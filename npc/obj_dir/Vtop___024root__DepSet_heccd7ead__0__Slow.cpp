@@ -31,7 +31,7 @@ VL_ATTR_COLD void Vtop___024root___eval_static__TOP(Vtop___024root* vlSelf) {
         __Vilp = ((IData)(1U) + __Vilp);
     }
     __Vilp = 0U;
-    while ((__Vilp <= 0x7ffU)) {
+    while ((__Vilp <= 0x825U)) {
         vlSelf->top__DOT__ram__DOT__ram_mem[__Vilp] = 0U;
         __Vilp = ((IData)(1U) + __Vilp);
     }
@@ -295,9 +295,10 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__29__KET____DOT__r0__dout = VL_RAND_RESET_I(32);
     vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__30__KET____DOT__r0__dout = VL_RAND_RESET_I(32);
     vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__31__KET____DOT__r0__dout = VL_RAND_RESET_I(32);
-    for (int __Vi0 = 0; __Vi0 < 2048; ++__Vi0) {
+    for (int __Vi0 = 0; __Vi0 < 2086; ++__Vi0) {
         vlSelf->top__DOT__ram__DOT__ram_mem[__Vi0] = VL_RAND_RESET_I(32);
     }
+    vlSelf->top__DOT__ram__DOT____Vlvbound_h09251640__0 = VL_RAND_RESET_I(32);
     vlSelf->__Vtrigrprev__TOP__clk = VL_RAND_RESET_I(1);
     for (int __Vi0 = 0; __Vi0 < 2; ++__Vi0) {
         vlSelf->__Vm_traceActivity[__Vi0] = 0;

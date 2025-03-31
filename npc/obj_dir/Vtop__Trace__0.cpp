@@ -27,8 +27,13 @@ void Vtop___024root__trace_chg_sub_0(Vtop___024root* vlSelf, VerilatedVcd::Buffe
         bufp->chgCData(oldp+0,(vlSelf->top__DOT__op_ins),8);
         bufp->chgIData(oldp+1,(vlSelf->top__DOT__addr),32);
         bufp->chgIData(oldp+2,(vlSelf->top__DOT__data),32);
-        bufp->chgIData(oldp+3,(vlSelf->top__DOT__ram__DOT__ram_mem
-                               [(0x7ffU & vlSelf->top__DOT__addr)]),32);
+        bufp->chgIData(oldp+3,(((0x825U >= (0xfffU 
+                                            & ((IData)(0x801U) 
+                                               + vlSelf->top__DOT__addr)))
+                                 ? vlSelf->top__DOT__ram__DOT__ram_mem
+                                [(0xfffU & ((IData)(0x801U) 
+                                            + vlSelf->top__DOT__addr))]
+                                 : 0U)),32);
         bufp->chgCData(oldp+4,((0x1fU & (vlSelf->top__DOT__data 
                                          >> 0xfU))),5);
         bufp->chgCData(oldp+5,((0x1fU & (vlSelf->top__DOT__data 

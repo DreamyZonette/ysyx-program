@@ -60,7 +60,8 @@ ysyx_25020042_alu alu (
     .out(result),
     .ram_signal(ram_signal),
     .jump_signal(jump_singnal),
-    .pc_next(pc_next)
+    .pc_next(pc_next),
+    .ram_data(ram_data)
 );
 
 ysyx_25020042_ram ram (

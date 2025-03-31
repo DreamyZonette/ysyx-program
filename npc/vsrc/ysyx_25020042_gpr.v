@@ -5,6 +5,7 @@ module ysyx_25020042_gpr #(REG_ADDR_LEN = 5, WIDTH = 32, REGS = 32) (
     input  [REG_ADDR_LEN - 1:0] rs2,
     input  [REG_ADDR_LEN - 1:0] rd,
     input  [WIDTH - 1:0]        data_in,
+    //input  [WIDTH - 1:0]        ram_data,
     output [WIDTH - 1:0]        src1,
     output [WIDTH - 1:0]        src2
 
