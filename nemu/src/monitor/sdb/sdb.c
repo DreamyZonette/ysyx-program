@@ -132,7 +132,7 @@ static int cmd_x (char *args){
 		return 0;
 	}
 	for(int i = 0 ; i < N  ; i++){
-		printf("addr:0x%x --> %x\n",addr,paddr_read(addr,4));
+		printf("addr:0x%08x --> %08x\n",addr,paddr_read(addr,4));
 		addr += 4;
 	}
 	return 0;
