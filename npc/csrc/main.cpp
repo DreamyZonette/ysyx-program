@@ -48,5 +48,6 @@ int main(){
     while(!Verilated::gotFinish() && !sim_finish) {
         single_cycle();
     }
+    printf("Simulation finished\n");
     sim_exit();
 }
