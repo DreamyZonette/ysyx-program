@@ -48,7 +48,7 @@ int main(){
     //logic sim_finish = false;
 
    // int i = 10;
-    while(!Verilated::gotFinish() && !sim_finish) {
+    while(/*!Verilated::gotFinish() && */!sim_finish) {
         single_cycle();
         // if(top->ebreak_signal == 1) {
         //     printf("ebreak_signal = 1\n");
@@ -56,9 +56,5 @@ int main(){
         // }
         //i--;
     }
-    // top->x0 = 0;top->x1 = 1;top->x2 = 2;top->x3 = 3;top->sel = 0;step_and_dump_wave();
-    // top->sel = 1;step_and_dump_wave();
-    // top->sel = 2;step_and_dump_wave();
-    // top->sel = 3;step_and_dump_wave();
     sim_exit();
 }

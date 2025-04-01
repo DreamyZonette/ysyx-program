@@ -3,6 +3,7 @@
 // See Vtop.h for the primary calling header
 
 #include "verilated.h"
+#include "verilated_dpi.h"
 
 #include "Vtop___024root.h"
 
@@ -115,37 +116,37 @@ VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___stl_sequent__TOP__0\n"); );
     // Body
-    vlSelf->top__DOT__op_ins = ((0x13U == (0x7fU & vlSelf->top__DOT__data))
-                                 ? ((0U == (7U & (vlSelf->top__DOT__data 
+    vlSelf->top__DOT__op_ins = ((0x13U == (0x7fU & vlSelf->top__DOT__cur_data))
+                                 ? ((0U == (7U & (vlSelf->top__DOT__cur_data 
                                                   >> 0xcU)))
                                      ? 1U : ((2U == 
                                               (7U & 
-                                               (vlSelf->top__DOT__data 
+                                               (vlSelf->top__DOT__cur_data 
                                                 >> 0xcU)))
                                               ? 2U : 
                                              ((3U == 
                                                (7U 
-                                                & (vlSelf->top__DOT__data 
+                                                & (vlSelf->top__DOT__cur_data 
                                                    >> 0xcU)))
                                                ? 3U
                                                : ((4U 
                                                    == 
                                                    (7U 
-                                                    & (vlSelf->top__DOT__data 
+                                                    & (vlSelf->top__DOT__cur_data 
                                                        >> 0xcU)))
                                                    ? 4U
                                                    : 
                                                   ((6U 
                                                     == 
                                                     (7U 
-                                                     & (vlSelf->top__DOT__data 
+                                                     & (vlSelf->top__DOT__cur_data 
                                                         >> 0xcU)))
                                                     ? 5U
                                                     : 
                                                    ((7U 
                                                      == 
                                                      (7U 
-                                                      & (vlSelf->top__DOT__data 
+                                                      & (vlSelf->top__DOT__cur_data 
                                                          >> 0xcU)))
                                                      ? 6U
                                                      : 0U))))))
@@ -183,16 +184,16 @@ VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf) {
     vlSelf->top__DOT__gpr__DOT__reg_file[0x1eU] = vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__30__KET____DOT__r0__dout;
     vlSelf->top__DOT__gpr__DOT__reg_file[0x1fU] = vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__31__KET____DOT__r0__dout;
     vlSelf->top__DOT__src1 = vlSelf->top__DOT__gpr__DOT__reg_file
-        [(0x1fU & (vlSelf->top__DOT__data >> 0xfU))];
+        [(0x1fU & (vlSelf->top__DOT__cur_data >> 0xfU))];
     vlSelf->top__DOT__result = ((1U == (IData)(vlSelf->top__DOT__op_ins))
                                  ? (vlSelf->top__DOT__src1 
                                     + ((0x13U == (0x7fU 
-                                                  & vlSelf->top__DOT__data))
+                                                  & vlSelf->top__DOT__cur_data))
                                         ? (((- (IData)(
-                                                       (vlSelf->top__DOT__data 
+                                                       (vlSelf->top__DOT__cur_data 
                                                         >> 0x1fU))) 
                                             << 0xcU) 
-                                           | (vlSelf->top__DOT__data 
+                                           | (vlSelf->top__DOT__cur_data 
                                               >> 0x14U))
                                         : 0U)) : ((2U 
                                                    == (IData)(vlSelf->top__DOT__op_ins))
@@ -202,7 +203,7 @@ VL_ATTR_COLD void Vtop___024root___stl_sequent__TOP__0(Vtop___024root* vlSelf) {
                                                    vlSelf->top__DOT__gpr__DOT__reg_file
                                                    [
                                                    (0x1fU 
-                                                    & (vlSelf->top__DOT__data 
+                                                    & (vlSelf->top__DOT__cur_data 
                                                        >> 0x14U))])
                                                    : 
                                                   ((3U 
@@ -272,10 +273,9 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     // Body
     vlSelf->clk = VL_RAND_RESET_I(1);
     vlSelf->reset = VL_RAND_RESET_I(1);
-    vlSelf->ebreak_signal = VL_RAND_RESET_I(1);
     vlSelf->top__DOT__op_ins = VL_RAND_RESET_I(8);
     vlSelf->top__DOT__addr = VL_RAND_RESET_I(32);
-    vlSelf->top__DOT__data = VL_RAND_RESET_I(32);
+    vlSelf->top__DOT__cur_data = VL_RAND_RESET_I(32);
     vlSelf->top__DOT__src1 = VL_RAND_RESET_I(32);
     vlSelf->top__DOT__result = VL_RAND_RESET_I(32);
     for (int __Vi0 = 0; __Vi0 < 1024; ++__Vi0) {

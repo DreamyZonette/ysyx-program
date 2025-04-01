@@ -28,7 +28,7 @@ import "DPI-C" function void dpi_ebreak();
 
 always @(posedge clk) begin
         if (cur_data == 32'h00100073) begin
-            $finish();
+            //$finish();
             dpi_ebreak();  // 调用 DPI-C 函数
         end
     end
