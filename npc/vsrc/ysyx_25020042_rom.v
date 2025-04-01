@@ -19,7 +19,7 @@ module ysyx_25020042_rom # (ADDR_WIDTH = 32)(
         rom_mem[1] = 32'hffd08113; // ADDI x2, x1, -3  # x2 = x1 + (-3) = x1 - 3
     end
     // initial begin
-    awlays @(posedge clk) begin
+    always @(posedge clk) begin
         data <= rom_mem[rom_offset];
     end
     //assign data = rom_mem[rom_offset];
