@@ -40,7 +40,10 @@ int main(){
    // int i = 10;
     while(1) {
         single_cycle();
-        if(top->ebreak_signal == 1) break;
+        if(top->ebreak_signal == 1) {
+            printf("ebreak_signal = 1\n");
+            break;
+        }
         //i--;
     }
     // top->x0 = 0;top->x1 = 1;top->x2 = 2;top->x3 = 3;top->sel = 0;step_and_dump_wave();
