@@ -1,11 +1,20 @@
 #include "verilated.h"
 #include "Vtop.h"
 #include "verilated_vcd_c.h"
+#include "svdpi.h"
+#include "Vtop__Dpi.h"
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
-
 static Vtop* top;
+
+// 全局结束标志和 DPI-C 函数
+bool sim_finish = false;
+extern "C" void dpi_ebreak() {
+    sim_finish = true;  // 触发仿真结束
+}
+
+int is_ebreak(int ebreak_signal);
 
 void step_and_dump_wave(){
     top->eval();
@@ -36,14 +45,15 @@ void sim_exit(){
 
 int main(){
     sim_init();
+    //logic sim_finish = false;
 
    // int i = 10;
-    while(1) {
+    while(!Verilated::gotFinish() && !sim_finish) {
         single_cycle();
-        if(top->ebreak_signal == 1) {
-            printf("ebreak_signal = 1\n");
-            break;
-        }
+        // if(top->ebreak_signal == 1) {
+        //     printf("ebreak_signal = 1\n");
+        //     break;
+        // }
         //i--;
     }
     // top->x0 = 0;top->x1 = 1;top->x2 = 2;top->x3 = 3;top->sel = 0;step_and_dump_wave();
