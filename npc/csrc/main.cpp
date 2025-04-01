@@ -37,10 +37,11 @@ void sim_exit(){
 int main(){
     sim_init();
 
-    int i = 10;
-    while(i > 0) {
+   // int i = 10;
+    while(1) {
         single_cycle();
-        i--;
+        if(top->ebreak_signal == 1) break;
+        //i--;
     }
     // top->x0 = 0;top->x1 = 1;top->x2 = 2;top->x3 = 3;top->sel = 0;step_and_dump_wave();
     // top->sel = 1;step_and_dump_wave();

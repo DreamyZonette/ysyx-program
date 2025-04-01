@@ -1,7 +1,7 @@
 module top (
     input clk,
-    input reset
-
+    input reset,
+    output reg ebreak_signal
 );
 
 wire [7:0] op_ins;
@@ -18,6 +18,16 @@ wire [31:0] result;
 wire [4:0] rd;
 wire jump_singnal;
 wire ram_signal;
+
+always @(posedge clk) begin
+    if (reset) begin
+        ebreak_signal <= 0;
+    end else if (data == 32'h00100073) begin // ebreak 指令
+        ebreak_signal <= 1;
+    end else begin
+        ebreak_signal <= 0;
+    end
+end
 
 ysyx_25020042_pc pc (
     .clk(clk),
