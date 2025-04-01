@@ -28,6 +28,7 @@ ysyx_25020042_pc pc (
 );
 
 ysyx_25020042_rom rom (
+    .clk(clk),
     .addr(addr),
     .data(data)
 );
