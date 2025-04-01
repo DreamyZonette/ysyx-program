@@ -437,7 +437,7 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
                                  : 0U);
     vlSelf->top__DOT__src1 = vlSelf->top__DOT__gpr__DOT__reg_file
         [(0x1fU & (vlSelf->top__DOT__data >> 0xfU))];
-    vlSelf->top__DOT__result = ((0U == (IData)(vlSelf->top__DOT__op_ins))
+    vlSelf->top__DOT__result = ((1U == (IData)(vlSelf->top__DOT__op_ins))
                                  ? (vlSelf->top__DOT__src1 
                                     + ((0x13U == (0x7fU 
                                                   & vlSelf->top__DOT__data))
@@ -447,7 +447,7 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
                                             << 0xcU) 
                                            | (vlSelf->top__DOT__data 
                                               >> 0x14U))
-                                        : 0U)) : ((1U 
+                                        : 0U)) : ((2U 
                                                    == (IData)(vlSelf->top__DOT__op_ins))
                                                    ? 
                                                   (vlSelf->top__DOT__src1 
@@ -458,7 +458,7 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
                                                     & (vlSelf->top__DOT__data 
                                                        >> 0x14U))])
                                                    : 
-                                                  ((2U 
+                                                  ((3U 
                                                     == (IData)(vlSelf->top__DOT__op_ins))
                                                     ? 
                                                    ((0x825U 

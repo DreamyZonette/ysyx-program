@@ -18,6 +18,9 @@ module ysyx_25020042_rom # (ADDR_WIDTH = 32)(
     initial begin
         rom_mem[0] = 32'h00500093; // ADDI x1, x0, 5   # x1 = x0 + 5 = 0 + 5 = 5
         rom_mem[1] = 32'hffd08113; // ADDI x2, x1, -3  # x2 = x1 + (-3) = x1 - 3
+        rom_mem[2] = 32'h00018193; // ADDI x3, x3, 0   # x3 = x3 + 0 = x3（无操作，可用于寄存器依赖同步）
+        rom_mem[3] = 32'h7ff20213; // ADDI x4, x4, 2047  # x4 = x4 + 2047
+        rom_mem[4] = 32'h80028293; // ADDI x5, x5, -2048  # x5 = x5 - 2048
     end
     // initial begin
     always @(posedge clk) begin
