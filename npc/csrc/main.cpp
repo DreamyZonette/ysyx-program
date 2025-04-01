@@ -45,16 +45,8 @@ void sim_exit(){
 
 int main(){
     sim_init();
-    //logic sim_finish = false;
-
-   // int i = 10;
-    while(/*!Verilated::gotFinish() && */!sim_finish) {
+    while(!Verilated::gotFinish() && !sim_finish) {
         single_cycle();
-        // if(top->ebreak_signal == 1) {
-        //     printf("ebreak_signal = 1\n");
-        //     break;
-        // }
-        //i--;
     }
     sim_exit();
 }

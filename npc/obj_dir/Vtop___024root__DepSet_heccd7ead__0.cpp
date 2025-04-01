@@ -31,8 +31,7 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
     // Body
     __Vdly__top__DOT__addr = vlSelf->top__DOT__addr;
     __Vdlyvset__top__DOT__ram__DOT__ram_mem__v0 = 0U;
-    if (VL_UNLIKELY((0x100073U == vlSelf->top__DOT__cur_data))) {
-        VL_FINISH_MT("vsrc/top.v", 31, "");
+    if ((0x100073U == vlSelf->top__DOT__cur_data)) {
         Vtop___024root____Vdpiimwrap_top__DOT__dpi_ebreak_TOP();
     }
     if (vlSelf->reset) {
