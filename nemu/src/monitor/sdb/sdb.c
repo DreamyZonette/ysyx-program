@@ -123,8 +123,9 @@ static int cmd_x (char *args){
 	// else {
 	// 	printf("Parsed hex string. Stopped at: %s\n", endptr);
 	// } 
+	bool success = false;
 	char* addr_str = strtok(NULL, delim);
-	uint32_t addr = expr(addr_str, 0);
+	uint32_t addr = expr(addr_str, &success);
 	if (addr < 0x80000000) {
 		printf("Invalid address\n");
 		printf("Address is out of range\n");
