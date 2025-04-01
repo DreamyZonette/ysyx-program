@@ -10,7 +10,7 @@ module ysyx_25020042_rom # (ADDR_WIDTH = 32)(
     // 地址转换为索引（按 4 字节对齐）
     wire [31:0] shifted_addr = (addr - 32'h80000000) >> 2;
     wire [9:0] rom_offset = shifted_addr[9:0];
-    wire [31:10] unused_signal = shifted_addr[31:10];
+    wire [31:10] unused_signal = shifted_addr[31:10];// 显性提示没有使用
     // reg [31:0] rom_mem [80000000+1024-1:80000000] = '{default:0};
     // initial begin
     //     $readmemh("npc/rom.txt", rom_mem);

@@ -50,6 +50,9 @@ VL_ATTR_COLD void Vtop___024root___eval_initial__TOP(Vtop___024root* vlSelf) {
     // Body
     vlSelf->top__DOT__rom__DOT__rom_mem[0U] = 0x500093U;
     vlSelf->top__DOT__rom__DOT__rom_mem[1U] = 0xffd08113U;
+    vlSelf->top__DOT__rom__DOT__rom_mem[2U] = 0x18193U;
+    vlSelf->top__DOT__rom__DOT__rom_mem[3U] = 0x7ff20213U;
+    vlSelf->top__DOT__rom__DOT__rom_mem[4U] = 0x80028293U;
 }
 
 VL_ATTR_COLD void Vtop___024root___eval_final(Vtop___024root* vlSelf) {
