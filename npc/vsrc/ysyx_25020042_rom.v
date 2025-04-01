@@ -7,8 +7,9 @@ module ysyx_25020042_rom # (ADDR_WIDTH = 32)(
     reg [31:0] rom_mem [0:1023] = '{default:0};
 
     // 地址转换为索引（按 4 字节对齐）
-    wire [31:0] shifted_addr = (addr - 32'h80000000) >> 2;
-    wire [9:0] rom_offset = shifted_addr[9:0];
+    // wire [31:0] shifted_addr = (addr - 32'h80000000) >> 2;
+    // wire [9:0] rom_offset = shifted_addr[9:0];
+    wire [9:0] rom_offset = ((addr - 32'h80000000) >> 2) & 10'h3FF; // 用掩码取低10位
     // reg [31:0] rom_mem [80000000+1024-1:80000000] = '{default:0};
     // initial begin
     //     $readmemh("npc/rom.txt", rom_mem);
