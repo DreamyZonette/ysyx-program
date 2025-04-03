@@ -114,17 +114,25 @@ static int cmd_x (char *args){
 		return 0;
 	} 
 //获 得地址	
-	char *endptr;
+	// char *endptr;
+	// char* addr_str = strtok(NULL, delim);
+	// uint32_t addr = strtol(addr_str, &endptr, 16);
+	// if (*endptr == '\0') {
+	// printf("addr: 0x%x\n",addr);
+	// } 
+	// else {
+	// 	printf("Parsed hex string. Stopped at: %s\n", endptr);
+	// } 
+	bool success = false;
 	char* addr_str = strtok(NULL, delim);
-	long addr = strtol(addr_str, &endptr, 16);
-	if (*endptr == '\0') {
-	printf("addr: %lx\n",addr);
-	} 
-	else {
-		printf("Parsed hex string. Stopped at: %s\n", endptr);
-	} 
+	uint32_t addr = expr(addr_str, &success);
+	if (addr < 0x80000000) {
+		printf("Invalid address\n");
+		printf("Address is out of range\n");
+		return 0;
+	}
 	for(int i = 0 ; i < N  ; i++){
-		printf("addr:%lx --> %x\n",addr,paddr_read(addr,4));
+		printf("addr:0x%08x --> %08x\n",addr,paddr_read(addr,4));
 		addr += 4;
 	}
 	return 0;
