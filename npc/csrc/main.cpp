@@ -50,4 +50,5 @@ int main(){
     }
     printf("Simulation finished\n");
     sim_exit();
+    return 0;
 }

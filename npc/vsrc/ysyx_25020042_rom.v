@@ -26,8 +26,8 @@ module ysyx_25020042_rom # (ADDR_WIDTH = 32)(
         rom_mem[5] = 32'h00100073; // ebreak
     end
     // initial begin
-    always @(posedge clk) begin
-        data <= rom_mem[rom_offset];
+    always @(*) begin
+        data = rom_mem[rom_offset];
     end
     //assign data = rom_mem[rom_offset];
 
