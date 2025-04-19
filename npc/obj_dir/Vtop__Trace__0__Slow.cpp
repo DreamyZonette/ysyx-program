@@ -413,7 +413,6 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("rom ");
     tracep->declBus(c+118,"ADDR_WIDTH", false,-1, 31,0);
-    tracep->declBit(c+114,"clk", false,-1);
     tracep->declBus(c+2,"addr", false,-1, 31,0);
     tracep->declBus(c+3,"data", false,-1, 31,0);
     tracep->declBus(c+111,"shifted_addr", false,-1, 31,0);

@@ -1,5 +1,5 @@
 module ysyx_25020042_rom # (ADDR_WIDTH = 32)(
-    input clk,
+    //input clk,
     input [ADDR_WIDTH-1:0] addr,// pc
     output reg [31:0] data
 );
@@ -26,8 +26,8 @@ module ysyx_25020042_rom # (ADDR_WIDTH = 32)(
         rom_mem[5] = 32'h00100073; // ebreak
     end
     // initial begin
-    always @(posedge clk) begin
-        data <= rom_mem[rom_offset];
+    always @(*) begin
+        data = rom_mem[rom_offset];
     end
     //assign data = rom_mem[rom_offset];
 

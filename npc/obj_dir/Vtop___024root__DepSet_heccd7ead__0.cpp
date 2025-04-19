@@ -20,8 +20,6 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___nba_sequent__TOP__0\n"); );
     // Init
-    IData/*31:0*/ __Vdly__top__DOT__addr;
-    __Vdly__top__DOT__addr = 0;
     SData/*11:0*/ __Vdlyvdim0__top__DOT__ram__DOT__ram_mem__v0;
     __Vdlyvdim0__top__DOT__ram__DOT__ram_mem__v0 = 0;
     IData/*31:0*/ __Vdlyvval__top__DOT__ram__DOT__ram_mem__v0;
@@ -29,13 +27,11 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
     CData/*0:0*/ __Vdlyvset__top__DOT__ram__DOT__ram_mem__v0;
     __Vdlyvset__top__DOT__ram__DOT__ram_mem__v0 = 0;
     // Body
-    __Vdly__top__DOT__addr = vlSelf->top__DOT__addr;
-    __Vdlyvset__top__DOT__ram__DOT__ram_mem__v0 = 0U;
     if ((0x100073U == vlSelf->top__DOT__cur_data)) {
         Vtop___024root____Vdpiimwrap_top__DOT__dpi_ebreak_TOP();
     }
+    __Vdlyvset__top__DOT__ram__DOT__ram_mem__v0 = 0U;
     if (vlSelf->reset) {
-        __Vdly__top__DOT__addr = 0x80000000U;
         vlSelf->top__DOT__ram__DOT____Vlvbound_h09251640__0 = 0U;
         if ((0x825U >= (0xfffU & ((IData)(0x801U) + vlSelf->top__DOT__addr)))) {
             __Vdlyvval__top__DOT__ram__DOT__ram_mem__v0 
@@ -44,6 +40,7 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
             __Vdlyvdim0__top__DOT__ram__DOT__ram_mem__v0 
                 = (0xfffU & ((IData)(0x801U) + vlSelf->top__DOT__addr));
         }
+        vlSelf->top__DOT__addr = 0x80000000U;
         vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__31__KET____DOT__r0__dout = 0U;
         vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__30__KET____DOT__r0__dout = 0U;
         vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__29__KET____DOT__r0__dout = 0U;
@@ -77,7 +74,7 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
         vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__1__KET____DOT__r0__dout = 0U;
         vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__0__KET____DOT__r0__dout = 0U;
     } else {
-        __Vdly__top__DOT__addr = ((IData)(4U) + vlSelf->top__DOT__addr);
+        vlSelf->top__DOT__addr = ((IData)(4U) + vlSelf->top__DOT__addr);
         if (((0U != (0x1fU & (vlSelf->top__DOT__cur_data 
                               >> 7U))) & (((IData)(1U) 
                                            << (0x1fU 
@@ -370,6 +367,9 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
         vlSelf->top__DOT__ram__DOT__ram_mem[__Vdlyvdim0__top__DOT__ram__DOT__ram_mem__v0] 
             = __Vdlyvval__top__DOT__ram__DOT__ram_mem__v0;
     }
+    vlSelf->top__DOT__cur_data = vlSelf->top__DOT__rom__DOT__rom_mem
+        [(0x3ffU & ((vlSelf->top__DOT__addr - (IData)(0x80000000U)) 
+                    >> 2U))];
     vlSelf->top__DOT__gpr__DOT__reg_file[0x1fU] = vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__31__KET____DOT__r0__dout;
     vlSelf->top__DOT__gpr__DOT__reg_file[0x1eU] = vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__30__KET____DOT__r0__dout;
     vlSelf->top__DOT__gpr__DOT__reg_file[0x1dU] = vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__29__KET____DOT__r0__dout;
@@ -402,10 +402,6 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
     vlSelf->top__DOT__gpr__DOT__reg_file[2U] = vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__2__KET____DOT__r0__dout;
     vlSelf->top__DOT__gpr__DOT__reg_file[1U] = vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__1__KET____DOT__r0__dout;
     vlSelf->top__DOT__gpr__DOT__reg_file[0U] = vlSelf->top__DOT__gpr__DOT____Vcellout__genblk1__BRA__0__KET____DOT__r0__dout;
-    vlSelf->top__DOT__cur_data = vlSelf->top__DOT__rom__DOT__rom_mem
-        [(0x3ffU & ((vlSelf->top__DOT__addr - (IData)(0x80000000U)) 
-                    >> 2U))];
-    vlSelf->top__DOT__addr = __Vdly__top__DOT__addr;
     vlSelf->top__DOT__op_ins = ((0x13U == (0x7fU & vlSelf->top__DOT__cur_data))
                                  ? ((0U == (7U & (vlSelf->top__DOT__cur_data 
                                                   >> 0xcU)))
