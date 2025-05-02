@@ -155,7 +155,7 @@ config TRACE_END
 
 config ITRACE
   depends on TRACE && TARGET_NATIVE_ELF && ENGINE_INTERPRETER
-  bool "Enable instruction tracer"
+  bool "Enable instruction tracer(ITRACE)"
   default y
 
 config ITRACE_COND
@@ -163,6 +163,34 @@ config ITRACE_COND
   string "Only trace instructions when the condition is true"
   default "true"
 
+config MTRACE
+  depends on TRACE
+  bool "Enable memory access tracer(MTRACE)"
+  default n
+  help
+    Enable tracing of memory read/write operations.
+    This helps with debugging memory-related issues.
+
+config MTRACE_COND
+  depends on MTRACE
+  string "Only trace memory accesses when the condition is true"
+  default "true"
+
+config FTRACE
+  depends on TRACE
+  bool "Enable function call tracer(FTRACE)"
+  default n
+  help
+    Enable tracing of function calls and returns.
+    This helps with understanding program flow and call stack.
+
+config DTRACE
+  depends on TRACE
+  bool "Enable device access tracer(DTRACE)"
+  default n
+  help
+    Enable tracing of device register read/write operations.
+    This helps with debugging device interaction issues.
 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
