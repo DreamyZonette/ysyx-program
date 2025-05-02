@@ -46,7 +46,7 @@ void print_iringbuf(vaddr_t pc) {
     // 标记出错指令
     const char *marker = (idx == error_idx) ? "-->" : "   ";
     
-    printf("%s 0x%08x: %30s %08x\n", 
+    printf("%s 0x%08x: %-40s %08x\n", 
            marker, (uint32_t)iringbuf[idx].pc, iringbuf[idx].asm_buf, iringbuf[idx].inst);
   }
   printf("\n");
