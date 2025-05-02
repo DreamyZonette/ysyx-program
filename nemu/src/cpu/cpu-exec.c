@@ -17,6 +17,7 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
+#include <memory/vaddr.h>
 #include "../monitor/sdb/sdb.h"
 
 /* The assembly code of instructions executed is only output to the screen
@@ -114,7 +115,10 @@ static void exec_once(Decode *s, vaddr_t pc) {
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
 #endif
 #ifdef CONFIG_IRINGBUF
-
+  // 将指令添加到环形缓冲区
+  // word_t vaddr_read(vaddr_t addr, int len);
+  uint32_t iringbuf_inst = vaddr_read(pc, 4);
+  iringbuf_add_inst(s->pc, iringbuf_inst, p);
 #endif
 }
 
@@ -139,7 +143,11 @@ static void statistic() {
 }
 
 void assert_fail_msg() {
+#ifdef CONFIG_IRINGBUF
+  print_iringbuf(cpu.pc);
+#else
   isa_reg_display();
+#endif
   statistic();
 }
 
@@ -169,11 +177,11 @@ void cpu_exec(uint64_t n) {
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
-          // if(nemu_state.state == NEMU_ABORT || nemu_state.halt_ret != 0){
-          //   printf("Trace(itrace):\n");
-          //   INV(cpu.pc);
-          //   printf("Trace end:\n");
-          // }
+          #ifdef CONFIG_IRINGBUF
+            if(nemu_state.state == NEMU_ABORT){
+              print_iringbuf(cpu.pc);
+            }
+          #endif
       // fall through
     case NEMU_QUIT: statistic();
   }
