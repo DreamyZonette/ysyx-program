@@ -46,10 +46,26 @@ void print_iringbuf(vaddr_t pc) {
     // 标记出错指令
     const char *marker = (idx == error_idx) ? "-->" : "   ";
     
+    // 分离指令和操作数
+    char instr[16] = {0};
+    char operands[112] = {0};
+    
+    // 尝试分离指令和操作数（假设格式为"指令 操作数"）
+    char *space = strchr(iringbuf[idx].asm_buf, ' ');
+    if (space) {
+      int instr_len = space - iringbuf[idx].asm_buf;
+      strncpy(instr, iringbuf[idx].asm_buf, instr_len);
+      instr[instr_len] = '\0';
+      strcpy(operands, space + 1);
+    } else {
+      // 如果没有空格，整个字符串都是指令
+      strcpy(instr, iringbuf[idx].asm_buf);
+    }
+    
     // 格式化输出，使各部分对齐
-    // 格式: [标记] [PC地址]:[指令文本]                [机器码]
-    printf("%s 0x%08x: %-32s %08x\n", 
-           marker, (uint32_t)iringbuf[idx].pc, iringbuf[idx].asm_buf, iringbuf[idx].inst);
+    // 格式: [标记] [PC地址]: [指令]  [操作数]                [机器码]
+    printf("%s 0x%08x: %-7s %-25s %08x\n", 
+           marker, (uint32_t)iringbuf[idx].pc, instr, operands, iringbuf[idx].inst);
   }
   printf("\n");
 }
