@@ -132,6 +132,12 @@ config WATCHPOINT
     help
       Enable watchpoint checking for debugging expressions.
       This will slightly reduce emulation performance.
+config IRINGBUF
+    bool "Enable instruction ring buffer"
+    default n
+    help
+      Enable instruction ring buffer for recording recent instructions.
+      This helps with debugging by showing execution history when a program crashes.
       
 config TRACE
   bool "Enable tracer"
