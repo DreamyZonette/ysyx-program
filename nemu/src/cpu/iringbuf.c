@@ -62,9 +62,8 @@ void print_iringbuf(vaddr_t pc) {
       strcpy(instr, iringbuf[idx].asm_buf);
     }
     
-    // 格式化输出，使各部分对齐
-    // 格式: [标记] [PC地址]: [指令]  [操作数]                [机器码]
-    printf("%s 0x%08x: %-7s %-25s %08x\n", 
+    // 格式化输出，使用固定宽度的列
+    printf("%s 0x%08x     %-16s  %-17s  %08x\n", 
            marker, (uint32_t)iringbuf[idx].pc, instr, operands, iringbuf[idx].inst);
   }
   printf("\n");
