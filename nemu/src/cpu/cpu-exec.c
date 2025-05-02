@@ -169,6 +169,7 @@ void cpu_exec(uint64_t n) {
           if(nemu_state.state == NEMU_ABORT || nemu_state.halt_ret == 0){
             printf("Trace(itrace):\n");
             INV(cpu.pc);
+            printf("Trace end:\n");
           }
       // fall through
     case NEMU_QUIT: statistic();
