@@ -179,7 +179,7 @@ void cpu_exec(uint64_t n) {
           nemu_state.halt_pc);
           #ifdef CONFIG_IRINGBUF
             if(nemu_state.state == NEMU_ABORT){
-              print_iringbuf(cpu.pc);
+              print_iringbuf(nemu_state.halt_pc);
             }
           #endif
       // fall through
