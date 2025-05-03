@@ -39,15 +39,16 @@ void print_iringbuf(vaddr_t pc) {
   
   for (int i = 0; i < IRINGBUF_SIZE; i++) {
     // int idx = (start + i) % IRINGBUF_SIZE;
+    int idx = i;
     
     // 跳过未初始化的条目
-    if (iringbuf[i].pc == 0) continue;
+    if (iringbuf[idx].pc == 0) continue;
     
     // 标记出错指令
-    const char *marker = (i == error_idx) ? "-->" : "   ";
+    const char *marker = (idx == error_idx) ? "-->" : "   ";
     
     printf("%s 0x%08x: %-24s %08x\n", 
-           marker, (uint32_t)iringbuf[i].pc, iringbuf[i].asm_buf, iringbuf[i].inst);
+           marker, (uint32_t)iringbuf[idx].pc, iringbuf[idx].asm_buf, iringbuf[idx].inst);
   }
   printf("\n");
 }
