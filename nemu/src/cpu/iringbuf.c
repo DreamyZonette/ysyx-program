@@ -35,19 +35,19 @@ void print_iringbuf(vaddr_t pc) {
   }
   
   // 从最旧的指令开始打印
-  int start = (iringbuf_index) % IRINGBUF_SIZE;
+  // int start = (iringbuf_index) % IRINGBUF_SIZE;
   
   for (int i = 0; i < IRINGBUF_SIZE; i++) {
-    int idx = (start + i) % IRINGBUF_SIZE;
+    // int idx = (start + i) % IRINGBUF_SIZE;
     
     // 跳过未初始化的条目
-    if (iringbuf[idx].pc == 0) continue;
+    if (iringbuf[i].pc == 0) continue;
     
     // 标记出错指令
-    const char *marker = (idx == error_idx) ? "-->" : "   ";
+    const char *marker = (i == error_idx) ? "-->" : "   ";
     
     printf("%s 0x%08x: %-24s %08x\n", 
-           marker, (uint32_t)iringbuf[idx].pc, iringbuf[idx].asm_buf, iringbuf[idx].inst);
+           marker, (uint32_t)iringbuf[i].pc, iringbuf[i].asm_buf, iringbuf[i].inst);
   }
   printf("\n");
 }
