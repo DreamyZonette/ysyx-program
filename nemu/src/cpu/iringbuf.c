@@ -49,7 +49,7 @@ void print_iringbuf(vaddr_t pc) {
     
     // printf("%s 0x%08x: %-24s %08x\n", 
     //        marker, (uint32_t)iringbuf[idx].pc, iringbuf[idx].asm_buf, iringbuf[idx].inst);
-    printf("%s 0x%08x: %-20s %02x %02x %02x %02x\n", 
+    printf("%s 0x%08x: %-20s  \t%02x %02x %02x %02x\n", 
             marker,
             (uint32_t)iringbuf[idx].pc,
             iringbuf[idx].asm_buf,
