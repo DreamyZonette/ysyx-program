@@ -36,6 +36,7 @@ void print_iringbuf(vaddr_t pc) {
   
   // 从最旧的指令开始打印
   int start = (iringbuf_index) % IRINGBUF_SIZE;
+  char p_str [256];
   
   for (int i = 0; i < IRINGBUF_SIZE; i++) {
     int idx = (start + i) % IRINGBUF_SIZE;
@@ -49,7 +50,7 @@ void print_iringbuf(vaddr_t pc) {
     
     // printf("%s 0x%08x: %-24s %08x\n", 
     //        marker, (uint32_t)iringbuf[idx].pc, iringbuf[idx].asm_buf, iringbuf[idx].inst);
-    Log("%s 0x%08x: %-20s  \t%02x %02x %02x %02x\n", 
+    snprintf(p_str, sizeof(p_str) - 1, "%s 0x%08x: %20s  \t%02x %02x %02x %02x\n", 
             marker,
             (uint32_t)iringbuf[idx].pc,
             iringbuf[idx].asm_buf,
@@ -57,6 +58,16 @@ void print_iringbuf(vaddr_t pc) {
             (iringbuf[idx].inst >> 16) & 0xFF,
             (iringbuf[idx].inst >> 8)  & 0xFF,
             iringbuf[idx].inst & 0xFF);
+    // printf("%s 0x%08x: %-20s  \t%02x %02x %02x %02x\n", 
+    //         marker,
+    //         (uint32_t)iringbuf[idx].pc,
+    //         iringbuf[idx].asm_buf,
+    //         (iringbuf[idx].inst >> 24) & 0xFF,
+    //         (iringbuf[idx].inst >> 16) & 0xFF,
+    //         (iringbuf[idx].inst >> 8)  & 0xFF,
+    //         iringbuf[idx].inst & 0xFF);
+    printf("%s", p_str);
+    log_write("%s", p_str);
   }
   printf("\n");
 }
