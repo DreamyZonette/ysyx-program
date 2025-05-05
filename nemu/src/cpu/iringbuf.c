@@ -35,11 +35,11 @@ void print_iringbuf(vaddr_t pc) {
   }
   
   // 从最旧的指令开始打印
-  // int start = (iringbuf_index) % IRINGBUF_SIZE;
+  int start = (iringbuf_index) % IRINGBUF_SIZE;
   
   for (int i = 0; i < IRINGBUF_SIZE; i++) {
-    // int idx = (start + i) % IRINGBUF_SIZE;
-    int idx = i;
+    int idx = (start + i) % IRINGBUF_SIZE;
+    // int idx = i;
     
     // 跳过未初始化的条目
     if (iringbuf[idx].pc == 0) continue;
@@ -47,8 +47,16 @@ void print_iringbuf(vaddr_t pc) {
     // 标记出错指令
     const char *marker = (idx == error_idx) ? "-->" : "   ";
     
-    printf("%s 0x%08x: %-24s %08x\n", 
-           marker, (uint32_t)iringbuf[idx].pc, iringbuf[idx].asm_buf, iringbuf[idx].inst);
+    // printf("%s 0x%08x: %-24s %08x\n", 
+    //        marker, (uint32_t)iringbuf[idx].pc, iringbuf[idx].asm_buf, iringbuf[idx].inst);
+    printf("%s 0x%08x: %-20s %02x %02x %02x %02x\n", 
+            marker,
+            (uint32_t)iringbuf[idx].pc,
+            iringbuf[idx].asm_buf,
+            (iringbuf[idx].inst >> 24) & 0xFF,
+            (iringbuf[idx].inst >> 16) & 0xFF,
+            (iringbuf[idx].inst >> 8)  & 0xFF,
+            iringbuf[idx].inst & 0xFF);
   }
   printf("\n");
 }
