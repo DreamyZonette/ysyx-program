@@ -53,7 +53,7 @@ void init_mem() {
 word_t paddr_read(paddr_t addr, int len) {
   #ifdef CONFIG_MTRACE
     char p [128];
-    snprintf(p, 127, "read:"FMT_WORD"\tlen:%d", addr, len);
+    snprintf(p, 127, "read:"FMT_WORD"\t\tlen:%d", addr, len);
     p[127] = '\0';
     log_write("%s\n", p);
   #endif
