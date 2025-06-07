@@ -93,6 +93,9 @@ static int parse_args(int argc, char *argv[]) {
         exit(0);
     }
   }
+#ifdef CONFIG_FTRACE 
+	void extract_functions(img_file);
+#endif
   return 0;
 }
 

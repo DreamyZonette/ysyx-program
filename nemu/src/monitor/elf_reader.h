@@ -3,6 +3,13 @@
 #include <string.h>
 #include <elf.h>
 
+typedef struct functab{
+	uint32_t value;
+	char func_name [20];	
+}Functab;
+
+Functab functab [30];
+
 // 读取ELF文件并提取函数名
 void extract_functions(const char* elf_path) {
     FILE* fp = fopen(elf_path, "rb");
@@ -57,14 +64,24 @@ void extract_functions(const char* elf_path) {
     fseek(fp, symtab_hdr.sh_offset, SEEK_SET);
     fread(symbols, symtab_hdr.sh_size, 1, fp);
 
-    printf("Found functions:\n");
+    //printf("Found functions:\n");
+		int ind = 0;
     for (int i = 0; i < sym_count; i++) {
         unsigned char type = ELF32_ST_TYPE(symbols[i].st_info);
         if (type == STT_FUNC) {  // 过滤函数符号
             char* func_name = strtab + symbols[i].st_name;
-            printf("  [%d] %s\n", i, func_name);
+						strncpy(functab[ind].func_name, func_name, 19);
+						functab[ind].func_name[19] = '\0';
+						functab[ind].value = symbols[i].st_value;
+						ind ++;
+						//printf("  [%s@%08x]\n", func_name, symbols[i].st_value);
         }
     }
+
+		//便历程序
+		for(int i = 0; i < ind; i ++){
+			printf("  [%s@%08x]\n", functab[i].func_name, functab[i].value);
+		}
 
     // 7. 清理资源
     free(strtab);
