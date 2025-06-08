@@ -148,9 +148,9 @@ if (functab) {
     }
 
 		//便历程序
-		for(int i = 0; i < functab_count; i ++){
-			printf("  [%s@%08x]\n", functab[i].func_name, functab[i].value);
-		}
+		// for(int i = 0; i < functab_count; i ++){
+		// 	printf("  [%s@%08x]\n", functab[i].func_name, functab[i].value);
+		// }
 
     // 7. 清理资源
     free(strtab);
