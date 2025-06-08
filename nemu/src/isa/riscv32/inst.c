@@ -18,6 +18,13 @@
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 
+#ifdef CONFIG_FTRACE
+#include "../../monitor/elf_reader.h"
+  int blanks = 1;
+#endif
+
+
+
 #define R(i) gpr(i)
 #define Mr vaddr_read
 #define Mw vaddr_write
@@ -132,5 +139,46 @@ static int decode_exec(Decode *s) {
 
 int isa_exec_once(Decode *s) {
   s->isa.inst = inst_fetch(&s->snpc, 4);
+
+  #ifdef CONFIG_FTRACE
+  int is_call = 0;
+  int is_ret = 0;
+
+  uint32_t opcode = BITS(s->isa.inst, 6, 0);
+  uint32_t rd = BITS(s->isa.inst, 11, 7);
+  uint32_t rs1 = BITS(s->isa.inst, 19, 15);
+ 
+
+  if ((opcode == 0x6F && rd == 1) ||  // JAL rd=x1
+      (opcode == 0x67 && rd == 1)) {  // JALR rd=x1
+    is_call = 1;
+  }
+  if (opcode == 0x67 && rs1 == 1 && rd == 0) {
+    is_ret = 1;
+  }
+  
+  int ret = decode_exec(s);
+  if (is_call) {
+    for(int i = 0; i < functab_count; i ++){
+      if(functab[i].value == s->pc){
+        log_write("0x%08x:   call [%s@0x%08x]", s->pc, functab[i].func_name, functab[i].value);
+        printf("0x%08x:   call [%s@0x%08x]\n", s->pc, functab[i].func_name, functab[i].value);
+        break;
+      }
+    }
+  }
+  else if (is_ret) {
+    //log_write("0x%08x:    ret", s->pc);
+    for(int i = 0; i < functab_count; i ++){
+      if(functab[i].value == s->pc){
+        log_write("0x%08x:   ret [%s@0x%08x]", s->pc, functab[i].func_name, functab[i].value);
+        printf("0x%08x:   ret [%s@0x%08x]\n", s->pc, functab[i].func_name, functab[i].value);
+        break;
+      }
+    }
+  }
+  
+  return ret;
+#endif
   return decode_exec(s);
 }
