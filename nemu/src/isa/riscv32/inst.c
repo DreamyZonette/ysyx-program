@@ -159,7 +159,7 @@ int isa_exec_once(Decode *s) {
   
   int ret = decode_exec(s);
   if (is_call) {
-    printf("is call\n");
+    //printf("is call\n");
     for(int i = 0; i < functab_count; i ++){
       if(functab[i].value == s->dnpc){
         log_write("0x%08x:   call [%s@0x%08x]", s->pc, functab[i].func_name, functab[i].value);
@@ -169,7 +169,7 @@ int isa_exec_once(Decode *s) {
     }
   }
   else if (is_ret) {
-    printf("is ret\n");
+    //printf("is ret\n");
     for(int i = 0; i < functab_count; i ++){
       if(functab[i].value == s->dnpc){
         log_write("0x%08x:   ret [%s@0x%08x]", s->pc, functab[i].func_name, functab[i].value);
