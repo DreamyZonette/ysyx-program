@@ -126,7 +126,19 @@ endmenu
 
 menu "Testing and Debugging"
 
-
+config WATCHPOINT
+    bool "Enable watchpoint support"
+    default n
+    help
+      Enable watchpoint checking for debugging expressions.
+      This will slightly reduce emulation performance.
+config IRINGBUF
+    bool "Enable instruction ring buffer"
+    default n
+    help
+      Enable instruction ring buffer for recording recent instructions.
+      This helps with debugging by showing execution history when a program crashes.
+      
 config TRACE
   bool "Enable tracer"
   default y
@@ -143,7 +155,7 @@ config TRACE_END
 
 config ITRACE
   depends on TRACE && TARGET_NATIVE_ELF && ENGINE_INTERPRETER
-  bool "Enable instruction tracer"
+  bool "Enable instruction tracer(ITRACE)"
   default y
 
 config ITRACE_COND
@@ -151,6 +163,34 @@ config ITRACE_COND
   string "Only trace instructions when the condition is true"
   default "true"
 
+config MTRACE
+  depends on TRACE
+  bool "Enable memory access tracer(MTRACE)"
+  default n
+  help
+    Enable tracing of memory read/write operations.
+    This helps with debugging memory-related issues.
+
+config MTRACE_COND
+  depends on MTRACE
+  string "Only trace memory accesses when the condition is true"
+  default "true"
+
+config FTRACE
+  depends on TRACE
+  bool "Enable function call tracer(FTRACE)"
+  default n
+  help
+    Enable tracing of function calls and returns.
+    This helps with understanding program flow and call stack.
+
+config DTRACE
+  depends on TRACE
+  bool "Enable device access tracer(DTRACE)"
+  default n
+  help
+    Enable tracing of device register read/write operations.
+    This helps with debugging device interaction issues.
 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
@@ -214,11 +254,6 @@ config RT_CHECK
   bool "Enable runtime checking"
   default y
 
-config WATCHPOINT
-    bool "Enable watchpoint support"
-    default n
-    help
-      Enable watchpoint checking for debugging expressions.
-      This will slightly reduce emulation performance.
+
 
 endmenu
