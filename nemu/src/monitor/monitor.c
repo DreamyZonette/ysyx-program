@@ -51,71 +51,7 @@ static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
 
-// static long load_img() {
-//   if (img_file == NULL) {
-//     Log("No image is given. Use the default build-in image.");
-//     return 4096; // built-in image size
-//   }
 
-//   FILE *fp = fopen(img_file, "rb");
-//   Assert(fp, "Can not open '%s'", img_file);
-
-//   // 检查是否为ELF文件
-//   uint32_t magic;
-//   int ret = fread(&magic, sizeof(magic), 1, fp);
-//   assert(ret == 1);
-//   fseek(fp, 0, SEEK_SET); // 回到文件开头
-//   long size = 0;
-
-//   if (magic == ELF_MAGIC) {
-//     // ELF文件处理逻辑
-//     Log("Loading ELF image: %s", img_file);
-    
-//     // 读取ELF头
-//     Elf32_Ehdr ehdr;
-//     int ret = fread(&ehdr, sizeof(ehdr), 1, fp);
-//     assert(ret == 1);
-    
-//     // 遍历程序头表，加载各个段
-//     fseek(fp, ehdr.e_phoff, SEEK_SET);
-//     for (int i = 0; i < ehdr.e_phnum; i++) {
-//       Elf32_Phdr phdr;
-//       int ret = fread(&phdr, sizeof(phdr), 1, fp);
-//       assert(ret == 1);
-      
-//       // 只加载LOAD类型的段
-//       if (phdr.p_type == 1) { // PT_LOAD
-//         fseek(fp, phdr.p_offset, SEEK_SET);
-//         void *dst = guest_to_host(phdr.p_vaddr);
-//         int ret = fread(dst, phdr.p_filesz, 1, fp);
-//         // int ret = fread(guest_to_host(RESET_VECTOR), phdr.p_filesz, 1, fp);
-//         assert(ret == 1); 
-        
-//         size += phdr.p_filesz;
-        
-        
-//       }     
-//     }  
-//     Log("The image is %s, size = %ld", img_file, size);
-//     fclose(fp);
-//   }
-//   else{
-//     fseek(fp, 0, SEEK_END);
-//     size = ftell(fp);
-
-//     Log("The image is %s, size = %ld", img_file, size);
-
-//     fseek(fp, 0, SEEK_SET);
-//     int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
-//     assert(ret == 1);
-
-//     fclose(fp);
-    
-//   }
-//   return size;
-
-  
-// }
 static long load_img() {
   if (img_file == NULL) {
     Log("No image is given. Use the default build-in image.");

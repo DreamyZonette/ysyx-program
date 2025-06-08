@@ -20,6 +20,13 @@
 #include <memory/vaddr.h>
 #include "../monitor/sdb/sdb.h"
 
+#ifdef CONFIG_FTRACE
+#include "../monitor/elf_reader.h"
+  // int functab_count;
+  // Functab* functab;
+#endif
+
+
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -119,6 +126,13 @@ static void exec_once(Decode *s, vaddr_t pc) {
   // word_t vaddr_read(vaddr_t addr, int len);
   uint32_t iringbuf_inst = vaddr_read(pc, 4);
   iringbuf_add_inst(s->pc, iringbuf_inst, p);
+#endif
+#ifdef CONFIG_FTRACE
+  for(int i = 0; i < functab_count; i ++){
+    if(functab[i].value == pc){
+      log_write("0x%08x:    [%s@0x%08x]", pc, functab[i].func_name, functab[i].value);
+    }
+  }
 #endif
 }
 
