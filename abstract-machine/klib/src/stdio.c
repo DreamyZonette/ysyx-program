@@ -51,6 +51,21 @@ int printf(const char *fmt, ...) {
           p ++;
           break;
         }
+        case 'c':
+        {
+          int ch = va_arg(args, int);
+          putch(ch);
+          count ++;
+          p ++;
+          break;
+        }
+        case '%':
+        {
+          putch('%');
+          count ++;
+          p ++;
+          break;
+        }
       }
       
     }
