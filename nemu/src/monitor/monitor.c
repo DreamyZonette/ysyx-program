@@ -91,7 +91,7 @@ static long load_img() {
         // int ret = fread(guest_to_host(RESET_VECTOR), phdr.p_filesz, 1, fp);
         assert(ret == 1); 
         if (phdr.p_memsz > phdr.p_filesz) {
-            memset(dst + phdr.p_filesz, 0, phdr.p_memsz - phdr.p_filesz);
+            memset(dst + phdr.p_filesz, 0, phdr.p_memsz);
         }
         size += phdr.p_filesz;
         size += phdr.p_memsz;
