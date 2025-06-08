@@ -21,7 +21,7 @@
 	#include "elf_reader.h"
 #endif
 
-#define ELF_MAGIC 0x7F454C46  // ELF文件魔数：0x7F 'E' 'L' 'F'
+#define ELF_MAGIC 0x464C457F  // ELF文件魔数：0x7F 'E' 'L' 'F'
 
 void init_rand();
 void init_log(const char *log_file);
@@ -66,8 +66,8 @@ static long load_img() {
   assert(ret == 1);
   fseek(fp, 0, SEEK_SET); // 回到文件开头
   long size = 0;
-//magic == ELF_MAGIC
-  if (1) {
+
+  if (magic == ELF_MAGIC) {
     // ELF文件处理逻辑
     Log("Loading ELF image: %s", img_file);
     
