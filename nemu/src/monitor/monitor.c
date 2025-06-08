@@ -66,8 +66,8 @@ static long load_img() {
   assert(ret == 1);
   fseek(fp, 0, SEEK_SET); // 回到文件开头
   long size = 0;
-
-  if (magic == ELF_MAGIC) {
+//magic == ELF_MAGIC
+  if (1) {
     // ELF文件处理逻辑
     Log("Loading ELF image: %s", img_file);
     
