@@ -161,7 +161,6 @@ int isa_exec_once(Decode *s) {
   char blank [40];
   int j = 0;
   if (is_call) {
-    //printf("is call\n");
     count += 2;
     for(j = 0; j < count; j ++){
       blank[j] = ' ';
@@ -182,6 +181,7 @@ int isa_exec_once(Decode *s) {
     }
     blank[count] = '\0';
     printf("0x%08x:%s ret [ ]\n", s->pc, blank);
+    printf("ret: ra = 0x%08x", R(1));
     for(int i = 0; i < functab_count; i ++){
       if(functab[i].value == s->dnpc){
         log_write("0x%08x:%s ret [%s]", s->pc, blank, functab[i].func_name);
