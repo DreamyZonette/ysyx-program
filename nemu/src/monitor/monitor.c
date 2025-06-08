@@ -72,14 +72,14 @@ static long load_img() {
     Log("Loading ELF image: %s", img_file);
     
     // 读取ELF头
-    Elf64_Ehdr ehdr;
+    Elf32_Ehdr ehdr;
     int ret = fread(&ehdr, sizeof(ehdr), 1, fp);
     assert(ret == 1);
     
     // 遍历程序头表，加载各个段
     fseek(fp, ehdr.e_phoff, SEEK_SET);
     for (int i = 0; i < ehdr.e_phnum; i++) {
-      Elf64_Phdr phdr;
+      Elf32_Phdr phdr;
       int ret = fread(&phdr, sizeof(phdr), 1, fp);
       assert(ret == 1);
       
@@ -92,7 +92,7 @@ static long load_img() {
         assert(!ret); 
         
         size += phdr.p_filesz;
-        Log("Loaded segment %d: vaddr=0x%016lx, size=0x%016lx", 
+        Log("Loaded segment %d: vaddr=0x%08x, size=0x%08x", 
             i, phdr.p_vaddr, phdr.p_memsz);
         fclose(fp);
       }
