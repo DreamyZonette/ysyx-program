@@ -89,7 +89,7 @@ static long load_img() {
         fseek(fp, phdr.p_offset, SEEK_SET);
         //void *dst = guest_to_host(phdr.p_vaddr);
         int ret = fread(guest_to_host(RESET_VECTOR), phdr.p_filesz, 1, fp);
-        assert(ret == 1);
+        assert(ret == 1); 
         //fread(dst, phdr.p_filesz, 1, fp);
         
         // 如果内存大小大于文件大小，剩余部分填0（如BSS段）
