@@ -92,8 +92,7 @@ static long load_img() {
         assert(ret == 1); 
         
         size += phdr.p_filesz;
-        Log("Loaded segment %d: vaddr=0x%08x, size=0x%08x", 
-            i, phdr.p_vaddr, phdr.p_memsz);
+        Log("The image is %s, size = %ld", img_file, size);
         fclose(fp);
         break;
       }
