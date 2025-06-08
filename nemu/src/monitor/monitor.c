@@ -89,7 +89,7 @@ static long load_img() {
         void *dst = guest_to_host(phdr.p_vaddr);
         int ret = fread(dst, phdr.p_filesz, 1, fp);
         //int ret = fread(guest_to_host(RESET_VECTOR), phdr.p_filesz, 1, fp);
-        assert(ret == 9); 
+        assert(!ret); 
         
         size += phdr.p_filesz;
         Log("Loaded segment %d: vaddr=0x%016lx, size=0x%016lx", 
