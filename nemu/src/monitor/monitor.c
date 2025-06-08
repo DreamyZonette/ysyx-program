@@ -51,6 +51,71 @@ static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
 
+// static long load_img() {
+//   if (img_file == NULL) {
+//     Log("No image is given. Use the default build-in image.");
+//     return 4096; // built-in image size
+//   }
+
+//   FILE *fp = fopen(img_file, "rb");
+//   Assert(fp, "Can not open '%s'", img_file);
+
+//   // 检查是否为ELF文件
+//   uint32_t magic;
+//   int ret = fread(&magic, sizeof(magic), 1, fp);
+//   assert(ret == 1);
+//   fseek(fp, 0, SEEK_SET); // 回到文件开头
+//   long size = 0;
+
+//   if (magic == ELF_MAGIC) {
+//     // ELF文件处理逻辑
+//     Log("Loading ELF image: %s", img_file);
+    
+//     // 读取ELF头
+//     Elf32_Ehdr ehdr;
+//     int ret = fread(&ehdr, sizeof(ehdr), 1, fp);
+//     assert(ret == 1);
+    
+//     // 遍历程序头表，加载各个段
+//     fseek(fp, ehdr.e_phoff, SEEK_SET);
+//     for (int i = 0; i < ehdr.e_phnum; i++) {
+//       Elf32_Phdr phdr;
+//       int ret = fread(&phdr, sizeof(phdr), 1, fp);
+//       assert(ret == 1);
+      
+//       // 只加载LOAD类型的段
+//       if (phdr.p_type == 1) { // PT_LOAD
+//         fseek(fp, phdr.p_offset, SEEK_SET);
+//         void *dst = guest_to_host(phdr.p_vaddr);
+//         int ret = fread(dst, phdr.p_filesz, 1, fp);
+//         // int ret = fread(guest_to_host(RESET_VECTOR), phdr.p_filesz, 1, fp);
+//         assert(ret == 1); 
+        
+//         size += phdr.p_filesz;
+        
+        
+//       }     
+//     }  
+//     Log("The image is %s, size = %ld", img_file, size);
+//     fclose(fp);
+//   }
+//   else{
+//     fseek(fp, 0, SEEK_END);
+//     size = ftell(fp);
+
+//     Log("The image is %s, size = %ld", img_file, size);
+
+//     fseek(fp, 0, SEEK_SET);
+//     int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+//     assert(ret == 1);
+
+//     fclose(fp);
+    
+//   }
+//   return size;
+
+  
+// }
 static long load_img() {
   if (img_file == NULL) {
     Log("No image is given. Use the default build-in image.");
@@ -68,53 +133,60 @@ static long load_img() {
   long size = 0;
 
   if (magic == ELF_MAGIC) {
-    // ELF文件处理逻辑
+    // ELF文件处理逻辑 - 关键改进部分
     Log("Loading ELF image: %s", img_file);
     
     // 读取ELF头
     Elf32_Ehdr ehdr;
-    int ret = fread(&ehdr, sizeof(ehdr), 1, fp);
+    ret = fread(&ehdr, sizeof(ehdr), 1, fp);
     assert(ret == 1);
     
-    // 遍历程序头表，加载各个段
+    // 查找第一个可加载段(PT_LOAD)作为基准
+    Elf32_Phdr first_phdr;
+    int found_load_segment = 0;
+    uint32_t min_offset = UINT32_MAX;
+    
     fseek(fp, ehdr.e_phoff, SEEK_SET);
     for (int i = 0; i < ehdr.e_phnum; i++) {
       Elf32_Phdr phdr;
-      int ret = fread(&phdr, sizeof(phdr), 1, fp);
+      ret = fread(&phdr, sizeof(phdr), 1, fp);
       assert(ret == 1);
       
-      // 只加载LOAD类型的段
-      if (phdr.p_type == 1) { // PT_LOAD
-        fseek(fp, phdr.p_offset, SEEK_SET);
-        void *dst = guest_to_host(phdr.p_vaddr);
-        int ret = fread(dst, phdr.p_filesz, 1, fp);
-        // int ret = fread(guest_to_host(RESET_VECTOR), phdr.p_filesz, 1, fp);
-        assert(ret == 1); 
-        
-        size += phdr.p_filesz;
-        
-        
-      }     
-    }  
-    Log("The image is %s, size = %ld", img_file, size);
+      // 记录第一个可加载段的信息
+      if (phdr.p_type == PT_LOAD && phdr.p_offset < min_offset) {
+        first_phdr = phdr;
+        min_offset = phdr.p_offset;
+        found_load_segment = 1;
+      }
+    }
+    
+    if (!found_load_segment) {
+      panic("No PT_LOAD segment found in ELF file");
+    }
+
+    // 计算ELF文件的实际代码/数据大小
+    fseek(fp, 0, SEEK_END);
+    size = ftell(fp) - first_phdr.p_offset;
+    fseek(fp, first_phdr.p_offset, SEEK_SET);
+    
+    // 关键改进：将ELF的有效内容加载到RESET_VECTOR
+    ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+    assert(ret == 1);
+    
+    Log("Loaded ELF segment at 0x%x, size = %ld", RESET_VECTOR, size);
     fclose(fp);
   }
-  else{
+  else {
+    // BIN文件处理逻辑（保持不变）
     fseek(fp, 0, SEEK_END);
     size = ftell(fp);
-
     Log("The image is %s, size = %ld", img_file, size);
-
     fseek(fp, 0, SEEK_SET);
-    int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+    ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
     assert(ret == 1);
-
     fclose(fp);
-    
   }
   return size;
-
-  
 }
 
 static int parse_args(int argc, char *argv[]) {
