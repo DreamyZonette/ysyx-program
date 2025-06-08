@@ -180,15 +180,15 @@ int isa_exec_once(Decode *s) {
       blank[j] = ' ';
     }
     blank[count] = '\0';
-    printf("0x%08x:%s ret [ ]\n", s->pc, blank);
-    printf("ret: ra = 0x%08x\n", R(1));
-    for(int i = 0; i < functab_count; i ++){
-      if(functab[i].value == s->dnpc){
-        log_write("0x%08x:%s ret [%s]", s->pc, blank, functab[i].func_name);
-        printf("0x%08x:%s ret [%s]\n", s->pc, blank, functab[i].func_name);
-        break;
-      }
-    }
+    printf("0x%08x:%s ret [0x%08x]\n", s->pc, blank, R(1));
+    log_write("0x%08x:%s ret [0x%08x]\n", s->pc, blank, R(1));
+    // for(int i = 0; i < functab_count; i ++){
+    //   if(functab[i].value == s->dnpc){
+    //     log_write("0x%08x:%s ret [%s]", s->pc, blank, functab[i].func_name);
+    //     printf("0x%08x:%s ret [%s]\n", s->pc, blank, functab[i].func_name);
+    //     break;
+    //   }
+    // }
   }
   
   return ret;
