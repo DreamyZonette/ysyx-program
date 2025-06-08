@@ -15,10 +15,13 @@
 
 #include <isa.h>
 #include <memory/paddr.h>
+#include <elf.h>
 #ifdef CONFIG_FTRACE 
 //	void extract_functions(const char* elf_path);
 	#include "elf_reader.h"
 #endif
+
+#define ELF_MAGIC 0x464C457F  // ELF文件魔数：0x7F 'E' 'L' 'F'
 
 void init_rand();
 void init_log(const char *log_file);
@@ -57,17 +60,69 @@ static long load_img() {
   FILE *fp = fopen(img_file, "rb");
   Assert(fp, "Can not open '%s'", img_file);
 
-  fseek(fp, 0, SEEK_END);
-  long size = ftell(fp);
-
-  Log("The image is %s, size = %ld", img_file, size);
-
-  fseek(fp, 0, SEEK_SET);
-  int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+  // 检查是否为ELF文件
+  uint32_t magic;
+  int ret = fread(&magic, sizeof(magic), 1, fp);
   assert(ret == 1);
+  fseek(fp, 0, SEEK_SET); // 回到文件开头
+  long size = 0;
 
-  fclose(fp);
+  if (magic == ELF_MAGIC) {
+    // ELF文件处理逻辑
+    Log("Loading ELF image: %s", img_file);
+    
+    // 读取ELF头
+    Elf64_Ehdr ehdr;
+    int ret = fread(&ehdr, sizeof(ehdr), 1, fp);
+    assert(ret == 1);
+    
+    // 遍历程序头表，加载各个段
+    fseek(fp, ehdr.e_phoff, SEEK_SET);
+    for (int i = 0; i < ehdr.e_phnum; i++) {
+      Elf64_Phdr phdr;
+      int ret = fread(&phdr, sizeof(phdr), 1, fp);
+      assert(ret == 1);
+      
+      // 只加载LOAD类型的段
+      if (phdr.p_type == 1) { // PT_LOAD
+        // 读取段数据到内存
+        fseek(fp, phdr.p_offset, SEEK_SET);
+        //void *dst = guest_to_host(phdr.p_vaddr);
+        int ret = fread(guest_to_host(RESET_VECTOR), phdr.p_filesz, 1, fp);
+        assert(ret == 1);
+        //fread(dst, phdr.p_filesz, 1, fp);
+        
+        // 如果内存大小大于文件大小，剩余部分填0（如BSS段）
+        // if (phdr.p_memsz > phdr.p_filesz) {
+        //   memset(dst + phdr.p_filesz, 0, phdr.p_memsz - phdr.p_filesz);
+        // }
+        
+        size = phdr.p_filesz;
+        Log("Loaded segment %d: vaddr=0x%016lx, size=0x%016lx", 
+            i, phdr.p_vaddr, phdr.p_memsz);
+      }
+    }
+    
+    // 设置入口点（如果需要）
+    // entry_point = ehdr.e_entry;
+    
+  }
+  else{
+    fseek(fp, 0, SEEK_END);
+    size = ftell(fp);
+
+    Log("The image is %s, size = %ld", img_file, size);
+
+    fseek(fp, 0, SEEK_SET);
+    int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+    assert(ret == 1);
+
+    fclose(fp);
+    
+  }
   return size;
+
+  
 }
 
 static int parse_args(int argc, char *argv[]) {
