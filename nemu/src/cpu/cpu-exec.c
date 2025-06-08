@@ -98,7 +98,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   isa_exec_once(s);
   cpu.pc = s->dnpc;
   #ifdef CONFIG_FTRACE
-  printf("test FTRACE\n");
+  
   for(int i = 0; i < functab_count; i ++){
     if(functab[i].value == pc){
       log_write("0x%08x:    [%s@0x%08x]", pc, functab[i].func_name, functab[i].value);
