@@ -86,9 +86,9 @@ static long load_img() {
       // 只加载LOAD类型的段
       if (phdr.p_type == 1) { // PT_LOAD
         fseek(fp, phdr.p_offset, SEEK_SET);
-        void *dst = guest_to_host(phdr.p_vaddr);
-        int ret = fread(dst, phdr.p_filesz, 1, fp);
-        //int ret = fread(guest_to_host(RESET_VECTOR), phdr.p_filesz, 1, fp);
+        //void *dst = guest_to_host(phdr.p_vaddr);
+        //int ret = fread(dst, phdr.p_filesz, 1, fp);
+        int ret = fread(guest_to_host(RESET_VECTOR), phdr.p_memsz, 1, fp);
         assert(ret == 1); 
         
         size += phdr.p_filesz;
