@@ -181,11 +181,11 @@ int isa_exec_once(Decode *s) {
       blank[j] = ' ';
     }
     blank[count] = '\0';
-    printf("is ret\n");
+    printf("0x%08x:%s ret [ ]\n", s->pc, blank);
     for(int i = 0; i < functab_count; i ++){
       if(functab[i].value == s->pc){
-        log_write("0x%08x:%s ret [%s@0x%08x]", s->pc, blank, functab[i].func_name, functab[i].value);
-        printf("0x%08x:%s ret [%s@0x%08x]\n", s->pc, blank, functab[i].func_name, functab[i].value);
+        log_write("0x%08x:%s ret [%s]", s->pc, blank, functab[i].func_name);
+        printf("0x%08x:%s ret [%s]\n", s->pc, blank, functab[i].func_name);
         break;
       }
     }
