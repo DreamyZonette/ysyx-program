@@ -18,6 +18,13 @@
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 
+#ifdef CONFIG_FTRACE
+#include "../../monitor/elf_reader.h"
+  int count = 0;
+#endif
+
+
+
 #define R(i) gpr(i)
 #define Mr vaddr_read
 #define Mw vaddr_write
@@ -97,7 +104,7 @@ static int decode_exec(Decode *s) {
 
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, R(rd) = s->pc + 4; s->dnpc = s->pc + imm);// 若省略 rd，则默认为 x1没有实现
 
-  //INSTPAT("0000000 ????? ????? 000 ????? 01100 11", add    , R, R(rd) = src1 + src2);
+  INSTPAT("0000000 ????? ????? 000 ????? 01100 11", add    , R, R(rd) = src1 + src2);
   INSTPAT("0000000 ????? ????? 111 ????? 01100 11", and    , R, R(rd) = src1 & src2);
   INSTPAT("0000000 ????? ????? 110 ????? 01100 11", or     , R, R(rd) = src1 | src2);
   INSTPAT("0000000 ????? ????? 100 ????? 01100 11", xor    , R, R(rd) = src1 ^ src2);
@@ -132,5 +139,59 @@ static int decode_exec(Decode *s) {
 
 int isa_exec_once(Decode *s) {
   s->isa.inst = inst_fetch(&s->snpc, 4);
+
+  #ifdef CONFIG_FTRACE
+  int is_call = 0;
+  int is_ret = 0;
+
+  uint32_t opcode = BITS(s->isa.inst, 6, 0);
+  uint32_t rd = BITS(s->isa.inst, 11, 7);
+  uint32_t rs1 = BITS(s->isa.inst, 19, 15);
+ 
+
+  if ((opcode == 0x6F && rd == 1) ||  // JAL rd=x1
+      (opcode == 0x67 && rd == 1)) {  // JALR rd=x1
+    is_call = 1;
+  }
+  if (opcode == 0x67 && rs1 == 1 && rd == 0) {
+    is_ret = 1;
+  }
+  
+  int ret = decode_exec(s);
+  char blank [40];
+  int j = 0;
+  if (is_call) {
+    count += 2;
+    for(j = 0; j < count; j ++){
+      blank[j] = ' ';
+    }
+    blank[count] = '\0';
+    for(int i = 0; i < functab_count; i ++){
+      if(functab[i].value == s->dnpc){
+        log_write("0x%08x:%s call [%s@0x%08x]", s->pc, blank, functab[i].func_name, functab[i].value);
+        printf("0x%08x:%s call [%s@0x%08x]\n", s->pc, blank, functab[i].func_name, functab[i].value);
+        break;
+      }
+    }
+  }
+  else if (is_ret) {
+    count -= 2;
+    for(j = 0; j < count; j ++){
+      blank[j] = ' ';
+    }
+    blank[count] = '\0';
+    printf("0x%08x:%s ret [0x%08x]\n", s->pc, blank, R(1));
+    log_write("0x%08x:%s ret [0x%08x]\n", s->pc, blank, R(1));
+    // for(int i = 0; i < functab_count; i ++){
+    //   if(functab[i].value == s->dnpc){
+    //     log_write("0x%08x:%s ret [%s]", s->pc, blank, functab[i].func_name);
+    //     printf("0x%08x:%s ret [%s]\n", s->pc, blank, functab[i].func_name);
+    //     break;
+    //   }
+    // }
+  }
+  
+  return ret;
+#endif
   return decode_exec(s);
 }

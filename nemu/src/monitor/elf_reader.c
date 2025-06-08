@@ -4,12 +4,21 @@
 #include <elf.h>
 #include "elf_reader.h"
 
-Functab functab[30];
+// Functab functab[30];
+// int functab_count = 0;
+Functab *functab = NULL;
 int functab_count = 0;
+int functab_capacity = 0;
 
 // 读取ELF文件并提取函数名
 void extract_functions(const char* elf_path) {
+  //初始化
 		functab_count = 0;
+    functab_capacity = 0;
+if (functab) {
+    free(functab);
+    functab = NULL;
+}
 
 		printf("%s\n", elf_path);
     FILE* fp = fopen(elf_path, "rb");
@@ -26,6 +35,19 @@ void extract_functions(const char* elf_path) {
     fclose(fp);
     return;
 	}
+  // 检查ELF魔数
+    if (memcmp(ehdr.e_ident, ELFMAG, SELFMAG) != 0) {
+        fprintf(stderr, "Not an ELF file: %s\n", elf_path);
+        fclose(fp);
+        return;
+    }
+
+    // 检查32/64位兼容性
+    if (ehdr.e_ident[EI_CLASS] != ELFCLASS32) {
+        fprintf(stderr, "Only 32-bit ELF files supported: %s\n", elf_path);
+        fclose(fp);
+        return;
+    }
 
     // 2. 定位节区头部表
     fseek(fp, ehdr.e_shoff, SEEK_SET);
@@ -98,8 +120,27 @@ void extract_functions(const char* elf_path) {
         unsigned char type = ELF32_ST_TYPE(symbols[i].st_info);
         if (type == STT_FUNC) {  // 过滤函数符号
             char* func_name = strtab + symbols[i].st_name;
-						strncpy(functab[functab_count].func_name, func_name, 19);
-						functab[functab_count].func_name[19] = '\0';
+            
+        if (functab_count >= functab_capacity) {
+        // 计算新容量：首次分配32个，之后每次翻倍
+        int new_capacity = (functab_capacity == 0) ? 32 : functab_capacity * 2;
+        
+        // 重新分配内存
+        Functab *new_tab = realloc(functab, new_capacity * sizeof(Functab));
+        
+        if (!new_tab) {
+            // 内存分配失败处理
+            fprintf(stderr, "Error: Memory allocation failed for %d functions\n", new_capacity);
+            fprintf(stderr, "Current function count: %d, aborting further processing\n", functab_count);
+            break;  // 中断循环
+        }
+        functab = new_tab;
+        functab_capacity = new_capacity;
+        //printf("Resized function table to %d entries\n", functab_capacity);
+      }
+
+						strncpy(functab[functab_count].func_name, func_name, sizeof(functab[0].func_name) - 1);
+						functab[functab_count].func_name[sizeof(functab[0].func_name) - 1] = '\0';
 						functab[functab_count].value = symbols[i].st_value;
 						functab_count ++;
 						//printf("  [%s@%08x]\n", func_name, symbols[i].st_value);
@@ -107,9 +148,9 @@ void extract_functions(const char* elf_path) {
     }
 
 		//便历程序
-		for(int i = 0; i < functab_count; i ++){
-			printf("  [%s@%08x]\n", functab[i].func_name, functab[i].value);
-		}
+		// for(int i = 0; i < functab_count; i ++){
+		// 	printf("  [%s@%08x]\n", functab[i].func_name, functab[i].value);
+		// }
 
     // 7. 清理资源
     free(strtab);

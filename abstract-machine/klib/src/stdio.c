@@ -9,7 +9,70 @@ void reverse(char *str, int len);
 void itoa(int num, char *str);
 
 int printf(const char *fmt, ...) {
-  panic("Not implemented");
+  va_list args;
+  va_start(args, fmt);
+  int count = 0;
+
+  const char *p = fmt;
+  while(*p != '\0')
+  {
+    if(*p != '%')
+    {
+      putch(*p);
+      p ++;
+      count ++;
+    }
+    else
+    {
+      p++;
+      switch(*p)
+      {
+        case 'd':
+        {
+          int num = va_arg(args, int);
+          char str[20];
+          itoa(num, str);
+          for(int i = 0; str[i] != '\0'; i++)
+          {
+            putch(str[i]);
+            count ++;
+          }
+          p ++;
+          break;
+        }
+        case 's':
+        {
+          char *str = va_arg(args, char *);
+          for(int i = 0; str[i] != '\0'; i++)
+          {
+            putch(str[i]);
+            count ++;
+          }
+          p ++;
+          break;
+        }
+        case 'c':
+        {
+          int ch = va_arg(args, int);
+          putch(ch);
+          count ++;
+          p ++;
+          break;
+        }
+        case '%':
+        {
+          putch('%');
+          count ++;
+          p ++;
+          break;
+        }
+      }
+      
+    }
+  }
+  va_end(args);
+  return count;
+  // panic("Not implemented");
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
