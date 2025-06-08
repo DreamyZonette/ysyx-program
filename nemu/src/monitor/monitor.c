@@ -16,7 +16,7 @@
 #include <isa.h>
 #include <memory/paddr.h>
 #include <elf.h>
-#ifndef CONFIG_FTRACE 
+#ifdef CONFIG_FTRACE 
 //	void extract_functions(const char* elf_path);
 	#include "elf_reader.h"
 #endif
@@ -143,7 +143,7 @@ static int parse_args(int argc, char *argv[]) {
       case 'd': diff_so_file = optarg; break;
       case 1: 
         img_file = optarg; 
-        #ifndef CONFIG_FTRACE 
+        #ifdef CONFIG_FTRACE 
           printf("test\n");
           extract_functions(img_file);
         #endif
