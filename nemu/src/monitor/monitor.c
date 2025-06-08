@@ -84,7 +84,7 @@ static long load_img() {
       assert(ret == 1);
       
       // 只加载LOAD类型的段
-      if (phdr.p_type == 1) { // PT_LOAD
+      if (phdr.p_type == 0) { // PT_LOAD
         // 读取段数据到内存
         fseek(fp, phdr.p_offset, SEEK_SET);
         //void *dst = guest_to_host(phdr.p_vaddr);
