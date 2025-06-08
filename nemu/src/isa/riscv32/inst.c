@@ -20,7 +20,7 @@
 
 #ifdef CONFIG_FTRACE
 #include "../../monitor/elf_reader.h"
-  int blanks = 1;
+  int count = 0;
 #endif
 
 
@@ -158,22 +158,34 @@ int isa_exec_once(Decode *s) {
   }
   
   int ret = decode_exec(s);
+  char blank [40];
+  int j = 0;
   if (is_call) {
     //printf("is call\n");
+    count += 2;
+    for(j = 0; j < count; j ++){
+      blank[j] = ' ';
+    }
+    blank[count] = '\0';
     for(int i = 0; i < functab_count; i ++){
       if(functab[i].value == s->dnpc){
-        log_write("0x%08x:   call [%s@0x%08x]", s->pc, functab[i].func_name, functab[i].value);
-        printf("0x%08x:   call [%s@0x%08x]\n", s->pc, functab[i].func_name, functab[i].value);
+        log_write("0x%08x:%s call [%s@0x%08x]", s->pc, blank, functab[i].func_name, functab[i].value);
+        printf("0x%08x:%s call [%s@0x%08x]\n", s->pc, blank, functab[i].func_name, functab[i].value);
         break;
       }
     }
   }
   else if (is_ret) {
+    count -= 2;
+    for(j = 0; j < count; j ++){
+      blank[j] = ' ';
+    }
+    blank[count] = '\0';
     printf("is ret\n");
     for(int i = 0; i < functab_count; i ++){
       if(functab[i].value == s->pc){
-        log_write("0x%08x:   ret [%s@0x%08x]", s->pc, functab[i].func_name, functab[i].value);
-        printf("0x%08x:   ret [%s@0x%08x]\n", s->pc, functab[i].func_name, functab[i].value);
+        log_write("0x%08x:%s ret [%s@0x%08x]", s->pc, blank, functab[i].func_name, functab[i].value);
+        printf("0x%08x:%s ret [%s@0x%08x]\n", s->pc, blank, functab[i].func_name, functab[i].value);
         break;
       }
     }
