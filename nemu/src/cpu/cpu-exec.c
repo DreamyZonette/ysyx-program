@@ -103,6 +103,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
     if(functab[i].value == pc){
       log_write("0x%08x:    [%s@0x%08x]", pc, functab[i].func_name, functab[i].value);
       printf("0x%08x:    [%s@0x%08x]\n", pc, functab[i].func_name, functab[i].value);
+      break;
     }
   }
 #endif
