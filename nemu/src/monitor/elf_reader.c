@@ -20,17 +20,33 @@ void extract_functions(const char* elf_path) {
 
     // 1. 读取ELF头部
     Elf32_Ehdr ehdr;
-    fread(&ehdr, sizeof(Elf32_Ehdr), 1, fp);
+    //fread(&ehdr, sizeof(Elf32_Ehdr), 1, fp);
+		if (fread(&ehdr, sizeof(Elf32_Ehdr), 1, fp) != 1) {
+    fprintf(stderr, "Failed to read ELF header\n");
+    fclose(fp);
+    return;
+	}
+
     // 2. 定位节区头部表
     fseek(fp, ehdr.e_shoff, SEEK_SET);
     Elf32_Shdr shdr[ehdr.e_shnum];
-    fread(shdr, sizeof(Elf32_Shdr), ehdr.e_shnum, fp);
+    //fread(shdr, sizeof(Elf32_Shdr), ehdr.e_shnum, fp);
+		if (fread(shdr, sizeof(Elf32_Shdr), ehdr.e_shnum, fp) != ehdr.e_shnum) {
+			fprintf(stderr, "Failed to read section headers\n");
+			fclose(fp);
+			return;
+		}
 
     // 3. 获取.shstrtab（节区名称表）
     Elf32_Shdr shstrtab_hdr = shdr[ehdr.e_shstrndx];
     char shstrtab[shstrtab_hdr.sh_size];
     fseek(fp, shstrtab_hdr.sh_offset, SEEK_SET);
-    fread(shstrtab, shstrtab_hdr.sh_size, 1, fp);
+    //fread(shstrtab, shstrtab_hdr.sh_size, 1, fp);
+		if (fread(shstrtab, shstrtab_hdr.sh_size, 1, fp) != 1) {
+			fprintf(stderr, "Failed to read section string table\n");
+			fclose(fp);
+			return;
+		}
 
     // 4. 查找.symtab和.strtab节区
     Elf32_Shdr symtab_hdr, strtab_hdr;
@@ -56,13 +72,26 @@ void extract_functions(const char* elf_path) {
     // 5. 读取.strtab内容
     char* strtab = malloc(strtab_hdr.sh_size);
     fseek(fp, strtab_hdr.sh_offset, SEEK_SET);
-    fread(strtab, strtab_hdr.sh_size, 1, fp);
+    //fread(strtab, strtab_hdr.sh_size, 1, fp);
+		if (fread(strtab, strtab_hdr.sh_size, 1, fp) != 1) {
+			fprintf(stderr, "Failed to read string table\n");
+			free(strtab);
+			fclose(fp);
+			return;
+		}
 
     // 6. 解析.symtab，提取函数名
     int sym_count = symtab_hdr.sh_size / symtab_hdr.sh_entsize;
     Elf32_Sym* symbols = malloc(symtab_hdr.sh_size);
     fseek(fp, symtab_hdr.sh_offset, SEEK_SET);
-    fread(symbols, symtab_hdr.sh_size, 1, fp);
+    //fread(symbols, symtab_hdr.sh_size, 1, fp);
+		if (fread(symbols, symtab_hdr.sh_size, 1, fp) != 1) {
+			fprintf(stderr, "Failed to read symbol table\n");
+			free(strtab);
+			free(symbols);
+			fclose(fp);
+			return;
+		}
 
     //printf("Found functions:\n");
 		int ind = 0;
@@ -88,13 +117,3 @@ void extract_functions(const char* elf_path) {
     free(symbols);
     fclose(fp);
 }
-/*
-int ftrace_entry(int argc, char** argv) {
-    if (argc < 2) {
-        fprintf(stderr, "Usage: %s <elf_file>\n", argv[0]);
-        return 1;
-    }
-    extract_functions(argv[1]);
-    return 0;
-}
-*/

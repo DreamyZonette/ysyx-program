@@ -15,6 +15,9 @@
 
 #include <isa.h>
 #include <memory/paddr.h>
+#ifdef CONFIG_FTRACE 
+	void extract_functions(const char* elf_path);
+#endif
 
 void init_rand();
 void init_log(const char *log_file);
@@ -94,7 +97,7 @@ static int parse_args(int argc, char *argv[]) {
     }
   }
 #ifdef CONFIG_FTRACE 
-	void extract_functions(img_file);
+	extract_functions(img_file);
 #endif
   return 0;
 }
