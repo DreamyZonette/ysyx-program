@@ -52,7 +52,7 @@ void extract_functions(const char* elf_path) {
         fprintf(stderr, "Required sections not found\n");
         fclose(fp);
         return;
-
+		}
     // 5. 读取.strtab内容
     char* strtab = malloc(strtab_hdr.sh_size);
     fseek(fp, strtab_hdr.sh_offset, SEEK_SET);
