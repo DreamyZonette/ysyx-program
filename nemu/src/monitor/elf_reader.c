@@ -2,16 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <elf.h>
+#include "elf_reader.h"
 
-typedef struct functab{
-	uint32_t value;
-	char func_name [20];	
-}Functab;
-
-Functab functab [30];
+Functab functab[30];
+int functab_count = 0;
 
 // 读取ELF文件并提取函数名
 void extract_functions(const char* elf_path) {
+		functab_count = 0;
+
+		printf("%s\n", elf_path);
     FILE* fp = fopen(elf_path, "rb");
     if (!fp) {
         perror("Failed to open file");
@@ -94,21 +94,20 @@ void extract_functions(const char* elf_path) {
 		}
 
     //printf("Found functions:\n");
-		int ind = 0;
     for (int i = 0; i < sym_count; i++) {
         unsigned char type = ELF32_ST_TYPE(symbols[i].st_info);
         if (type == STT_FUNC) {  // 过滤函数符号
             char* func_name = strtab + symbols[i].st_name;
-						strncpy(functab[ind].func_name, func_name, 19);
-						functab[ind].func_name[19] = '\0';
-						functab[ind].value = symbols[i].st_value;
-						ind ++;
+						strncpy(functab[functab_count].func_name, func_name, 19);
+						functab[functab_count].func_name[19] = '\0';
+						functab[functab_count].value = symbols[i].st_value;
+						functab_count ++;
 						//printf("  [%s@%08x]\n", func_name, symbols[i].st_value);
         }
     }
 
 		//便历程序
-		for(int i = 0; i < ind; i ++){
+		for(int i = 0; i < functab_count; i ++){
 			printf("  [%s@%08x]\n", functab[i].func_name, functab[i].value);
 		}
 

@@ -16,7 +16,8 @@
 #include <isa.h>
 #include <memory/paddr.h>
 #ifdef CONFIG_FTRACE 
-	void extract_functions(const char* elf_path);
+//	void extract_functions(const char* elf_path);
+#include "elf_reader.h"
 #endif
 
 void init_rand();
