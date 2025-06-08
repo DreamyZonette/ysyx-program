@@ -16,10 +16,10 @@
 #include <isa.h>
 #include <memory/paddr.h>
 #include <elf.h>
-#ifdef CONFIG_FTRACE 
+// #ifdef CONFIG_FTRACE 
 //	void extract_functions(const char* elf_path);
 	#include "elf_reader.h"
-#endif
+// #endif
 
 #define ELF_MAGIC 0x464C457F  // ELF文件魔数：0x7F 'E' 'L' 'F'
 
@@ -152,10 +152,10 @@ static int parse_args(int argc, char *argv[]) {
         exit(0);
     }
   }
-#ifdef CONFIG_FTRACE 
-printf("test\n");
+// #ifdef CONFIG_FTRACE 
+// printf("test\n");
 	extract_functions(img_file);
-#endif
+// #endif
   return 0;
 }
 
