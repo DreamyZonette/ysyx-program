@@ -95,6 +95,7 @@ static long load_img() {
         Log("Loaded segment %d: vaddr=0x%08x, size=0x%08x", 
             i, phdr.p_vaddr, phdr.p_memsz);
         fclose(fp);
+        break;
       }
     }  
   }
