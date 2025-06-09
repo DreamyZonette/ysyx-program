@@ -186,7 +186,12 @@ int sprintf(char *out, const char *fmt, ...) {
           *p++ = '%';
           break;
         }
-        
+        default: {
+            // 处理无效格式符：原样输出 % 和无效字符
+          *p++ = '%';
+          *p++ = *fmt;
+          break;
+        }
       }
       fmt++;
     }
