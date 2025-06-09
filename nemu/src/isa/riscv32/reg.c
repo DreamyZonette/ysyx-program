@@ -29,7 +29,7 @@ void isa_reg_display() {
 	int len = sizeof(regs) / sizeof(regs[0]);
 	for(i = 0 ; i < len ; i++){
 		char name [5], value [10];
-		sprintf(name, "%s: ",reg_name(i)); 
+		sprintf(name, "%s",reg_name(i)); 
 		sprintf(value, "%08x",gpr(i));
 		printf("%s: %s\t", name, value);
 		count ++;
