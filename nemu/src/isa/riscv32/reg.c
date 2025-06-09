@@ -31,7 +31,7 @@ void isa_reg_display() {
 		char name [5], value [10];
 		sprintf(name, "%s",reg_name(i)); 
 		sprintf(value, "%08x",gpr(i));
-		printf("%s: %s\t", ANSI_FMT(str(name), ANSI_FG_GREEN), value);
+		printf("%s: %s\t", str(ANSI_FMT(name, ANSI_FG_GREEN)), value);
 		count ++;
 		if (count == 4) {
 			printf("\n");
