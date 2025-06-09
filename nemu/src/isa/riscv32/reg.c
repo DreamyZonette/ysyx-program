@@ -31,9 +31,8 @@ void isa_reg_display() {
 		char name [5], value [10];
 		sprintf(name, "%s",reg_name(i)); 
 		sprintf(value, "%08x",gpr(i));
-		// printf("%s: %s\t", 
-        //        ANSI_FMT(name, ANSI_FG_GREEN),   // 名称设为绿色
-        //        ANSI_FMT(value, ANSI_FG_YELLOW)); // 值设为黄色
+		printf("\033[32m%s\033[0m: \033[33m%s\033[0m\t", name, value); 
+		
 		count ++;
 		if (count == 4) {
 			printf("\n");
