@@ -18,10 +18,11 @@
 #include "../local-include/reg.h"
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
-  //uint32_t value = vaddr_read(pc,4);
+  
   for(int i = 0; i < 32; i ++){
     uint32_t ref_value = ref_r->gpr[i];
-    printf("0x%08x\n", ref_value);
+    uint32_t value = gpr(i);
+    printf("local:0x%08x\tref:0x%08x\n", value, ref_value);
   }
   
   //if(value == ref_value) return true;
