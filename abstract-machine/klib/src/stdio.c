@@ -114,6 +114,17 @@ int sprintf(char *out, const char *fmt, ...) {
           }
           break;
         }
+        case 'c':
+        {
+          char ch = va_arg(args, int);
+          *p++ = ch;
+          break;
+        }
+        case '%':
+        {
+          *p++ = '%';
+          break;
+        }
       }
       fmt++;
     }
