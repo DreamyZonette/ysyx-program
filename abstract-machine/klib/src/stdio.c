@@ -186,6 +186,7 @@ int sprintf(char *out, const char *fmt, ...) {
           *p++ = '%';
           break;
         }
+        
       }
       fmt++;
     }
@@ -197,6 +198,7 @@ int sprintf(char *out, const char *fmt, ...) {
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
+  if(!out) return strlen(fmt);
   if (n == 0) {
     // 如果缓冲区大小为 0，直接返回
     return 0;
