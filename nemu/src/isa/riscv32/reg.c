@@ -33,8 +33,12 @@ void isa_reg_display() {
 		sprintf(value, "%08x",gpr(i));
 		printf("%s: %s\t", name, value);
 		count ++;
-		if (count == 4) printf("\n");
+		if (count == 4) {
+			printf("\n");
+			count = 0;
+		}
 	}
+	printf("\n");
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
