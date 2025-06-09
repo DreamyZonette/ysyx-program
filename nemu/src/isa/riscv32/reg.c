@@ -25,11 +25,13 @@ const char *regs[] = {
 
 void isa_reg_display() {
 	int i;
+	int count = 0;
 	int len = sizeof(regs) / sizeof(regs[0]);
 	for(i = 0 ; i < len ; i++){
 		printf("%s\t-->\t",reg_name(i)); 
 		printf("%08x",gpr(i));
-		printf("\n");
+		count ++;
+		if (count == 4) printf("\n");
 	}
 }
 
