@@ -35,7 +35,7 @@ void sim_init(){
     top = new Vtop;
     contextp->traceEverOn(true);
     top->trace(tfp,0);
-    tfp->open("wave.vcd");
+    tfp->open("../build/wave.vcd");
 }
 
 void sim_exit(){
