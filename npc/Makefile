@@ -23,9 +23,11 @@ sim:
 	
 include ../Makefile
 
-clean:
-	rm -rf *.vcd $(BUILD_DIR)
-
 wave:sim
 	$(BUILD_DIR)/obj_dir/Vtop
 	gtkwave $(BUILD_DIR)/wave.vcd
+
+clean:
+	rm -rf *.vcd $(BUILD_DIR)
+
+
