@@ -48,12 +48,12 @@ rom u_rom (
 );
 
 decoder u_decoder (
-    .ins(cur_data),
-    .rd(rd),
-    .rs1(rs1),
-    .rs2(rs2),
-    .imm(imm),
-    .instruction(op_ins)
+    .i_ins(cur_data),
+    .o_rd(rd),
+    .o_rs1(rs1),
+    .o_rs2(rs2),
+    .o_imm(imm),
+    .o_instruction(op_ins)
 );
 
 gpr u_gpr (
