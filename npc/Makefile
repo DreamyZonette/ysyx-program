@@ -27,7 +27,9 @@ wave:sim
 	$(BUILD_DIR)/obj_dir/Vtop
 	gtkwave $(BUILD_DIR)/wave.vcd
 
+PHONY: clean
+
 clean:
-	rm -rf *.vcd $(BUILD_DIR)
+	-rm -rf *.vcd $(BUILD_DIR)
 
 
