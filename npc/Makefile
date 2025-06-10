@@ -1,12 +1,14 @@
 
 VPATH = $(NPC_HOME)/vsrc
 CPATH = $(NPC_HOME)/csrc
-VSRCS := $(wildcard $(VPATH)/**/top.v)
+VSRCS := $(wildcard $(VPATH)/**/*.v)
 CSRCS := $(wildcard $(CPATH)/**/*.cpp)
 VFLAGS += -Wall --cc --exe -I$(VPATH) --build -j 0 --trace
 
-all:
-	@echo "Write this Makefile by your self."
+#BUILD_DIR = $(NPC_HOME)/build
+
+all:sim
+	#@echo "Write this Makefile by your self."
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
