@@ -1,13 +1,14 @@
 
+BUILD_DIR = $(NPC_HOME)/build
 VPATH = $(NPC_HOME)/vsrc
 CPATH = $(NPC_HOME)/csrc
 VSRCS := $(wildcard $(VPATH)/top.v)
 CSRCS := $(wildcard $(CPATH)/**/*.cpp)
 VFLAGS += -Wall --cc --exe -I$(VPATH) --build -j 0 --trace
+VFLAGS += --Mdir $(BUILD_DIR)/obj_dir
 
-#BUILD_DIR = $(NPC_HOME)/build
 
-all:sim
+all:sim wave
 	#@echo "Write this Makefile by your self."
 
 sim:
@@ -19,8 +20,8 @@ sim:
 include ../Makefile
 
 clean:
-	rm -rf *.vcd obj_dir/
+	rm -rf *.vcd $(BUILD_DIR)
 
 wave:sim
-	./obj_dir/Vtop
+	$(BUILD_DIR)/obj_dir/Vtop
 	gtkwave wave.vcd
