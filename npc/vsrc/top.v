@@ -33,7 +33,7 @@ always @(posedge clk) begin
         end
     end
 
-ysyx_25020042_pc pc (
+pc u_pc (
     .clk(clk),
     .rst(reset),
     .dout(addr),
@@ -41,13 +41,13 @@ ysyx_25020042_pc pc (
     .jump(jump_singnal)
 );
 
-ysyx_25020042_rom rom (
+rom u_rom (
     //.clk(clk),
     .addr(addr),
     .data(cur_data)
 );
 
-ysyx_25020042_decoder decoder (
+decoder u_decoder (
     .ins(cur_data),
     .rd(rd),
     .rs1(rs1),
@@ -56,7 +56,7 @@ ysyx_25020042_decoder decoder (
     .instruction(op_ins)
 );
 
-ysyx_25020042_gpr gpr (
+gpr u_gpr (
     .clk(clk),
     .rst(reset),
     .rs1(rs1),
@@ -67,7 +67,7 @@ ysyx_25020042_gpr gpr (
     .src2(src2)
 );
 
-ysyx_25020042_alu alu (
+alu u_alu (
     .src1(src1),
     .src2(src2),
     .imm(imm),
@@ -79,7 +79,7 @@ ysyx_25020042_alu alu (
     .ram_data(ram_data)
 );
 
-ysyx_25020042_ram ram (
+ram u_ram (
     .clk(clk),
     .rst(reset),
     .data_in(result),

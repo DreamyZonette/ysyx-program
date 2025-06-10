@@ -1,4 +1,4 @@
-module ysyx_25020042_alu #(WIDTH = 32)(
+module alu #(WIDTH = 32)(
     input      [WIDTH-1:0] src1,
     input      [WIDTH-1:0] src2,
     input      [WIDTH-1:0] imm ,

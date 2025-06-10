@@ -1,4 +1,4 @@
-module ysyx_25020042_decoder #(INS_BYTES = 4, REG_ADDR_LEN = 5)(
+module decoder #(INS_BYTES = 4, REG_ADDR_LEN = 5)(
     input      [INS_BYTES* 8 - 1:0]  ins,
     output reg [REG_ADDR_LEN - 1:0]       rd ,
     output reg [REG_ADDR_LEN - 1:0]       rs1,

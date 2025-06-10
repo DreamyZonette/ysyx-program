@@ -1,4 +1,4 @@
-module ysyx_25020042_rom # (ADDR_WIDTH = 32)(
+module rom # (ADDR_WIDTH = 32)(
     //input clk,
     input [ADDR_WIDTH-1:0] addr,// pc
     output reg [31:0] data
