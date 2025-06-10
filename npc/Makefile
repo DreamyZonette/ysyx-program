@@ -3,6 +3,7 @@ BUILD_DIR = $(NPC_HOME)/build
 VPATH = $(NPC_HOME)/vsrc
 CPATH = $(NPC_HOME)/csrc
 VSRCS := $(wildcard $(VPATH)/**/*.v)
+VSRCS += $(VPATH)/top.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CFLAGS ?= -Wall
 VFLAGS += --cc --exe -I$(VPATH) --build -j 0 --trace
