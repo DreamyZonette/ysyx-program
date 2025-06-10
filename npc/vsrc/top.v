@@ -1,6 +1,6 @@
 module top (
     input sys_clk,
-    input rst_n,
+    input rst_n
 );
 
 wire [7:0] op_ins;
