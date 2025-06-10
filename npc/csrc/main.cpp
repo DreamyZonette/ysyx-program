@@ -35,7 +35,7 @@ void sim_init(){
     top = new Vtop;
     contextp->traceEverOn(true);
     top->trace(tfp,0);
-    tfp->open("../build/wave.vcd");
+    tfp->open("/home/long/ysyx-workbench/npc/build/wave.vcd");
 }
 
 void sim_exit(){
