@@ -5,6 +5,7 @@ CPATH = $(NPC_HOME)/csrc
 VSRCS := $(wildcard $(VPATH)/**/*.v)
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 VFLAGS += -Wall --cc --exe -I$(VPATH) --build -j 0 --trace
+VFLAGS += --top-module top.v
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir
 
 
