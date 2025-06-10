@@ -3,7 +3,7 @@ VPATH = $(NPC_HOME)/vsrc
 CPATH = $(NPC_HOME)/csrc
 VSRCS := $(wildcard $(VPATH)/**/top.v)
 CSRCS := $(wildcard $(CPATH)/**/*.cpp)
-VFLAGS += -Wall --cc --exe -I$(VPATH) --build -j 0 --trace
+VFLAGS += -Wall --cc --exe -Ivsrc/**/ --build -j 0 --trace
 
 all:
 	@echo "Write this Makefile by your self."
