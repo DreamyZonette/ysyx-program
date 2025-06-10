@@ -45,7 +45,7 @@ void sim_exit(){
 
 int main(){
     sim_init();
-    while(!Verilated::gotFinish() && !sim_finish) {
+    while(!sim_finish) {
         single_cycle();
     }
     printf("Simulation finished\n");
