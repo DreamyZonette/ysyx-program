@@ -6,7 +6,7 @@ VSRCS := $(wildcard $(VPATH)/**/*.v)
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CFLAGS ?= -Wall
 VFLAGS += --cc --exe -I$(VPATH) --build -j 0 --trace
-VFLAGS += --top-module top.v
+VFLAGS += --top-module top
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir
 
 
