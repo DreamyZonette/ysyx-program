@@ -25,12 +25,21 @@ const char *regs[] = {
 
 void isa_reg_display() {
 	int i;
+	int count = 0;
 	int len = sizeof(regs) / sizeof(regs[0]);
 	for(i = 0 ; i < len ; i++){
-		printf("%s\t-->\t",reg_name(i)); 
-		printf("%08x",gpr(i));
-		printf("\n");
+		char name [5], value [10];
+		sprintf(name, "%s",reg_name(i)); 
+		sprintf(value, "%08x",gpr(i));
+		printf("\033[32m%s\033[0m: \033[33m%s\033[0m\t", name, value); 
+		
+		count ++;
+		if (count == 4) {
+			printf("\n");
+			count = 0;
+		}
 	}
+	printf("\n");
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {

@@ -8,7 +8,7 @@
  * 
  */
 
-module ysyx_25020042_pc #(PC_LEN = 32, INS_BYTES = 4)(
+module pc #(PC_LEN = 32, INS_BYTES = 4)(
     input clk,
     input rst,
     input [PC_LEN-1:0] din,

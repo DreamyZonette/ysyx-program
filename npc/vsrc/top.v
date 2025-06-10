@@ -1,6 +1,6 @@
 module top (
-    input clk,
-    input reset
+    input sys_clk,
+    input rst_n,
 );
 
 wire [7:0] op_ins;
@@ -26,28 +26,28 @@ import "DPI-C" function void dpi_ebreak();
 //    $display("%x + %x = %x", 1, 2, add(1,2));
 // end
 
-always @(posedge clk) begin
+always @(posedge sys_clk) begin
         if (cur_data == 32'h00100073) begin
             //$finish();
             dpi_ebreak();  // 调用 DPI-C 函数
         end
     end
 
-ysyx_25020042_pc pc (
-    .clk(clk),
-    .rst(reset),
+pc u_pc (
+    .clk(sys_clk),
+    .rst(rst_n),
     .dout(addr),
     .din(pc_next),
     .jump(jump_singnal)
 );
 
-ysyx_25020042_rom rom (
-    //.clk(clk),
+rom u_rom (
+    //.clk(sys_clk),
     .addr(addr),
     .data(cur_data)
 );
 
-ysyx_25020042_decoder decoder (
+decoder u_decoder (
     .ins(cur_data),
     .rd(rd),
     .rs1(rs1),
@@ -56,9 +56,9 @@ ysyx_25020042_decoder decoder (
     .instruction(op_ins)
 );
 
-ysyx_25020042_gpr gpr (
-    .clk(clk),
-    .rst(reset),
+gpr u_gpr (
+    .clk(sys_clk),
+    .rst(rst_n),
     .rs1(rs1),
     .rs2(rs2),
     .rd(rd),
@@ -67,7 +67,7 @@ ysyx_25020042_gpr gpr (
     .src2(src2)
 );
 
-ysyx_25020042_alu alu (
+alu u_alu (
     .src1(src1),
     .src2(src2),
     .imm(imm),
@@ -79,9 +79,9 @@ ysyx_25020042_alu alu (
     .ram_data(ram_data)
 );
 
-ysyx_25020042_ram ram (
-    .clk(clk),
-    .rst(reset),
+ram u_ram (
+    .clk(sys_clk),
+    .rst(rst_n),
     .data_in(result),
     .addr(addr),
     .byte_en(4'b1111),

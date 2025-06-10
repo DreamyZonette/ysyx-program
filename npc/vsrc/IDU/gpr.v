@@ -1,4 +1,4 @@
-module ysyx_25020042_gpr #(REG_ADDR_LEN = 5, WIDTH = 32, REGS = 32) (
+module gpr #(REG_ADDR_LEN = 5, WIDTH = 32, REGS = 32) (
     input clk,
     input rst,   
     input  [REG_ADDR_LEN - 1:0] rs1,

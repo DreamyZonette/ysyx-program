@@ -35,7 +35,7 @@ void sim_init(){
     top = new Vtop;
     contextp->traceEverOn(true);
     top->trace(tfp,0);
-    tfp->open("wave.vcd");
+    tfp->open("/home/long/ysyx-workbench/npc/build/wave.vcd");
 }
 
 void sim_exit(){
@@ -45,7 +45,7 @@ void sim_exit(){
 
 int main(){
     sim_init();
-    while(!Verilated::gotFinish() && !sim_finish) {
+    while(!sim_finish) {
         single_cycle();
     }
     printf("Simulation finished\n");
