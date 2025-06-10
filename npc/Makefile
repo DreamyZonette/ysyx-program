@@ -10,6 +10,7 @@ VFLAGS += --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module top
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir
 
+$(shell mkdir -p $(BUILD_DIR))
 
 all:sim wave
 	#@echo "Write this Makefile by your self."
