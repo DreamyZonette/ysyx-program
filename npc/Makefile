@@ -28,4 +28,4 @@ clean:
 
 wave:sim
 	$(BUILD_DIR)/obj_dir/Vtop
-	gtkwave wave.vcd
+	gtkwave $(BUILD_DIR)/wave.vcd
