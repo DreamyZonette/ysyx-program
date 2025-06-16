@@ -1,5 +1,5 @@
 module top (
-    input [31:0] inst,
+    //input [31:0] inst,
     input clk,
     input reset
 );
