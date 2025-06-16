@@ -97,15 +97,17 @@ int main(){
     printf("2\n");
     isa_init();
     while(!sim_finish) {
+        uint32_t pc = 0x80000000;
         printf("3\n");
         top->clk ^= 1; 
         printf("4\n");
         printf("%u\n", top->o_pc);
-        top->inst = pmem_read(top->o_pc, 4);
-        //top->inst = pmem_read(0x80000000, 4);
+        //top->inst = pmem_read(top->o_pc, 4);
+        top->inst = pmem_read(pc, 4);
         printf("5\n");
         top->eval();
         step_and_dump_wave();
+        pc ++;
     }
     printf("Simulation finished\n");
     sim_exit();
