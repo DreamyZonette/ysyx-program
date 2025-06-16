@@ -125,6 +125,7 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
     }
     __Vdly__o_pc = vlSelf->o_pc;
     __Vdlyvset__top__DOT__ram__DOT__ram_mem__v0 = 0U;
+    __Vdly__o_pc = 0x80000000U;
     if (vlSelf->reset) {
         __Vdly__o_pc = 0x80000000U;
         vlSelf->top__DOT__ram__DOT____Vlvbound_h09251640__0 = 0U;
