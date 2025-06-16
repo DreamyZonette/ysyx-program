@@ -36,7 +36,7 @@ static inline uint32_t host_read(void *addr, int len) {
 
 uint8_t* guest_to_host(uint32_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 
-static inline void host_write(void *addr, int len, word_t data) {
+static inline void host_write(void *addr, int len, uint32_t data) {
   switch (len) {
     case 1: *(uint8_t  *)addr = data; return;
     case 2: *(uint16_t *)addr = data; return;
