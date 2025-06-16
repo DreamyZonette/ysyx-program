@@ -103,7 +103,7 @@ int main(){
         top->clk ^= 1; 
         step_and_dump_wave();
         //printf("4\n");
-        printf("%08x    %08x\n", top->o_pc + CONFIG_MBASE, pc);
+        printf("%08x    %08x\n", top->o_pc + CONFIG_MBASE, pmem_read(top->o_pc + CONFIG_MBASE, 4););
         top->inst = pmem_read(top->o_pc + CONFIG_MBASE, 4);
         //top->inst = pmem_read(pc, 4);
         //printf("5\n");
