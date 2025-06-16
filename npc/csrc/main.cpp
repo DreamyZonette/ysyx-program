@@ -36,31 +36,22 @@ static inline uint32_t host_read(void *addr, int len) {
 
 uint8_t* guest_to_host(uint32_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 
+static inline void host_write(void *addr, int len, word_t data) {
+  switch (len) {
+    case 1: *(uint8_t  *)addr = data; return;
+    case 2: *(uint16_t *)addr = data; return;
+    case 4: *(uint32_t *)addr = data; return;
+    default: assert(0);
+  }
+}
+
 static uint32_t pmem_read(uint32_t addr, int len) {
   uint32_t ret = host_read(guest_to_host(addr), len);
   return ret;
 }
 
-static long load_img() {
-  if (img_file == NULL) {
-    printf("No image is given. Use the default build-in image.");
-    return 4096; // built-in image size
-  }
-
-  FILE *fp = fopen(img_file, "rb");
-  //assert(fp, "Can not open '%s'", img_file);
-  long size = 0;
-
-  
-    // BIN文件处理逻辑（保持不变）
-    fseek(fp, 0, SEEK_END);
-    size = ftell(fp);
-    printf("The image is %s, size = %ld", img_file, size);
-    fseek(fp, 0, SEEK_SET);
-    int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
-    assert(ret == 1);
-    fclose(fp);
-  return size;
+static void pmem_write(uint32_t addr, int len, uint32_t data) {
+  host_write(guest_to_host(addr), len, data);
 }
 
 int is_ebreak(int ebreak_signal);
@@ -71,12 +62,7 @@ void step_and_dump_wave(){
     tfp->dump(contextp->time());
 }
 
-// void single_cycle() {
-//   top->clk = 0; top->eval();
-//   step_and_dump_wave();
-//   top->clk = 1; top->eval();
-//   step_and_dump_wave();
-// }
+
 
 void sim_init(){
     contextp = new VerilatedContext;
@@ -85,6 +71,14 @@ void sim_init(){
     contextp->traceEverOn(true);
     top->trace(tfp,0);
     tfp->open("wave.vcd");
+}
+
+void isa_init(){
+    uint32_t addi_instruction = 0x00050193; // addi x10, x0, 5
+    pmem_write(CONFIG_MBASE, 4, addi_instruction);
+    // 写入 ebreak 指令以便停止仿真
+    uint32_t ebreak_instruction = 0x00100073; // ebreak
+    pmem_write(CONFIG_MBASE + 4, 4, ebreak_instruction);
 }
 
 void sim_exit(){
