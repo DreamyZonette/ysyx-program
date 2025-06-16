@@ -7,7 +7,7 @@
 #include <stdint.h>
 
 #define CONFIG_MBASE 0x80000000
-#define CONFIG_MSIZE 0x800000
+#define CONFIG_MSIZE 0x8000000
 #define PG_ALIGN __attribute((aligned(4096)))
 #define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
 #define PMEM_LEFT  ((uint32_t)CONFIG_MBASE)
