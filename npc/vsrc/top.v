@@ -1,13 +1,12 @@
 module top (
-    //input [31:0] inst,
+    input [31:0] inst,
     input clk,
-    input reset
+    input reset,
+    output [31:0] o_pc
 );
 
 wire [7:0] op_ins;
-wire [31:0] addr;
 wire [31:0] pc_next;
-wire [31:0] cur_data;
 wire [31:0] ram_data;
 wire [4:0] rs1;
 wire [4:0] rs2;
@@ -28,8 +27,7 @@ import "DPI-C" function void dpi_ebreak();
 // end
 
 always @(posedge clk) begin
-        if (cur_data == 32'h00100073) begin
-            //$finish();
+        if (inst == 32'h00100073) begin
             dpi_ebreak();  // 调用 DPI-C 函数
         end
     end
@@ -37,19 +35,13 @@ always @(posedge clk) begin
 ysyx_25020042_pc pc (
     .clk(clk),
     .rst(reset),
-    .dout(addr),
+    .dout(o_pc),
     .din(pc_next),
     .jump(jump_singnal)
 );
 
-ysyx_25020042_rom rom (
-    //.clk(clk),
-    .addr(addr),
-    .data(cur_data)
-);
-
 ysyx_25020042_decoder decoder (
-    .ins(cur_data),
+    .ins(inst),
     .rd(rd),
     .rs1(rs1),
     .rs2(rs2),
@@ -84,7 +76,7 @@ ysyx_25020042_ram ram (
     .clk(clk),
     .rst(reset),
     .data_in(result),
-    .addr(addr),
+    .addr(o_pc),
     .byte_en(4'b1111),
     .data_out(ram_data),
     .ram_signal(ram_signal)

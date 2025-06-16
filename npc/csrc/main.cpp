@@ -22,12 +22,12 @@ void step_and_dump_wave(){
     tfp->dump(contextp->time());
 }
 
-void single_cycle() {
-  top->clk = 0; top->eval();
-  step_and_dump_wave();
-  top->clk = 1; top->eval();
-  step_and_dump_wave();
-}
+// void single_cycle() {
+//   top->clk = 0; top->eval();
+//   step_and_dump_wave();
+//   top->clk = 1; top->eval();
+//   step_and_dump_wave();
+// }
 
 void sim_init(){
     contextp = new VerilatedContext;
@@ -45,8 +45,11 @@ void sim_exit(){
 
 int main(){
     sim_init();
-    while(!Verilated::gotFinish() && !sim_finish) {
-        single_cycle();
+    while(!sim_finish) {
+        top->clk ^= 1; 
+        top->inst = pmem_read(top->pc);
+        top->eval();
+        step_and_dump_wave();
     }
     printf("Simulation finished\n");
     sim_exit();
