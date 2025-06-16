@@ -93,8 +93,11 @@ int main(){
     printf("2\n");
     //isa_init();
     while(!sim_finish) {
+        printf("3\n");
         top->clk ^= 1; 
+        
         top->inst = pmem_read(top->o_pc, 4);
+        printf("4\n");
         top->eval();
         step_and_dump_wave();
     }
