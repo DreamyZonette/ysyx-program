@@ -17,6 +17,7 @@ module ysyx_25020042_pc #(PC_LEN = 32, INS_BYTES = 4)(
     );
     
     always @(posedge clk) begin
+        dout <= 32'h80000000;
         if (rst) dout <= 32'h80000000;
         else if (jump) dout <= din;
         else dout <= dout + INS_BYTES;
