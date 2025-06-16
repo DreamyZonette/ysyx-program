@@ -1,14 +1,21 @@
 TOP_NAME = top
-BUILD_DIR = $(NPC_HOME)/build
+
+WORK_DIR = $(shell pwd)
+BUILD_DIR = $(WORK_DIR)/build
 TEST ?=
 TEST_OBJ = $(wildcard $(VPATH)/**/$(TEST).v)
-VPATH = $(NPC_HOME)/vsrc
-CPATH = $(NPC_HOME)/csrc
+VPATH = $(WORK_DIR)/vsrc
+CPATH = $(WORK_DIR)/csrc
+INC_PATH := $(WORK_DIR)/include $(INC_PATH)
+NCLUDES = $(addprefix -I, $(INC_PATH))
 VSRCS := $(wildcard $(VPATH)/**/*.v)
 VSRCS += $(VPATH)/top.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
+CSRCS += $(wildcard $(CPATH)/**/*.c)
+CSRCS += $(wildcard $(CPATH)/**/*.h)
 CFLAGS ?= -Wall
-VFLAGS += --cc --exe -I$(VPATH) --build -j 0 --trace
+CFLAGS += $(INCLUDES)
+VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME)
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir
 

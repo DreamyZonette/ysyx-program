@@ -3,6 +3,7 @@
 #include "verilated_vcd_c.h"
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
+#include <common.h>
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
@@ -23,6 +24,8 @@ void step_and_dump_wave(){
 }
 
 void single_cycle() {
+  top->sys_clk ^= 1; top->eval();
+  step_and_dump_wave();
   top->sys_clk ^= 1; top->eval();
   step_and_dump_wave();
 }
