@@ -88,6 +88,7 @@ void sim_exit(){
 
 int main(){
     sim_init();
+    isa_init();
     while(!sim_finish) {
         top->clk ^= 1; 
         top->inst = pmem_read(top->o_pc, 4);
