@@ -8,6 +8,9 @@
 #define CONFIG_MBASE 0x80000000
 #define CONFIG_MSIZE 0x8000000
 #define PG_ALIGN __attribute((aligned(4096)))
+#define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
+#define PMEM_LEFT  ((uint32_t)CONFIG_MBASE)
+#define CONFIG_PC_RESET_OFFSET 0x0
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
@@ -35,6 +38,28 @@ uint8_t* guest_to_host(uint32_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 static uint32_t pmem_read(uint32_t addr, int len) {
   uint32_t ret = host_read(guest_to_host(addr), len);
   return ret;
+}
+
+static long load_img() {
+  if (img_file == NULL) {
+    Log("No image is given. Use the default build-in image.");
+    return 4096; // built-in image size
+  }
+
+  FILE *fp = fopen(img_file, "rb");
+  Assert(fp, "Can not open '%s'", img_file);
+  long size = 0;
+
+  
+    // BIN文件处理逻辑（保持不变）
+    fseek(fp, 0, SEEK_END);
+    size = ftell(fp);
+    Log("The image is %s, size = %ld", img_file, size);
+    fseek(fp, 0, SEEK_SET);
+    ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+    assert(ret == 1);
+    fclose(fp);
+  return size;
 }
 
 int is_ebreak(int ebreak_signal);
