@@ -3,16 +3,6 @@
 #include "verilated_vcd_c.h"
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
-#include <cassert>
-#include <cstdint>
-#include <cstdio>
-
-#define CONFIG_MBASE 0x80000000
-#define CONFIG_MSIZE 0x8000000
-#define PG_ALIGN __attribute((aligned(4096)))
-#define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
-#define PMEM_LEFT  ((uint32_t)CONFIG_MBASE)
-#define CONFIG_PC_RESET_OFFSET 0x0
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
@@ -24,37 +14,6 @@ extern "C" void dpi_ebreak() {
     sim_finish = true;  // 触发仿真结束
 }
 
-static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
-
-static inline uint32_t host_read(void *addr, int len) {
-  switch (len) {
-    case 1: return *(uint8_t  *)addr;
-    case 2: return *(uint16_t *)addr;
-    case 4: return *(uint32_t *)addr;
-    default: assert(0);
-  }
-}
-
-uint8_t* guest_to_host(uint32_t paddr) { return pmem + paddr - CONFIG_MBASE; }
-
-static inline void host_write(void *addr, int len, uint32_t data) {
-  switch (len) {
-    case 1: *(uint8_t  *)addr = data; return;
-    case 2: *(uint16_t *)addr = data; return;
-    case 4: *(uint32_t *)addr = data; return;
-    default: assert(0);
-  }
-}
-
-static uint32_t pmem_read(uint32_t addr, int len) {
-  uint32_t ret = host_read(guest_to_host(addr), len);
-  return ret;
-}
-
-static void pmem_write(uint32_t addr, int len, uint32_t data) {
-  host_write(guest_to_host(addr), len, data);
-}
-
 int is_ebreak(int ebreak_signal);
 
 void step_and_dump_wave(){
@@ -63,7 +22,10 @@ void step_and_dump_wave(){
     tfp->dump(contextp->time());
 }
 
-
+void single_cycle() {
+  top->sys_clk ^= 1; top->eval();
+  step_and_dump_wave();
+}
 
 void sim_init(){
     contextp = new VerilatedContext;
@@ -71,19 +33,7 @@ void sim_init(){
     top = new Vtop;
     contextp->traceEverOn(true);
     top->trace(tfp,0);
-    tfp->open("wave.vcd");
-}
-
-void isa_init(){
-    top->clk = 0;
-    top->reset = 1;
-    top->clk = 1;
-    top->reset = 0;
-    uint32_t addi_instruction = 0x00050193; // addi x10, x0, 5
-    pmem_write(CONFIG_MBASE, 4, addi_instruction);
-    // 写入 ebreak 指令以便停止仿真
-    uint32_t ebreak_instruction = 0x00100073; // ebreak
-    pmem_write(CONFIG_MBASE + 4, 4, ebreak_instruction);
+    tfp->open("/home/long/ysyx-workbench/npc/build/wave.vcd");
 }
 
 void sim_exit(){
@@ -92,26 +42,9 @@ void sim_exit(){
 }
 
 int main(){
-    printf("1\n");
     sim_init();
-    printf("2\n");
-    isa_init();
-    int count = 0;
-    uint32_t pc = 0x80000000;
-    while(!sim_finish && count < 100) {
-        //printf("3\n");
-        top->clk ^= 1; 
-        step_and_dump_wave();
-        //printf("4\n");
-        printf("%08x    %08x\n", top->o_pc + CONFIG_MBASE, pmem_read(top->o_pc + CONFIG_MBASE, 4));
-        top->inst = pmem_read(top->o_pc + CONFIG_MBASE, 4);
-        //top->inst = pmem_read(pc, 4);
-        //printf("5\n");
-        top->eval();
-        top->clk ^= 1; 
-        step_and_dump_wave();
-        pc += 4;
-        count ++;
+    while(!sim_finish) {
+        single_cycle();
     }
     printf("Simulation finished\n");
     sim_exit();

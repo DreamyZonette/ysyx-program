@@ -1,12 +1,12 @@
 module top (
-    input [31:0] inst,
-    input clk,
-    input reset,
-    output [31:0] o_pc
+    input sys_clk,
+    input rst_n
 );
 
 wire [7:0] op_ins;
+wire [31:0] addr;
 wire [31:0] pc_next;
+wire [31:0] cur_data;
 wire [31:0] ram_data;
 wire [4:0] rs1;
 wire [4:0] rs2;
@@ -26,32 +26,38 @@ import "DPI-C" function void dpi_ebreak();
 //    $display("%x + %x = %x", 1, 2, add(1,2));
 // end
 
-always @(posedge clk) begin
-        if (inst == 32'h00100073) begin
+always @(posedge sys_clk) begin
+        if (cur_data == 32'h00100073) begin
             dpi_ebreak();  // 调用 DPI-C 函数
         end
     end
 
-ysyx_25020042_pc pc (
-    .clk(clk),
-    .rst(reset),
-    .dout(o_pc),
+pc u_pc (
+    .clk(sys_clk),
+    .rst(rst_n),
+    .dout(addr),
     .din(pc_next),
     .jump(jump_singnal)
 );
 
-ysyx_25020042_decoder decoder (
-    .ins(inst),
-    .rd(rd),
-    .rs1(rs1),
-    .rs2(rs2),
-    .imm(imm),
-    .instruction(op_ins)
+rom u_rom (
+    //.clk(sys_clk),
+    .addr(addr),
+    .data(cur_data)
 );
 
-ysyx_25020042_gpr gpr (
-    .clk(clk),
-    .rst(reset),
+decoder u_decoder (
+    .i_ins(cur_data),
+    .o_rd(rd),
+    .o_rs1(rs1),
+    .o_rs2(rs2),
+    .o_imm(imm),
+    .o_instruction(op_ins)
+);
+
+gpr u_gpr (
+    .clk(sys_clk),
+    .rst(rst_n),
     .rs1(rs1),
     .rs2(rs2),
     .rd(rd),
@@ -60,7 +66,7 @@ ysyx_25020042_gpr gpr (
     .src2(src2)
 );
 
-ysyx_25020042_alu alu (
+alu u_alu (
     .src1(src1),
     .src2(src2),
     .imm(imm),
@@ -72,11 +78,11 @@ ysyx_25020042_alu alu (
     .ram_data(ram_data)
 );
 
-ysyx_25020042_ram ram (
-    .clk(clk),
-    .rst(reset),
+ram u_ram (
+    .clk(sys_clk),
+    .rst(rst_n),
     .data_in(result),
-    .addr(o_pc),
+    .addr(addr),
     .byte_en(4'b1111),
     .data_out(ram_data),
     .ram_signal(ram_signal)
