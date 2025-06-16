@@ -75,6 +75,10 @@ void sim_init(){
 }
 
 void isa_init(){
+    top->clk = 0;
+    top->reset = 1;
+    top->clk = 1;
+    top->reset = 0;
     uint32_t addi_instruction = 0x00050193; // addi x10, x0, 5
     pmem_write(CONFIG_MBASE, 4, addi_instruction);
     // 写入 ebreak 指令以便停止仿真
