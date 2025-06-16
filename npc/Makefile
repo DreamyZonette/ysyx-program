@@ -3,7 +3,6 @@ BUILD_DIR = $(WORK_DIR)/build
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS = -Wall $(INCLUDES)
-CFLAGS += -g
 
 all:
 	@echo "Write this Makefile by your self."
