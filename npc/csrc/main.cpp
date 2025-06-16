@@ -23,7 +23,9 @@ void step_and_dump_wave(){
 }
 
 void single_cycle() {
-  top->sys_clk ^= 1; top->eval();
+  top->clk = 0; top->eval();
+  step_and_dump_wave();
+  top->clk = 1; top->eval();
   step_and_dump_wave();
 }
 
@@ -33,7 +35,7 @@ void sim_init(){
     top = new Vtop;
     contextp->traceEverOn(true);
     top->trace(tfp,0);
-    tfp->open("/home/long/ysyx-workbench/npc/build/wave.vcd");
+    tfp->open("wave.vcd");
 }
 
 void sim_exit(){
@@ -43,7 +45,7 @@ void sim_exit(){
 
 int main(){
     sim_init();
-    while(!sim_finish) {
+    while(!Verilated::gotFinish() && !sim_finish) {
         single_cycle();
     }
     printf("Simulation finished\n");

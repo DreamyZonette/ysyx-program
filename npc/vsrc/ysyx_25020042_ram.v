@@ -1,4 +1,4 @@
-module ram #(WIDTH = 32, INS_BYTES = 4, PC_LEN = 32)(
+module ysyx_25020042_ram #(WIDTH = 32, INS_BYTES = 4, PC_LEN = 32)(
     input clk,
     input rst,
     input [WIDTH-1:0] data_in,
