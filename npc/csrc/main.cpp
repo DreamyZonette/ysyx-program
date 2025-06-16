@@ -48,7 +48,7 @@ static long load_img() {
   }
 
   FILE *fp = fopen(img_file, "rb");
-  Assert(fp, "Can not open '%s'", img_file);
+  assert(fp, "Can not open '%s'", img_file);
   long size = 0;
 
   
