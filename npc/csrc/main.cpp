@@ -3,6 +3,7 @@
 #include "verilated_vcd_c.h"
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
+#include <cassert>
 #include <stdint.h>
 
 #define CONFIG_MBASE 0x80000000
@@ -47,7 +48,7 @@ static long load_img() {
   }
 
   FILE *fp = fopen(img_file, "rb");
-  assert(fp, "Can not open '%s'", img_file);
+  Assert(fp, "Can not open '%s'", img_file);
   long size = 0;
 
   
