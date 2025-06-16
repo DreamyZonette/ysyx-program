@@ -97,8 +97,8 @@ int main(){
     printf("2\n");
     isa_init();
     int count = 0;
+    uint32_t pc = 0x80000000;
     while(!sim_finish && count < 100) {
-        uint32_t pc = 0x80000000;
         //printf("3\n");
         top->clk ^= 1; 
         step_and_dump_wave();
