@@ -3,7 +3,7 @@
 #include "verilated_vcd_c.h"
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
-//#include <isa.h>
+#include <isa.h>
 #include <memory/paddr.h>
 
 VerilatedContext* contextp;
