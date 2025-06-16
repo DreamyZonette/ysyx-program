@@ -101,14 +101,16 @@ int main(){
         uint32_t pc = 0x80000000;
         //printf("3\n");
         top->clk ^= 1; 
+        step_and_dump_wave();
         //printf("4\n");
-        printf("%u    %u\n", top->o_pc, pc);
+        printf("%08x    %08x\n", top->o_pc, pc);
         //top->inst = pmem_read(top->o_pc, 4);
         top->inst = pmem_read(pc, 4);
         //printf("5\n");
         top->eval();
+        top->clk ^= 1; 
         step_and_dump_wave();
-        pc ++;
+        pc += 4;
         count ++;
     }
     printf("Simulation finished\n");
