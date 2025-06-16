@@ -1,6 +1,6 @@
 module top (
     input sys_clk,
-    input rst_n,
+    input rst_n
 );
 
 wire [7:0] op_ins;
@@ -28,7 +28,6 @@ import "DPI-C" function void dpi_ebreak();
 
 always @(posedge sys_clk) begin
         if (cur_data == 32'h00100073) begin
-            //$finish();
             dpi_ebreak();  // 调用 DPI-C 函数
         end
     end
@@ -48,12 +47,12 @@ rom u_rom (
 );
 
 decoder u_decoder (
-    .ins(cur_data),
-    .rd(rd),
-    .rs1(rs1),
-    .rs2(rs2),
-    .imm(imm),
-    .instruction(op_ins)
+    .i_ins(cur_data),
+    .o_rd(rd),
+    .o_rs1(rs1),
+    .o_rs2(rs2),
+    .o_imm(imm),
+    .o_instruction(op_ins)
 );
 
 gpr u_gpr (

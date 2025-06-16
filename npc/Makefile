@@ -1,5 +1,7 @@
-
+TOP_NAME = top
 BUILD_DIR = $(NPC_HOME)/build
+TEST ?=
+TEST_OBJ = $(wildcard $(VPATH)/**/$(TEST).v)
 VPATH = $(NPC_HOME)/vsrc
 CPATH = $(NPC_HOME)/csrc
 VSRCS := $(wildcard $(VPATH)/**/*.v)
@@ -7,17 +9,15 @@ VSRCS += $(VPATH)/top.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CFLAGS ?= -Wall
 VFLAGS += --cc --exe -I$(VPATH) --build -j 0 --trace
-VFLAGS += --top-module top
+VFLAGS += --top-module $(TOP_NAME)
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir
 
 $(shell mkdir -p $(BUILD_DIR))
 
 all:sim wave
-	#@echo "Write this Makefile by your self."
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	#@echo "Write this Makefile by your self."
 	verilator $(CFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
 	
 	
@@ -27,7 +27,15 @@ wave:sim
 	$(BUILD_DIR)/obj_dir/Vtop
 	gtkwave $(BUILD_DIR)/wave.vcd
 
+
+PHONY: clean test
+
+test:
+	verilator --lint-only -Wall $(TEST_OBJ)
+	verilator --cc -Wall --Mdir $(BUILD_DIR)/obj_dir $(TEST_OBJ)
+	@echo PASS
+
 clean:
-	rm -rf *.vcd $(BUILD_DIR)
+	-rm -rf *.vcd $(BUILD_DIR)
 
 

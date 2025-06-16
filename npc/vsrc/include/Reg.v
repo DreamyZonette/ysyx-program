@@ -1,13 +1,15 @@
 /* 触发器模板 */
-module Reg #(WIDTH = 1, RESET_VAL = 0) (
+module Reg #(WIDTH = 1) (
   input clk,
-  input rst,
-  input [WIDTH-1:0] din,
-  output reg [WIDTH-1:0] dout,
-  input wen
+  input rst_n,
+  input wen,
+  input [WIDTH-1:0] i_data,
+  output reg [WIDTH-1:0] o_data
 );
   always @(posedge clk) begin
-    if (rst) dout <= RESET_VAL;
-    else if (wen) dout <= din;
+    if (!rst_n) o_data <= 0;
+    else if (wen) o_data <= i_data;
   end
 endmodule
+
+

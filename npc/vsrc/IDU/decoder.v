@@ -1,50 +1,198 @@
-module decoder #(INS_BYTES = 4, REG_ADDR_LEN = 5)(
-    input      [INS_BYTES* 8 - 1:0]  ins,
-    output reg [REG_ADDR_LEN - 1:0]       rd ,
-    output reg [REG_ADDR_LEN - 1:0]       rs1,
-    output reg [REG_ADDR_LEN - 1:0]       rs2,
-    output reg [INS_BYTES* 8 - 1:0]  imm,
-    output reg [7:0]                 instruction
+module decoder (
+    input i_sys_clk,
+    input i_sys_rst_n, 
+    input   [31:0]  i_inst,
+    input   [31:0]  i_wdata,
+    output reg [31:0]  o_src1,
+    output reg [31:0]  o_src2,
+    output reg [31:0]  o_imm,
+    output reg [31:0]  o_offset,
+    output  o_addi_signal,
+    output  o_ebreak_signal,
+    output  o_jalr_signal,
+    output  o_lbu_signal,
+    output  o_lw_signal,
+    output  o_auipc_signal,
+    output  o_lui_signal,
+    output  o_jal_signal,
+    output  o_sw_signal,
+    output  o_sb_signal,
+    output  o_add_signal
     );
 
-    wire [2:0] fun1;
-    wire [6:0] opcode;
+    wire [6:0]  opcode;
+    wire [31:0] offset;
+    wire [31:0] I_imm;
+    wire [4:0]  I_rs1;
+    wire [4:0]  I_rd;
+    wire [4:0]  I_shamt;
+    wire [4:0]  U_rd;
+    wire [4:0]  J_rd;
+    wire [4:0]  S_rs1;
+    wire [4:0]  S_rs2;
+    wire [31:0] S_imm;
+    wire [4:0]  R_rd;
+    wire [4:0]  R_rs1;
+    wire [4:0]  R_rs2;
+    reg Btype_signal;
+    reg Itype_signal;
+    reg Jtype_signal;
+    reg Rtype_signal;
+    reg Stype_signal;
+    reg Utype_signal;
+    reg [4:0] rs1;
+    reg [4:0] rs2;
+    reg [4:0] rd;
+    reg [4:0] shamt;
+    reg [31:0] wdata;
 
-    assign rd     = ins[11:7];
-    assign rs1    = ins[19:15];
-    assign rs2    = ins[24:20];
-    assign fun1   = ins[14:12];
-    assign opcode = ins[6:0];
+    assign opcode = i_inst[6:0];
 
-    // 指令识别模块
+    //根据操作码判断类型
     always @ (*) begin
-        // I-type
-        if (ins[6:0] == 7'b0010011) begin
-            if      (fun1 == 3'b000) instruction = 8'h01; // addi
-            else if (fun1 == 3'b010) instruction = 8'h02; // slti
-            else if (fun1 == 3'b011) instruction = 8'h03; // sltiu
-            else if (fun1 == 3'b100) instruction = 8'h04; // xori
-            else if (fun1 == 3'b110) instruction = 8'h05; // ori
-            else if (fun1 == 3'b111) instruction = 8'h06; // andi
-            else instruction = 8'h00;           
+        Btype_signal = 1'b0;
+        Itype_signal = 1'b0;
+        Jtype_signal = 1'b0;
+        Rtype_signal = 1'b0;
+        Stype_signal = 1'b0;
+        Utype_signal = 1'b0;
+        case(opcode)
+        // I型
+            7'b1100111:begin
+                Itype_signal = 1'b1;
+            end
+            7'b0000011:begin
+                Itype_signal = 1'b1;
+            end
+            7'b0010011:begin
+                Itype_signal = 1'b1;
+            end
+            7'b0001111:begin
+                Itype_signal = 1'b1;
+            end
+            7'b1110011:begin
+                Itype_signal = 1'b1;
+            end
+        // J型
+            7'b1101111:begin
+                Jtype_signal = 1'b1;
+            end
+        // U型
+            7'b0110111:begin
+                Utype_signal = 1'b1;
+            end
+            7'b0010111:begin
+                Utype_signal = 1'b1;
+            end
+        // B型
+            7'b1100011:begin
+                Btype_signal = 1'b1;
+            end
+        // R型
+            7'b0110011:begin
+                Rtype_signal = 1'b1;
+            end
+        // S型
+            7'b0100011:begin
+                Stype_signal = 1'b1;
+            end
+        endcase
+    end
+
+
+    always @(*) begin
+        o_src1 = 32'b0;
+        o_src2 = 32'b0;
+        o_imm = 32'b0;
+        o_offset = 32'b0;
+        rs1 = 5'b0;
+        rs2 = 5'b0;
+        rd  = 5'b0;
+        shamt  = 5'b0;
+        if(Itype_signal == 1'b1) begin
+            rs1 = I_rs1;
+            rd  = I_rd;
+            o_imm = I_imm;
+            shamt = I_shamt;
         end
-        else begin
-            instruction = 8'h00;
+        else if(Utype_signal == 1'b1) begin
+            rd  = U_rd;
+        end
+        else if(Btype_signal == 1'b1) begin
+            
+        end
+        else if(Jtype_signal == 1'b1) begin
+            o_offset  = offset;
+            rd  = J_rd;
+        end
+        else if(Stype_signal == 1'b1) begin
+            o_imm  = S_imm;
+            rs1  = S_rs1;
+            rs2  = S_rs2;
+        end
+        else if(Rtype_signal == 1'b1) begin
+            rs1  = R_rs1;
+            rs2  = R_rs2;
+            rd   = R_rd;
         end
     end
-    
-    // imm解码模块
-    always @ (*) begin
-        // I-type
-        if (opcode == 7'b0010011) begin
-            imm = { {20{ins[31]}}, ins[31:20]};
-        end
-        else begin
-            imm = 0;
-        end
+
+    always @(*) begin
+        wdata = i_wdata;
     end
-    
-   
+
+    Itype Itype_u(
+        .i_inst(i_inst),
+        .o_imm(I_imm),
+        .o_rs1(I_rs1),
+        .o_shamt(I_shamt),
+        .o_rd(I_rd),
+        .o_addi_signal(o_addi_signal),
+        .o_ebreak_signal(o_ebreak_signal),
+        .o_jalr_signal(o_jalr_signal),
+        .o_lbu_signal(o_lbu_signal),
+        .o_lw_signal(o_lw_signal)
+    );
+    Utype Utype_u(
+        .i_inst(i_inst),
+        .o_rd(U_rd),
+        .o_auipc_signal(o_auipc_signal),
+        .o_lui_signal(o_lui_signal)
+    );
+    Btype Btypr_u(
+        .i_inst(i_inst)
+    );
+    Jtype Jtype_u(
+        .i_inst(i_inst),
+        .o_offset(offset),
+        .o_rd(J_rd),
+        .o_jal_signal(o_jal_signal)
+    );
+    Stype Stype_u(
+    .i_inst(i_inst),
+    .o_rs1(S_rs1),
+    .o_rs2(S_rs2),
+    .o_imm(S_imm),
+    .o_sw_signal(o_sw_signal),
+    .o_sb_signal(o_sb_signal)
+    );
+    Rtype Rtype_u(
+    .i_inst(i_inst),
+    .o_rd(R_rd),
+    .o_rs1(R_rs1),
+    .o_rs2(R_rs2),
+    .o_add_signal(o_add_signal)
+    );
+    gpr gpr_u(
+    .i_sys_clk(i_sys_clk),
+    .i_sys_rst_n(i_sys_rst_n), 
+    .i_rs1(rs1),
+    .i_rs2(rs2),
+    .i_rd(rd),
+    .i_data(wdata),
+    .o_src1(o_src1),
+    .o_src2(o_src2)
+    );
 
     endmodule
 

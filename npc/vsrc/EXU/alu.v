@@ -1,27 +1,24 @@
 module alu #(WIDTH = 32)(
-    input      [WIDTH-1:0] src1,
-    input      [WIDTH-1:0] src2,
-    input      [WIDTH-1:0] imm ,
-    input      [WIDTH-1:0] ram_data,
-    input      [7:0]       op_ins,
-    output reg [WIDTH-1:0] out,
-    output reg             ram_signal,
-    output reg             jump_signal,
-    output reg [WIDTH-1:0] pc_next
-    
+    input [WIDTH-1:0] i_src1,
+    input [WIDTH-1:0] i_src2,
+    input [WIDTH-1:0] i_imm ,
+    input [WIDTH-1:0] i_offset ,
+    input [WIDTH-1:0] i_ram_data,
+    input             i_addi_signal,
+    input             i_jalr_signal,
+    output reg [WIDTH-1:0] o_result,
     );
 
     always @ (*) begin
-        case (op_ins)
-            8'h01: out = src1 + imm; // addi   
-            8'h02: out = src1 + src2;     //临时
-            8'h03: out = ram_data;     //临时    
-            default: out = 0;
-        endcase
+        o_result = 32'b0;
+        if(i_addi_signal == 1'b1) begin
+            o_result = i_src1 + i_imm;
+        end
+        if(i_jalr_signal == 1'b1) begin
+            o_result = i_src1 + i_offset;
+        end
     end
     //临时
-    assign ram_signal = 0;
-    assign jump_signal = 0;
     assign pc_next = 0;
     
 endmodule
