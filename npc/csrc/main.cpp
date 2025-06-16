@@ -6,6 +6,8 @@
 #include <stdint.h>
 
 #define CONFIG_MBASE 0x80000000
+#define CONFIG_MSIZE 0x8000000
+#define PG_ALIGN __attribute((aligned(4096)))
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
@@ -16,6 +18,8 @@ bool sim_finish = false;
 extern "C" void dpi_ebreak() {
     sim_finish = true;  // 触发仿真结束
 }
+
+static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
 static inline uint32_t host_read(void *addr, int len) {
   switch (len) {
