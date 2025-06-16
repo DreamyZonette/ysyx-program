@@ -42,7 +42,7 @@ static uint32_t pmem_read(uint32_t addr, int len) {
 
 static long load_img() {
   if (img_file == NULL) {
-    Log("No image is given. Use the default build-in image.");
+    printf("No image is given. Use the default build-in image.");
     return 4096; // built-in image size
   }
 
@@ -54,7 +54,7 @@ static long load_img() {
     // BIN文件处理逻辑（保持不变）
     fseek(fp, 0, SEEK_END);
     size = ftell(fp);
-    Log("The image is %s, size = %ld", img_file, size);
+    printf("The image is %s, size = %ld", img_file, size);
     fseek(fp, 0, SEEK_SET);
     ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
     assert(ret == 1);
