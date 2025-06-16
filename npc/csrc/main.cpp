@@ -96,18 +96,20 @@ int main(){
     sim_init();
     printf("2\n");
     isa_init();
-    while(!sim_finish) {
+    int count = 0;
+    while(!sim_finish && count < 100) {
         uint32_t pc = 0x80000000;
-        printf("3\n");
+        //printf("3\n");
         top->clk ^= 1; 
-        printf("4\n");
-        printf("%u\n", top->o_pc);
+        //printf("4\n");
+        printf("%u    %u\n", top->o_pc, pc);
         //top->inst = pmem_read(top->o_pc, 4);
         top->inst = pmem_read(pc, 4);
-        printf("5\n");
+        //printf("5\n");
         top->eval();
         step_and_dump_wave();
         pc ++;
+        count ++;
     }
     printf("Simulation finished\n");
     sim_exit();
