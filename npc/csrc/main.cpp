@@ -88,7 +88,9 @@ void sim_exit(){
 }
 
 int main(){
+    printf("1\n");
     sim_init();
+    printf("2\n");
     //isa_init();
     while(!sim_finish) {
         top->clk ^= 1; 
