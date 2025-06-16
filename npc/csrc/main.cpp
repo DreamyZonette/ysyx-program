@@ -96,8 +96,9 @@ int main(){
         printf("3\n");
         top->clk ^= 1; 
         printf("4\n");
-        // top->inst = pmem_read(top->o_pc, 4);
-        top->inst = pmem_read(0x80000000, 4);
+        printf("%u\n", top->o_pc);
+        top->inst = pmem_read(top->o_pc, 4);
+        //top->inst = pmem_read(0x80000000, 4);
         printf("5\n");
         top->eval();
         step_and_dump_wave();
