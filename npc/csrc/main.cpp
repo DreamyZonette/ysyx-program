@@ -66,7 +66,7 @@ int main(){
     sim_init();
     while(!sim_finish) {
         top->clk ^= 1; 
-        top->inst = pmem_read(top->o_pc);
+        top->inst = pmem_read(top->o_pc, 4);
         top->eval();
         step_and_dump_wave();
     }
