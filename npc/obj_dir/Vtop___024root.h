@@ -18,7 +18,6 @@ class Vtop___024root final : public VerilatedModule {
     CData/*7:0*/ top__DOT__op_ins;
     CData/*0:0*/ __Vtrigrprev__TOP__clk;
     CData/*0:0*/ __VactContinue;
-    VL_IN(inst,31,0);
     IData/*31:0*/ top__DOT__addr;
     IData/*31:0*/ top__DOT__cur_data;
     IData/*31:0*/ top__DOT__src1;
