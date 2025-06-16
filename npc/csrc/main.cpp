@@ -3,8 +3,9 @@
 #include "verilated_vcd_c.h"
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
-//#include <isa.h>
-#include <memory/paddr.h>
+#include <stdint.h>
+
+#define CONFIG_MBASE 0x80000000
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
@@ -14,6 +15,22 @@ static Vtop* top;
 bool sim_finish = false;
 extern "C" void dpi_ebreak() {
     sim_finish = true;  // 触发仿真结束
+}
+
+static inline word_t host_read(void *addr, int len) {
+  switch (len) {
+    case 1: return *(uint8_t  *)addr;
+    case 2: return *(uint16_t *)addr;
+    case 4: return *(uint32_t *)addr;
+    default: assert(0);
+  }
+}
+
+uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
+
+static uint32_t pmem_read(paddr_t addr, int len) {
+  uint32_t ret = host_read(guest_to_host(addr), len);
+  return ret;
 }
 
 int is_ebreak(int ebreak_signal);
