@@ -5,6 +5,10 @@
 #include "Vtop__Dpi.h"
 #include <common.h>
 
+//函数申明
+extern word_t pmem_read(paddr_t addr, int len);
+extern void pmem_write(paddr_t addr, int len, word_t data);
+
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
 static Vtop* top;
@@ -44,7 +48,7 @@ void sim_exit(){
     tfp->close();
 }
 
-int main(){
+int main(int argc, char *argv[]){
     sim_init();
     while(!sim_finish) {
         single_cycle();
