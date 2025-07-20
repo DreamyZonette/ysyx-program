@@ -107,7 +107,6 @@ alu alu_u(
     .i_sll_signal(i_sll_signal),
     .i_slt_signal(i_slt_signal),
     .i_sltu_signal(i_sltu_signal),
-    .o_jump_signal(o_jump_signal),
     .o_B_jump_signal(o_B_jump_signal),
     .o_halt_signal(o_halt_signal),
     .o_data(o_data)
