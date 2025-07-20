@@ -223,10 +223,8 @@
     .i_sb_signal(sb_signal),
     .i_sh_signal(sh_signal),
     .i_sw_signal(sw_signal),
-    .i_waddr(waddr),
-    .i_waddr(waddr),
-    .i_raddr(raddr),
-    .i_wdata(wdata),
+    .i_src2(src2),
+    .i_data(data),
     .i_wmask(wmask),
     .o_rdata(rdata)
 );
