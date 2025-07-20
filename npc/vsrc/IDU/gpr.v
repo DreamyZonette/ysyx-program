@@ -29,7 +29,7 @@ module gpr  (
         for (i = 0; i < 32; i = i + 1) begin
             Reg #(32) Reg_u (
                 .clk(i_sys_clk),
-                .rst_n(i_sys_rst_n),
+                .sys_rst_n(i_sys_rst_n),
                 .wen(wen [i]),
                 .i_data(i_data),
                 .o_data(reg_file[i])   
