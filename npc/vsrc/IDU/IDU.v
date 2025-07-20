@@ -7,10 +7,10 @@ module IDU (
     output reg [31:0]  o_src2,
     output reg [31:0]  o_imm,
     output reg [31:0]  o_offset,
-    output reg [4:0]  o_shamt,
+    output reg [4:0]   o_shamt,
+    output     [3:0]  o_wmask,
     output  o_addi_signal,
     output  o_andi_signal,
-    output  o_slti_signal,
     output  o_xori_signal,
     output  o_ebreak_signal,
     output  o_jalr_signal,
@@ -43,7 +43,6 @@ module IDU (
     output  o_divu_signal,
     output  o_rem_signal,
     output  o_remu_signal,
-    output  o_sll_signal,
     output  o_sra_signal,
     output  o_srl_signal,
     output  o_beq_signal,
@@ -172,7 +171,7 @@ module IDU (
             o_imm = U_imm;
         end
         else if(Btype_signal == 1'b1) begin
-            
+            o_offset = B_offset;
         end
         else if(Jtype_signal == 1'b1) begin
             o_offset  = J_offset;
@@ -252,7 +251,8 @@ module IDU (
     .o_sw_signal(o_sw_signal),
     .o_sb_signal(o_sb_signal),
     .o_sh_signal(o_sh_signal),
-    .o_halt_signal(S_halt_signal)
+    .o_halt_signal(S_halt_signal),
+    .o_wmask(o_wmask)
     );
     Rtype Rtype_u(
     .i_inst(i_inst),

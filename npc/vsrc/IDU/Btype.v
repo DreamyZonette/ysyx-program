@@ -23,7 +23,7 @@ module Btype (
     assign o_rs2   = i_inst[24:20];
     assign offset  = {i_inst[31], i_inst[7], i_inst[30:25], i_inst[11:8]};
     assign o_halt_signal = unknown_intstruction;
-
+    
     always @(*) begin
         o_beq_signal  = 1'b0;
         o_bne_signal  = 1'b0;
@@ -43,11 +43,28 @@ module Btype (
                 o_bgeu_signal = (fun1 == 3'b111) ? 1'b1 : 1'b0;
                 o_blt_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
                 o_bltu_signal = (fun1 == 3'b110) ? 1'b1 : 1'b0;
+                if(fun1 == 3'b000 || fun1 == 3'b101 || fun1 == 3'b001 || fun1 == 3'b100) begin
+                    sign_extended = 1'b1;
+                end else if(fun1 == 3'b111 || fun1 == 3'b110) begin
+                    zero_extended = 1'b1;
+                end else begin
+                    zero_extended = 1'b1;
+                end
             end
             default begin
                 unknown_intstruction = 1'b1;
             end
         endcase
+    end
+
+    always @(*) begin
+        if(sign_extended == 1'b1) begin
+            o_offset = {{20{offset[11]}}, offset};
+        end else if(zero_extended == 1'b1) begin
+            o_offset = {20'b0, offset};
+        end else begin
+            o_offset = {20'b0, offset};
+        end
     end
 
 endmodule
