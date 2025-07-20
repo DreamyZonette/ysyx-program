@@ -13,7 +13,7 @@ module WBU(
 );
 
     wire jump_signal = i_jalr_signal | i_B_jump_signal | i_jal_signal;
-    assign o_reg_wdata = i_load_wdata ? i_load_wdata : i_sys_wdata;
+    assign o_reg_wdata = i_load_signal == 1'b1 ? i_load_wdata : i_sys_wdata;
 
     always @(posedge i_sys_clk or negedge i_sys_rst_n) begin
         if (!i_sys_rst_n) begin

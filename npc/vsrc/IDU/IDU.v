@@ -172,6 +172,8 @@ module IDU (
         end
         else if(Btype_signal == 1'b1) begin
             o_offset = B_offset;
+            rs1 = B_rs1;
+            rs2 = B_rs2;
         end
         else if(Jtype_signal == 1'b1) begin
             o_offset  = J_offset;

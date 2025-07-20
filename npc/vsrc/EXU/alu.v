@@ -49,7 +49,7 @@ module alu #(WIDTH = 32)(
     input             i_sll_signal,
     input             i_slt_signal,
     input             i_sltu_signal,
-    output            o_B_jump_signal,
+    output reg        o_B_jump_signal,
     output reg        o_halt_signal,
     output reg [WIDTH-1:0] o_data
     );

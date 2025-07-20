@@ -44,9 +44,9 @@ always @(*) begin
     if(i_sw_signal == 1'b1) begin
         o_rdata = rdata[31:0];
     end else if(i_sh_signal) begin
-        o_rdata = rdata[15:0];
+        o_rdata = {16'b0, rdata[15:0]};
     end else if(i_sb_signal) begin
-        o_rdata = rdata[7:0];
+        o_rdata = {24'b0, rdata[7:0]};
     end else begin
         o_rdata = 0;
     end
