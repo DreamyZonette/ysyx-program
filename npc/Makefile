@@ -19,7 +19,7 @@ CSRCS += $(wildcard $(CPATH)/**/*.h)
 CFLAGS ?= -Wall
 CFLAGS +=  -CFLAGS "$(INCLUDES)"
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
-#VFLAGS += --top-module $(TOP_NAME)
+VFLAGS += --top-module $(TOP_NAME)
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir
 
 $(shell mkdir -p $(BUILD_DIR))
