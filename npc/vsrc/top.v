@@ -206,6 +206,8 @@
     .i_B_jump_signal(o_B_jump_signal),
     .i_jal_signal(jal_signal),
     .i_jalr_signal(jalr_signal),
+    .i_load_signal(load_signal),
+    .i_load_wdata(rdata),
     .i_sys_addr(pc),
     .i_sys_wdata(data),
     .o_reg_wdata(wdata),
@@ -226,7 +228,7 @@
     .i_src2(src2),
     .i_data(data),
     .i_wmask(wmask),
-    .o_load_signal(load_signal)
+    .o_load_signal(load_signal),
     .o_rdata(rdata)
 );
    
