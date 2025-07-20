@@ -17,7 +17,7 @@ module EXU(
     input wire i_slli_signal,
     input wire i_srli_signal,
     input wire i_srai_signal,
-    input wire i_slti_signal,
+    //input wire i_slti_signal,
     input wire i_sltiu_signal,
     input wire i_beq_signal,
     input wire i_bne_signal,
