@@ -6,7 +6,7 @@ module PC #(PC_LEN = 32)(
     output reg [PC_LEN-1:0] o_pc
     );
     
-    always @(posedge i_sys_clk or negedge i_sys_rst_n) begin
+    always @(posedge i_sys_clk) begin
         if (!i_sys_rst_n) o_pc <= 32'h80000000;
         else o_pc <= i_next_pc;
     end
