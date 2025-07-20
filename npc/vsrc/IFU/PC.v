@@ -1,5 +1,5 @@
 // Modified by Long for NPC project.
-module PC #(PC_LEN = 32, INS_BYTES = 4)(
+module PC #(PC_LEN = 32)(
     input i_sys_clk,
     input i_sys_rst_n,
     input [PC_LEN-1:0] i_next_pc,

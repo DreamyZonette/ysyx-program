@@ -18,7 +18,7 @@ module alu #(WIDTH = 32)(
     input             i_slli_signal,
     input             i_srli_signal,
     input             i_srai_signal,
-    input             i_slti_signal,
+    //input             i_slti_signal,
     input             i_sltiu_signal,
     input             i_beq_signal,
     input             i_bne_signal,
