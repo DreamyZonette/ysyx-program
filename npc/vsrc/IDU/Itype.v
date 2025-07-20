@@ -63,6 +63,7 @@ module Itype (
         zero_extended   = 1'b0;
         shamt_signal    = 1'b0;
         unknown_intstruction = 1'b0;
+        jalr_rd = 5'b0;
         
         // 指令识别
     case (opcode)
