@@ -219,7 +219,7 @@ module IDU (
     Utype Utype_u(
         .i_inst(i_inst),
         .o_rd(U_rd),
-        .o_imm(wdata),
+        .o_imm(U_imm),
         .o_auipc_signal(o_auipc_signal),
         .o_lui_signal(o_lui_signal),
         .o_halt_signal(U_halt_signal)

@@ -18,7 +18,7 @@
 
     wire addi_signal;
     wire andi_signal;
-    wire slti_signal;
+    //wire slti_signal;
     wire xori_signal;
     wire ebreak_signal;
     wire jalr_signal;
