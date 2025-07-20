@@ -63,6 +63,7 @@ module IDU (
     wire [4:0]  I_rd;
     wire [4:0]  I_shamt;
     wire [4:0]  U_rd;
+    wire [31:0] U_imm;
     wire [4:0]  J_rd;
     wire [4:0]  S_rs1;
     wire [4:0]  S_rs2;
@@ -168,6 +169,7 @@ module IDU (
         end
         else if(Utype_signal == 1'b1) begin
             rd  = U_rd;
+            o_imm = U_imm;
         end
         else if(Btype_signal == 1'b1) begin
             
@@ -217,6 +219,7 @@ module IDU (
     Utype Utype_u(
         .i_inst(i_inst),
         .o_rd(U_rd),
+        .o_imm(wdata),
         .o_auipc_signal(o_auipc_signal),
         .o_lui_signal(o_lui_signal),
         .o_halt_signal(U_halt_signal)
