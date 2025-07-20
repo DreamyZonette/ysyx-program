@@ -33,6 +33,7 @@ always @(*) begin
         end
         else if (wen) begin // 有写请求时
             pmem_write(i_data, i_src2, {4'b0, i_wmask});
+            rdata = 0;
         end
         else begin
             rdata = 0;
