@@ -165,7 +165,7 @@
     .i_slli_signal(slli_signal),
     .i_srli_signal(srli_signal),
     .i_srai_signal(srai_signal),
-    .i_slti_signal(slti_signal),
+    //.i_slti_signal(slti_signal),
     .i_sltiu_signal(sltiu_signal),
     .i_beq_signal(beq_signal),
     .i_bne_signal(bne_signal),
