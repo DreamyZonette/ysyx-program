@@ -102,7 +102,7 @@
     .o_wmask(wmask),
     .o_addi_signal(addi_signal),
     .o_andi_signal(andi_signal),
-    .o_slti_signal(slti_signal),
+    //.o_slti_signal(slti_signal),
     .o_xori_signal(xori_signal),
     .o_ebreak_signal(ebreak_signal),
     .o_jalr_signal(jalr_signal),
