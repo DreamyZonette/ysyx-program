@@ -73,7 +73,7 @@ alu alu_u(
     .i_slli_signal(i_slli_signal),
     .i_srli_signal(i_srli_signal),
     .i_srai_signal(i_srai_signal),
-    .i_slti_signal(i_slti_signal),
+    //.i_slti_signal(i_slti_signal),
     .i_sltiu_signal(i_sltiu_signal),
     .i_beq_signal(i_beq_signal),
     .i_bne_signal(i_bne_signal),
