@@ -3,24 +3,28 @@ module Utype (
     output [4:0] o_rd,
     output reg [31:0] o_imm,
     output reg o_auipc_signal,
-    output reg o_lui_signal
+    output reg o_lui_signal,
+    output o_halt_signal
 );
 
     wire [6:0] opcode;
     wire [19:0] imm;
     reg sign_extended;
     reg zero_extended;
+    reg unknown_intstruction;
 
     assign opcode = i_inst[6:0];
     assign o_rd   = i_inst[11:7];
     assign imm    = i_inst[31:12];
+    assign o_halt_signal = unknown_intstruction;
 
     always @ (*) begin
         // 初始化
         o_lui_signal    = 1'b0;
-        o_auipc_signal    = 1'b0;
+        o_auipc_signal  = 1'b0;
         sign_extended   = 1'b0;
         zero_extended   = 1'b0;
+        unknown_intstruction   = 1'b0;
 
         // 指令识别
         case (opcode)
@@ -33,7 +37,7 @@ module Utype (
                 sign_extended = 1'b1;
             end
             default: begin
-                
+                unknown_intstruction = 1'b1;
             end
         endcase
 

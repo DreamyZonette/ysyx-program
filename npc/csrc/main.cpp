@@ -1,13 +1,9 @@
-#include "verilated.h"
-#include "Vtop.h"
-#include "verilated_vcd_c.h"
-#include "svdpi.h"
-#include "Vtop__Dpi.h"
 #include <common.h>
 
 //函数申明
 extern word_t pmem_read(paddr_t addr, int len);
 extern void pmem_write(paddr_t addr, int len, word_t data);
+extern void init_isa();
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
@@ -50,6 +46,7 @@ void sim_exit(){
 
 int main(int argc, char *argv[]){
     sim_init();
+    init_isa();
     while(!sim_finish) {
         single_cycle();
     }

@@ -4,7 +4,9 @@ module Stype (
     output [4:0] o_rs2,
     output reg [31:0] o_imm,
     output reg o_sw_signal,
-    output reg o_sb_signal
+    output reg o_sb_signal,
+    output reg o_sh_signal,
+    output o_halt_signal
 );
 
     wire [11:0] imm;
@@ -12,30 +14,35 @@ module Stype (
     wire [6:0] opcode;
     reg sign_extended;
     reg zero_extended;
+    reg unknown_intstruction;
 
     assign opcode = i_inst[6:0];
     assign fun    = i_inst[14:12];
     assign o_rs1  = i_inst[19:15];
     assign o_rs2  = i_inst[24:20];
     assign imm    = {i_inst[31:25], i_inst[11:7]};
+    assign o_halt_signal = unknown_intstruction;
 
     always @ (*) begin
         // 初始化
         o_sw_signal     = 1'b0;
         o_sb_signal     = 1'b0;
+        o_sh_signal     = 1'b0;
         sign_extended   = 1'b0;
         zero_extended   = 1'b0;
+        unknown_intstruction = 1'b0;
 
         // 指令识别
     case (opcode)
         7'b0100011: begin // store
             o_sw_signal = (fun == 3'b010) ? 1'b1 : 1'b0;
             o_sb_signal = (fun == 3'b000) ? 1'b1 : 1'b0;
-            sign_extended = (fun == 3'b010 || fun == 3'b000) ? 1'b1 : 1'b0;
+            o_sh_signal = (fun == 3'b001) ? 1'b1 : 1'b0;
+            sign_extended = (fun == 3'b010 || fun == 3'b000 || fun == 3'b001) ? 1'b1 : 1'b0;
         end
         //待扩展
         default: begin
-                
+            unknown_intstruction = 1'b1;
         end
     endcase
 

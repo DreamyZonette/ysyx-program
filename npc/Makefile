@@ -1,10 +1,12 @@
 TOP_NAME = top
-IMG ?= 
+IMG ?= /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-npc.bin
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
 TEST ?=
 TEST_OBJ = $(wildcard $(VPATH)/**/$(TEST).v)
+TEST_OBJ += $(wildcard $(VPATH)/$(TEST)/*.v)
+TEST_FLAGS ?= --top-module $(TEST)
 VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
@@ -32,7 +34,7 @@ sim:
 include ../Makefile
 
 wave:sim
-	$(BUILD_DIR)/obj_dir/Vtop
+	$(BUILD_DIR)/obj_dir/Vtop $(IMG)
 	gtkwave $(BUILD_DIR)/wave.vcd
 
 
