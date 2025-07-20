@@ -12,6 +12,7 @@ module LSU(
     input [31:0] i_src2,
     input [31:0] i_data,
     input [3:0] i_wmask,//表示写哪些位
+    output            o_load_signal,
     output reg [31:0] o_rdata
 );
 
@@ -23,6 +24,7 @@ reg [31:0] rdata;
 wire valid = i_sys_clk & i_sys_rst_n;
 wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
+assign o_load_signal = ren;
 
 always @(*) begin
     if (valid) begin // 有读写请求时

@@ -15,7 +15,6 @@
         end
 
     assign halt = EXU_halt_signal | IDU_halt_signal;
-    assign jump_signal = jal_signal | jalr_signal;
 
     wire addi_signal;
     wire andi_signal;
@@ -73,7 +72,9 @@
     wire [31:0] instruction;
     wire [3:0] wmask;
     wire [31:0] data;
+    wire [31:0] rdata;
     wire o_B_jump_signal;
+    wire load_signal;
 
 
     PC PC_u(
@@ -150,7 +151,6 @@
     .i_src2(src2),
     .i_imm(imm),
     .i_offset(offset),
-    .i_ram_data(rdata),
     .i_pc_data(pc),
     .i_shamt(shamt),
     .i_addi_signal(addi_signal),
@@ -226,6 +226,7 @@
     .i_src2(src2),
     .i_data(data),
     .i_wmask(wmask),
+    .o_load_signal(load_signal)
     .o_rdata(rdata)
 );
    

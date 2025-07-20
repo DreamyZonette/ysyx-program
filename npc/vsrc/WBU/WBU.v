@@ -6,12 +6,14 @@ module WBU(
     input i_B_jump_signal,
     input i_jal_signal,
     input i_jalr_signal,
+    input i_load_signal,
+    input  [31:0] i_load_wdata,
     output [31:0] o_reg_wdata,
     output reg [31:0] o_next_pc
 );
 
     wire jump_signal = i_jalr_signal | i_B_jump_signal | i_jal_signal;
-    assign o_reg_wdata = i_sys_wdata;
+    assign o_reg_wdata = i_load_wdata ? i_load_wdata : i_sys_wdata;
 
     always @(posedge i_sys_clk or negedge i_sys_rst_n) begin
         if (!i_sys_rst_n) begin
