@@ -24,7 +24,6 @@ module IDU (
     output  o_srai_signal,
     output  o_slli_signal,
     output  o_sb_signal,
-    output  o_slti_signal,
     output  o_sltiu_signal,
     output  o_srli_signal,
     output  o_sll_signal,
