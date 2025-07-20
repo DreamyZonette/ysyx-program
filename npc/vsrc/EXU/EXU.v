@@ -5,6 +5,7 @@ module EXU(
     input wire [31:0] i_offset,
     input wire [31:0] i_ram_data,
     input wire [31:0] i_pc_data,
+    input wire [3:0] i_wmask,
     input wire [4:0] i_shamt,
     input wire i_addi_signal,
     input wire i_jalr_signal,
@@ -37,7 +38,7 @@ module EXU(
     input wire i_sra_signal,
     input wire i_mul_signal,
     input wire i_mulh_signal,
-    input wire i_mulhsu_signal,
+    //input wire i_mulhsu_signal,
     input wire i_div_signal,
     input wire i_divu_signal,
     input wire i_rem_signal,
@@ -94,7 +95,7 @@ alu alu_u(
     .i_sra_signal(i_sra_signal),
     .i_mul_signal(i_mul_signal),
     .i_mulh_signal(i_mulh_signal),
-    .i_mulhsu_signal(i_mulhsu_signal),
+    //.i_mulhsu_signal(i_mulhsu_signal),
     .i_div_signal(i_div_signal),
     .i_divu_signal(i_divu_signal),
     .i_rem_signal(i_rem_signal),
@@ -108,6 +109,7 @@ alu alu_u(
     .i_sltu_signal(i_sltu_signal),
     .o_jump_signal(o_jump_signal),
     .o_B_jump_signal(o_B_jump_signal),
+    .o_halt_signal(o_halt_signal),
     .o_data(o_data)
 );
 

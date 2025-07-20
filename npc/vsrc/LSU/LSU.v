@@ -15,9 +15,9 @@ module LSU(
     output reg [31:0] o_rdata
 );
 
-import "DPI-C" function int pmem_read(input int raddr);
+import "DPI-C" function int pmem_read(input int i_data);
 import "DPI-C" function void pmem_write(
-    input int i_waddr, input int i_waddr, input byte wmask);
+    input int i_data, input int i_src2, input byte i_wmask);
 
 reg [31:0] rdata;
 wire valid = i_sys_clk & i_sys_rst_n;
