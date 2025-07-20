@@ -1,3 +1,4 @@
+/* verilator lint_off DECLFILENAME */
 module alu #(WIDTH = 32)(
     input [WIDTH-1:0] i_src1,
     input [WIDTH-1:0] i_src2,
@@ -22,3 +23,4 @@ module alu #(WIDTH = 32)(
     assign pc_next = 0;
     
 endmodule
+/* verilator lint_off DECLFILENAME */

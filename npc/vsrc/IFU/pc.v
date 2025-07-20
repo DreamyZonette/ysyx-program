@@ -8,6 +8,7 @@
  * 
  */
 
+/* verilator lint_off DECLFILENAME */
 module pc #(PC_LEN = 32, INS_BYTES = 4)(
     input clk,
     input rst,
@@ -25,5 +26,6 @@ module pc #(PC_LEN = 32, INS_BYTES = 4)(
 
 
 endmodule
+/* verilator lint_off DECLFILENAME */
 
 

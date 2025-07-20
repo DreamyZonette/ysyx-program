@@ -1,3 +1,4 @@
+/* verilator lint_off DECLFILENAME */
 module top (
     input sys_clk,
     input rst_n
@@ -54,7 +55,7 @@ decoder u_decoder (
     .o_imm(imm),
     .o_instruction(op_ins)
 );
-
+/* verilator lint_off DECLFILENAME */
 gpr u_gpr (
     .clk(sys_clk),
     .rst(rst_n),

@@ -1,3 +1,4 @@
+/* verilator lint_off DECLFILENAME */
 module rom # (ADDR_WIDTH = 32)(
     //input clk,
     input [ADDR_WIDTH-1:0] addr,// pc
@@ -38,4 +39,4 @@ module rom # (ADDR_WIDTH = 32)(
 
 
 endmodule
-
+/* verilator lint_off DECLFILENAME */
