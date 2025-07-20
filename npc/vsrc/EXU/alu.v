@@ -38,7 +38,7 @@ module alu #(WIDTH = 32)(
     input             i_sra_signal,
     input             i_mul_signal,
     input             i_mulh_signal,
-    input             i_mulhsu_signal,
+    //input             i_mulhsu_signal,
     input             i_div_signal,
     input             i_divu_signal,
     input             i_rem_signal,
