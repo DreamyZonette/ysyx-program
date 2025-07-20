@@ -37,6 +37,8 @@ always @(*) begin
         else begin
             rdata = 0;
         end
+    end else begin
+        rdata = 0;
     end
 end
 
