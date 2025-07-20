@@ -32,7 +32,7 @@ always @(*) begin
             rdata = pmem_read(i_data);
         end
         else if (wen) begin // 有写请求时
-            pmem_write(i_data, i_src2, i_wmask);
+            pmem_write(i_data, i_src2, {4'b0, i_wmask});
         end
         else begin
             rdata = 0;
