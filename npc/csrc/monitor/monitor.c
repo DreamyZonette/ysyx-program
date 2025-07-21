@@ -1,5 +1,5 @@
 #include <memory/paddr.h>
-//#include <isa.h>
+#include <utils.h>
 
 static char *img_file = NULL;
 
