@@ -15,13 +15,13 @@ module WBU(
     wire jump_signal = i_jalr_signal | i_B_jump_signal | i_jal_signal;
     assign o_reg_wdata = i_load_signal == 1'b1 ? i_load_wdata : i_sys_wdata;
 
-    always @(posedge i_sys_clk) begin
+    always @(*) begin
         if (!i_sys_rst_n) begin
-            o_next_pc <= 32'h8000_0000;
+            o_next_pc = 32'h8000_0000;
         end else if (jump_signal == 1'b1)begin
-            o_next_pc <= i_sys_wdata;
+            o_next_pc = i_sys_wdata;
         end else begin
-            o_next_pc <= i_sys_addr + 4;
+            o_next_pc = i_sys_addr + 4;
         end
     end
 
