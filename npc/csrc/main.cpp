@@ -58,13 +58,10 @@ int main(int argc, char *argv[]){
     while(!sim_finish && count <= 100) {
         count ++;
         printf("%d: pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
-        //printf("1\n");
         top->sys_clk ^= 1; top->eval();
-        //printf("2\n");
         step_and_dump_wave();
-        //if(count == 1) break;
-        
-        //single_cycle();
+        top->sys_clk ^= 1; top->eval();
+        step_and_dump_wave();
     }
     printf("Simulation finished\n");
     sim_exit();
