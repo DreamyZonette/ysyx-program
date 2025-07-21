@@ -16,9 +16,9 @@ module LSU(
     output reg [31:0] o_rdata
 );
 
-import "DPI-C" function int pmem_read(input int i_data);
+import "DPI-C" function uint32_t pmem_read(input uint32_t addr, input uint32_t len);
 import "DPI-C" function void pmem_write(
-    input int i_data, input int i_src2, input byte i_wmask);
+    input uint32_t addr, int len, input uint32_t data);
 
 reg [31:0] rdata;
 wire valid = i_sys_clk & i_sys_rst_n;
@@ -29,10 +29,10 @@ assign o_load_signal = ren;
 always @(*) begin
     if (valid) begin // 有读写请求时
         if (ren) begin
-            rdata = pmem_read(i_data);
+            rdata = pmem_read(i_data, 4);
         end
         else if (wen) begin // 有写请求时
-            pmem_write(i_data, i_src2, {4'b0, i_wmask});
+            pmem_write(i_data, {28'b0, i_wmask} , i_src2);
             rdata = 0;
         end
         else begin
