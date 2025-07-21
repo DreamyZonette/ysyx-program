@@ -69,9 +69,6 @@ static int parse_args(int argc, char *argv[]) {
           }
         }
     }
-    strncpy(img_file, argv[1], sizeof(img_file) - 1);
-    img_file[sizeof(img_file) - 1] = '\0';
-    printf("Using image: %s\n", img_file);
     
     return 0;
 }
