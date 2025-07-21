@@ -21,15 +21,16 @@ CFLAGS +=  -CFLAGS "$(INCLUDES)"
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME)
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir
+ARGS = -i
 
 $(shell mkdir -p $(BUILD_DIR))
 
 all:sim wave
 
-sim:
+run:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	verilator $(CFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
-	$(BUILD_DIR)/obj_dir/Vtop -i $(IMG)
+	$(BUILD_DIR)/obj_dir/Vtop $(ARGS) $(IMG)
 	
 	
 include ../Makefile
