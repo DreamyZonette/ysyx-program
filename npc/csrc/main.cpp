@@ -53,7 +53,9 @@ int main(int argc, char *argv[]){
     int count = 0;
     while(!sim_finish) {
         count ++;
+        printf("1\n");
         top->sys_clk ^= 1; top->eval();
+        printf("2\n");
         step_and_dump_wave();
         printf("%d: pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
         //single_cycle();
