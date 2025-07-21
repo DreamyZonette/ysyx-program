@@ -1,5 +1,4 @@
 module WBU(
-    input i_sys_clk,
     input i_sys_rst_n,
     input [31:0] i_sys_addr,
     input [31:0] i_sys_wdata,
@@ -17,7 +16,7 @@ module WBU(
 
     always @(*) begin
         if (!i_sys_rst_n) begin
-            o_next_pc = 32'h8000_0000;
+            o_next_pc = 32'h8000_0004;
         end else if (jump_signal == 1'b1)begin
             o_next_pc = i_sys_wdata;
         end else begin

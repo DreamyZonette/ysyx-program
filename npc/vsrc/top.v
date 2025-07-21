@@ -204,7 +204,6 @@
     );
 
     WBU WBU_u (
-    .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
     .i_B_jump_signal(o_B_jump_signal),
     .i_jal_signal(jal_signal),
