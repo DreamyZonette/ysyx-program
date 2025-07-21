@@ -51,10 +51,10 @@ int main(int argc, char *argv[]){
     init_monitor(argc, argv);
 
     int count = 0;
-    // top->sys_clk = 0;
-    // top->sys_rst_n = 0;
-    // top->sys_clk = 1;
-    // top->sys_rst_n = 1;
+    top->sys_clk = 0;
+    top->sys_rst_n = 0;
+    top->sys_clk = 1;
+    top->sys_rst_n = 1;
     top->eval();
     while(!sim_finish && count < 1000) {
         count ++;
