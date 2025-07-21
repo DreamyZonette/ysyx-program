@@ -30,7 +30,7 @@ static long load_img() {
   FILE *fp = fopen(img_file, "rb");
   if(!fp) {
     printf("Can not open '%s'\n", img_file);
-    assert(0); // 断言失败，程序退出
+    assert(1); // 断言失败，程序退出
   }
 
     fseek(fp, 0, SEEK_SET); // 回到文件开头
@@ -63,7 +63,6 @@ static int parse_args(int argc, char *argv[]) {
 void init_monitor(int argc, char *argv[]) {
 
   parse_args(argc, argv);
-  printf("%s\n", argv[1]);
 
   init_rand();  
 
