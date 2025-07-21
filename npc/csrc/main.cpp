@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
     // top->sys_clk = 1;
     // top->sys_rst_n = 1;
     top->eval();
-    while(!sim_finish && count < 1000000) {
+    while(!sim_finish && count < 1000) {
         count ++;
         printf("%d: pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
         //printf("1\n");
