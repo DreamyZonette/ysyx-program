@@ -92,7 +92,10 @@ module IDU (
     reg [31:0] wdata;
 
     assign opcode = i_inst[6:0];
-    assign o_halt_signal = (invalid_opcode_signal | J_halt_signal | S_halt_signal | R_halt_signal | I_halt_signal | U_halt_signal | B_halt_signal);
+    assign o_halt_signal = (invalid_opcode_signal | 
+        (J_halt_signal & Jtype_signal)| (S_halt_signal & Stype_signal) | 
+        (R_halt_signal & Rtype_signal)| (I_halt_signal & Itype_signal) | 
+        (U_halt_signal & Utype_signal)| (B_halt_signal & Btype_signal));
 
     //根据操作码判断类型
     always @ (*) begin
