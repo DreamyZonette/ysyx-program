@@ -29,7 +29,7 @@ all:sim wave
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	verilator $(CFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
-	#$(BUILD_DIR)/obj_dir/Vtop $(IMG)
+	$(BUILD_DIR)/obj_dir/Vtop $(IMG)
 	
 	
 include ../Makefile

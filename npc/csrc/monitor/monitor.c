@@ -61,6 +61,7 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 void init_monitor(int argc, char *argv[]) {
+  printf("%s\n", argv[1]);
 
   parse_args(argc, argv);
 
