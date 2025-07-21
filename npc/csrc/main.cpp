@@ -1,9 +1,11 @@
 #include <common.h>
+#include <memory/paddr.h>
 
 //函数申明
-extern word_t pmem_read(paddr_t addr, int len);
-extern void pmem_write(paddr_t addr, int len, word_t data);
+// extern word_t pmem_read(paddr_t addr, int len);
+// extern void pmem_write(paddr_t addr, int len, word_t data);
 extern void init_isa();
+void init_monitor(int, char *[]);
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
@@ -46,7 +48,7 @@ void sim_exit(){
 
 int main(int argc, char *argv[]){
     sim_init();
-    init_isa();
+    init_monitor(argc, argv);
     while(!sim_finish) {
         single_cycle();
     }
