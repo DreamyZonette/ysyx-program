@@ -22,9 +22,9 @@ static void internal_pmem_write(paddr_t addr, int len, word_t data) {
 }
 
 extern "C" int pmem_read(int addr, int len) {
-  return internal_pmem_read(addr, len);
+  return internal_pmem_read(paddr_t(addr), len);
 }
 
 extern "C" void pmem_write(int addr, int len, int data) {
-  internal_pmem_write(addr, len, data);
+  internal_pmem_write(paddr_t(addr), len, word_t(data));
 }
