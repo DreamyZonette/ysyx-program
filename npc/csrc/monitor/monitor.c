@@ -1,7 +1,8 @@
 #include <memory/paddr.h>
 #include <utils.h>
 
-static char *img_file = NULL;
+//static char *img_file = NULL;
+static char img_file[1024] = {0}
 
 void init_rand();
 void init_mem();
@@ -49,14 +50,29 @@ static long load_img() {
 }
 
 static int parse_args(int argc, char *argv[]) {
-    if(argc <= 1){
+    if(argc < 2){
         printf("Use default image.");
+        img_file[0] = '\0';
+        return 0;
     }
-    else {
-        printf("Use image:%s\n", argv[1]);
-        strcpy(img_file, argv[1]);
+     for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-i") == 0 || strcmp(argv[i], "--image") == 0) {
+          if (i + 1 < argc) {
+              strncpy(img_file, argv[i + 1], sizeof(img_file) - 1);
+              img_file[sizeof(img_file) - 1] = '\0'; // 确保终止
+              printf("Using image: %s\n", img_file);
+               return 0;
+          } else {
+            printf("Error: Missing filename after %s\n", argv[i]);
+            img_file[0] = '\0';
+            return 0;
+          }
+        }
     }
-
+    strncpy(img_file, argv[1], sizeof(img_file) - 1);
+    img_file[sizeof(img_file) - 1] = '\0';
+    printf("Using image: %s\n", img_file);
+    
     return 0;
 }
 
