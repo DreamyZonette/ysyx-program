@@ -69,6 +69,7 @@ static int parse_args(int argc, char *argv[]) {
           }
         }
     }
+    img_file[0] = '\0';
     
     return 0;
 }
