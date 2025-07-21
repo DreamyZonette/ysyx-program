@@ -51,7 +51,11 @@ int main(int argc, char *argv[]){
     init_monitor(argc, argv);
 
     int count = 0;
-    while(!sim_finish) {
+    top->clk = 0;
+    top->reset = 1;
+    top->clk = 1;
+    top->reset = 0;
+    while(!sim_finish && count < 1000000) {
         count ++;
         printf("1\n");
         top->sys_clk ^= 1; top->eval();
