@@ -51,15 +51,8 @@ int main(int argc, char *argv[]){
     init_monitor(argc, argv);
 
     int count = 0;
-
-    // 复位
-    // top->sys_rst_n = 0;     // 激活复位
-    // top->sys_clk = 0;
-    // for (int i = 0; i < 10; i++) {
-    //     top->sys_clk = !top->sys_clk;
-    //     top->eval();
-    // }
-    // top->sys_rst_n = 1;
+    
+    printf("Simulation start\n");
     top->eval();
     while(!sim_finish && count < 10) {
         count ++;
