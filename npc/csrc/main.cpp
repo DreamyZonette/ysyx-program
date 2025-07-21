@@ -62,7 +62,7 @@ int main(int argc, char *argv[]){
         top->sys_clk ^= 1; top->eval();
         //printf("2\n");
         step_and_dump_wave();
-        if(count == 1) break;
+        //if(count == 1) break;
         
         //single_cycle();
     }
