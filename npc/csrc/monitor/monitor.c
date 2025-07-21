@@ -1,6 +1,10 @@
 #include <memory/paddr.h>
+#include <isa.h>
 
 static char *img_file = NULL;
+
+void init_rand();
+void init_mem();
 
 static long load_img() {
   if (img_file == NULL) {
@@ -22,7 +26,7 @@ static long load_img() {
     size = ftell(fp);
     printf("The image is %s, size = %ld\n", img_file, size);
     fseek(fp, 0, SEEK_SET);
-    ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+    int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
     assert(ret == 1);
     fclose(fp);
   
@@ -37,6 +41,8 @@ static int parse_args(int argc, char *argv[]) {
         printf("Use image:%s\n", argv[1]);
         strcpy(img_file, argv[1]);
     }
+
+    return 0;
 }
 
 void init_monitor(int argc, char *argv[]) {
