@@ -53,13 +53,13 @@ int main(int argc, char *argv[]){
     int count = 0;
 
     // 复位
-    top->sys_rst_n = 0;     // 激活复位
-    top->sys_clk = 0;
-    for (int i = 0; i < 10; i++) {
-        top->sys_clk = !top->sys_clk;
-        top->eval();
-    }
-    top->sys_rst_n = 1;
+    // top->sys_rst_n = 0;     // 激活复位
+    // top->sys_clk = 0;
+    // for (int i = 0; i < 10; i++) {
+    //     top->sys_clk = !top->sys_clk;
+    //     top->eval();
+    // }
+    // top->sys_rst_n = 1;
 
     while(!sim_finish && count < 1000) {
         count ++;
