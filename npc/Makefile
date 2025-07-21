@@ -1,9 +1,12 @@
 TOP_NAME = top
+#IMG ?= /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-npc.bin
+IMG ?= 
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
 TEST ?=
 TEST_OBJ = $(wildcard $(VPATH)/**/$(TEST).v)
+TEST_OBJ += $(wildcard $(VPATH)/$(TEST)/*.v)
 VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
@@ -14,7 +17,7 @@ CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(wildcard $(CPATH)/**/*.c)
 CSRCS += $(wildcard $(CPATH)/**/*.h)
 CFLAGS ?= -Wall
-CFLAGS += $(INCLUDES)
+CFLAGS +=  -CFLAGS "$(INCLUDES)"
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME)
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir
@@ -26,12 +29,12 @@ all:sim wave
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	verilator $(CFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
+	$(BUILD_DIR)/obj_dir/Vtop $(IMG)
 	
 	
 include ../Makefile
 
 wave:sim
-	$(BUILD_DIR)/obj_dir/Vtop
 	gtkwave $(BUILD_DIR)/wave.vcd
 
 

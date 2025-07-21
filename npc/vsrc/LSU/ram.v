@@ -1,3 +1,4 @@
+/* verilator lint_off DECLFILENAME */
 module ram #(WIDTH = 32, INS_BYTES = 4, PC_LEN = 32)(
     input clk,
     input rst,
@@ -37,3 +38,4 @@ module ram #(WIDTH = 32, INS_BYTES = 4, PC_LEN = 32)(
     assign data_out = ram_mem[addr];
 
 endmodule
+/* verilator lint_off DECLFILENAME */

@@ -17,24 +17,31 @@ module Itype (
     output reg o_lhu_signal,
     output reg o_andi_signal,
     output reg o_xori_signal,
-    output reg o_sltiu_signal
+    output reg o_sltiu_signal,
+    output o_halt_signal
 );
 
     wire [11:0] imm;
     wire [2:0] fun1;
     wire [6:0] opcode;
     wire [4:0] rd;
+    wire [6:0] shamt_detect;
     reg sign_extended;
     reg zero_extended;
     reg [4:0] jalr_rd;
+    reg shamt_signal;
+    reg unknown_intstruction;
+    reg shamt_halt;
 
-    assign opcode  = i_inst[6:0];
-    assign rd      = i_inst[11:7];
-    assign fun1    = i_inst[14:12];
-    assign o_rs1   = i_inst[19:15];
-    assign o_shamt = i_inst[24:20];
-    assign imm     = i_inst[31:20];
-    assign o_rd    = (o_jalr_signal == 1'b1) ? jalr_rd : rd;
+    assign opcode       = i_inst[6:0];
+    assign rd           = i_inst[11:7];
+    assign fun1         = i_inst[14:12];
+    assign o_rs1        = i_inst[19:15];
+    assign o_shamt      = i_inst[24:20];
+    assign imm          = i_inst[31:20];
+    assign shamt_detect = i_inst[31:25];
+    assign o_rd         = (o_jalr_signal == 1'b1) ? jalr_rd : rd;
+    assign o_halt_signal =  unknown_intstruction | shamt_halt;
 
     always @ (*) begin
         // 初始化
@@ -43,10 +50,21 @@ module Itype (
         o_ebreak_signal = 1'b0;
         o_lw_signal     = 1'b0;
         o_lbu_signal    = 1'b0;
+        o_slli_signal   = 1'b0;
+        o_srai_signal   = 1'b0;
+        o_srli_signal   = 1'b0;
+        o_lb_signal     = 1'b0;
+        o_lh_signal     = 1'b0;
+        o_lhu_signal    = 1'b0;
+        o_andi_signal   = 1'b0;
+        o_xori_signal   = 1'b0;
+        o_sltiu_signal  = 1'b0;
         sign_extended   = 1'b0;
         zero_extended   = 1'b0;
+        shamt_signal    = 1'b0;
+        unknown_intstruction = 1'b0;
+        jalr_rd = 5'b0;
         
-
         // 指令识别
     case (opcode)
         7'b1100111: begin // jalr
@@ -62,10 +80,23 @@ module Itype (
             end
         end
         7'b0010011: begin // I-type ALU
-            o_addi_signal = (fun1 == 3'b000) ? 1'b1 : 1'b0;
+            o_addi_signal  = (fun1 == 3'b000) ? 1'b1 : 1'b0;
+            o_andi_signal  = (fun1 == 3'b111) ? 1'b1 : 1'b0;
+            o_xori_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
+            o_sltiu_signal = (fun1 == 3'b011) ? 1'b1 : 1'b0;
+            // 涉及shamt
+            if(shamt_detect == 7'b0000000 || shamt_detect == 7'b0100000) begin
+                // 7'b0000000
+                o_slli_signal = (fun1 == 3'b001) ? 1'b1 : 1'b0;
+                o_srli_signal = (fun1 == 3'b101) ? 1'b1 : 1'b0; 
+                // 7'b0100000
+                o_srai_signal = (fun1 == 3'b101) ? 1'b1 : 1'b0; 
+                shamt_signal = o_slli_signal | o_srli_signal | o_srai_signal;
+            end
+           
             // 根据指令类型选择扩展方式
-            sign_extended = (fun1 == 3'b000 || fun1 == 3'b010 || fun1 == 3'b011) ? 1'b1 : 1'b0; // addi/slti/sltiu
-            zero_extended = (fun1 == 3'b100 || fun1 == 3'b110 || fun1 == 3'b111) ? 1'b1 : 1'b0; // xori/ori/andi
+            sign_extended = (fun1 == 3'b000 || fun1 == 3'b111 || fun1 == 3'b100) ? 1'b1 : 1'b0; // addi/andi/xori
+            zero_extended = (fun1 == 3'b011) ? 1'b1 : 1'b0; // sltiu
         end
         7'b1110011: begin  // ebreak
             if(i_inst == 32'b 00000000000100000000000001110011) begin
@@ -74,13 +105,15 @@ module Itype (
         end
         7'b0000011: begin  // load
             o_lw_signal   = (fun1 == 3'b010) ? 1'b1 : 1'b0;
+            o_lb_signal   = (fun1 == 3'b000) ? 1'b1 : 1'b0;
+            o_lh_signal   = (fun1 == 3'b001) ? 1'b1 : 1'b0;
             o_lbu_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
-            sign_extended = (fun1 == 3'b010) ? 1'b1 : 1'b0; // lw
-            zero_extended = (fun1 == 3'b100) ? 1'b1 : 1'b0; // lbu
+            o_lhu_signal  = (fun1 == 3'b101) ? 1'b1 : 1'b0;
+            sign_extended = (fun1 == 3'b010 || fun1 == 3'b000 || fun1 == 3'b001) ? 1'b1 : 1'b0; // lw/lb/lh
+            zero_extended = (fun1 == 3'b100 || fun1 == 3'b101) ? 1'b1 : 1'b0; // lbu/lhu
         end
-        //待扩展
         default: begin
-                
+            unknown_intstruction = 1'b1;
         end
     endcase
 
@@ -94,6 +127,15 @@ module Itype (
         end
         else begin
             o_imm = 32'b0;
+        end
+    end
+
+    always @(*) begin
+        if(shamt_signal == 1'b1) begin
+            shamt_halt = o_shamt[4];
+        end
+        else begin
+            shamt_halt = 1'b0;
         end
     end
 

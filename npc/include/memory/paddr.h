@@ -11,4 +11,9 @@ uint8_t* guest_to_host(paddr_t paddr);
 
 paddr_t host_to_guest(uint8_t *haddr);
 
+extern "C" {
+    int pmem_read(int addr, int len);
+    void pmem_write(int addr, int len, int data);
+}
+
 #endif

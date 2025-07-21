@@ -1,9 +1,11 @@
-#include "verilated.h"
-#include "Vtop.h"
-#include "verilated_vcd_c.h"
-#include "svdpi.h"
-#include "Vtop__Dpi.h"
 #include <common.h>
+#include <memory/paddr.h>
+
+//函数申明
+// extern word_t pmem_read(paddr_t addr, int len);
+// extern void pmem_write(paddr_t addr, int len, word_t data);
+extern void init_isa();
+void init_monitor(int, char *[]);
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
@@ -44,10 +46,22 @@ void sim_exit(){
     tfp->close();
 }
 
-int main(){
+int main(int argc, char *argv[]){
     sim_init();
-    while(!sim_finish) {
-        single_cycle();
+    init_monitor(argc, argv);
+
+    int count = 0;
+
+    printf("Simulation start\n");
+    top->sys_rst_n = 1;
+    top->eval();
+    while(!sim_finish && count <= 100) {
+        count ++;
+        printf("%4d: pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
+        top->sys_clk ^= 1; top->eval();
+        step_and_dump_wave();
+        top->sys_clk ^= 1; top->eval();
+        step_and_dump_wave();
     }
     printf("Simulation finished\n");
     sim_exit();
