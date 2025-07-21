@@ -62,6 +62,7 @@ int main(int argc, char *argv[]){
         step_and_dump_wave();
         top->sys_clk ^= 1; top->eval();
         step_and_dump_wave();
+        if(top->halt == 1) break;
     }
     printf("Simulation finished\n");
     sim_exit();
