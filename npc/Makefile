@@ -1,5 +1,6 @@
 TOP_NAME = top
-IMG ?= /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-npc.bin
+#IMG ?= /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-npc.bin
+IMG ?= 
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
