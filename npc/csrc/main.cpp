@@ -55,12 +55,13 @@ int main(int argc, char *argv[]){
     top->sys_rst_n = 0;
     top->sys_clk = 1;
     top->sys_rst_n = 1;
+    top->eval();
     while(!sim_finish && count < 1000000) {
         count ++;
         printf("%d: pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
-        printf("1\n");
+        //printf("1\n");
         top->sys_clk ^= 1; top->eval();
-        printf("2\n");
+        //printf("2\n");
         step_and_dump_wave();
         
         //single_cycle();
