@@ -23,7 +23,7 @@ static void welcome() {
 }
 
 static long load_img() {
-  if (img_file == NULL) {
+  if (img_file[0] == '\0') {
     printf("No image is given. Use the default build-in image.\n");
     return 4096; // built-in image size
   }
