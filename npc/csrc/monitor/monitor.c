@@ -51,7 +51,7 @@ static long load_img() {
 
 static int parse_args(int argc, char *argv[]) {
     if(argc < 2){
-        printf("Use default image.");
+        printf("Use default image.\n");
         img_file[0] = '\0';
         return 0;
     }
@@ -64,6 +64,7 @@ static int parse_args(int argc, char *argv[]) {
                return 0;
           } else {
             printf("Error: Missing filename after %s\n", argv[i]);
+            printf("Use default image.\n");
             img_file[0] = '\0';
             return 0;
           }
