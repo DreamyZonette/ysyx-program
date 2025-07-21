@@ -2,7 +2,7 @@
 #include <utils.h>
 
 //static char *img_file = NULL;
-static char img_file[1024] = {0}
+static char img_file[1024] = {0};
 
 void init_rand();
 void init_mem();
