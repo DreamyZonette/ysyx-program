@@ -22,11 +22,11 @@ static void internal_pmem_write(paddr_t addr, int len, word_t data) {
 }
 
 extern "C" int pmem_read(int addr, int len) {
-  printf("DPI-CALL: pmem_read(0x%x, %d)\n", paddr_t(addr), len);
+  //printf("DPI-CALL: pmem_read(0x%x, %d)\n", paddr_t(addr), len);
   return internal_pmem_read(paddr_t(addr), len);
 }
 
 extern "C" void pmem_write(int addr, int len, int data) {
-  printf("DPI-CALL: pmem_write(0x%x, %d, 0x%x)\n", paddr_t(addr), len, word_t(data));
+  //printf("DPI-CALL: pmem_write(0x%x, %d, 0x%x)\n", paddr_t(addr), len, word_t(data));
   internal_pmem_write(paddr_t(addr), len, word_t(data));
 }

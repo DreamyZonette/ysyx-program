@@ -13,7 +13,7 @@ module PC #(PC_LEN = 32)(
         end 
         else begin
             o_pc <= i_next_pc;
-            $display("PC Update: next_pc = 0x%h, pc = 0x%h", i_next_pc, o_pc);
+            //$display("PC Update: next_pc = 0x%h, pc = 0x%h", i_next_pc, o_pc);
         end
     end
 
