@@ -64,7 +64,6 @@ static int parse_args(int argc, char *argv[]) {
                return 0;
           } else {
             printf("Error: Missing filename after %s\n", argv[i]);
-            printf("Use default image.\n");
             img_file[0] = '\0';
             return 0;
           }
