@@ -63,6 +63,7 @@ static int parse_args(int argc, char *argv[]) {
 void init_monitor(int argc, char *argv[]) {
 
   parse_args(argc, argv);
+  printf("%s\n", argv[1]);
 
   init_rand();  
 
@@ -70,7 +71,7 @@ void init_monitor(int argc, char *argv[]) {
 
   init_isa();
 
-  //long img_size = load_img();
+  long img_size = load_img();
 
   welcome();
 }
