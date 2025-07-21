@@ -2,7 +2,8 @@
         input sys_clk,
         input sys_rst_n,
         // input [31:0] inst,
-        // output [31:0] pc,
+        output [31:0] de_pc,
+        output [31:0] de_inst,
         output halt 
     );
 
@@ -15,6 +16,8 @@
         end
 
     assign halt = EXU_halt_signal | IDU_halt_signal;
+    assign de_pc = pc;
+    assign de_inst = instruction;
 
     wire addi_signal;
     wire andi_signal;

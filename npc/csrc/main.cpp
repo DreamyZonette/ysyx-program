@@ -47,13 +47,16 @@ void sim_exit(){
 }
 
 int main(int argc, char *argv[]){
-    printf("1\n");
     sim_init();
-    printf("2\n");
     init_monitor(argc, argv);
-    printf("3\n");
+
+    int count = 0;
     while(!sim_finish) {
-        single_cycle();
+        count ++;
+        top->sys_clk ^= 1; eval();
+        step_and_dump_wave();
+        printf("%d:%d pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
+        //single_cycle();
     }
     printf("Simulation finished\n");
     sim_exit();
