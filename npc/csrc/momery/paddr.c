@@ -9,7 +9,7 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 void init_mem() {
   memset(pmem, rand(), CONFIG_MSIZE);
-  printf("physical memory area [" %08u ", " %08u "]\n", PMEM_LEFT, PMEM_RIGHT);
+  printf("physical memory area [%08x, %08x]\n", PMEM_LEFT, PMEM_RIGHT);
 }
 
 extern "C" word_t pmem_read(paddr_t addr, int len) {

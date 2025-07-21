@@ -5,6 +5,21 @@ static char *img_file = NULL;
 
 void init_rand();
 void init_mem();
+void init_isa();
+
+
+static void welcome() {
+//   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
+//   Log("ITrace: %s", MUXDEF(CONFIG_ITRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
+//   Log("MTrace: %s", MUXDEF(CONFIG_MTRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
+//   Log("FTrace: %s", MUXDEF(CONFIG_FTRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
+//   IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
+//         "to record the trace. This may lead to a large log file. "
+//         "If it is not necessary, you can disable it in menuconfig"));
+  printf("Build time: %s, %s\n", __TIME__, __DATE__);
+  printf("Welcome to %s-NPC!\n", ANSI_FMT("riscv32e", ANSI_FG_YELLOW ANSI_BG_RED));
+  printf("For help, type \"help\"\n");
+}
 
 static long load_img() {
   if (img_file == NULL) {
@@ -56,4 +71,6 @@ void init_monitor(int argc, char *argv[]) {
   init_isa();
 
   long img_size = load_img();
+
+  welcome();
 }
