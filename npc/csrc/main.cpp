@@ -48,7 +48,7 @@ void sim_exit(){
 
 int main(int argc, char *argv[]){
     sim_init();
-    //init_monitor(argc, argv);
+    init_monitor(argc, argv);
 
     int count = 0;
 

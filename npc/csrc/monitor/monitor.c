@@ -30,7 +30,7 @@ static long load_img() {
   FILE *fp = fopen(img_file, "rb");
   if(!fp) {
     printf("Can not open '%s'\n", img_file);
-    assert(1); // 断言失败，程序退出
+    assert(0); // 断言失败，程序退出
   }
 
     fseek(fp, 0, SEEK_SET); // 回到文件开头
