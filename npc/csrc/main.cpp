@@ -47,8 +47,11 @@ void sim_exit(){
 }
 
 int main(int argc, char *argv[]){
+    printf("1\n");
     sim_init();
+    printf("2\n");
     init_monitor(argc, argv);
+    printf("3\n");
     while(!sim_finish) {
         single_cycle();
     }
