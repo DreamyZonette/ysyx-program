@@ -53,15 +53,15 @@ int main(int argc, char *argv[]){
     int count = 0;
 
     printf("Simulation start\n");
-    // top->sys_clk = 0;
-    // step_and_dump_wave();
-    // top->sys_rst_n = 0;
-    // top->sys_clk = 1;
-    // step_and_dump_wave();
-    top->sys_rst_n = 1;
+    top->sys_rst_n = 0;
     top->sys_clk = 0;
     step_and_dump_wave();
     top->sys_clk = 1;
+    step_and_dump_wave();
+    top->sys_rst_n = 1;
+    // top->sys_clk = 0;
+    // step_and_dump_wave();
+    // top->sys_clk = 1;
     step_and_dump_wave();
     while(!sim_finish && count <= 10) {
         count ++;
