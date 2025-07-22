@@ -28,11 +28,11 @@ void single_cycle() {
 
 static void execute(uint64_t n) {
     int print_on = 0;
-    if(n <= PRINT_COUNT) printf_on = 1;
+    if(n <= PRINT_COUNT) print_on = 1;
   for (;n > 0; n --) {
     single_cycle();
 
-    if(printf_on){
+    if(print_on){
         printf("pc:0x%08x    inst:0x%08x\n", 
             top->de_pc, top->de_inst);
     }
