@@ -12,6 +12,13 @@
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
 
+
+typedef uint32_t word_t;
+typedef uint32_t sword_t;
+
+typedef uint32_t paddr_t;
+typedef word_t vaddr_t;
+
 #include <generated/autoconf.h>
 #include <macro.h>
 #include <utils.h>
@@ -19,10 +26,5 @@
 #include <assert.h>
 #include <stdlib.h>
 
-typedef uint32_t word_t;
-typedef uint32_t sword_t;
-
-typedef uint32_t paddr_t;
-typedef word_t vaddr_t;
 
 #endif
