@@ -98,7 +98,7 @@ static int cmd_x (char *args){
 		return 0;
 	}
 	for(int i = 0 ; i < N  ; i++){
-		printf("addr:0x%08x --> %08x\n",addr,pmem_read(addr,4));
+		printf("\033[32maddr:0x%08x: \033[0m: \033[33m%08x\033[0m\n",addr,pmem_read(addr,4));
 		addr += 4;
 	}
 	return 0;
