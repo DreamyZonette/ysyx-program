@@ -7,6 +7,10 @@
 extern void init_isa();
 void init_monitor(int, char *[]);
 
+VerilatedContext* contextp;
+VerilatedVcdC* tfp;
+static Vtop* top;
+
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
 bool is_hit_good_trap = true;

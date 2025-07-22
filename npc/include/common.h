@@ -23,8 +23,4 @@ typedef uint32_t sword_t;
 
 typedef uint32_t paddr_t;
 
-VerilatedContext* contextp;
-VerilatedVcdC* tfp;
-static Vtop* top;
-
 #endif
