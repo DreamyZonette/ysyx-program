@@ -10,9 +10,14 @@ static inline int check_reg_idx(int idx) {
 
 uint32_t read_register(int idx) {
     // 设置作用域：绑定到 reg_file_u 实例
-    const char* scope_path = "TOP.top.IDU_u.gpr_u.reg_file";
+    char scope_path[256];
+    sprintf(scope_path, "TOP.top.IDU_u.gpr_u.register_instances[%d].Reg_u", idx);
+    
     svScope scope = svGetScopeFromName(scope_path);
-    assert(scope); // 确保作用域有效
+    if (!scope) {
+        fprintf(stderr, "Error: Scope not found: %s\n", scope_path);
+        return 0;
+    }
     svSetScope(scope);
 
     // 调用 DPI 函数
