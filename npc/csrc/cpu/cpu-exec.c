@@ -24,23 +24,49 @@ void single_cycle() {
   step_and_dump_wave();
 }
 
-void cpu_exec(uint64_t n){
-    while(n--){
-        single_cycle();
+static void execute(uint64_t n) {
+  for (;n > 0; n --) {
+    single_cycle();
+    if(npc_state.halt_ret != 1) {
+      npc_state.halt_pc = top->de_pc;
+      npc_state.halt_ret = top->halt;
+      npc_state.state = NPC_RUNNING;
     }
-    
+    else{
+        npc_state.state = NPC_STOP;
+    }
+    if (npc_state.state != NPC_RUNNING) break;
+  }
+}
+
+void cpu_exec(uint64_t n){
+    switch (npc_state.state) {
+    case NPC_END: case NPC_ABORT: case NPC_QUIT:
+      printf("Program execution has ended. To restart the program, exit NPC and run again.\n");
+      return;
+    default: npc_state.state = NPC_RUNNING;
+  }
+
+    execute(n);
+
+    switch (npc_state.state) {
+    case NPC_RUNNING: npc_state.state = NPC_STOP; break;
+
+    case NPC_END: case NPC_ABORT:
+      printf("npc: %s at pc = 0x08x",
+          (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
+           (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
+            ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
+          npc_state.halt_pc);
+      // fall through
+    case NPC_QUIT: //statistic();
+  }
 }
 
 void sim_run(){
     int count = 0;
 
-    top->sys_rst_n = 0;
-    top->sys_clk = 0;
-    step_and_dump_wave();
-    top->sys_clk = 1;
-    step_and_dump_wave();
-    top->sys_rst_n = 1;
-    step_and_dump_wave();
+    
 
     while(!sim_finish && count <= 20) {
         count ++;
