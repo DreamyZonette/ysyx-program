@@ -6,7 +6,8 @@ module gpr  (
     input  [4:0] i_rd,
     input  [31:0] i_data,
     output [31:0] o_src1,
-    output [31:0] o_src2
+    output [31:0] o_src2,
+    output [31:0] o_reg_data [0:31]
     );
     
     
@@ -35,14 +36,6 @@ module gpr  (
                 .i_data(i_data),
                 .o_data(reg_file[i])   
             );
-            export "DPI-C" function read_reg;
-            function int read_reg(input int idx);
-                if (idx == i) begin
-                    read_reg = reg_file[i];
-                end else begin
-                    read_reg = 0;
-                end
-            endfunction
         end
     endgenerate
 

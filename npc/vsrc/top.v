@@ -4,7 +4,8 @@
         // input [31:0] inst,
         output [31:0] de_pc,
         output [31:0] de_inst,
-        output halt 
+        output halt,
+        output [31:0] reg_data [0:31]
     );
 
     import "DPI-C" function void dpi_ebreak();
@@ -151,7 +152,8 @@
     .o_blt_signal(blt_signal),
     .o_bltu_signal(bltu_signal),
     .o_sh_signal(sh_signal),
-    .o_halt_signal(IDU_halt_signal)
+    .o_halt_signal(IDU_halt_signal),
+    .o_reg_data(reg_data)
     );
 
     EXU EXU_u (
