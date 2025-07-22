@@ -96,21 +96,6 @@ static int cmd_x (char *args){
 	return 0;
 }
 
-static struct {
-  const char *name;
-  const char *description;
-  int (*handler) (char *);
-} cmd_table [] = {
-    { "help", "Display information about all supported commands", cmd_help },
-    { "c", "Continue the execution of the program", cmd_c },
-    { "q", "Exit NPC", cmd_q },
-	{ "si", "Execute one step", cmd_si },
-	{ "info", "Display status", cmd_info },
-	{ "x", "Display memory" , cmd_x }
-};
-
-#define NR_CMD ARRLEN(cmd_table)
-
 static int cmd_help(char *args) {
   /* extract the first argument */
   char *arg = strtok(NULL, " ");
@@ -133,6 +118,23 @@ static int cmd_help(char *args) {
   }
   return 0;
 }
+
+static struct {
+  const char *name;
+  const char *description;
+  int (*handler) (char *);
+} cmd_table [] = {
+    { "help", "Display information about all supported commands", cmd_help },
+    { "c", "Continue the execution of the program", cmd_c },
+    { "q", "Exit NPC", cmd_q },
+	{ "si", "Execute one step", cmd_si },
+	{ "info", "Display status", cmd_info },
+	{ "x", "Display memory" , cmd_x }
+};
+
+#define NR_CMD ARRLEN(cmd_table)
+
+
 
 void sdb_set_batch_mode() {
   is_batch_mode = true;
