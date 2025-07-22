@@ -27,9 +27,11 @@ void single_cycle() {
   top->sys_clk ^= 1; top->eval();
   step_and_dump_wave();
   //#ifdef CONFIG_ITRACE
-  p += snprintf(p, sizeof(p), "pc:%08x:", top->de_pc);
+  snprintf(p, sizeof(p), "pc:%08x: %02x", top->de_pc, top->de_inst);
+  //#endif
+}
   int ilen = 4;
-  p += snprintf(p, sizeof(p), " %02x", top->de_inst);
+  snprintf(p, sizeof(p), " %02x", top->de_inst);
 
   // void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   // disassemble(p, sizeof(p),
