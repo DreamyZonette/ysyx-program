@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
     // top->sys_clk = 1;
     // step_and_dump_wave();
     top->sys_rst_n = 1;
-    op->sys_clk = 0;
+    top->sys_clk = 0;
     while(!sim_finish && count <= 20) {
         count ++;
         printf("%4d: pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
