@@ -42,19 +42,17 @@ void npc_engine_start() {
     step_and_dump_wave();
     top->sys_rst_n = 1;
     step_and_dump_wave();
-
-    sdb_mainloop();
 }
 
 int main(int argc, char *argv[]){
     sim_init();
+    
     init_monitor(argc, argv);
 
-    // printf("Simulation start\n");
     npc_engine_start();
-    //sim_run();
-    // printf("Simulation finished\n");
-    //printf("0x%08x\n", pmem_read(0x80000010, 4));
+    
+    sdb_mainloop();
+
     sim_exit();
     return 0;
 }
