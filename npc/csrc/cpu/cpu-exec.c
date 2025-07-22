@@ -26,9 +26,7 @@ void single_cycle() {
   step_and_dump_wave();
   top->sys_clk ^= 1; top->eval();
   step_and_dump_wave();
-  printf("1");
-  #ifdef CONFIG_ITRACE
-  printf("1");
+  //#ifdef CONFIG_ITRACE
   p += snprintf(p, sizeof(p), FMT_WORD ":", top->de_pc);
   int ilen = 4;
   p += snprintf(p, 4, " %02x", top->de_inst);
@@ -36,14 +34,14 @@ void single_cycle() {
   // void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   // disassemble(p, sizeof(p),
   //     top->de_pc, top->de_inst, ilen);
-#endif
+//#endif
 }
 
 static void trace_and_difftest() {
-  #ifdef CONFIG_ITRACE
+  //#ifdef CONFIG_ITRACE
   printf("%s\n", p);
   p[0] = '\0';
-#endif
+//#endif
 }
 
 static void execute(uint64_t n) {
