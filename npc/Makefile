@@ -21,7 +21,7 @@ CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.c)
 CFLAGS ?= -Wall
 CFLAGS +=  -CFLAGS "$(INCLUDES)" -LDFLAGS -lreadline -LDFLAGS -ltinfo
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
-VFLAGS += --top-module $(TOP_NAME) --dpi
+VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 ARGS = -i
 
