@@ -38,7 +38,7 @@ void single_cycle() {
 #endif
 }
 
-static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+static void trace_and_difftest() {
   #ifdef CONFIG_ITRACE
   printf("%s\n", p);
   p[0] = '\0';
