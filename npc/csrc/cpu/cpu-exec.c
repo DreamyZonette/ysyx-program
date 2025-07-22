@@ -21,6 +21,13 @@ void step_and_dump_wave(){
     tfp->dump(contextp->time());
 }
 
+static void trace_and_difftest() {
+  //#ifdef CONFIG_ITRACE
+  printf("%s\n", p);
+  p[0] = '\0';
+//#endif
+}
+
 void single_cycle() {
   top->sys_clk ^= 1; top->eval();
   step_and_dump_wave();
@@ -36,12 +43,7 @@ void single_cycle() {
 //#endif
 }
 
-static void trace_and_difftest() {
-  //#ifdef CONFIG_ITRACE
-  printf("%s\n", p);
-  p[0] = '\0';
-//#endif
-}
+
 
 static void execute(uint64_t n) {
     int print_on = 0;
