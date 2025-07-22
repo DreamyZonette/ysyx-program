@@ -1,6 +1,5 @@
 module WBU(
     input i_sys_rst_n,
-    input [31:0] i_sys_addr,//pc
     input [31:0] i_sys_wdata,
     input [31:0] i_cur_pc,
     input i_B_jump_signal,
@@ -21,7 +20,7 @@ module WBU(
         end else if (jump_signal == 1'b1)begin
             o_next_pc = i_sys_wdata;
         end else begin
-            o_next_pc = i_sys_addr + 4;
+            o_next_pc = i_cur_pc + 4;
         end
     end
 
@@ -29,7 +28,7 @@ module WBU(
         if (i_load_signal == 1'b1) begin
             reg_wdata = i_load_wdata;
         end else if (i_jal_signal == 1'b1 || i_jalr_signal == 1'b1)begin
-            reg_wdata = i_sys_addr + 4;
+            reg_wdata = i_cur_pc + 4;
         end
         else begin
             reg_wdata = 32'b0;

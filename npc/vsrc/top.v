@@ -210,7 +210,7 @@
     .i_jalr_signal(jalr_signal),
     .i_load_signal(load_signal),
     .i_load_wdata(rdata),
-    .i_sys_addr(pc),
+    .i_cur_pc(pc),
     .i_sys_wdata(data),
     .o_reg_wdata(wdata),
     .o_next_pc(next_pc)
