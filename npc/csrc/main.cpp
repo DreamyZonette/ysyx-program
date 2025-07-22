@@ -8,6 +8,7 @@
 extern void init_isa();
 void init_monitor(int, char *[]);
 void cpu_exec(uint64_t n);
+void step_and_dump_wave();
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
