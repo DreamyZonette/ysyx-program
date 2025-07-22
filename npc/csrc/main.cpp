@@ -7,13 +7,9 @@
 extern void init_isa();
 void init_monitor(int, char *[]);
 
-VerilatedContext* contextp;
-VerilatedVcdC* tfp;
-static Vtop* top;
-
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
-bool is_good_trap = true;
+bool is_hit_good_trap = true;
 extern "C" void dpi_ebreak() {
     sim_finish = true;  // 触发仿真结束
 }
@@ -76,7 +72,7 @@ int main(int argc, char *argv[]){
         step_and_dump_wave();
         top->sys_clk ^= 1; top->eval();
         step_and_dump_wave();
-        if(top->halt == 1) is_good_trap = false;
+        if(top->halt == 1) is_hit_good_trap = false;
     }
     printf("Simulation finished\n");
     //printf("0x%08x\n", pmem_read(0x80000010, 4));
