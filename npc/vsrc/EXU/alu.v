@@ -152,11 +152,11 @@ module alu #(WIDTH = 32)(
             o_data = i_pc_data + i_offset;
         // S型
         end else if(i_sw_signal == 1'b1) begin
-            o_data = i_src2;
+            o_data = i_src1 + i_offset;
         end else if(i_sh_signal == 1'b1) begin
-            o_data = i_src2;
+            o_data = i_src1 + i_offset;
         end else if(i_sb_signal == 1'b1) begin
-            o_data = i_src2;
+            o_data = i_src1 + i_offset;
         end 
         else begin
             o_halt_signal = 1'b1;
