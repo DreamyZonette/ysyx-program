@@ -27,23 +27,23 @@ void single_cycle() {
   top->sys_clk ^= 1; top->eval();
   step_and_dump_wave();
 
-//   #ifdef CONFIG_ITRACE
-//   p += snprintf(p, sizeof(p), FMT_WORD ":", top->de_pc);
-//   int ilen = 4;
-//   p += snprintf(p, 4, " %02x", top->de_inst);
+  #ifdef CONFIG_ITRACE
+  p += snprintf(p, sizeof(p), FMT_WORD ":", top->de_pc);
+  int ilen = 4;
+  p += snprintf(p, 4, " %02x", top->de_inst);
 
-//   // void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-//   // disassemble(p, sizeof(p),
-//   //     top->de_pc, top->de_inst, ilen);
-// #endif
+  // void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+  // disassemble(p, sizeof(p),
+  //     top->de_pc, top->de_inst, ilen);
+#endif
 }
 
-// static void trace_and_difftest() {
-//   #ifdef CONFIG_ITRACE
-//   printf("%s\n", p);
-//   p[0] = '\0';
-// #endif
-// }
+static void trace_and_difftest() {
+  #ifdef CONFIG_ITRACE
+  printf("%s\n", p);
+  p[0] = '\0';
+#endif
+}
 
 static void execute(uint64_t n) {
     int print_on = 0;
@@ -55,7 +55,7 @@ static void execute(uint64_t n) {
         printf("pc:0x%08x    inst:0x%08x\n", 
             top->de_pc, top->de_inst);
     }
-    //trace_and_difftest();
+    trace_and_difftest();
 
     if(sim_finish) {
         if(is_hit_good_trap)npc_state.state = NPC_END;

@@ -20,7 +20,7 @@ CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.c)
 #CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.h)
 CFLAGS ?= -Wall
 CFLAGS +=  -CFLAGS "$(INCLUDES)" -LDFLAGS -lreadline -LDFLAGS -ltinfo
-CFLAGS +=  -CFLAGS "-I/home/long/ysyx-workbench/npc/tools/capstone/repo/include/capstone/"
+#CFLAGS +=  -CFLAGS "-I/home/long/ysyx-workbench/npc/tools/capstone/repo/include/capstone/"
 
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
