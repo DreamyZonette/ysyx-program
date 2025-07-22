@@ -33,7 +33,7 @@ void sim_exit(){
 
 
 
-void engine_start() {
+void npc_engine_start() {
 
     top->sys_rst_n = 0;
     top->sys_clk = 0;
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]){
     init_monitor(argc, argv);
 
     // printf("Simulation start\n");
-    engine_start();
+    npc_engine_start();
     //sim_run();
     // printf("Simulation finished\n");
     //printf("0x%08x\n", pmem_read(0x80000010, 4));
