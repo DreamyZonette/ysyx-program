@@ -1,12 +1,13 @@
 #include <common.h>
 #include <cpu/cpu.h>
+#include <memory/paddr.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
 #include <assert.h>
 static int is_batch_mode = false;
 
-word_t paddr_read(paddr_t addr, int len);
+//word_t paddr_read(paddr_t addr, int len);
 static int cmd_help(char *args);
 
 static char* rl_gets() {
@@ -87,7 +88,7 @@ static int cmd_x (char *args){
 	char* addr_str = strtok(NULL, delim);
     char *endptr;
     uint32_t addr = strtoul(addr_str, &endptr, 16);
-    if (*endptr != '\0' || val > UINT32_MAX) {
+    if (*endptr != '\0' || addr > UINT32_MAX) {
         printf("转换失败或超出范围\n");
         return 1;
     }
