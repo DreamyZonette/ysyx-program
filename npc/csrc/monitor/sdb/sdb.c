@@ -6,6 +6,7 @@
 static int is_batch_mode = false;
 
 word_t paddr_read(paddr_t addr, int len);
+static int cmd_help(char *args);
 
 static char* rl_gets() {
   static char *line_read = NULL;
