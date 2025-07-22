@@ -68,8 +68,8 @@ int main(int argc, char *argv[]){
         cpu_exec(1);
         if(top->halt == 1) is_hit_good_trap = false;
     }
-    if(is_hit_good_trap) printf("npc:%s at PC:0x%08x\n", ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN), top->de_pc);
-    else printf("npc:%s at PC:0x%08x\n", ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED), top->de_pc);
+    if(is_hit_good_trap) printf("npc:%s at pc:0x%08x\n", ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN), top->de_pc);
+    else printf("npc:%s at pc:0x%08x\n", ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED), top->de_pc);
 
     printf("Simulation finished\n");
     //printf("0x%08x\n", pmem_read(0x80000010, 4));
