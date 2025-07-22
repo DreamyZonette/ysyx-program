@@ -8,7 +8,7 @@ module WBU(
     input i_load_signal,
     input  [31:0] i_load_wdata,
     output [31:0] o_reg_wdata,
-    output reg [31:0] o_next_pc = 32'h8000_0000
+    output reg [31:0] o_next_pc = 32'h8000_0004
 );
     reg [31:0] reg_wdata;
     wire jump_signal = i_jalr_signal | i_B_jump_signal | i_jal_signal;
@@ -16,7 +16,7 @@ module WBU(
     assign o_reg_wdata = reg_wdata;
     always @(*) begin
         if (!i_sys_rst_n) begin
-            o_next_pc = 32'h8000_0000;
+            o_next_pc = 32'h8000_0004;
         end else if (jump_signal == 1'b1)begin
             o_next_pc = i_sys_wdata;
         end else begin
