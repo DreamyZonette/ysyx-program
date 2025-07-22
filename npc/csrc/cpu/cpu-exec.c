@@ -36,6 +36,8 @@ static void execute(uint64_t n) {
         printf("pc:0x%08x    inst:0x%08x\n", 
             top->de_pc, top->de_inst);
     }
+    
+    if(sim_finish) npc_state.state = NPC_END;
 
     if(npc_state.halt_ret != 1) {
       npc_state.halt_pc = top->de_pc;
