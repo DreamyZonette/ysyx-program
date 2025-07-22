@@ -6,6 +6,7 @@
 bool sim_finish = false;
 bool is_hit_good_trap = true;
 char p[128];
+int print_on = 0;
 
 extern "C" void dpi_ebreak() {
     is_hit_good_trap = false;
@@ -22,10 +23,19 @@ void step_and_dump_wave(){
 }
 
 static void trace_and_difftest() {
-  //#ifdef CONFIG_ITRACE
-  printf("%s\n", p);
-  p[0] = '\0';
-//#endif
+  if(CONFIG_ITRACE == 1){
+    snprintf(p, sizeof(p), "pc:%08x: %08x", top->de_pc, top->de_inst);
+    trace_and_difftest();
+    printf("%s\n", p);
+    p[0] = '\0';
+  }
+  else{
+    if(print_on){
+        printf("pc:0x%08x    inst:0x%08x\n", 
+            top->de_pc, top->de_inst);
+    }
+  }
+  
 }
 
 void single_cycle() {
@@ -33,28 +43,17 @@ void single_cycle() {
   step_and_dump_wave();
   top->sys_clk ^= 1; top->eval();
   step_and_dump_wave();
-  //#ifdef CONFIG_ITRACE
-  snprintf(p, sizeof(p), "pc:%08x: %08x", top->de_pc, top->de_inst);
-  //#endif
-  trace_and_difftest();
-  // void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-  // disassemble(p, sizeof(p),
-  //     top->de_pc, top->de_inst, ilen);
-//#endif
+ 
 }
 
 
 
 static void execute(uint64_t n) {
-    int print_on = 0;
-    if(n <= PRINT_COUNT) print_on = 1;
+    
   for (;n > 0; n --) {
     single_cycle();
 
-    if(print_on){
-        printf("pc:0x%08x    inst:0x%08x\n", 
-            top->de_pc, top->de_inst);
-    }
+    if(n <= PRINT_COUNT) print_on = 1;
 
     if(sim_finish) {
         if(is_hit_good_trap)npc_state.state = NPC_END;
