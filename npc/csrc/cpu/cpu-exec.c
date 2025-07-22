@@ -53,6 +53,7 @@ static void execute(uint64_t n) {
 }
 
 void cpu_exec(uint64_t n){
+    if(sim_finish) npc_state.state = NPC_END;
     switch (npc_state.state) {
     case NPC_END: case NPC_ABORT: case NPC_QUIT:
       printf("Program execution has ended. To restart the program, exit NPC and run again.\n");
