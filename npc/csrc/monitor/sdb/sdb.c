@@ -58,7 +58,7 @@ static int cmd_info(char *args){
 	}
 	char* Arg = strtok(args," ");
 	if(strcmp( Arg , "r") == 0){
-		isa_reg_display();	
+		//isa_reg_display();	
 	}
 	else {
 	printf("Invalid argument");
