@@ -29,10 +29,7 @@ void single_cycle() {
   //#ifdef CONFIG_ITRACE
   snprintf(p, sizeof(p), "pc:%08x: %02x", top->de_pc, top->de_inst);
   //#endif
-}
-  int ilen = 4;
-  snprintf(p, sizeof(p), " %02x", top->de_inst);
-
+  trace_and_difftest();
   // void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   // disassemble(p, sizeof(p),
   //     top->de_pc, top->de_inst, ilen);
@@ -56,7 +53,6 @@ static void execute(uint64_t n) {
         printf("pc:0x%08x    inst:0x%08x\n", 
             top->de_pc, top->de_inst);
     }
-    trace_and_difftest();
 
     if(sim_finish) {
         if(is_hit_good_trap)npc_state.state = NPC_END;
