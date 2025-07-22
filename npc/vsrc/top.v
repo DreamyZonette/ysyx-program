@@ -8,10 +8,14 @@
     );
 
     import "DPI-C" function void dpi_ebreak();
+    import "DPI-C" function void dpi_return();
 
     always @(posedge sys_clk) begin
             if (ebreak_signal == 1'b1) begin
                 dpi_ebreak();  // 调用 DPI-C 函数
+            end
+            else if (loadinstruction_signal == 32'h00008067) begin
+                dpi_return();
             end
         end
 

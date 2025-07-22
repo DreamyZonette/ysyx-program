@@ -18,6 +18,7 @@ Vtop* top;
 bool sim_finish = false;
 bool is_hit_good_trap = true;
 extern "C" void dpi_ebreak() {
+    is_hit_good_trap = false;
     sim_finish = true;  // 触发仿真结束
 }
 extern "C" void dpi_return() {
@@ -59,6 +60,7 @@ int main(int argc, char *argv[]){
     // step_and_dump_wave();
     // top->sys_clk = 1;
     step_and_dump_wave();
+
     while(!sim_finish && count <= 20) {
         count ++;
         printf("%4d: pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
@@ -66,6 +68,9 @@ int main(int argc, char *argv[]){
         cpu_exec(1);
         if(top->halt == 1) is_hit_good_trap = false;
     }
+    if(is_hit_good_trap) printf("%s\n", ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN));
+    else printf("%s\n", ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED));
+
     printf("Simulation finished\n");
     //printf("0x%08x\n", pmem_read(0x80000010, 4));
     sim_exit();
