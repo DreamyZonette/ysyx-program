@@ -8,8 +8,9 @@
 extern void init_isa();
 void init_monitor(int, char *[]);
 void step_and_dump_wave();
+void sdb_mainloop();
 // void sim_run();
-void engine_start();
+// void engine_start();
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
@@ -28,6 +29,21 @@ void sim_init(){
 void sim_exit(){
     step_and_dump_wave();
     tfp->close();
+}
+
+
+
+void engine_start() {
+
+    top->sys_rst_n = 0;
+    top->sys_clk = 0;
+    step_and_dump_wave();
+    top->sys_clk = 1;
+    step_and_dump_wave();
+    top->sys_rst_n = 1;
+    step_and_dump_wave();
+
+    sdb_mainloop();
 }
 
 int main(int argc, char *argv[]){
