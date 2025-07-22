@@ -26,8 +26,9 @@ void single_cycle() {
   step_and_dump_wave();
   top->sys_clk ^= 1; top->eval();
   step_and_dump_wave();
-
+  printf("1");
   #ifdef CONFIG_ITRACE
+  printf("1");
   p += snprintf(p, sizeof(p), FMT_WORD ":", top->de_pc);
   int ilen = 4;
   p += snprintf(p, 4, " %02x", top->de_inst);
