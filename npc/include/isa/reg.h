@@ -3,6 +3,10 @@
 
 #include <common.h>
 
+extern VerilatedContext* contextp;
+extern VerilatedVcdC* tfp;
+extern Vtop* top;
+
 static inline int check_reg_idx(int idx) {
   assert(idx >= 0 && idx < 32);
   return idx;
