@@ -52,6 +52,8 @@ int main(int argc, char *argv[]){
 
     int count = 0;
 
+    printf("0x%08x\n", pmem_read(0x80000014, 4));
+
     printf("Simulation start\n");
     top->sys_rst_n = 0;
     top->sys_clk = 0;
