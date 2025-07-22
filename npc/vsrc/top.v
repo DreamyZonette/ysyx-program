@@ -14,7 +14,7 @@
             if (ebreak_signal == 1'b1) begin
                 dpi_ebreak();  // 调用 DPI-C 函数
             end
-            else if (instruction == 32'h00008067) begin
+            else if (instruction == 32'h0000006F) begin
                 dpi_return();
             end
         end
