@@ -16,7 +16,7 @@ module WBU(
     assign o_reg_wdata = reg_wdata;
     always @(*) begin
         if (!i_sys_rst_n) begin
-            o_next_pc = 32'h8000_0004;
+            o_next_pc = 32'h8000_0000;
         end else if (jump_signal == 1'b1)begin
             o_next_pc = i_sys_wdata;
         end else begin
