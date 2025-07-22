@@ -29,7 +29,7 @@ void single_cycle() {
   //#ifdef CONFIG_ITRACE
   p += snprintf(p, sizeof(p), "pc:%08x:", top->de_pc);
   int ilen = 4;
-  p += snprintf(p, 4, " %02x", top->de_inst);
+  p += snprintf(p, sizeof(p), " %02x", top->de_inst);
 
   // void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   // disassemble(p, sizeof(p),
