@@ -5,6 +5,8 @@
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
 bool is_hit_good_trap = true;
+char p[128];
+
 extern "C" void dpi_ebreak() {
     is_hit_good_trap = false;
     sim_finish = true;  // 触发仿真结束
@@ -24,6 +26,23 @@ void single_cycle() {
   step_and_dump_wave();
   top->sys_clk ^= 1; top->eval();
   step_and_dump_wave();
+
+  #ifdef CONFIG_ITRACE
+  p += snprintf(p, sizeof(p), FMT_WORD ":", top->de_pc);
+  int ilen = 4;
+  p += snprintf(p, 4, " %02x", top->de_inst);
+
+  void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+  disassemble(p, sizeof(p),
+      top->de_pc, top->de_inst, ilen);
+#endif
+}
+
+static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+  #ifdef CONFIG_ITRACE
+  printf("%s\n", p);
+  p[0] = '\0';
+#endif
 }
 
 static void execute(uint64_t n) {
@@ -36,6 +55,7 @@ static void execute(uint64_t n) {
         printf("pc:0x%08x    inst:0x%08x\n", 
             top->de_pc, top->de_inst);
     }
+    trace_and_difftest();
 
     if(sim_finish) {
         if(is_hit_good_trap)npc_state.state = NPC_END;
@@ -80,20 +100,3 @@ void cpu_exec(uint64_t n){
     case NPC_QUIT: break;//statistic();
   }
 }
-
-// void sim_run(){
-//     int count = 0;
-
-    
-
-//     while(!sim_finish && count <= 20) {
-//         count ++;
-//         //printf("%4d: pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
-//         //single_cycle();
-//         cpu_exec(1);
-//         if(top->halt == 1) is_hit_good_trap = false;
-//     }
-//     if(is_hit_good_trap) printf("npc:%s at pc:0x%08x\n", ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN), top->de_pc);
-//     else printf("npc:%s at pc:0x%08x\n", ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED), top->de_pc);
-    
-// }
