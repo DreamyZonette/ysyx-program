@@ -8,7 +8,8 @@
 extern void init_isa();
 void init_monitor(int, char *[]);
 void step_and_dump_wave();
-void sim_run();
+// void sim_run();
+void engine_start();
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
@@ -33,15 +34,10 @@ int main(int argc, char *argv[]){
     sim_init();
     init_monitor(argc, argv);
 
-    
-
-    
-
-    printf("Simulation start\n");
-
-    sim_run();
-
-    printf("Simulation finished\n");
+    // printf("Simulation start\n");
+    engine_start();
+    //sim_run();
+    // printf("Simulation finished\n");
     //printf("0x%08x\n", pmem_read(0x80000010, 4));
     sim_exit();
     return 0;
