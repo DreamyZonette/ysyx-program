@@ -1,5 +1,6 @@
 #include <common.h>
 #include <memory/paddr.h>
+#include <cpu/cpu.h>
 
 //函数申明
 // extern word_t pmem_read(paddr_t addr, int len);
@@ -76,7 +77,8 @@ int main(int argc, char *argv[]){
         // step_and_dump_wave();
         // top->sys_clk ^= 1; top->eval();
         // step_and_dump_wave();
-        cpu_exec(1);
+        single_cycle();
+        //cpu_exec(1);
         if(top->halt == 1) is_hit_good_trap = false;
     }
     printf("Simulation finished\n");
