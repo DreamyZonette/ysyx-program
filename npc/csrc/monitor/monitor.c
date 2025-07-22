@@ -2,11 +2,14 @@
 #include <utils.h>
 
 //static char *img_file = NULL;
-static char img_file[1024] = {0};
+static char img_file[256] = {0};
+static char log_file[256] = {0};
 
 void init_rand();
 void init_mem();
 void init_isa();
+void sdb_set_batch_mode();
+void init_log(const char *log_file);
 
 
 static void welcome() {
@@ -68,8 +71,22 @@ static int parse_args(int argc, char *argv[]) {
             return 0;
           }
         }
+        else if(strcmp(argv[i], "-b") == 0){
+          sdb_set_batch_mode();
+        }
+        else if(strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--log") == 0){
+          if (i + 1 < argc) {
+              strncpy(log_file, argv[i + 1], sizeof(log_file) - 1);
+              log_file[sizeof(log_file) - 1] = '\0'; // 确保终止
+              printf("Using log file : %s\n", log_file);
+               return 0;
+          } else {
+            printf("Error: Missing filename after %s\n", argv[i]);
+            log_file[0] = '\0';
+            return 0;
+          }
+        }
     }
-    img_file[0] = '\0';
     
     return 0;
 }
@@ -80,6 +97,8 @@ void init_monitor(int argc, char *argv[]) {
   parse_args(argc, argv);
 
   init_rand();  
+
+  init_log(log_file);
 
   init_mem();
 

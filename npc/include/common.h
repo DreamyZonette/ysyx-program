@@ -26,5 +26,6 @@ typedef word_t vaddr_t;
 #include <assert.h>
 #include <stdlib.h>
 
+#include <debug.h>
 
 #endif
