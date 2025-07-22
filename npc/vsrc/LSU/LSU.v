@@ -1,6 +1,6 @@
 module LSU(
     input i_sys_clk,
-    input i_sys_rst_n,
+    //input i_sys_rst_n,
     input i_lbu_signal,
     input i_lhu_signal,
     input i_lb_signal,

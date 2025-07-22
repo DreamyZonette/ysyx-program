@@ -219,7 +219,7 @@
 
     LSU LSU_u (
     .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    //.i_sys_rst_n(sys_rst_n),
     .i_lbu_signal(lbu_signal),
     .i_lhu_signal(lhu_signal),
     .i_lb_signal(lb_signal),
