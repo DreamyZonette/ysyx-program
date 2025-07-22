@@ -14,6 +14,8 @@ module gpr  (
     reg  [31:0] wen;
     wire [31:0] reg_file [0:31]; // 32 个寄存器
 
+    assign o_reg_data = reg_file;
+
 
     // 写使能信号
     always @(*) begin   
