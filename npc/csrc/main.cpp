@@ -7,6 +7,7 @@
 // extern void pmem_write(paddr_t addr, int len, word_t data);
 extern void init_isa();
 void init_monitor(int, char *[]);
+void cpu_exec(uint64_t n);
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
@@ -23,19 +24,6 @@ extern "C" void dpi_return() {
 }
 
 int is_ebreak(int ebreak_signal);
-
-void step_and_dump_wave(){
-    top->eval();
-    contextp->timeInc(1);   
-    tfp->dump(contextp->time());
-}
-
-void single_cycle() {
-  top->sys_clk ^= 1; top->eval();
-  step_and_dump_wave();
-  top->sys_clk ^= 1; top->eval();
-  step_and_dump_wave();
-}
 
 void sim_init(){
     contextp = new VerilatedContext;
@@ -73,12 +61,8 @@ int main(int argc, char *argv[]){
     while(!sim_finish && count <= 20) {
         count ++;
         printf("%4d: pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
-        // top->sys_clk ^= 1; top->eval();
-        // step_and_dump_wave();
-        // top->sys_clk ^= 1; top->eval();
-        // step_and_dump_wave();
-        single_cycle();
-        //cpu_exec(1);
+        //single_cycle();
+        cpu_exec(1);
         if(top->halt == 1) is_hit_good_trap = false;
     }
     printf("Simulation finished\n");
