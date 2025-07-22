@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
     sim_init();
     init_monitor(argc, argv);
 
-    int count = 0;
+    
 
     
 

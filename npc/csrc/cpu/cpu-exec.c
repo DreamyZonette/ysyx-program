@@ -32,6 +32,8 @@ void cpu_exec(uint64_t n){
 }
 
 void sim_run(){
+    int count = 0;
+
     top->sys_rst_n = 0;
     top->sys_clk = 0;
     step_and_dump_wave();
