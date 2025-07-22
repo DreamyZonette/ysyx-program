@@ -14,7 +14,12 @@ void single_cycle() {
 }
 
 void cpu_exec(uint64_t n){
-    for(uint64_t i=0; i<n; i++){
-        single_cycle();
+    single_cycle();
+}
+
+void sim_run(){
+    while(n--){
+        cpu_exec(n);
     }
+    
 }
