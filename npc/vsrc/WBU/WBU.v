@@ -31,7 +31,7 @@ module WBU(
             reg_wdata = i_cur_pc + 4;
         end
         else begin
-            reg_wdata = 32'b0;
+            reg_wdata = i_load_wdata;
         end
     end
 
