@@ -53,7 +53,13 @@ int main(int argc, char *argv[]){
     int count = 0;
 
     printf("Simulation start\n");
+    top->sys_clk = 0;
+    top->eval();
+    top->sys_rst_n = 0;
+    top->sys_clk = 1;
+    top->eval();
     top->sys_rst_n = 1;
+    top->sys_clk = 0;
     top->eval();
     while(!sim_finish && count <= 20) {
         count ++;
