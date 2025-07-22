@@ -36,6 +36,7 @@ static int cmd_q(char *args) {
 }
 
 static int cmd_si(char *args){
+    //printf("si process\n");
 	int N;
 	// int i;
 	if (args == NULL){

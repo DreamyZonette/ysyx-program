@@ -1,5 +1,7 @@
 #include <cpu/cpu.h>
 
+#define PRINT_COUNT 4
+
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
 bool is_hit_good_trap = true;
@@ -25,8 +27,16 @@ void single_cycle() {
 }
 
 static void execute(uint64_t n) {
+    int print_on = 0;
+    if(n <= PRINT_COUNT) printf_on = 1;
   for (;n > 0; n --) {
     single_cycle();
+
+    if(printf_on){
+        printf("pc:0x%08x    inst:0x%08x\n", 
+            top->de_pc, top->de_inst);
+    }
+
     if(npc_state.halt_ret != 1) {
       npc_state.halt_pc = top->de_pc;
       npc_state.halt_ret = top->halt;
@@ -35,9 +45,9 @@ static void execute(uint64_t n) {
     else if (is_hit_good_trap){
         npc_state.state = NPC_END;
     }
-    else{
-        npc_state.state = NPC_STOP;
-    }
+    // else{
+    //     npc_state.state = NPC_STOP;
+    // }
     if (npc_state.state != NPC_RUNNING) break;
   }
 }
