@@ -59,6 +59,7 @@ static int cmd_info(char *args){
 	char* Arg = strtok(args," ");
 	if(strcmp( Arg , "r") == 0){
 		//isa_reg_display();	
+        printf("0x%o8x\n", top->IDU_u->gpr_u->reg_file[2]);
 	}
 	else {
 	printf("Invalid argument");
