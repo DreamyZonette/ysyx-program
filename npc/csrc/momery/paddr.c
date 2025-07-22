@@ -28,6 +28,6 @@ extern "C" int pmem_read(int addr, int len) {
 }
 
 extern "C" void pmem_write(int addr, int len, int data) {
-  printf("DPI-CALL: pmem_write(0x%x, %d, 0x%x)\n", paddr_t(addr), len, word_t(data));
+  //printf("DPI-CALL: pmem_write(0x%x, %d, 0x%x)\n", paddr_t(addr), len, word_t(data));
   internal_pmem_write(paddr_t(addr), len, word_t(data));
 }
