@@ -9,7 +9,7 @@ extern void init_isa();
 void init_monitor(int, char *[]);
 void step_and_dump_wave();
 // void sim_run();
-extern void engine_start();
+void engine_start();
 
 VerilatedContext* contextp;
 VerilatedVcdC* tfp;
