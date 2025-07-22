@@ -1,3 +1,4 @@
+#include <common.h>
 #include <cpu/cpu.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -85,7 +86,7 @@ static int cmd_x (char *args){
 // //获 得地址	
 	char* addr_str = strtok(NULL, delim);
     char *endptr;
-    unsigned long val = strtoul(str, &endptr, 16);
+    uint32_t addr = strtoul(addr_str, &endptr, 16);
     if (*endptr != '\0' || val > UINT32_MAX) {
         printf("转换失败或超出范围\n");
         return 1;
