@@ -28,5 +28,6 @@ image: image-dep
 
 run: insert-arg
 	$(MAKE) -C $(NPC_HOME) ISA=$(ISA) run ARGS=$(NPCFLAGS) IMG=$(IMAGE).bin
+	gtkwave $(NPC_HOME)/build/wave.vcd
 
 .PHONY: insert-arg
