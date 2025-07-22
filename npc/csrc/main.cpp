@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
 
     int count = 0;
 
-    printf("0x%08x\n", pmem_read(0x80000010, 4));
+    
 
     printf("Simulation start\n");
     top->sys_rst_n = 0;
@@ -75,6 +75,7 @@ int main(int argc, char *argv[]){
         //if(top->halt == 1) break;
     }
     printf("Simulation finished\n");
+    printf("0x%08x\n", pmem_read(0x80000010, 4));
     sim_exit();
     return 0;
 }
