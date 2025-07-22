@@ -41,7 +41,7 @@ module Jtype (
                 o_offset =  { {12{offset[19]}}, offset} << 1;
             end
             else begin
-                o_offset =  { {12{1'b0}}, offset} << 1;
+                o_offset =  { {12{offset[19]}}, offset} << 1;
             end
         end
         else if(zero_extended == 1'b1) begin
