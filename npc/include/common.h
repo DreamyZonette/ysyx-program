@@ -23,5 +23,6 @@ typedef uint32_t word_t;
 typedef uint32_t sword_t;
 
 typedef uint32_t paddr_t;
+typedef word_t vaddr_t;
 
 #endif

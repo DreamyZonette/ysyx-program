@@ -32,6 +32,9 @@ static void execute(uint64_t n) {
       npc_state.halt_ret = top->halt;
       npc_state.state = NPC_RUNNING;
     }
+    else if (is_hit_good_trap){
+        npc_state.state = NPC_END;
+    }
     else{
         npc_state.state = NPC_STOP;
     }
