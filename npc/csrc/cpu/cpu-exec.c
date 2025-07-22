@@ -37,15 +37,17 @@ static void execute(uint64_t n) {
             top->de_pc, top->de_inst);
     }
 
-    if(sim_finish) npc_state.state = NPC_END;
+    if(sim_finish) {
+        if(is_hit_good_trap)npc_state.state = NPC_END;
+    }
 
-    // if(npc_state.halt_ret != 1) {
-    //   npc_state.halt_pc = top->de_pc;
-    //   npc_state.halt_ret = top->halt;
-    //   npc_state.state = NPC_RUNNING;
-    //}
-    else if (is_hit_good_trap){
-        npc_state.state = NPC_END;
+
+    if(npc_state.halt_ret != 1) {
+      npc_state.halt_pc = top->de_pc;
+      npc_state.halt_ret = top->halt;
+    }
+    else {
+        npc_state.state = NPC_ABORT;
     }
     // else{
     //     npc_state.state = NPC_STOP;
@@ -79,19 +81,19 @@ void cpu_exec(uint64_t n){
   }
 }
 
-void sim_run(){
-    int count = 0;
+// void sim_run(){
+//     int count = 0;
 
     
 
-    while(!sim_finish && count <= 20) {
-        count ++;
-        //printf("%4d: pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
-        //single_cycle();
-        cpu_exec(1);
-        if(top->halt == 1) is_hit_good_trap = false;
-    }
-    if(is_hit_good_trap) printf("npc:%s at pc:0x%08x\n", ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN), top->de_pc);
-    else printf("npc:%s at pc:0x%08x\n", ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED), top->de_pc);
+//     while(!sim_finish && count <= 20) {
+//         count ++;
+//         //printf("%4d: pc:%08x    inst:%08x   halt:%d\n", count, top->de_pc, top->de_inst, top->halt);
+//         //single_cycle();
+//         cpu_exec(1);
+//         if(top->halt == 1) is_hit_good_trap = false;
+//     }
+//     if(is_hit_good_trap) printf("npc:%s at pc:0x%08x\n", ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN), top->de_pc);
+//     else printf("npc:%s at pc:0x%08x\n", ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED), top->de_pc);
     
-}
+// }
