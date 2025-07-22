@@ -9,6 +9,7 @@ static int is_batch_mode = false;
 
 //word_t paddr_read(paddr_t addr, int len);
 static int cmd_help(char *args);
+void isa_reg_display();
 
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -58,8 +59,8 @@ static int cmd_info(char *args){
 	}
 	char* Arg = strtok(args," ");
 	if(strcmp( Arg , "r") == 0){
-		//isa_reg_display();	
-        printf("0x%o8x\n", top->IDU->gpr->reg_file[2]);
+		isa_reg_display();	
+        //printf("0x%o8x\n", top->IDU->gpr->reg_file[2]);
 	}
 	else {
 	printf("Invalid argument");
