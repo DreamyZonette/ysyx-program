@@ -1,18 +1,31 @@
-// #ifndef __RISCV_REG_H__
-// #define __RISCV_REG_H__
+#ifndef __RISCV_REG_H__
+#define __RISCV_REG_H__
 
-// #include <common.h>
+#include <common.h>
 
-// static inline int check_reg_idx(int idx) {
-//   assert(idx >= 0 && idx < 32);
-//   return idx;
-// }
+static inline int check_reg_idx(int idx) {
+  assert(idx >= 0 && idx < 32);
+  return idx;
+}
 
-// #define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
+uint32_t read_register(int idx) {
+    // 设置作用域：绑定到 reg_file_u 实例
+    const char* scope_path = "TOP.top.IDU_u.gpr_u.reg_file";
+    svScope scope = svGetScopeFromName(scope_path);
+    assert(scope); // 确保作用域有效
+    svSetScope(scope);
 
-// static inline const char* reg_name(int idx) {
-//   extern const char* regs[];
-//   return regs[check_reg_idx(idx)];
-// }
+    // 调用 DPI 函数
+    uint32_t value = read_reg(idx);
+    return value;
+    // printf("Reg[%d] = 0x%08X\n", idx, value);
+}
 
-// #endif
+#define gpr(idx) (read_register(check_reg_idx(idx)))
+
+static inline const char* reg_name(int idx) {
+  extern const char* regs[];
+  return regs[check_reg_idx(idx)];
+}
+
+#endif

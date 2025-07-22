@@ -8,7 +8,15 @@ module gpr  (
     output [31:0] o_src1,
     output [31:0] o_src2
     );
-
+    export "DPI-C" function read_reg;
+    function int read_reg(input int idx);
+        if (idx >= 0 && idx < 32) begin
+            read_reg = reg_file[idx];
+        end else begin
+            read_reg = 0; // 越界处理
+        end
+    endfunction
+    
     reg  [31:0] wen;
     wire [31:0] reg_file [0:31]; // 32 个寄存器
 
