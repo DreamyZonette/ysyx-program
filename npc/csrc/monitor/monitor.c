@@ -1,9 +1,12 @@
 #include <memory/paddr.h>
 #include <utils.h>
+#if CONFIG_FTRACE 
+	#include "elf_reader.h"
+#endif
 
 //static char *img_file = NULL;
 static char img_file[256] = {0};
-static char log_file[256] = {0};
+static char elf_file[256] = {0};
 
 void init_rand();
 void init_mem();
@@ -13,13 +16,29 @@ void sdb_set_batch_mode();
 
 
 static void welcome() {
-//   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
-//   Log("ITrace: %s", MUXDEF(CONFIG_ITRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
-//   Log("MTrace: %s", MUXDEF(CONFIG_MTRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
-//   Log("FTrace: %s", MUXDEF(CONFIG_FTRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
-//   IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
-//         "to record the trace. This may lead to a large log file. "
-//         "If it is not necessary, you can disable it in menuconfig"));
+  // Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
+  if(CONFIG_ITRACE == 1){
+    printf("ITrace: %s\t", ANSI_FMT("ON", ANSI_FG_GREEN));
+  }
+  else{
+    printf("ITrace: %s\t", ANSI_FMT("OFF", ANSI_FG_RED));
+  }
+  if(CONFIG_MTRACE == 1){
+    printf("MTrace: %s\t", ANSI_FMT("ON", ANSI_FG_GREEN));
+  }
+  else{
+    printf("MTrace: %s\t", ANSI_FMT("OFF", ANSI_FG_RED));
+  }
+  if(CONFIG_FTRACE == 1){
+    printf("FTrace: %s\t", ANSI_FMT("ON", ANSI_FG_GREEN));
+  }
+  else{
+    printf("FTrace: %s\t", ANSI_FMT("OFF", ANSI_FG_RED));
+  }
+  printf("\n");
+  // IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
+  //       "to record the trace. This may lead to a large log file. "
+  //       "If it is not necessary, you can disable it in menuconfig"));
   printf("Build time: %s, %s\n", __TIME__, __DATE__);
   printf("Welcome to %s-NPC!\n", ANSI_FMT("riscv32e", ANSI_FG_YELLOW ANSI_BG_RED));
   printf("For help, type \"help\"\n");
@@ -64,28 +83,29 @@ static int parse_args(int argc, char *argv[]) {
               strncpy(img_file, argv[i + 1], sizeof(img_file) - 1);
               img_file[sizeof(img_file) - 1] = '\0'; // 确保终止
               printf("Using image: %s\n", img_file);
-               return 0;
+               //return 0;
           } else {
             printf("Error: Missing filename after %s\n", argv[i]);
             img_file[0] = '\0';
-            return 0;
+            //return 0;
           }
         }
         else if(strcmp(argv[i], "-b") == 0){
           sdb_set_batch_mode();
         }
-        // else if(strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--log") == 0){
-        //   if (i + 1 < argc) {
-        //       strncpy(log_file, argv[i + 1], sizeof(log_file) - 1);
-        //       log_file[sizeof(log_file) - 1] = '\0'; // 确保终止
-        //       printf("Using log file : %s\n", log_file);
-        //        return 0;
-        //   } else {
-        //     printf("Error: Missing filename after %s\n", argv[i]);
-        //     log_file[0] = '\0';
-        //     return 0;
-        //   }
-        // }
+        else if(strcmp(argv[i], "-e") == 0 || strcmp(argv[i], "--elf") == 0){
+          if (i + 1 < argc) {
+              strncpy(elf_file, argv[i + 1], sizeof(elf_file) - 1);
+              elf_file[sizeof(elf_file) - 1] = '\0'; // 确保终止
+              printf("Using elf file : %s\n", elf_file);
+               //return 0;
+          } else {
+            printf("Error: Missing filename after %s\n", argv[i]);
+            elf_file[0] = '\0';
+            //return 0;
+          }
+          extract_functions(elf_file);
+        }
     }
     
     return 0;
