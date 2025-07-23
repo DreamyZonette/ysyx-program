@@ -3,7 +3,7 @@
 
 #define PRINT_COUNT 4
 #if CONFIG_FTRACE
-#include "../../monitor/elf_reader.h"
+#include "/home/long/ysyx-workbench/npc/csrc/monitor/elf_reader.h"
   int count = 0;
 #endif
 
