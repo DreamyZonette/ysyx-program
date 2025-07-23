@@ -19,8 +19,9 @@ CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(wildcard $(CPATH)/**/*.c)
 CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.c)
 
-CFLAGS ?= -Wall
+CFLAGS ?= -Wall 
 CFLAGS +=  -CFLAGS "$(INCLUDES)" -LDFLAGS -lreadline -LDFLAGS -ltinfo
+CFLAGS += -fpermissive
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 

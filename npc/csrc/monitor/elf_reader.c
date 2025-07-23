@@ -92,7 +92,7 @@ if (functab) {
         return;
 		}
     // 5. 读取.strtab内容
-    char* strtab = malloc(strtab_hdr.sh_size);
+    char* strtab = (char*)malloc(strtab_hdr.sh_size);
     fseek(fp, strtab_hdr.sh_offset, SEEK_SET);
     //fread(strtab, strtab_hdr.sh_size, 1, fp);
 		if (fread(strtab, strtab_hdr.sh_size, 1, fp) != 1) {
@@ -104,7 +104,7 @@ if (functab) {
 
     // 6. 解析.symtab，提取函数名
     int sym_count = symtab_hdr.sh_size / symtab_hdr.sh_entsize;
-    Elf32_Sym* symbols = malloc(symtab_hdr.sh_size);
+    Elf32_Sym* symbols = (Elf32_Sym*)malloc(symtab_hdr.sh_size);
     fseek(fp, symtab_hdr.sh_offset, SEEK_SET);
     //fread(symbols, symtab_hdr.sh_size, 1, fp);
 		if (fread(symbols, symtab_hdr.sh_size, 1, fp) != 1) {
@@ -126,7 +126,7 @@ if (functab) {
         int new_capacity = (functab_capacity == 0) ? 32 : functab_capacity * 2;
         
         // 重新分配内存
-        Functab *new_tab = realloc(functab, new_capacity * sizeof(Functab));
+        Functab *new_tab = (Functab*)realloc(functab, new_capacity * sizeof(Functab));
         
         if (!new_tab) {
             // 内存分配失败处理
