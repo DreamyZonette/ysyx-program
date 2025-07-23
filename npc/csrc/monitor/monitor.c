@@ -104,7 +104,9 @@ static int parse_args(int argc, char *argv[]) {
             elf_file[0] = '\0';
             //return 0;
           }
-          extract_functions(elf_file);
+          #if CONFIG_FTRACE
+            extract_functions(elf_file);
+          #endif
         }
     }
     
