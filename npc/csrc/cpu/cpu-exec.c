@@ -1,3 +1,4 @@
+#include <common.h>
 #include <cpu/cpu.h>
 
 #define PRINT_COUNT 4
