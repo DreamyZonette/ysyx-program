@@ -29,7 +29,7 @@ static void trace_and_difftest() {
     printf("%s\n", p);
     p[0] = '\0';
   #else
-  if(print_on){
+  if(print_on)
     printf("pc:0x%08x    inst:0x%08x\n", 
       top->de_pc, top->de_inst);
   #endif
