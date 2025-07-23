@@ -29,14 +29,14 @@ assign o_load_signal = ren;
 always @(posedge i_sys_clk) begin
     //if (valid) begin // 有读写请求时
         if (ren) begin
-            rdata = pmem_read(i_data, 4);
+            rdata <= pmem_read(i_data, 4);
         end
         else if (wen) begin // 有写请求时
             pmem_write(i_data, {28'b0, i_wmask} , i_src2);
-            rdata = 0;
+            rdata <= 0;
         end
         else begin
-            rdata = 0;
+            rdata <= 0;
         end
     // end else begin
     //     rdata = 0;
