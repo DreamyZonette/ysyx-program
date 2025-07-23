@@ -24,7 +24,7 @@ void step_and_dump_wave(){
 }
 
 static void trace_and_difftest() {
-  #ifdef CONFIG_ITRACE
+  #if CONFIG_ITRACE
     snprintf(p, sizeof(p), "pc:%08x: %08x", top->de_pc, top->de_inst);
     printf("%s\n", p);
     p[0] = '\0';
