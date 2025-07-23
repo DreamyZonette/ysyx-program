@@ -10,7 +10,7 @@ char p[128];
 int print_on = 0;
 
 extern "C" void dpi_ebreak() {
-    is_hit_good_trap = false;
+    // is_hit_good_trap = false;
     sim_finish = true;  // 触发仿真结束
 }
 extern "C" void dpi_return() {
