@@ -33,7 +33,53 @@ static void trace_and_difftest() {
     printf("pc:0x%08x    inst:0x%08x\n", 
       top->de_pc, top->de_inst);
   #endif
+
+  #ifdef CONFIG_FTRACE
+  int is_call = 0;
+  int is_ret = 0;
+
+  uint32_t opcode = top->de_inst & 0x7F;
+  uint32_t rd = (top->de_inst) >> 7 & 0x1F;
+  uint32_t rs1 = (top->de_inst) >> 15 & 0x1F;
+ 
+
+  if ((opcode == 0x6F && rd == 1) ||  // JAL rd=x1
+      (opcode == 0x67 && rd == 1)) {  // JALR rd=x1
+    is_call = 1;
+  }
+  if (opcode == 0x67 && rs1 == 1 && rd == 0) {
+    is_ret = 1;
+  }
   
+  //int ret = decode_exec(s);
+  char blank [40];
+  int j = 0;
+  if (is_call) {
+    count += 2;
+    for(j = 0; j < count; j ++){
+      blank[j] = ' ';
+    }
+    blank[count] = '\0';
+    for(int i = 0; i < functab_count; i ++){
+      if(functab[i].value == top->de_next_pc){
+        //log_write("0x%08x:%s call [%s@0x%08x]", top->de_pc, blank, functab[i].func_name, functab[i].value);
+        printf("0x%08x:%s call [%s@0x%08x]\n", top->de_pc, blank, functab[i].func_name, functab[i].value);
+        break;
+      }
+    }
+  }
+  else if (is_ret) {
+    count -= 2;
+    for(j = 0; j < count; j ++){
+      blank[j] = ' ';
+    }
+    blank[count] = '\0';
+    printf("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
+    //log_write("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
+  }
+  
+  //return ret;
+#endif
 }
 
 void single_cycle() {
@@ -41,7 +87,6 @@ void single_cycle() {
   step_and_dump_wave();
   top->sys_clk ^= 1; top->eval();
   step_and_dump_wave();
- 
 }
 
 
@@ -50,7 +95,7 @@ static void execute(uint64_t n) {
     
   for (;n > 0; n --) {
     single_cycle();
-
+    
     if(n <= PRINT_COUNT) print_on = 1;
     trace_and_difftest();
 

@@ -3,6 +3,7 @@
         input sys_rst_n,
         // input [31:0] inst,
         output [31:0] de_pc,
+        output [31:0] de_next_pc,
         output [31:0] de_inst,
         output halt,
         output [31:0] reg_data [0:31]
@@ -22,6 +23,7 @@
 
     assign halt = EXU_halt_signal | IDU_halt_signal;
     assign de_pc = pc;
+    assign de_next_pc = next_pc;
     assign de_inst = instruction;
 
     wire addi_signal;
