@@ -1,6 +1,6 @@
 module LSU(
     input i_sys_clk,
-    input i_sys_rst_n,
+    //input i_sys_rst_n,
     input i_lbu_signal,
     input i_lhu_signal,
     input i_lb_signal,
@@ -21,7 +21,7 @@ import "DPI-C" function void pmem_write(
     input int addr, int len, input int data);
 
 reg [31:0] rdata;
-wire valid = i_sys_clk & i_sys_rst_n;
+wire valid = i_sys_clk;
 wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign o_load_signal = ren;

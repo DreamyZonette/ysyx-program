@@ -51,7 +51,8 @@ module IDU (
     output  o_blt_signal,
     output  o_bltu_signal,
     output  o_sh_signal,
-    output  o_halt_signal
+    output  o_halt_signal,
+    output  [31:0] o_reg_data [0:31]
     );
 
     wire [6:0]  opcode;
@@ -289,7 +290,8 @@ module IDU (
     .i_rd(rd),
     .i_data(wdata),
     .o_src1(o_src1),
-    .o_src2(o_src2)
+    .o_src2(o_src2),
+    .o_reg_data(o_reg_data)
     );
 
     endmodule

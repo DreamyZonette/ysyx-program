@@ -12,15 +12,22 @@
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
 
-#include <generated/autoconf.h>
-#include <macro.h>
-
-#include <assert.h>
-#include <stdlib.h>
 
 typedef uint32_t word_t;
 typedef uint32_t sword_t;
 
 typedef uint32_t paddr_t;
+typedef word_t vaddr_t;
+
+#define FMT_WORD "0x%08" PRIx32
+
+#include <generated/autoconf.h>
+#include <macro.h>
+#include <utils.h>
+
+#include <assert.h>
+#include <stdlib.h>
+
+#include <debug.h>
 
 #endif

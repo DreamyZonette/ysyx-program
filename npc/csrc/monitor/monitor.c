@@ -1,11 +1,15 @@
 #include <memory/paddr.h>
 #include <utils.h>
 
-static char *img_file = NULL;
+//static char *img_file = NULL;
+static char img_file[256] = {0};
+static char log_file[256] = {0};
 
 void init_rand();
 void init_mem();
 void init_isa();
+void sdb_set_batch_mode();
+//void init_log(const char *log_file);
 
 
 static void welcome() {
@@ -22,7 +26,7 @@ static void welcome() {
 }
 
 static long load_img() {
-  if (img_file == NULL) {
+  if (img_file[0] == '\0') {
     printf("No image is given. Use the default build-in image.\n");
     return 4096; // built-in image size
   }
@@ -49,22 +53,52 @@ static long load_img() {
 }
 
 static int parse_args(int argc, char *argv[]) {
-    if(argc <= 1){
-        printf("Use default image.");
+    if(argc < 2){
+        printf("Use default image.\n");
+        img_file[0] = '\0';
+        return 0;
     }
-    else {
-        printf("Use image:%s\n", argv[1]);
-        strcpy(img_file, argv[1]);
+     for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-i") == 0 || strcmp(argv[i], "--image") == 0) {
+          if (i + 1 < argc) {
+              strncpy(img_file, argv[i + 1], sizeof(img_file) - 1);
+              img_file[sizeof(img_file) - 1] = '\0'; // 确保终止
+              printf("Using image: %s\n", img_file);
+               return 0;
+          } else {
+            printf("Error: Missing filename after %s\n", argv[i]);
+            img_file[0] = '\0';
+            return 0;
+          }
+        }
+        else if(strcmp(argv[i], "-b") == 0){
+          sdb_set_batch_mode();
+        }
+        // else if(strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--log") == 0){
+        //   if (i + 1 < argc) {
+        //       strncpy(log_file, argv[i + 1], sizeof(log_file) - 1);
+        //       log_file[sizeof(log_file) - 1] = '\0'; // 确保终止
+        //       printf("Using log file : %s\n", log_file);
+        //        return 0;
+        //   } else {
+        //     printf("Error: Missing filename after %s\n", argv[i]);
+        //     log_file[0] = '\0';
+        //     return 0;
+        //   }
+        // }
     }
-
+    
     return 0;
 }
 
 void init_monitor(int argc, char *argv[]) {
+  //printf("%s\n", argv[1]);
 
   parse_args(argc, argv);
 
   init_rand();  
+
+  //init_log(log_file);
 
   init_mem();
 

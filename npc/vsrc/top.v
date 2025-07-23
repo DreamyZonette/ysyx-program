@@ -4,14 +4,19 @@
         // input [31:0] inst,
         output [31:0] de_pc,
         output [31:0] de_inst,
-        output halt 
+        output halt,
+        output [31:0] reg_data [0:31]
     );
 
     import "DPI-C" function void dpi_ebreak();
+    import "DPI-C" function void dpi_return();
 
     always @(posedge sys_clk) begin
             if (ebreak_signal == 1'b1) begin
                 dpi_ebreak();  // 调用 DPI-C 函数
+            end
+            else if (instruction == 32'h0000006F) begin
+                dpi_return();
             end
         end
 
@@ -88,6 +93,7 @@
     );
     
     IFU IFU_u (
+    //.i_sys_clk(sys_clk),
     .i_pc(pc),
     .o_instruction(instruction)
     );
@@ -146,7 +152,8 @@
     .o_blt_signal(blt_signal),
     .o_bltu_signal(bltu_signal),
     .o_sh_signal(sh_signal),
-    .o_halt_signal(IDU_halt_signal)
+    .o_halt_signal(IDU_halt_signal),
+    .o_reg_data(reg_data)
     );
 
     EXU EXU_u (
@@ -210,7 +217,7 @@
     .i_jalr_signal(jalr_signal),
     .i_load_signal(load_signal),
     .i_load_wdata(rdata),
-    .i_sys_addr(pc),
+    .i_cur_pc(pc),
     .i_sys_wdata(data),
     .o_reg_wdata(wdata),
     .o_next_pc(next_pc)
@@ -218,7 +225,7 @@
 
     LSU LSU_u (
     .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    //.i_sys_rst_n(sys_rst_n),
     .i_lbu_signal(lbu_signal),
     .i_lhu_signal(lhu_signal),
     .i_lb_signal(lb_signal),

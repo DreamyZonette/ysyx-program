@@ -15,26 +15,31 @@ VSRCS := $(wildcard $(VPATH)/**/*.v)
 VSRCS += $(VPATH)/top.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(wildcard $(CPATH)/**/*.c)
-CSRCS += $(wildcard $(CPATH)/**/*.h)
+#CSRCS += $(wildcard $(CPATH)/**/*.h)
+CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.c)
+#CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.h)
 CFLAGS ?= -Wall
-CFLAGS +=  -CFLAGS "$(INCLUDES)"
+CFLAGS +=  -CFLAGS "$(INCLUDES)" -LDFLAGS -lreadline -LDFLAGS -ltinfo
+#CFLAGS +=  -CFLAGS "-I/home/long/ysyx-workbench/npc/tools/capstone/repo/include/capstone/"
+
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
-VFLAGS += --top-module $(TOP_NAME)
-VFLAGS += --Mdir $(BUILD_DIR)/obj_dir
+VFLAGS += --top-module $(TOP_NAME) 
+VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
+ARGS = -i
 
 $(shell mkdir -p $(BUILD_DIR))
 
 all:sim wave
 
-sim:
+run:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	verilator $(CFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
-	$(BUILD_DIR)/obj_dir/Vtop $(IMG)
+	$(BUILD_DIR)/obj_dir/Vtop $(ARGS) $(IMG)
 	
 	
 include ../Makefile
 
-wave:sim
+wave:run
 	gtkwave $(BUILD_DIR)/wave.vcd
 
 
