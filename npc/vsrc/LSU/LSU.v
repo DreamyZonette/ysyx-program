@@ -26,8 +26,8 @@ wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign o_load_signal = ren;
 
-always @(*) begin
-    if (valid) begin // 有读写请求时
+always @(posedge i_sys_clk) begin
+    //if (valid) begin // 有读写请求时
         if (ren) begin
             rdata = pmem_read(i_data, 4);
         end
@@ -38,9 +38,9 @@ always @(*) begin
         else begin
             rdata = 0;
         end
-    end else begin
-        rdata = 0;
-    end
+    // end else begin
+    //     rdata = 0;
+    // end
 end
 
 always @(*) begin
