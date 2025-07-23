@@ -1,4 +1,4 @@
-#include <common.f>
+#include <common.h>
 #include <elf.h>
 #include "elf_reader.h"
 
