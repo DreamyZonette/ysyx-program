@@ -2,6 +2,10 @@
 #include <cpu/cpu.h>
 
 #define PRINT_COUNT 4
+#if CONFIG_FTRACE
+#include "../../monitor/elf_reader.h"
+  int count = 0;
+#endif
 
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
@@ -34,7 +38,7 @@ static void trace_and_difftest() {
       top->de_pc, top->de_inst);
   #endif
 
-  #ifdef CONFIG_FTRACE
+  #if CONFIG_FTRACE
   int is_call = 0;
   int is_ret = 0;
 
