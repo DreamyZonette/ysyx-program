@@ -49,6 +49,7 @@ module alu #(WIDTH = 32)(
     input             i_sll_signal,
     input             i_slt_signal,
     input             i_sltu_signal,
+    input             i_ebreak_signal,
     output reg        o_B_jump_signal,
     output reg        o_halt_signal,
     output reg [WIDTH-1:0] o_data
@@ -88,6 +89,8 @@ module alu #(WIDTH = 32)(
         //     o_data = $signed(i_src1) < $signed(i_imm) ? 32'h1 : 32'h0;
         end else if(i_sltiu_signal == 1'b1) begin
             o_data = i_src1 < i_imm ? 32'h1 : 32'h0;
+        end else if(i_ebreak_signal == 1'b1) begin
+            o_data = 0;
         // U型
         end else if(i_auipc_signal == 1'b1) begin
             o_data = i_pc_data + i_imm;
