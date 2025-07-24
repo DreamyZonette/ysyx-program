@@ -66,15 +66,15 @@ module alu #(WIDTH = 32)(
         end else if(i_jalr_signal == 1'b1) begin
             o_data = i_src1 + i_offset;
         end else if(i_lb_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end else if(i_lh_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end else if(i_lw_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end else if(i_lbu_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end else if(i_lhu_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end else if(i_xori_signal == 1'b1) begin
             o_data = i_src1 ^ i_imm;
         end else if(i_andi_signal == 1'b1) begin
@@ -155,11 +155,11 @@ module alu #(WIDTH = 32)(
             o_data = i_pc_data + i_offset;
         // S型
         end else if(i_sw_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end else if(i_sh_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end else if(i_sb_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end 
         else begin
             o_halt_signal = 1'b1;
