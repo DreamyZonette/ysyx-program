@@ -32,7 +32,7 @@ LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
 LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
 
 VERILATOR = verilator
-ARGS ?= -i $(IMG) -e $(ELF) -d $(NEMU_SO)
+ARGS ?= -d $(NEMU_SO) #-i $(IMG) -e $(ELF) -d $(NEMU_SO)
 
 $(shell mkdir -p $(BUILD_DIR))
 
