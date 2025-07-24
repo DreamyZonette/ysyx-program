@@ -2,6 +2,8 @@
 #include <cpu/cpu.h>
 #include <isa/isa_def.h>
 
+CPU_state dut
+
 #define PRINT_COUNT 4
 #if CONFIG_FTRACE
 #include "/home/long/ysyx-workbench/npc/csrc/monitor/elf_reader.h"

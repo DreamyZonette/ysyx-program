@@ -8,9 +8,10 @@ typedef struct {
   vaddr_t pc;
 } riscv32_CPU_state;
 
-extern riscv32_CPU_state dut;
-
 #define CPU_state riscv32_CPU_state
+
+extern CPU_state dut;
+
 
 
 #endif /* __ISA_DEF_H__ */
