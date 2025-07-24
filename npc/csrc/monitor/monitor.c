@@ -40,10 +40,12 @@ static void welcome() {
   else{
     Log("FTrace: %s", ANSI_FMT("OFF", ANSI_FG_RED));
   }
-  // IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
-  //       "to record the trace. This may lead to a large log file. "
-  //       "If it is not necessary, you can disable it in menuconfig"));
-  printf("Build time: %s, %s\n", __TIME__, __DATE__);
+  if(CONFIG_TRACE == 1){
+    Log("If trace is enabled, a log file will be generated "
+        "to record the trace. This may lead to a large log file. "
+        "If it is not necessary, you can disable it in generated/autoconf.h");
+    }
+  Log("Build time: %s, %s\n", __TIME__, __DATE__);
   printf("Welcome to %s-NPC!\n", ANSI_FMT("riscv32e", ANSI_FG_YELLOW ANSI_BG_RED));
   printf("For help, type \"help\"\n");
 }
