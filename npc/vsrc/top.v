@@ -10,15 +10,15 @@
     );
 
     import "DPI-C" function void dpi_ebreak();
-    import "DPI-C" function void dpi_return();
+    // import "DPI-C" function void dpi_return();
 
     always @(posedge sys_clk) begin
             if (ebreak_signal == 1'b1) begin
                 dpi_ebreak();  // 调用 DPI-C 函数
             end
-            else if (instruction == 32'h0000006F) begin
-                dpi_return();
-            end
+            // else if (instruction == 32'h0000006F) begin
+            //     dpi_return();
+            // end
         end
 
     assign halt = EXU_halt_signal | IDU_halt_signal;
