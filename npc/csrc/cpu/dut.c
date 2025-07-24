@@ -13,6 +13,8 @@ void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 
+#if CONFIG_DIFFTEST
+
 void isa_reg_display();
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
@@ -31,8 +33,6 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 
   return true;
 }
-
-#ifdef CONFIG_DIFFTEST
 
 static bool is_skip_ref = false;
 static int skip_dut_nr_inst = 0;
@@ -137,3 +137,5 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 #else
 void init_difftest(char *ref_so_file, long img_size, int port) { }
 #endif
+
+
