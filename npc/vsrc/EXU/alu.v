@@ -66,15 +66,15 @@ module alu #(WIDTH = 32)(
         end else if(i_jalr_signal == 1'b1) begin
             o_data = i_src1 + i_offset;
         end else if(i_lb_signal == 1'b1) begin
-            
+            o_data = i_src1 + i_offset;
         end else if(i_lh_signal == 1'b1) begin
-            
+            o_data = i_src1 + i_offset;
         end else if(i_lw_signal == 1'b1) begin
-            
+            o_data = i_src1 + i_offset;
         end else if(i_lbu_signal == 1'b1) begin
-            
+            o_data = i_src1 + i_offset;
         end else if(i_lhu_signal == 1'b1) begin
-            
+            o_data = i_src1 + i_offset;
         end else if(i_xori_signal == 1'b1) begin
             o_data = i_src1 ^ i_imm;
         end else if(i_andi_signal == 1'b1) begin
