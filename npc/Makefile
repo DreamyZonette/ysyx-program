@@ -41,7 +41,7 @@ run:
 	
 include ../Makefile
 
-wave:run
+wave:
 	gtkwave $(BUILD_DIR)/wave.vcd
 
 
