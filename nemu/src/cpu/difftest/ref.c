@@ -61,18 +61,6 @@ __EXPORT void difftest_exec(uint64_t n) {
   }
 }
 
-// __EXPORT void difftest_compare(void *dut) {
-//   CPU_state* top = (CPU_state*)(dut);
-//   int trap = 0;
-//   for(int i = 0; i < 32; i ++){
-//     if(top->gpr[i] != cpu.gpr[i]) trap = 1;
-//   }
-//   if(top->pc != cpu.pc) trap = 1;
-//   printf("----------difftest result----------\n");
-//   if(trap == 1) printf("ERROR\n");
-//   else printf("PASS\n");
-
-// }
 
 __EXPORT void difftest_raise_intr(word_t NO) {
   assert(0);

@@ -16,6 +16,7 @@ bool is_hit_good_trap = true;
 char p[128];
 int print_on = 0;
 CPU_state dut;
+dut.pc = 0x80000000;
 
 extern "C" void dpi_ebreak() {
     // is_hit_good_trap = false;
