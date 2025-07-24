@@ -122,10 +122,9 @@ static void execute(uint64_t n) {
     }
   }
   #endif
-    
-    single_cycle();
+
     trace_and_difftest();
-    
+    single_cycle();
 
     if(sim_finish) {
         if(is_hit_good_trap)npc_state.state = NPC_END;
