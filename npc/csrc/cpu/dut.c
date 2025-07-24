@@ -6,6 +6,7 @@
 #include <difftest-def.h>
 #include <cpu/difftest.h>
 #include <isa/isa_def.h>
+#include <isa/reg.h>
 
 void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
