@@ -33,7 +33,7 @@ void step_and_dump_wave(){
 
 static void trace_and_difftest() {
   #if CONFIG_DIFFTEST
-  difftest_step(top->de_pc, top->de_next_pc)
+  difftest_step(top->de_pc, top->de_next_pc);
   #endif
   #if CONFIG_ITRACE
   if(!sim_finish){
