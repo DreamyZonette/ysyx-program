@@ -22,7 +22,7 @@
         end
 
     assign halt = EXU_halt_signal | IDU_halt_signal;
-    assign de_pc = pc;
+    assign de_pc = de_cur_pc;
     assign de_next_pc = next_pc;
     assign de_inst = instruction;
 
@@ -79,6 +79,7 @@
     wire [4:0] shamt;
     wire [31:0] next_pc;
     wire [31:0] pc;
+    wire [31:0] de_cur_pc;
     wire [31:0] instruction;
     wire [3:0] wmask;
     wire [31:0] data;
@@ -91,6 +92,7 @@
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
     .i_next_pc(next_pc),
+    .o_de_pc(de_cur_pc),
     .o_pc(pc)
     );
     
