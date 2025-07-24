@@ -10,5 +10,7 @@ typedef struct {
 
 riscv32_CPU_state cpu;
 
+#define CPU_state riscv32_CPU_state
+
 
 #endif /* __ISA_DEF_H__ */

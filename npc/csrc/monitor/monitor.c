@@ -7,11 +7,14 @@
 //static char *img_file = NULL;
 static char img_file[256] = {0};
 static char elf_file[256] = {0};
+static char diff_so_file[256] = {0};
+static int difftest_port = 1234;
 
 void init_rand();
 void init_mem();
 void init_isa();
 void sdb_set_batch_mode();
+void init_difftest(char *ref_so_file, long img_size, int port);
 //void init_log(const char *log_file);
 
 
@@ -98,7 +101,7 @@ static int parse_args(int argc, char *argv[]) {
             //return 0;
           }
         }
-        else if(strcmp(argv[i], "-b") == 0){
+        else if(strcmp(argv[i], "-b" || strcmp(argv[i], "--batch") == 0){
           sdb_set_batch_mode();
         }
         else if(strcmp(argv[i], "-e") == 0 || strcmp(argv[i], "--elf") == 0){
@@ -115,6 +118,18 @@ static int parse_args(int argc, char *argv[]) {
           #if CONFIG_FTRACE
             extract_functions(elf_file);
           #endif
+        }
+        else if(strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--diff") == 0){
+          if (i + 1 < argc) {
+              strncpy(diff_so_file, argv[i + 1], sizeof(diff_so_file) - 1);
+              diff_so_file[sizeof(diff_so_file) - 1] = '\0'; // 确保终止
+              Log("Using diff so file : %s", diff_so_file);
+               //return 0;
+          } else {
+            Log("Error: Missing filename after %s", argv[i]);
+            diff_so_file[0] = '\0';
+            //return 0;
+          }
         }
     }
     
@@ -135,6 +150,8 @@ void init_monitor(int argc, char *argv[]) {
   init_isa();
 
   long img_size = load_img();
+
+  init_difftest(diff_so_file, img_size, difftest_port);
 
   welcome();
 }
