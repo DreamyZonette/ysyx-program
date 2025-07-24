@@ -54,11 +54,7 @@ extern NPCState npc_state;
 
 #define _Log(...) \
   do { \
-    char buf[256]; \
-    va_list args; \
-    va_start(args, fmt); \
-    vsnprintf(buf, sizeof(buf), fmt, args); \
-    printf(ANSI_FMT("%s", ANSI_FG_BLUE), buf); \
+    printf(__VA_ARGS__); \
   } while (0)
 
 
