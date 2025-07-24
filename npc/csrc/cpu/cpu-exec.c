@@ -1,6 +1,7 @@
 #include <common.h>
 #include <cpu/cpu.h>
 #include <isa/isa_def.h>
+#include <cpu/difftest.h>
 
 
 #define PRINT_COUNT 4
@@ -31,6 +32,9 @@ void step_and_dump_wave(){
 }
 
 static void trace_and_difftest() {
+  #if CONFIG_DIFFTEST
+  difftest_step(top->de_pc, top->de_next_pc)
+  #endif
   #if CONFIG_ITRACE
   if(!sim_finish){
     snprintf(p, sizeof(p), "pc:%08x: %08x", top->de_pc, top->de_inst);
@@ -153,7 +157,7 @@ void cpu_exec(uint64_t n){
       return;
     default: npc_state.state = NPC_RUNNING;
   }
-
+  
     execute(n);
 
     switch (npc_state.state) {
