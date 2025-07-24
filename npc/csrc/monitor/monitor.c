@@ -22,6 +22,7 @@ static void welcome() {
   else{
     Log("Trace: %s", ANSI_FMT("OFF", ANSI_FG_RED));
   }
+  #if CONFIG_TRACE
   if(CONFIG_ITRACE == 1){
     Log("ITrace: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
   }
@@ -40,6 +41,7 @@ static void welcome() {
   else{
     Log("FTrace: %s", ANSI_FMT("OFF", ANSI_FG_RED));
   }
+  #endif
   if(CONFIG_TRACE == 1){
     Log("If trace is enabled, a log file will be generated "
         "to record the trace. This may lead to a large log file. "
