@@ -104,6 +104,7 @@ static int parse_args(int argc, char *argv[]) {
         else if(strcmp(argv[i], "-b" || strcmp(argv[i], "--batch") == 0){
           sdb_set_batch_mode();
         }
+        #if CONFIG_FTRACE
         else if(strcmp(argv[i], "-e") == 0 || strcmp(argv[i], "--elf") == 0){
           if (i + 1 < argc) {
               strncpy(elf_file, argv[i + 1], sizeof(elf_file) - 1);
@@ -115,10 +116,10 @@ static int parse_args(int argc, char *argv[]) {
             elf_file[0] = '\0';
             //return 0;
           }
-          #if CONFIG_FTRACE
             extract_functions(elf_file);
-          #endif
         }
+        #endif
+        #if CONFIG_DIFFTEST
         else if(strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--diff") == 0){
           if (i + 1 < argc) {
               strncpy(diff_so_file, argv[i + 1], sizeof(diff_so_file) - 1);
@@ -131,6 +132,7 @@ static int parse_args(int argc, char *argv[]) {
             //return 0;
           }
         }
+        #endif
     }
     
     return 0;
@@ -150,8 +152,9 @@ void init_monitor(int argc, char *argv[]) {
   init_isa();
 
   long img_size = load_img();
-
+  #if CONFIG_DIFFTEST
   init_difftest(diff_so_file, img_size, difftest_port);
+  #endif
 
   welcome();
 }
