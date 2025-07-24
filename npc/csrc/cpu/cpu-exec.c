@@ -45,7 +45,7 @@ static void trace_and_difftest() {
   #else
   if(!sim_finish){
     if(print_on){
-      print_on = 0;
+      
       printf("pc:0x%08x    inst:0x%08x\n", 
         top->de_pc, top->de_inst);
     }
@@ -122,7 +122,8 @@ static void execute(uint64_t n) {
     
     if(n <= PRINT_COUNT) print_on = 1;
     trace_and_difftest();
-    
+    print_on = 0;
+
     single_cycle();
 
     if(sim_finish) {
