@@ -1,6 +1,6 @@
 module ArithmeticRightShift(
     input [31:0] i_src1,
-    input [4:0] i_shamt,
+    input [5:0] i_shamt,
     output reg [31:0] o_data
 );
 
