@@ -55,7 +55,8 @@ module alu #(WIDTH = 32)(
     output reg [WIDTH-1:0] o_data
     );
 
-   
+    wire [31:0] srai_data;
+
     always @ (*) begin
         o_data = 32'b0;
         o_B_jump_signal = 1'b0;
@@ -84,7 +85,7 @@ module alu #(WIDTH = 32)(
         end else if(i_srli_signal == 1'b1) begin
             o_data = i_src1 >> i_shamt;
         end else if(i_srai_signal == 1'b1) begin
-            o_data = $signed(i_src1) >>> i_shamt;
+            o_data = srai_data;
         // end else if(i_slti_signal == 1'b1) begin
         //     o_data = $signed(i_src1) < $signed(i_imm) ? 32'h1 : 32'h0;
         end else if(i_sltiu_signal == 1'b1) begin
@@ -167,4 +168,10 @@ module alu #(WIDTH = 32)(
         end
     end
     
+ArithmeticRightShift ArithmeticRightShift_u(
+    .i_src1(i_src1),
+    .i_shamt(i_shamt),
+    .o_data(srai_data)
+)
+
 endmodule
