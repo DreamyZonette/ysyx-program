@@ -61,11 +61,11 @@ module Btype (
 
     always @(*) begin
         if(sign_extended == 1'b1) begin
-            o_offset = {{20{offset[11]}}, offset};
+            o_offset = {{20{offset[11]}}, offset} << 1;
         end else if(zero_extended == 1'b1) begin
-            o_offset = {20'b0, offset};
+            o_offset = {20'b0, offset} << 1;
         end else begin
-            o_offset = {20'b0, offset};
+            o_offset = {20'b0, offset} << 1;
         end
     end
 
