@@ -106,7 +106,7 @@ static void execute(uint64_t n) {
     if(sim_finish) {
         if(is_hit_good_trap)npc_state.state = NPC_END;
     }
-    printf("%d\n", top->halt);
+    //printf("%d\n", top->halt);
 
     if(npc_state.halt_ret != 1) {
       npc_state.halt_pc = top->de_pc;
