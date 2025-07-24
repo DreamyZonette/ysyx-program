@@ -2,7 +2,7 @@ TOP_NAME = top
 #IMG ?= /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-npc.bin
 IMG ?= 
 ELF ?= -e $(IMG:.bin=.elf)
-NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+NEMU_SO := -d $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -41,7 +41,8 @@ all:run wave
 run:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$(VERILATOR) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
-	$(BUILD_DIR)/obj_dir/Vtop $(ARGS) $(IMG) #$(ELF)
+	#$(BUILD_DIR)/obj_dir/Vtop $(ARGS) $(IMG) $(ELF) $(NEMU_SO)
+	(BUILD_DIR)/obj_dir/Vtop $(NEMU_SO)
 	
 	
 include ../Makefile
