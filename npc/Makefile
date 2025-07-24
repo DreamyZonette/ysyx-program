@@ -1,7 +1,7 @@
 TOP_NAME = top
 #IMG ?= /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-npc.bin
 IMG ?= 
-ELF ?= -e $(IMG:.bin=.elf)
+ELF ?= #-e $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
 WORK_DIR = $(shell pwd)
