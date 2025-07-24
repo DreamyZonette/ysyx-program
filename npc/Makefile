@@ -35,7 +35,8 @@ VERILATOR = verilator
 ARGS ?= 
 ARGS += -d $(NEMU_SO) # 启用difftest
 ARGS += -i $(IMG)     # 启用镜像文件
-ARGS += -e $(ELF)	  # 启用ftrace
+#ARGS += -e $(ELF)	  # 启用ftrace
+ARGS += -b      	  # 启用批处理
 
 $(shell mkdir -p $(BUILD_DIR))
 
