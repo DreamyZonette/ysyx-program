@@ -46,10 +46,14 @@ end
 always @(*) begin
     if(i_lw_signal == 1'b1) begin
         o_rdata = rdata[31:0];
-    end else if(i_lh_signal == 1'b1 || i_lhu_signal == 1'b1) begin
+    end else if(i_lhu_signal == 1'b1) begin
         o_rdata = {16'b0, rdata[15:0]};
-    end else if(i_lb_signal == 1'b1 || i_lbu_signal == 1'b1) begin
+    end else if(i_lh_signal == 1'b1) begin
+        o_rdata = {16{rdata[15]}, rdata[15:0]};
+    end else if(i_lbu_signal == 1'b1) begin
         o_rdata = {24'b0, rdata[7:0]};
+    end else if(i_lb_signal == 1'b1) begin
+        o_rdata = {24{rdata[7]}, rdata[7:0]};
     end else begin
         o_rdata = 0;
     end
