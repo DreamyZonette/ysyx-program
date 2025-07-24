@@ -101,7 +101,7 @@ static int parse_args(int argc, char *argv[]) {
             //return 0;
           }
         }
-        else if(strcmp(argv[i], "-b" || strcmp(argv[i], "--batch") == 0){
+        else if(strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--batch") == 0){
           sdb_set_batch_mode();
         }
         #if CONFIG_FTRACE
