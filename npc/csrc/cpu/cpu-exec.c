@@ -106,6 +106,7 @@ static void execute(uint64_t n) {
     
   for (;n > 0; n --) {
     
+    if(n <= PRINT_COUNT) print_on = 1;
     #if CONFIG_ITRACE
   if(!sim_finish){
     snprintf(p, sizeof(p), "pc:%08x: %08x", top->de_pc, top->de_inst);
@@ -123,7 +124,6 @@ static void execute(uint64_t n) {
   #endif
     
     single_cycle();
-    if(n <= PRINT_COUNT) print_on = 1;
     trace_and_difftest();
     
 
