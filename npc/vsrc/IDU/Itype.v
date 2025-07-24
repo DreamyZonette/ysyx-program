@@ -85,14 +85,15 @@ module Itype (
             o_xori_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
             o_sltiu_signal = (fun1 == 3'b011) ? 1'b1 : 1'b0;
             // 涉及shamt
-            if(shamt_detect == 7'b0000000 || shamt_detect == 7'b0100000) begin
+            if(shamt_detect == 7'b0000000) begin
                 // 7'b0000000
                 o_slli_signal = (fun1 == 3'b001) ? 1'b1 : 1'b0;
                 o_srli_signal = (fun1 == 3'b101) ? 1'b1 : 1'b0; 
+            end else if(shamt_detect == 7'b0100000) begin
                 // 7'b0100000
                 o_srai_signal = (fun1 == 3'b101) ? 1'b1 : 1'b0; 
-                shamt_signal = o_slli_signal | o_srli_signal | o_srai_signal;
             end
+            shamt_signal = o_slli_signal | o_srli_signal | o_srai_signal;
            
             // 根据指令类型选择扩展方式
             sign_extended = (fun1 == 3'b000 || fun1 == 3'b111 || fun1 == 3'b100) ? 1'b1 : 1'b0; // addi/andi/xori
