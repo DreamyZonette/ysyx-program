@@ -132,7 +132,7 @@ module Itype (
 
     always @(*) begin
         if(shamt_signal == 1'b1) begin
-            shamt_halt = o_shamt[4];
+            shamt_halt = 1'b0;//o_shamt[4];
         end
         else begin
             shamt_halt = 1'b0;
