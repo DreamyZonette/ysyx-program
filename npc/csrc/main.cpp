@@ -37,7 +37,7 @@ void npc_engine_start() {
     top->sys_rst_n = 1;
     step_and_dump_wave();
     
-    top->sys_clk = 1;
+    // top->sys_clk = 1;
     // step_and_dump_wave();
     //printf("NPC start at pc:0x%08x\tinstruction:%0x%08x\n", top->de_pc, top->de_inst);
 }
