@@ -2,7 +2,7 @@ module Itype (
     input [31:0] i_inst,
     output [4:0] o_rd,
     output [4:0] o_rs1,
-    output [4:0] o_shamt,
+    output [5:0] o_shamt,
     output reg [31:0] o_imm,
     output reg o_jalr_signal,
     output reg o_addi_signal,
@@ -37,7 +37,7 @@ module Itype (
     assign rd           = i_inst[11:7];
     assign fun1         = i_inst[14:12];
     assign o_rs1        = i_inst[19:15];
-    assign o_shamt      = i_inst[24:20];
+    assign o_shamt      = i_inst[25:20];
     assign imm          = i_inst[31:20];
     assign shamt_detect = i_inst[31:25];
     assign o_rd         = (o_jalr_signal == 1'b1) ? jalr_rd : rd;
@@ -71,12 +71,12 @@ module Itype (
             if (fun1 == 3'b000) begin
                 o_jalr_signal   = 1'b1;
                 sign_extended = 1'b1;
-                if(rd == 5'b0) begin
-                    jalr_rd = 5'b1;
-                end
-                else begin
+                // if(rd == 5'b0) begin
+                //     jalr_rd = 5'b1;
+                // end
+                // else begin
                     jalr_rd = rd;
-                end
+                // end
             end
         end
         7'b0010011: begin // I-type ALU
@@ -85,14 +85,15 @@ module Itype (
             o_xori_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
             o_sltiu_signal = (fun1 == 3'b011) ? 1'b1 : 1'b0;
             // 涉及shamt
-            if(shamt_detect == 7'b0000000 || shamt_detect == 7'b0100000) begin
+            if(shamt_detect == 7'b0000000) begin
                 // 7'b0000000
                 o_slli_signal = (fun1 == 3'b001) ? 1'b1 : 1'b0;
                 o_srli_signal = (fun1 == 3'b101) ? 1'b1 : 1'b0; 
+            end else if(shamt_detect == 7'b0100000) begin
                 // 7'b0100000
                 o_srai_signal = (fun1 == 3'b101) ? 1'b1 : 1'b0; 
-                shamt_signal = o_slli_signal | o_srli_signal | o_srai_signal;
             end
+            shamt_signal = o_slli_signal | o_srli_signal | o_srai_signal;
            
             // 根据指令类型选择扩展方式
             sign_extended = (fun1 == 3'b000 || fun1 == 3'b111 || fun1 == 3'b100) ? 1'b1 : 1'b0; // addi/andi/xori
@@ -132,7 +133,7 @@ module Itype (
 
     always @(*) begin
         if(shamt_signal == 1'b1) begin
-            shamt_halt = o_shamt[4];
+            shamt_halt = o_shamt[5];
         end
         else begin
             shamt_halt = 1'b0;

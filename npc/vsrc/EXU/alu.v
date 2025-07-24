@@ -5,7 +5,7 @@ module alu #(WIDTH = 32)(
     input [WIDTH-1:0] i_imm ,
     input [WIDTH-1:0] i_offset,
     input [WIDTH-1:0] i_pc_data,
-    input [4:0]       i_shamt,
+    input [5:0]       i_shamt,
     input             i_addi_signal,
     input             i_jalr_signal,
     input             i_lb_signal,
@@ -49,12 +49,14 @@ module alu #(WIDTH = 32)(
     input             i_sll_signal,
     input             i_slt_signal,
     input             i_sltu_signal,
+    input             i_ebreak_signal,
     output reg        o_B_jump_signal,
     output reg        o_halt_signal,
     output reg [WIDTH-1:0] o_data
     );
 
-   
+    wire [31:0] srai_data;
+
     always @ (*) begin
         o_data = 32'b0;
         o_B_jump_signal = 1'b0;
@@ -65,15 +67,15 @@ module alu #(WIDTH = 32)(
         end else if(i_jalr_signal == 1'b1) begin
             o_data = i_src1 + i_offset;
         end else if(i_lb_signal == 1'b1) begin
-            
+            o_data = i_src1 + i_imm;
         end else if(i_lh_signal == 1'b1) begin
-            
+            o_data = i_src1 + i_imm;
         end else if(i_lw_signal == 1'b1) begin
-            
+            o_data = i_src1 + i_imm;
         end else if(i_lbu_signal == 1'b1) begin
-            
+            o_data = i_src1 + i_imm;
         end else if(i_lhu_signal == 1'b1) begin
-            
+            o_data = i_src1 + i_imm;
         end else if(i_xori_signal == 1'b1) begin
             o_data = i_src1 ^ i_imm;
         end else if(i_andi_signal == 1'b1) begin
@@ -83,16 +85,18 @@ module alu #(WIDTH = 32)(
         end else if(i_srli_signal == 1'b1) begin
             o_data = i_src1 >> i_shamt;
         end else if(i_srai_signal == 1'b1) begin
-            o_data = $signed(i_src1) >>> i_shamt;
+            o_data = srai_data;
         // end else if(i_slti_signal == 1'b1) begin
         //     o_data = $signed(i_src1) < $signed(i_imm) ? 32'h1 : 32'h0;
         end else if(i_sltiu_signal == 1'b1) begin
             o_data = i_src1 < i_imm ? 32'h1 : 32'h0;
+        end else if(i_ebreak_signal == 1'b1) begin
+            o_data = 0;
         // U型
         end else if(i_auipc_signal == 1'b1) begin
             o_data = i_pc_data + i_imm;
         end else if(i_lui_signal == 1'b1) begin
-            o_data = i_imm << 12;
+            o_data = i_imm;
         // R型
         end else if(i_add_signal == 1'b1) begin
             o_data = i_src1 + i_src2;
@@ -146,21 +150,28 @@ module alu #(WIDTH = 32)(
             o_data = i_pc_data + i_offset;
         end else if(i_bgeu_signal == 1'b1) begin
             o_B_jump_signal = (i_src1 >= i_src2) ? 1'b1 : 1'b0;
+            o_data = i_pc_data + i_offset;
         end
         // J型
         else if(i_jal_signal == 1'b1) begin
             o_data = i_pc_data + i_offset;
         // S型
         end else if(i_sw_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end else if(i_sh_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end else if(i_sb_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end 
         else begin
             o_halt_signal = 1'b1;
         end
     end
     
+ArithmeticRightShift ArithmeticRightShift_u(
+    .i_src1(i_src1),
+    .i_shamt(i_shamt),
+    .o_data(srai_data)
+);
+
 endmodule

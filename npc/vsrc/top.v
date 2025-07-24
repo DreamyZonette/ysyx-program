@@ -3,25 +3,27 @@
         input sys_rst_n,
         // input [31:0] inst,
         output [31:0] de_pc,
+        output [31:0] de_next_pc,
         output [31:0] de_inst,
         output halt,
         output [31:0] reg_data [0:31]
     );
 
     import "DPI-C" function void dpi_ebreak();
-    import "DPI-C" function void dpi_return();
+    // import "DPI-C" function void dpi_return();
 
     always @(posedge sys_clk) begin
             if (ebreak_signal == 1'b1) begin
                 dpi_ebreak();  // 调用 DPI-C 函数
             end
-            else if (instruction == 32'h0000006F) begin
-                dpi_return();
-            end
+            // else if (instruction == 32'h0000006F) begin
+            //     dpi_return();
+            // end
         end
 
     assign halt = EXU_halt_signal | IDU_halt_signal;
     assign de_pc = pc;
+    assign de_next_pc = next_pc;
     assign de_inst = instruction;
 
     wire addi_signal;
@@ -74,7 +76,7 @@
     wire [31:0] src1;
     wire [31:0] src2;
     wire [31:0] offset;
-    wire [4:0] shamt;
+    wire [5:0] shamt;
     wire [31:0] next_pc;
     wire [31:0] pc;
     wire [31:0] instruction;
@@ -205,6 +207,7 @@
     .i_sll_signal(sll_signal),
     .i_slt_signal(slt_signal),
     .i_sltu_signal(sltu_signal),
+    .i_ebreak_signal(ebreak_signal),
     .o_B_jump_signal(o_B_jump_signal),
     .o_halt_signal(EXU_halt_signal),
     .o_data(data)

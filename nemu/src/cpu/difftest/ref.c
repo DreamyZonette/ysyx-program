@@ -13,22 +13,54 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
+#include <cpu/decode.h>
 #include <isa.h>
 #include <cpu/cpu.h>
 #include <difftest-def.h>
 #include <memory/paddr.h>
 
+
+
 __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
-  assert(0);
+  if (direction == DIFFTEST_TO_REF) {
+   uint8_t *src = (uint8_t*)buf;
+    for (size_t i = 0; i < n; i++) {
+      paddr_write(addr + i, 1, src[i]); // 逐字节写入 REF
+    }
+  }
+  else{
+    uint8_t *dst = (uint8_t*)buf;
+    for (size_t i = 0; i < n; i++) {
+      dst[i] = (uint8_t)paddr_read(addr + i, 1); // 逐字节读取 REF
+    }
+  }
 }
 
 __EXPORT void difftest_regcpy(void *dut, bool direction) {
-  assert(0);
+  CPU_state* top = (CPU_state*)(dut);
+  if (direction == DIFFTEST_TO_REF) {
+    for(int i = 0; i < RISCV_GPR_NUM; i++){
+      cpu.gpr[i] = top->gpr[i];
+    }
+    cpu.pc = top->pc;
+  }
+  else{
+    for(int i = 0; i < RISCV_GPR_NUM; i++){
+      top->gpr[i] = cpu.gpr[i];
+    }
+    top->pc = cpu.pc;
+  }
 }
 
 __EXPORT void difftest_exec(uint64_t n) {
-  assert(0);
+  Decode s;
+  for(uint64_t i = 0; i < n; i ++){
+    //printf("0x%08x\n", cpu.pc);
+    void exec_once(Decode *s, vaddr_t pc);
+    exec_once(&s, cpu.pc);
+  }
 }
+
 
 __EXPORT void difftest_raise_intr(word_t NO) {
   assert(0);
@@ -40,3 +72,5 @@ __EXPORT void difftest_init(int port) {
   /* Perform ISA dependent initialization. */
   init_isa();
 }
+
+

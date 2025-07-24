@@ -38,10 +38,10 @@ module Jtype (
         // offset扩展
         if(sign_extended == 1'b1)begin
             if(offset[1] == 1'b1) begin
-                o_offset =  { {12{offset[19]}}, offset} << 1;
+                o_offset =  {{ {12{offset[19]}}, offset}} << 1;
             end
             else begin
-                o_offset =  { {12{offset[19]}}, offset} << 1;
+                o_offset =  {{{12{offset[19]}}, offset}} << 1;
             end
         end
         else if(zero_extended == 1'b1) begin
