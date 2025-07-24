@@ -81,7 +81,7 @@ static long load_img() {
 
 static int parse_args(int argc, char *argv[]) {
     if(argc < 2){
-        Log("Use default image.\n");
+        Log("Use default image.");
         img_file[0] = '\0';
         return 0;
     }
@@ -93,7 +93,7 @@ static int parse_args(int argc, char *argv[]) {
               Log("Using image: %s\n", img_file);
                //return 0;
           } else {
-            Log("Error: Missing filename after %s\n", argv[i]);
+            Log("Error: Missing filename after %s", argv[i]);
             img_file[0] = '\0';
             //return 0;
           }
@@ -105,7 +105,7 @@ static int parse_args(int argc, char *argv[]) {
           if (i + 1 < argc) {
               strncpy(elf_file, argv[i + 1], sizeof(elf_file) - 1);
               elf_file[sizeof(elf_file) - 1] = '\0'; // 确保终止
-              Log("Using elf file : %s\n", elf_file);
+              Log("Using elf file : %s", elf_file);
                //return 0;
           } else {
             Log("Error: Missing filename after %s", argv[i]);
