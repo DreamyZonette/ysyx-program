@@ -32,7 +32,10 @@ LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
 LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
 
 VERILATOR = verilator
-ARGS ?= -d $(NEMU_SO) #-i $(IMG) -e $(ELF) -d $(NEMU_SO)
+ARGS ?= 
+ARGS += -d $(NEMU_SO) # 启用difftest
+ARGS += -i $(IMG)     # 启用镜像文件
+ARGS += -e $(ELF)	  # 启用ftrace
 
 $(shell mkdir -p $(BUILD_DIR))
 
