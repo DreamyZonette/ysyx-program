@@ -84,7 +84,7 @@ module alu #(WIDTH = 32)(
         end else if(i_srli_signal == 1'b1) begin
             o_data = i_src1 >> i_shamt;
         end else if(i_srai_signal == 1'b1) begin
-            o_data = i_src1 >>> i_shamt;
+            o_data = $signed(i_src1) >>> i_shamt;
         // end else if(i_slti_signal == 1'b1) begin
         //     o_data = $signed(i_src1) < $signed(i_imm) ? 32'h1 : 32'h0;
         end else if(i_sltiu_signal == 1'b1) begin
