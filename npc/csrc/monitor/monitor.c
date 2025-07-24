@@ -18,24 +18,23 @@ void sdb_set_batch_mode();
 static void welcome() {
   Log("Trace: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
   if(CONFIG_ITRACE == 1){
-    printf("ITrace: %s\t", ANSI_FMT("ON", ANSI_FG_GREEN));
+    Log("ITrace: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
   }
   else{
-    printf("ITrace: %s\t", ANSI_FMT("OFF", ANSI_FG_RED));
+    Log("ITrace: %s", ANSI_FMT("OFF", ANSI_FG_RED));
   }
   if(CONFIG_MTRACE == 1){
-    printf("MTrace: %s\t", ANSI_FMT("ON", ANSI_FG_GREEN));
+    Log("MTrace: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
   }
   else{
-    printf("MTrace: %s\t", ANSI_FMT("OFF", ANSI_FG_RED));
+    Log("MTrace: %s", ANSI_FMT("OFF", ANSI_FG_RED));
   }
   if(CONFIG_FTRACE == 1){
-    printf("FTrace: %s\t", ANSI_FMT("ON", ANSI_FG_GREEN));
+    Log("FTrace: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
   }
   else{
-    printf("FTrace: %s\t", ANSI_FMT("OFF", ANSI_FG_RED));
+    Log("FTrace: %s", ANSI_FMT("OFF", ANSI_FG_RED));
   }
-  printf("\n");
   // IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
   //       "to record the trace. This may lead to a large log file. "
   //       "If it is not necessary, you can disable it in menuconfig"));
