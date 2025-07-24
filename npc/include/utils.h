@@ -54,7 +54,6 @@ extern NPCState npc_state;
 
 #define _Log(...) \
   do { \
-    //printf(__VA_ARGS__); \
     char buf[256]; \
     va_list args; \
     va_start(args, fmt); \
