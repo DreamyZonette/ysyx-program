@@ -40,7 +40,7 @@ all:run wave
 
 run:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(VERILATOR) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
+	@$(VERILATOR) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
 	$(BUILD_DIR)/obj_dir/Vtop $(ARGS) $(IMG) $(ELF)
 	
 	
