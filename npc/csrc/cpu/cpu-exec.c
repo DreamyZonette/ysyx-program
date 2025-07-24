@@ -35,22 +35,6 @@ void step_and_dump_wave(){
 }
 
 static void trace_and_difftest() {
-  
-  #if CONFIG_ITRACE
-  if(!sim_finish){
-    snprintf(p, sizeof(p), "pc:%08x: %08x", top->de_pc, top->de_inst);
-    printf("%s\n", p);
-    p[0] = '\0';
-  }
-  #else
-  if(!sim_finish){
-    if(print_on){
-      print_on = 0;
-      printf("pc:0x%08x    inst:0x%08x\n", 
-        top->de_pc, top->de_inst);
-    }
-  }
-  #endif
 
   #if CONFIG_DIFFTEST
   for(int i = 0; i < 32; i++){
@@ -121,6 +105,22 @@ void single_cycle() {
 static void execute(uint64_t n) {
     
   for (;n > 0; n --) {
+    
+    #if CONFIG_ITRACE
+  if(!sim_finish){
+    snprintf(p, sizeof(p), "pc:%08x: %08x", top->de_pc, top->de_inst);
+    printf("%s\n", p);
+    p[0] = '\0';
+  }
+  #else
+  if(!sim_finish){
+    if(print_on){
+      print_on = 0;
+      printf("pc:0x%08x    inst:0x%08x\n", 
+        top->de_pc, top->de_inst);
+    }
+  }
+  #endif
     
     single_cycle();
     if(n <= PRINT_COUNT) print_on = 1;
