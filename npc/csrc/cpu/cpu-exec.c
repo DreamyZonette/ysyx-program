@@ -1,5 +1,6 @@
 #include <common.h>
 #include <cpu/cpu.h>
+#include <isa/isa_def.h>
 
 #define PRINT_COUNT 4
 #if CONFIG_FTRACE
@@ -88,6 +89,13 @@ static void trace_and_difftest() {
   
   //return ret;
 #endif
+
+#if CONFIG_DIFFTEST
+  for(int i = 0; i < 32; i++){
+    cpu.gpr[i] = top->reg_data[i];
+  }
+  cpu.pc = top->de_pc;
+#endif
 }
 
 void single_cycle() {
@@ -126,6 +134,15 @@ static void execute(uint64_t n) {
   }
 }
 
+static void statistic() {
+//   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
+// #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
+//   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
+//   Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
+//   if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
+//   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
+}
+
 void cpu_exec(uint64_t n){
     if(sim_finish) npc_state.state = NPC_END;
     switch (npc_state.state) {
@@ -147,6 +164,6 @@ void cpu_exec(uint64_t n){
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           npc_state.halt_pc);
       // fall through
-    case NPC_QUIT: break;//statistic();
+    case NPC_QUIT: statistic();
   }
 }
