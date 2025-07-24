@@ -28,7 +28,7 @@ module WBU(
         if (i_load_signal == 1'b1) begin
             reg_wdata = i_load_wdata;
         end else if (i_jal_signal == 1'b1 || i_jalr_signal == 1'b1)begin
-            reg_wdata = i_cur_pc;
+            reg_wdata = i_cur_pc + 4;
         end
         else begin
             reg_wdata = i_sys_wdata;
