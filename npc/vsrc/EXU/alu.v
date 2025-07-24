@@ -149,6 +149,7 @@ module alu #(WIDTH = 32)(
             o_data = i_pc_data + i_offset;
         end else if(i_bgeu_signal == 1'b1) begin
             o_B_jump_signal = (i_src1 >= i_src2) ? 1'b1 : 1'b0;
+            o_data = i_pc_data + i_offset;
         end
         // J型
         else if(i_jal_signal == 1'b1) begin
