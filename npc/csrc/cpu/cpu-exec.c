@@ -101,7 +101,6 @@ static void execute(uint64_t n) {
     single_cycle();
     
     if(n <= PRINT_COUNT) print_on = 1;
-    trace_and_difftest();
 
     if(sim_finish) {
         if(is_hit_good_trap)npc_state.state = NPC_END;
@@ -119,6 +118,7 @@ static void execute(uint64_t n) {
     //     npc_state.state = NPC_STOP;
     // }
     if (npc_state.state != NPC_RUNNING) break;
+    trace_and_difftest();
   }
 }
 
