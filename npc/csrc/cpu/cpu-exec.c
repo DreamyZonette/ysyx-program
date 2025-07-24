@@ -15,8 +15,10 @@ bool sim_finish = false;
 bool is_hit_good_trap = true;
 char p[128];
 int print_on = 0;
-CPU_state dut;
-dut.pc = 0x80000000;
+CPU_state dut = {
+  .gpr = {0},            // 所有寄存器初始化为0
+  .pc = 0x80000000       // PC初始化为0x80000000
+};
 
 extern "C" void dpi_ebreak() {
     // is_hit_good_trap = false;
