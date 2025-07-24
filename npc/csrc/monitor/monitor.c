@@ -18,7 +18,7 @@ void sdb_set_batch_mode();
 static void welcome() {
   // Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
   if(CONFIG_ITRACE == 1){
-    Log("ITrace: %s\t", ANSI_FMT("ON", ANSI_FG_GREEN));
+    printf("ITrace: %s\t", ANSI_FMT("ON", ANSI_FG_GREEN));
   }
   else{
     printf("ITrace: %s\t", ANSI_FMT("OFF", ANSI_FG_RED));
