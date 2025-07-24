@@ -76,7 +76,7 @@
     wire [31:0] src1;
     wire [31:0] src2;
     wire [31:0] offset;
-    wire [4:0] shamt;
+    wire [5:0] shamt;
     wire [31:0] next_pc;
     wire [31:0] pc;
     wire [31:0] instruction;

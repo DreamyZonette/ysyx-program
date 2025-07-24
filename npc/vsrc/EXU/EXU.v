@@ -4,7 +4,7 @@ module EXU(
     input wire [31:0] i_imm,
     input wire [31:0] i_offset,
     input wire [31:0] i_pc_data,
-    input wire [4:0] i_shamt,
+    input wire [5:0] i_shamt,
     input wire i_addi_signal,
     input wire i_jalr_signal,
     input wire i_lb_signal,

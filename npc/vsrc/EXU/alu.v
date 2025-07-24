@@ -5,7 +5,7 @@ module alu #(WIDTH = 32)(
     input [WIDTH-1:0] i_imm ,
     input [WIDTH-1:0] i_offset,
     input [WIDTH-1:0] i_pc_data,
-    input [4:0]       i_shamt,
+    input [5:0]       i_shamt,
     input             i_addi_signal,
     input             i_jalr_signal,
     input             i_lb_signal,

@@ -7,7 +7,7 @@ module IDU (
     output reg [31:0]  o_src2,
     output reg [31:0]  o_imm,
     output reg [31:0]  o_offset,
-    output reg [4:0]   o_shamt,
+    output reg [5:0]   o_shamt,
     output     [3:0]  o_wmask,
     output  o_addi_signal,
     output  o_andi_signal,
@@ -60,7 +60,7 @@ module IDU (
     wire [31:0] I_imm;
     wire [4:0]  I_rs1;
     wire [4:0]  I_rd;
-    wire [4:0]  I_shamt;
+    wire [5:0]  I_shamt;
     wire [4:0]  U_rd;
     wire [31:0] U_imm;
     wire [4:0]  J_rd;
@@ -162,7 +162,7 @@ module IDU (
         rs1 = 5'b0;
         rs2 = 5'b0;
         rd  = 5'b0;
-        o_shamt  = 5'b0;
+        o_shamt  = 6'b0;
         if(Itype_signal == 1'b1) begin
             rs1 = I_rs1;
             rd  = I_rd;

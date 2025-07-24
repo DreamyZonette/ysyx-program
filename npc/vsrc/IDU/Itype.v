@@ -2,7 +2,7 @@ module Itype (
     input [31:0] i_inst,
     output [4:0] o_rd,
     output [4:0] o_rs1,
-    output [4:0] o_shamt,
+    output [5:0] o_shamt,
     output reg [31:0] o_imm,
     output reg o_jalr_signal,
     output reg o_addi_signal,
@@ -37,7 +37,7 @@ module Itype (
     assign rd           = i_inst[11:7];
     assign fun1         = i_inst[14:12];
     assign o_rs1        = i_inst[19:15];
-    assign o_shamt      = i_inst[24:20];
+    assign o_shamt      = i_inst[25:20];
     assign imm          = i_inst[31:20];
     assign shamt_detect = i_inst[31:25];
     assign o_rd         = (o_jalr_signal == 1'b1) ? jalr_rd : rd;
@@ -132,7 +132,7 @@ module Itype (
 
     always @(*) begin
         if(shamt_signal == 1'b1) begin
-            shamt_halt = 1'b0;//o_shamt[4];
+            shamt_halt = o_shamt[5];
         end
         else begin
             shamt_halt = 1'b0;
