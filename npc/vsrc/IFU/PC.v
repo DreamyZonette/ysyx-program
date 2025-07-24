@@ -8,7 +8,7 @@ module PC #(PC_LEN = 32)(
     
     always @(posedge i_sys_clk) begin
         if (!i_sys_rst_n)begin
-            pc <= 32'h80000000;
+            o_pc <= 32'h80000000;
             $display("PC Reset: PC = 0x%h", 32'h80000000);
         end 
         else begin
