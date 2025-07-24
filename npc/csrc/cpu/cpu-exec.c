@@ -94,9 +94,9 @@ static void trace_and_difftest() {
 }
 
 void single_cycle() {
-  top->sys_clk ^= 1; top->eval();
+  top->sys_clk = 1; top->eval();
   step_and_dump_wave();
-  top->sys_clk ^= 1; top->eval();
+  top->sys_clk = 0; top->eval();
   step_and_dump_wave();
 }
 
@@ -105,7 +105,7 @@ void single_cycle() {
 static void execute(uint64_t n) {
     
   for (;n > 0; n --) {
-    
+
     if(n <= PRINT_COUNT) print_on = 1;
     #if CONFIG_ITRACE
   if(!sim_finish){
