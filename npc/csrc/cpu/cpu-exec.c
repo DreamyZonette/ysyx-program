@@ -119,10 +119,11 @@ void single_cycle() {
 static void execute(uint64_t n) {
     
   for (;n > 0; n --) {
-    single_cycle();
     
     if(n <= PRINT_COUNT) print_on = 1;
     trace_and_difftest();
+    
+    single_cycle();
 
     if(sim_finish) {
         if(is_hit_good_trap)npc_state.state = NPC_END;
