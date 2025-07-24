@@ -23,7 +23,7 @@
 
     assign halt = EXU_halt_signal | IDU_halt_signal;
     assign de_pc = de_cur_pc;
-    assign de_next_pc = next_pc;
+    assign de_next_pc = pc;
     assign de_inst = instruction;
 
     wire addi_signal;
