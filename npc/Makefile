@@ -2,7 +2,7 @@ TOP_NAME = top
 #IMG ?= /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-npc.bin
 IMG ?= 
 ELF ?= -e $(IMG:.bin=.elf)
-NEMU_SO := -d $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -27,8 +27,8 @@ VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
-LDFLAGS += -LDFLAGS "-L$(dir $(NEMU_SO))"
-LDFLAGS += -LDFLAGS "-l:$(notdir $(NEMU_SO))"
+LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
+LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
 LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
 
 VERILATOR = verilator
