@@ -207,6 +207,7 @@
     .i_sll_signal(sll_signal),
     .i_slt_signal(slt_signal),
     .i_sltu_signal(sltu_signal),
+    .i_ebreak_signal(ebreak_signal),
     .o_B_jump_signal(o_B_jump_signal),
     .o_halt_signal(EXU_halt_signal),
     .o_data(data)

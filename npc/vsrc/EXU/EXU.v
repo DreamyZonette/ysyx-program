@@ -48,6 +48,7 @@ module EXU(
     input wire i_sll_signal,
     input wire i_slt_signal,
     input wire i_sltu_signal,
+    input wire i_ebreak_signal,
     output wire o_B_jump_signal,
     output wire o_halt_signal,
     output wire [31:0] o_data
@@ -104,6 +105,7 @@ alu alu_u(
     .i_sll_signal(i_sll_signal),
     .i_slt_signal(i_slt_signal),
     .i_sltu_signal(i_sltu_signal),
+    .i_ebreak_signal(i_ebreak_signal),
     .o_B_jump_signal(o_B_jump_signal),
     .o_halt_signal(o_halt_signal),
     .o_data(o_data)
