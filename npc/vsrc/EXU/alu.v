@@ -95,7 +95,7 @@ module alu #(WIDTH = 32)(
         end else if(i_auipc_signal == 1'b1) begin
             o_data = i_pc_data + i_imm;
         end else if(i_lui_signal == 1'b1) begin
-            o_data = i_imm << 12;
+            o_data = i_imm;
         // R型
         end else if(i_add_signal == 1'b1) begin
             o_data = i_src1 + i_src2;
