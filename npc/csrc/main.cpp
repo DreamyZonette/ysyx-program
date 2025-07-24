@@ -40,8 +40,8 @@ void npc_engine_start() {
     step_and_dump_wave();
     top->sys_rst_n = 1;
     step_and_dump_wave();
-    // top->sys_clk = 1;
-    // step_and_dump_wave();
+    top->sys_clk = 1;
+    step_and_dump_wave();
 }
 
 int main(int argc, char *argv[]){
