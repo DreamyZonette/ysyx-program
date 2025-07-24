@@ -112,7 +112,7 @@ static void execute(uint64_t n) {
     }
     //printf("%d\n", top->halt);
 
-    if(npc_state.halt_ret != 1) {
+    if(npc_state.halt_ret != 1 && !sim_finish) {
       npc_state.halt_pc = top->de_pc;
       npc_state.halt_ret = top->halt;
     }
