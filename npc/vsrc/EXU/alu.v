@@ -172,6 +172,6 @@ ArithmeticRightShift ArithmeticRightShift_u(
     .i_src1(i_src1),
     .i_shamt(i_shamt),
     .o_data(srai_data)
-)
+);
 
 endmodule
