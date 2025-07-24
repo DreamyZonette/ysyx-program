@@ -55,24 +55,24 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
 __EXPORT void difftest_exec(uint64_t n) {
   Decode s;
   for(uint64_t i = 0; i < n; i ++){
-    printf("0x%08x\n", cpu.pc);
+    //printf("0x%08x\n", cpu.pc);
     void exec_once(Decode *s, vaddr_t pc);
     exec_once(&s, cpu.pc);
   }
 }
 
-__EXPORT void difftest_compare(void *dut) {
-  CPU_state* top = (CPU_state*)(dut);
-  int trap = 0;
-  for(int i = 0; i < 32; i ++){
-    if(top->gpr[i] != cpu.gpr[i]) trap = 1;
-  }
-  if(top->pc != cpu.pc) trap = 1;
-  printf("----------difftest result----------\n");
-  if(trap == 1) printf("ERROR\n");
-  else printf("PASS\n");
+// __EXPORT void difftest_compare(void *dut) {
+//   CPU_state* top = (CPU_state*)(dut);
+//   int trap = 0;
+//   for(int i = 0; i < 32; i ++){
+//     if(top->gpr[i] != cpu.gpr[i]) trap = 1;
+//   }
+//   if(top->pc != cpu.pc) trap = 1;
+//   printf("----------difftest result----------\n");
+//   if(trap == 1) printf("ERROR\n");
+//   else printf("PASS\n");
 
-}
+// }
 
 __EXPORT void difftest_raise_intr(word_t NO) {
   assert(0);
