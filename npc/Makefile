@@ -41,8 +41,8 @@ all:run wave
 run:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$(VERILATOR) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
-	#$(BUILD_DIR)/obj_dir/Vtop $(ARGS) $(IMG) $(ELF) $(NEMU_SO)
-	(BUILD_DIR)/obj_dir/Vtop $(NEMU_SO)
+	# $(BUILD_DIR)/obj_dir/Vtop $(ARGS) $(IMG) $(ELF) $(NEMU_SO)
+	$(BUILD_DIR)/obj_dir/Vtop $(NEMU_SO)
 	
 	
 include ../Makefile
