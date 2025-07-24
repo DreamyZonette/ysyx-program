@@ -151,7 +151,7 @@ static void statistic() {
 //   if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
 //   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 
-// if(npc_state.state == NPC_ABORT) assert(0);
+if(npc_state.state == NPC_ABORT) assert(0);
 }
 
 void cpu_exec(uint64_t n){
