@@ -71,12 +71,12 @@ module Itype (
             if (fun1 == 3'b000) begin
                 o_jalr_signal   = 1'b1;
                 sign_extended = 1'b1;
-                if(rd == 5'b0) begin
-                    jalr_rd = 5'b1;
-                end
-                else begin
+                // if(rd == 5'b0) begin
+                //     jalr_rd = 5'b1;
+                // end
+                // else begin
                     jalr_rd = rd;
-                end
+                // end
             end
         end
         7'b0010011: begin // I-type ALU
