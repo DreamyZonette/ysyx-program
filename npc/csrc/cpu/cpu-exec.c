@@ -33,7 +33,7 @@ void step_and_dump_wave(){
 
 static void trace_and_difftest() {
   #if CONFIG_DIFFTEST
-  printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
+  //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
   difftest_step(top->de_pc, top->de_next_pc);
   #endif
   #if CONFIG_ITRACE
