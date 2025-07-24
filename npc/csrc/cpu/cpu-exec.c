@@ -92,9 +92,9 @@ static void trace_and_difftest() {
 
 #if CONFIG_DIFFTEST
   for(int i = 0; i < 32; i++){
-    cpu.gpr[i] = top->reg_data[i];
+    dut.gpr[i] = top->reg_data[i];
   }
-  cpu.pc = top->de_pc;
+  dut.pc = top->de_pc;
 #endif
 }
 

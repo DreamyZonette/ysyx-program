@@ -8,7 +8,7 @@ typedef struct {
   vaddr_t pc;
 } riscv32_CPU_state;
 
-riscv32_CPU_state cpu;
+riscv32_CPU_state dut;
 
 #define CPU_state riscv32_CPU_state
 
