@@ -81,7 +81,7 @@ static long load_img() {
 
 static int parse_args(int argc, char *argv[]) {
     if(argc < 2){
-        printf("Use default image.\n");
+        Log("Use default image.\n");
         img_file[0] = '\0';
         return 0;
     }
@@ -90,10 +90,10 @@ static int parse_args(int argc, char *argv[]) {
           if (i + 1 < argc) {
               strncpy(img_file, argv[i + 1], sizeof(img_file) - 1);
               img_file[sizeof(img_file) - 1] = '\0'; // 确保终止
-              printf("Using image: %s\n", img_file);
+              Log("Using image: %s\n", img_file);
                //return 0;
           } else {
-            printf("Error: Missing filename after %s\n", argv[i]);
+            Log("Error: Missing filename after %s\n", argv[i]);
             img_file[0] = '\0';
             //return 0;
           }
@@ -105,10 +105,10 @@ static int parse_args(int argc, char *argv[]) {
           if (i + 1 < argc) {
               strncpy(elf_file, argv[i + 1], sizeof(elf_file) - 1);
               elf_file[sizeof(elf_file) - 1] = '\0'; // 确保终止
-              printf("Using elf file : %s\n", elf_file);
+              Log("Using elf file : %s\n", elf_file);
                //return 0;
           } else {
-            printf("Error: Missing filename after %s\n", argv[i]);
+            Log("Error: Missing filename after %s", argv[i]);
             elf_file[0] = '\0';
             //return 0;
           }
