@@ -16,7 +16,12 @@ void sdb_set_batch_mode();
 
 
 static void welcome() {
-  Log("Trace: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
+  if (CONFIG_TRACE == 1){
+    Log("Trace: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
+  }
+  else{
+    Log("Trace: %s", ANSI_FMT("OFF", ANSI_FG_RED));
+  }
   if(CONFIG_ITRACE == 1){
     Log("ITrace: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
   }
