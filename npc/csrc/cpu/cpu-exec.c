@@ -36,6 +36,10 @@ void step_and_dump_wave(){
 
 static void trace_and_difftest() {
   #if CONFIG_DIFFTEST
+  for(int i = 0; i < 32; i++){
+    dut.gpr[i] = top->reg_data[i];
+  }
+  dut.pc = top->de_pc;
   //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
   difftest_step(top->de_pc, top->de_next_pc);
   #endif
@@ -100,13 +104,6 @@ static void trace_and_difftest() {
   }
   
   //return ret;
-#endif
-
-#if CONFIG_DIFFTEST
-  for(int i = 0; i < 32; i++){
-    dut.gpr[i] = top->reg_data[i];
-  }
-  dut.pc = top->de_pc;
 #endif
 }
 
