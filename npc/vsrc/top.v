@@ -22,7 +22,7 @@
         end
 
     assign halt = EXU_halt_signal | IDU_halt_signal;
-    assign de_pc = de_cur_pc;
+    assign de_pc = cur_pc;
     assign de_next_pc = pc;
     assign de_inst = instruction;
 
@@ -79,7 +79,7 @@
     wire [4:0] shamt;
     wire [31:0] next_pc;
     wire [31:0] pc;
-    wire [31:0] de_cur_pc;
+    wire [31:0] cur_pc;
     wire [31:0] instruction;
     wire [3:0] wmask;
     wire [31:0] data;
@@ -92,8 +92,8 @@
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
     .i_next_pc(next_pc),
-    .o_de_pc(de_cur_pc),
-    .o_pc(pc)
+    .o_cur_pc(cur_pc),
+    .o_next_pc(pc)
     );
     
     IFU IFU_u (
@@ -165,7 +165,7 @@
     .i_src2(src2),
     .i_imm(imm),
     .i_offset(offset),
-    .i_pc_data(pc),
+    .i_pc_data(cur_pc),
     .i_shamt(shamt),
     .i_addi_signal(addi_signal),
     .i_jalr_signal(jalr_signal),
@@ -222,7 +222,7 @@
     .i_jalr_signal(jalr_signal),
     .i_load_signal(load_signal),
     .i_load_wdata(rdata),
-    .i_cur_pc(pc),
+    .i_cur_pc(cur_pc),
     .i_sys_wdata(data),
     .o_reg_wdata(wdata),
     .o_next_pc(next_pc)
