@@ -52,20 +52,15 @@ extern NPCState npc_state;
 //   } while (0) \
 // )
 
-// #define _Log(...) \
-//   do { \
-//     printf(__VA_ARGS__); \
-//     // log_write(__VA_ARGS__); \
-//   } while (0)
-void _Log(const char* fmt, ...) {
-    char buf[256];
-    va_list args;
-    va_start(args, fmt);
-    vsnprintf(buf, sizeof(buf), fmt, args);
-    
-    // 添加蓝色格式化
-    printf(ANSI_FMT("%s", ANSI_FG_BLUE), buf);
-}
+#define _Log(...) \
+  do { \
+    //printf(__VA_ARGS__); \
+    char buf[256]; \
+    va_list args; \
+    va_start(args, fmt); \
+    vsnprintf(buf, sizeof(buf), fmt, args); \
+    printf(ANSI_FMT("%s", ANSI_FG_BLUE), buf); \
+  } while (0)
 
 
 #endif
