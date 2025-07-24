@@ -2,7 +2,6 @@
 #include <cpu/cpu.h>
 #include <isa/isa_def.h>
 
-CPU_state dut
 
 #define PRINT_COUNT 4
 #if CONFIG_FTRACE
@@ -15,6 +14,7 @@ bool sim_finish = false;
 bool is_hit_good_trap = true;
 char p[128];
 int print_on = 0;
+CPU_state dut;
 
 extern "C" void dpi_ebreak() {
     // is_hit_good_trap = false;
