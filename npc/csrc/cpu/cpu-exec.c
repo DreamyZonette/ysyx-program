@@ -35,14 +35,7 @@ void step_and_dump_wave(){
 }
 
 static void trace_and_difftest() {
-  #if CONFIG_DIFFTEST
-  for(int i = 0; i < 32; i++){
-    dut.gpr[i] = top->reg_data[i];
-  }
-  dut.pc = top->de_pc;
-  //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
-  difftest_step(top->de_pc, top->de_next_pc);
-  #endif
+  
   #if CONFIG_ITRACE
   if(!sim_finish){
     snprintf(p, sizeof(p), "pc:%08x: %08x", top->de_pc, top->de_inst);
@@ -57,6 +50,15 @@ static void trace_and_difftest() {
         top->de_pc, top->de_inst);
     }
   }
+  #endif
+
+  #if CONFIG_DIFFTEST
+  for(int i = 0; i < 32; i++){
+    dut.gpr[i] = top->reg_data[i];
+  }
+  dut.pc = top->de_pc;
+  //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
+  difftest_step(top->de_pc, top->de_next_pc);
   #endif
 
   #if CONFIG_FTRACE
@@ -120,10 +122,10 @@ static void execute(uint64_t n) {
     
   for (;n > 0; n --) {
     
+    single_cycle();
     if(n <= PRINT_COUNT) print_on = 1;
     trace_and_difftest();
     
-    single_cycle();
 
     if(sim_finish) {
         if(is_hit_good_trap)npc_state.state = NPC_END;
