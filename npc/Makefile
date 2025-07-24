@@ -2,6 +2,7 @@ TOP_NAME = top
 #IMG ?= /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-npc.bin
 IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
+NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -20,11 +21,15 @@ CSRCS += $(wildcard $(CPATH)/**/*.c)
 CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.c)
 
 CFLAGS ?= -Wall 
-CFLAGS +=  -CFLAGS "$(INCLUDES)" -LDFLAGS -lreadline -LDFLAGS -ltinfo
+CFLAGS +=  -CFLAGS "$(INCLUDES)" 
 CFLAGS += -CFLAGS -fpermissive
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
+LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
+LDFLAGS += -LDFLAGS "-L$(dir $(NEMU_SO))"
+LDFLAGS += -LDFLAGS "-l:$(notdir $(NEMU_SO))"
+LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
 
 VERILATOR = verilator
 ARGS ?= -i
@@ -35,7 +40,7 @@ all:run wave
 
 run:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(VERILATOR) $(CFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
+	$(VERILATOR) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
 	$(BUILD_DIR)/obj_dir/Vtop $(ARGS) $(IMG) -e $(ELF)
 	
 	
@@ -48,8 +53,8 @@ wave:
 PHONY: clean test
 
 test:
-	verilator --lint-only -Wall $(TEST_OBJ)
-	verilator --cc -Wall --Mdir $(BUILD_DIR)/obj_dir $(TEST_OBJ)
+	$(VERILATOR) --lint-only -Wall $(TEST_OBJ)
+	$(VERILATOR) --cc -Wall --Mdir $(BUILD_DIR)/obj_dir $(TEST_OBJ)
 	@echo PASS
 
 clean:
