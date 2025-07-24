@@ -5,9 +5,12 @@
 #include <stdio.h>
 #include <utils.h>
 
+// #define Log(format, ...) \
+//     _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
+//         __FILE__, __LINE__, __func__, ## __VA_ARGS__)
 #define Log(format, ...) \
-    _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
-        __FILE__, __LINE__, __func__, ## __VA_ARGS__)
+    _Log("[%s:%d %s] " format "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
+
 
 // #define Assert(cond, format, ...) \
 //   do { \
