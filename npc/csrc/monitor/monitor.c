@@ -54,7 +54,7 @@ static void welcome() {
 
 static long load_img() {
   if (img_file[0] == '\0') {
-    printf("No image is given. Use the default build-in image.\n");
+    Log("No image is given. Use the default build-in image.");
     return 4096; // built-in image size
   }
 
@@ -70,7 +70,7 @@ static long load_img() {
     // BIN文件处理逻辑（保持不变）
     fseek(fp, 0, SEEK_END);
     size = ftell(fp);
-    printf("The image is %s, size = %ld\n", img_file, size);
+    Log("The image is %s, size = %ld", img_file, size);
     fseek(fp, 0, SEEK_SET);
     int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
     assert(ret == 1);
@@ -90,7 +90,7 @@ static int parse_args(int argc, char *argv[]) {
           if (i + 1 < argc) {
               strncpy(img_file, argv[i + 1], sizeof(img_file) - 1);
               img_file[sizeof(img_file) - 1] = '\0'; // 确保终止
-              Log("Using image: %s\n", img_file);
+              Log("Using image: %s", img_file);
                //return 0;
           } else {
             Log("Error: Missing filename after %s", argv[i]);
