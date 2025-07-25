@@ -30,7 +30,7 @@ int atoi(const char* nptr) {
 }
 
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
-#define MEMORY_POOL_SIZE (16 * 1024 * 1024)
+#define MEMORY_POOL_SIZE (32 * 1024 * 1024)
 // 静态内存池
 static uint8_t memory_pool[MEMORY_POOL_SIZE];
 
@@ -62,7 +62,7 @@ void *malloc(size_t size) {
   // Therefore do not call panic() here, else it will yield a dead recursion:
   //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
-  panic("Not implemented");
+  // panic("Not implemented");
   if (size == 0) return NULL;
   if (free_list == (mem_block_t *)memory_pool && free_list->size == 0) {
     init_memory_pool();
