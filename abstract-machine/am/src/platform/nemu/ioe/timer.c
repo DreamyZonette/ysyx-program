@@ -1,26 +1,26 @@
 #include <am.h>
 #include <nemu.h>
-#include <klib.h>
+//#include <klib.h>
 
 static uint64_t last_counter = 0;
+
+static uint64_t am_get_time() {
+  uint32_t hi, lo;
+  hi = inl(RTC_ADDR);
+  lo = inl(RTC_ADDR + 4);
+  return ((uint64_t)hi << 32) | lo;
+}
+
 
 void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-  uint64_t counter = cpu_count();
-  uint64_t diff = 0;
-  if (counter < last_counter) {
-    // overflow
-    counter += 0x100000000;
-  }
-  uptime->us = (counter - last_counter) * 1000000 / cpu_count();
-  if(last_counter != counter) diff = 1;
-  last_counter = counter;
-  if(diff == 1){
+  uint64_t now = am_get_time();
+  uint64_t diff = now - last_counter;
 
-  printf("%d\n", uptime->us);
-  }
+  uptime->us = diff;
+  
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
