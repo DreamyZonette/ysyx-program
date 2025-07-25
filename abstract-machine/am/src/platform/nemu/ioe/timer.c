@@ -6,15 +6,8 @@ void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-  uptime->us = 0;
-  int year, month, day, hour, minute, second;
-  year = inl(RTC_ADDR);
-  month = inl(RTC_ADDR + 4);
-  day = inl(RTC_ADDR + 8);
-  hour = inl(RTC_ADDR + 12);
-  minute = inl(RTC_ADDR + 16);
-  second = inl(RTC_ADDR + 20);
-  printf("%d年%d月%d日%d时%d分%d秒\n", year, month, day, hour, minute, second);
+  uptime->us = cpu_count();
+  printf("%d\n", uptime->us);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
