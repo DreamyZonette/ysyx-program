@@ -18,6 +18,7 @@ void __am_timer_init() {
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint64_t now = am_get_time();
   uint64_t diff = now - last_counter;
+  last_counter = now;
 
   uptime->us += diff;
   
