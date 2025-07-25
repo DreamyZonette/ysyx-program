@@ -12,6 +12,8 @@ void putch(char ch) {
 
 __attribute__((noinline))
 void halt(int code) {
+  register long a0 asm("a0") = code;
+  asm volatile("ebreak" : : "r"(a0));
   while (1);
 }
 
