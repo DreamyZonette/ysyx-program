@@ -78,6 +78,7 @@ int printf(const char *fmt, ...) {
     }
   }
   va_end(args);
+  panic("Not implemented");
   return count;
   // panic("Not implemented");
 }
