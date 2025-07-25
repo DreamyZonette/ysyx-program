@@ -66,6 +66,44 @@ int printf(const char *fmt, ...) {
           p ++;
           break;
         }
+        // case 'l':
+        // {
+        //   p++;
+        //   switch(*p)
+        //   {
+        //     case 'd':
+        //     {
+        //       long num = va_arg(args, long);
+        //       char str[20];
+        //       itoa(num, str);
+        //       for(int i = 0; str[i] != '\0'; i++)
+        //       {
+        //         putch(str[i]);
+        //         count ++;
+        //       }
+        //       p ++;
+        //       break;
+        //     }
+        //     case 'l':
+        //     {
+        //       p++;
+        //       switch(*p)
+        //       {
+        //         long long num = va_arg(args, long long);
+        //         char str[20];
+        //         itoa(num, str);
+        //         for(int i = 0; str[i] != '\0'; i++)
+        //         {
+        //           putch(str[i]);
+        //           count ++;
+        //         }
+        //         p ++;
+        //         break;
+        //       }
+        //     }
+        //   }
+        //   break;
+        // }
         default: // 处理无效格式符
         {
           putch('%');
