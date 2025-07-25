@@ -1,11 +1,10 @@
 #include <am.h>
 #include <nemu.h>
-//#include <klib.h>
 
-// static uint64_t last_counter = 0;
 static uint64_t base_time = 0;
 
 static uint64_t am_get_time() {
+   inl(RTC_ADDR + 4); // clear pending interrupts
   uint32_t hi, lo;
   hi = inl(RTC_ADDR);
   lo = inl(RTC_ADDR + 4);
@@ -14,16 +13,12 @@ static uint64_t am_get_time() {
 
 
 void __am_timer_init() {
+  base_time = am_get_time();
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-  uint64_t now = am_get_time();
-  // uint64_t diff = (now - last_counter) / 500000000;
-  
-  if (base_time == 0) {
-        base_time = now;
-    }
 
+  uint64_t now = am_get_time();
   uptime->us = now - base_time;
   
 }
