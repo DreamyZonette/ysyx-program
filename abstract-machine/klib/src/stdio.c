@@ -9,78 +9,76 @@
 void itoa(int num, char *str);
 
 int printf(const char *fmt, ...) {
-  putch('1');
-  return 0;
-  // va_list args;
-  // va_start(args, fmt);
-  // int count = 0;
+  va_list args;
+  va_start(args, fmt);
+  int count = 0;
 
-  // const char *p = fmt;
-  // while(*p != '\0')
-  // {
-  //   if(*p != '%')
-  //   {
-  //     putch(*p);
-  //     p ++;
-  //     count ++;
-  //   }
-  //   else
-  //   {
-  //     p++;
-  //     switch(*p)
-  //     {
-  //       case 'd':
-  //       {
-  //         int num = va_arg(args, int);
-  //         char str[20];
-  //         itoa(num, str);
-  //         for(int i = 0; str[i] != '\0'; i++)
-  //         {
-  //           putch(str[i]);
-  //           count ++;
-  //         }
-  //         p ++;
-  //         break;
-  //       }
-  //       case 's':
-  //       {
-  //         char *str = va_arg(args, char *);
-  //         for(int i = 0; str[i] != '\0'; i++)
-  //         {
-  //           putch(str[i]);
-  //           count ++;
-  //         }
-  //         p ++;
-  //         break;
-  //       }
-  //       case 'c':
-  //       {
-  //         int ch = va_arg(args, int);
-  //         putch(ch);
-  //         count ++;
-  //         p ++;
-  //         break;
-  //       }
-  //       case '%':
-  //       {
-  //         putch('%');
-  //         count ++;
-  //         p ++;
-  //         break;
-  //       }
-  //       default: // 处理无效格式符
-  //       {
-  //         putch('%');
-  //         putch(*p);
-  //         count += 2;
-  //         break;
-  //       }
-  //     }
+  const char *p = fmt;
+  while(*p != '\0')
+  {
+    if(*p != '%')
+    {
+      putch(*p);
+      p ++;
+      count ++;
+    }
+    else
+    {
+      p++;
+      switch(*p)
+      {
+        case 'd':
+        {
+          int num = va_arg(args, int);
+          char str[20];
+          itoa(num, str);
+          for(int i = 0; str[i] != '\0'; i++)
+          {
+            putch(str[i]);
+            count ++;
+          }
+          p ++;
+          break;
+        }
+        case 's':
+        {
+          char *str = va_arg(args, char *);
+          for(int i = 0; str[i] != '\0'; i++)
+          {
+            putch(str[i]);
+            count ++;
+          }
+          p ++;
+          break;
+        }
+        case 'c':
+        {
+          int ch = va_arg(args, int);
+          putch(ch);
+          count ++;
+          p ++;
+          break;
+        }
+        case '%':
+        {
+          putch('%');
+          count ++;
+          p ++;
+          break;
+        }
+        default: // 处理无效格式符
+        {
+          putch('%');
+          putch(*p);
+          count += 2;
+          break;
+        }
+      }
       
-  //   }
-  // }
-  // va_end(args);
-  // return count;
+    }
+  }
+  va_end(args);
+  return count;
   // panic("Not implemented");
 }
 
