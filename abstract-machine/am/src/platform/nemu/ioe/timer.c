@@ -23,7 +23,7 @@ void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
         base_time = now;
     }
 
-  uptime->us += now - base_time;
+  uptime->us = now - base_time;
   
 }
 
