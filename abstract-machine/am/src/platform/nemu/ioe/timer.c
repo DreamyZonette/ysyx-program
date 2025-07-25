@@ -2,7 +2,8 @@
 #include <nemu.h>
 //#include <klib.h>
 
-static uint64_t last_counter = 0;
+// static uint64_t last_counter = 0;
+static uint64_t base_time = 0;
 
 static uint64_t am_get_time() {
   uint32_t hi, lo;
@@ -17,10 +18,12 @@ void __am_timer_init() {
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint64_t now = am_get_time();
-  uint64_t diff = (now - last_counter) / 500000000;
-  last_counter = now;
+  // uint64_t diff = (now - last_counter) / 500000000;
+  if (base_time == 0) {
+        base_time = now;
+    }
 
-  uptime->us += diff;
+  uptime->us += now - base_time;
   
 }
 
