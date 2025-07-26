@@ -32,6 +32,7 @@ void __am_audio_init() {
   if (audio_sbuf_size > AUDIO_BUF_SIZE) {
     audio_sbuf_size = AUDIO_BUF_SIZE;
   }
+  printf("%d\n", audio_sbuf_size);
 
 }
 
