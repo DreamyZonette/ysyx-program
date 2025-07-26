@@ -81,6 +81,7 @@ void vga_update_screen() {
     if (vgactl_port_base[1] != 0) {
       // 调用屏幕更新函数
       IFDEF(CONFIG_VGA_SHOW_SCREEN, update_screen());
+      printf("vga: update screen\n");
         
       // 重置同步寄存器
       vgactl_port_base[1] = 0;
