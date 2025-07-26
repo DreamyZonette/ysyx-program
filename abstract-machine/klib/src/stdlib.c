@@ -31,8 +31,6 @@ int atoi(const char* nptr) {
 }
 
 // 内存
-#if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
-
 // 堆管理
 static uint8_t *heap_start = NULL;
 static uint8_t *heap_end = NULL;
@@ -40,10 +38,10 @@ static uint8_t *heap_brk = NULL;
 
 // 初始化堆
 void init_heap() {
-    // 假设堆从 0x80000000 开始，大小为 16MB
+    // 确保堆起始地址正确对齐
     extern char _end;
     heap_start = (uint8_t *)(((uintptr_t)&_end + 4095) & ~4095);
-    heap_end = heap_start + 32 * 1024 * 1024; // 16MB
+    heap_end = heap_start + 32 * 1024 * 1024; // 32MB
     heap_brk = heap_start;
 }
 
@@ -139,21 +137,15 @@ void *malloc(size_t size) {
         void *new_mem = sbrk(new_size);
         if (new_mem == (void *)-1) return NULL;
         
-        best_fit = (mem_block_t *)new_mem;
-        best_fit->size = new_size - BLOCK_SIZE;
-        best_fit->free = 0;
-        best_fit->next = NULL;
-        
-        // 添加到空闲链表尾部
-        if (free_list == NULL) {
-            free_list = best_fit;
-        } else {
-            mem_block_t *last = free_list;
-            while (last->next) last = last->next;
-            last->next = best_fit;
-        }
-        
-        return (void *)(best_fit + 1);
+        // 将新分配的内存作为一个空闲块
+        mem_block_t *new_block = (mem_block_t *)new_mem;
+        new_block->size = new_size - BLOCK_SIZE;
+        new_block->free = 1;
+        new_block->next = free_list;
+        free_list = new_block;
+
+        // 再次调用malloc，这次应该能分配成功
+        return malloc(size);
     }
 
     // 检查是否可以分割块
@@ -219,8 +211,6 @@ void free(void *ptr) {
     }
 #endif
 }
-
-#endif
 
 // #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
 // #define MEMORY_POOL_SIZE (32 * 1024 * 1024)
