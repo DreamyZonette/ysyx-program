@@ -30,6 +30,7 @@ void __am_audio_init() {
   if (audio_sbuf_size > AUDIO_BUF_SIZE) {
     audio_sbuf_size = AUDIO_BUF_SIZE;
   }
+  audio_count = 0;
 
 }
 
@@ -40,6 +41,18 @@ void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
 }
 
 void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
+  if (ctrl->freq != 0) {
+    outl(AUDIO_FREQ_ADDR, ctrl->freq);
+    audio_freq = ctrl->freq;
+  }
+  if (ctrl->channels != 0) {
+    outl(AUDIO_CHANNELS_ADDR, ctrl->channels);
+    audio_channels = ctrl->channels;
+  }
+  if (ctrl->samples != 0) {
+    outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
+    audio_samples = ctrl->samples;
+  }
   ctrl->freq = audio_freq;
   ctrl->channels = audio_channels;
   ctrl->samples = audio_samples;
@@ -51,9 +64,22 @@ void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
 }
 
 void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
-  //audio_count = inl(AUDIO_COUNT_ADDR);
-  ctl->buf.start = (void *)(AUDIO_SBUF_ADDR);
-  // ctl->buf.end = (void *)(AUDIO_SBUF_ADDR + audio_count);
-  ctl->buf.end = (void *)(AUDIO_SBUF_ADDR + 1000);
-  // printf("audio play count: %d\n", audio_count);
+  Area *area = &ctl->buf;
+  uint8_t *src = (uint8_t *)area->start;
+  uint32_t len = (uint8_t *)area->end - src;
+  if (len == 0) {
+        // 没有数据可播放
+        ctl->buf.start = NULL;
+        ctl->buf.end = NULL;
+        return;
+    }
+    uintptr_t hw_buf = AUDIO_SBUF_ADDR;
+    for (uint32_t i = 0; i < len; i++) {
+        outb(hw_buf + i, src[i]);
+    }
+    outl(AUDIO_COUNT_ADDR, len);
+    audio_count = len;
+
+    ctl->buf.start = (void *)hw_buf;
+    ctl->buf.end = (void *)(hw_buf + len);
 }
