@@ -53,10 +53,12 @@ void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
   //   outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
   //   audio_samples = ctrl->samples;
   // }
+  printf("audio freq: %d, channels: %d, samples: %d\n", ctrl->freq, 
+      ctrl->channels, ctrl->samples);
   ctrl->freq = audio_freq;
   ctrl->channels = audio_channels;
   ctrl->samples = audio_samples;
-  printf("audio freq: %d, channels: %d, samples: %d\n", audio_freq, audio_channels, audio_samples);
+  
 }
 
 void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
