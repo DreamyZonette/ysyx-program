@@ -17,5 +17,6 @@ void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
   if (kbd->keycode == 0) {
     kbd->keycode = AM_KEY_NONE;
   }
+  //outb(AM_UART_TX, kbd->keycode);
   // kbd->keycode = AM_KEY_NONE;
 }
