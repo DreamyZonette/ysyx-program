@@ -25,6 +25,21 @@ int printf(const char *fmt, ...) {
     else
     {
       p++;
+
+      int width = 0;
+      int zero_pad = 0;
+
+      if (*p == '0') {
+        zero_pad = 1;
+        p++;
+                
+        // 解析宽度
+        while (*p >= '0' && *p <= '9') {
+          width = width * 10 + (*p - '0');
+          p++;
+        }
+      }
+
       switch(*p)
       {
         case 'd':
@@ -32,6 +47,23 @@ int printf(const char *fmt, ...) {
           int num = va_arg(args, int);
           char str[20];
           itoa(num, str);
+
+          int len = 0;
+          while (str[len] != '\0') len++;
+          
+          int is_negative = (num < 0);
+          int digits = is_negative ? len - 1 : len;
+          int padding = width - digits;
+          if (padding < 0) {
+            padding = 0;
+          }
+
+          if (zero_pad) {
+            for (int i = 0; i < padding; i++) {
+              putch('0');
+              count ++;
+            }
+          }
           for(int i = 0; str[i] != '\0'; i++)
           {
             putch(str[i]);

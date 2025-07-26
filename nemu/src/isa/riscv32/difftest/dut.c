@@ -24,7 +24,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     uint32_t value = gpr(i);
     // printf("local:0x%08x\tref:0x%08x\n", value, ref_value);
     if(value != ref_value) {
-    printf("\33[1;31mlocal:0x%08x \33[1;32mref:0x%08x\n", value, ref_value);
+    printf("gpr[%d] \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", i, value, ref_value);
     return false;
     }
   }

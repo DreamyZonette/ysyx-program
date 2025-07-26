@@ -1,10 +1,10 @@
 // Modified by Long for NPC
-module alu #(WIDTH = 32)(
-    input [WIDTH-1:0] i_src1,
-    input [WIDTH-1:0] i_src2,
-    input [WIDTH-1:0] i_imm ,
-    input [WIDTH-1:0] i_offset,
-    input [WIDTH-1:0] i_pc_data,
+module alu (
+    input [31:0] i_src1,
+    input [31:0] i_src2,
+    input [31:0] i_imm ,
+    input [31:0] i_offset,
+    input [31:0] i_pc_data,
     input [5:0]       i_shamt,
     input             i_addi_signal,
     input             i_jalr_signal,
@@ -52,7 +52,7 @@ module alu #(WIDTH = 32)(
     input             i_ebreak_signal,
     output reg        o_B_jump_signal,
     output reg        o_halt_signal,
-    output reg [WIDTH-1:0] o_data
+    output reg [31:0] o_data
     );
 
     wire [31:0] srai_data;

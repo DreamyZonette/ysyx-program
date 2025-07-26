@@ -10,6 +10,8 @@ Functab *functab = NULL;
 int functab_count = 0;
 int functab_capacity = 0;
 
+#ifdef CONFIG_FTRACE
+
 // 读取ELF文件并提取函数名
 void extract_functions(const char* elf_path) {
   //初始化
@@ -157,3 +159,6 @@ if (functab) {
     free(symbols);
     fclose(fp);
 }
+#else
+void extract_functions(const char* elf_path) {}
+#endif
