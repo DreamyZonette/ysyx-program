@@ -14,10 +14,6 @@ static void am_get_gpu_config() {
     height = config & 0xFFFF;
 }
 
-// static uint32_t am_get_gpu_size(){
-//   return inl(FB_ADDR);
-// }
-
 void __am_gpu_init() {
   am_get_gpu_config();
 
@@ -30,10 +26,14 @@ void __am_gpu_init() {
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
+  if (width == 0 || height == 0) {
+    //am_get_gpu_config();
+  }
+  
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
     .width = 32, .height = 32,
-    .vmemsz = width * height * sizeof(uint32_t)
+    .vmemsz = 32 * 32 * sizeof(uint32_t)
   };
 }
 
