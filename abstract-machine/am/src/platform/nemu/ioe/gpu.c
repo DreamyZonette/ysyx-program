@@ -46,12 +46,12 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     uint32_t draw_w = ctl->w;
     uint32_t draw_h = ctl->h;
 
-    if (ctl->x + draw_w > width) {
-      draw_w = width - ctl->x;
-    }
-    if (ctl->y + draw_h > height) {
-      draw_h = height - ctl->y;
-    }
+    // if (ctl->x + draw_w > width) {
+    //   draw_w = width - ctl->x;
+    // }
+    // if (ctl->y + draw_h > height) {
+    //   draw_h = height - ctl->y;
+    // }
 
   //if (draw_w == 0 || draw_h == 0) return;
 
