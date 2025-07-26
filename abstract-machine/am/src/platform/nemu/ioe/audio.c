@@ -51,8 +51,9 @@ void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
 }
 
 void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
-  audio_count = inl(AUDIO_COUNT_ADDR);
+  //audio_count = inl(AUDIO_COUNT_ADDR);
   ctl->buf.start = (void *)(AUDIO_SBUF_ADDR);
-  ctl->buf.end = (void *)(AUDIO_SBUF_ADDR + audio_count);
-  printf("audio play count: %d\n", audio_count);
+  // ctl->buf.end = (void *)(AUDIO_SBUF_ADDR + audio_count);
+  ctl->buf.end = (void *)(AUDIO_SBUF_ADDR + 1000);
+  // printf("audio play count: %d\n", audio_count);
 }
