@@ -14,8 +14,9 @@
 static uint32_t audio_freq = 44100;
 static uint32_t audio_channels = 2;
 static uint32_t audio_samples = 1024;
-static uint32_t audio_sbuf_size = AUDIO_BUF_SIZE;
+static uint32_t audio_sbuf_size = 0;
 static int audio_count = 0; 
+static int audio_write_ptr = 0; 
 
 
 
@@ -25,7 +26,8 @@ void __am_audio_init() {
   // audio_freq = inl(AUDIO_FREQ_ADDR);
   // audio_channels = inl(AUDIO_CHANNELS_ADDR);
   // audio_samples = inl(AUDIO_SAMPLES_ADDR);
-  // audio_sbuf_size = inl(AUDIO_SBUF_SIZE_ADDR);
+  audio_sbuf_size = inl(AUDIO_SBUF_SIZE_ADDR);
+  printf("%d\n", audio_sbuf_size);
 
   if (audio_sbuf_size > AUDIO_BUF_SIZE) {
     audio_sbuf_size = AUDIO_BUF_SIZE;
@@ -79,12 +81,13 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
   if (len > audio_sbuf_size) {
     len = audio_sbuf_size;
   }
-    //uintptr_t hw_buf = AUDIO_SBUF_ADDR;
+
   uint8_t *hw_buf = (uint8_t *)(uintptr_t)AUDIO_SBUF_ADDR;
   for (uint32_t i = 0; i < len; i++) {
-    //outb(hw_buf + i, src[i]);
-    hw_buf[i] = src[i];
-    printf("%d\n", hw_buf[i]);
+    hw_buf[audio_write_ptr++] = src[i];
+    if(audio_write_ptr >= audio_sbuf_size) {
+      audio_write_ptr = 0;
+    }
   }
   audio_count += len;
   outl(AUDIO_COUNT_ADDR, audio_count);
