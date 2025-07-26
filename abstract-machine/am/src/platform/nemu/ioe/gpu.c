@@ -1,5 +1,7 @@
 #include <am.h>
 #include <nemu.h>
+#include <stdio.h>
+
 
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
@@ -11,6 +13,7 @@ static uint32_t am_get_gpu_size(){
 
 void __am_gpu_init() {
   if(size == 0) size = am_get_gpu_size();
+  printf("%x\n", size);
 
   int i;
   int w = 32;  // TODO: get the correct width
