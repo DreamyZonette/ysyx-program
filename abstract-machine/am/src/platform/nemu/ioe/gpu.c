@@ -37,11 +37,11 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  outl(SYNC_ADDR, 1);
   if (width == 0 || height == 0) {
         am_get_gpu_config();
     }
     if (ctl->x >= width || ctl->y >= height) return;
+  outl(SYNC_ADDR, 1);
 
     uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
     uint32_t *pixels = (uint32_t *)ctl->pixels;
