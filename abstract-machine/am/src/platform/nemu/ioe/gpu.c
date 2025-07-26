@@ -56,14 +56,8 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
       draw_h = height - ctl->y;
     }
 
-    // uint32_t start = ctl->y * width + ctl->x;
-    // for (uint32_t y = 0; y < draw_h; y++) {
-    //   memcpy(&fb[start + y * width],
-    //          &pixels[y * ctl->w],
-    //          draw_w * sizeof(uint32_t));
-    // }
-
   if (draw_w == 0 || draw_h == 0) return;
+  
   for (uint32_t y = 0; y < draw_h; y++) {
     // 计算当前行在源和目标中的起始位置
     uint32_t src_start = y * ctl->w;
