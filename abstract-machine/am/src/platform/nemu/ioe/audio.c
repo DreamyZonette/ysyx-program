@@ -41,21 +41,22 @@ void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
 }
 
 void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
-  if (ctrl->freq != 0) {
-    outl(AUDIO_FREQ_ADDR, ctrl->freq);
-    audio_freq = ctrl->freq;
-  }
-  if (ctrl->channels != 0) {
-    outl(AUDIO_CHANNELS_ADDR, ctrl->channels);
-    audio_channels = ctrl->channels;
-  }
-  if (ctrl->samples != 0) {
-    outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
-    audio_samples = ctrl->samples;
-  }
+  // if (ctrl->freq != 0) {
+  //   outl(AUDIO_FREQ_ADDR, ctrl->freq);
+  //   audio_freq = ctrl->freq;
+  // }
+  // if (ctrl->channels != 0) {
+  //   outl(AUDIO_CHANNELS_ADDR, ctrl->channels);
+  //   audio_channels = ctrl->channels;
+  // }
+  // if (ctrl->samples != 0) {
+  //   outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
+  //   audio_samples = ctrl->samples;
+  // }
   ctrl->freq = audio_freq;
   ctrl->channels = audio_channels;
   ctrl->samples = audio_samples;
+  printf("audio freq: %d, channels: %d, samples: %d\n", audio_freq, audio_channels, audio_samples);
 }
 
 void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
@@ -69,21 +70,21 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
   uint8_t *src = (uint8_t *)area->start;
   uint32_t len = (uint8_t *)area->end - src;
   if (len == 0) {
-        // 没有数据可播放
-        ctl->buf.start = NULL;
-        ctl->buf.end = NULL;
-        // printf("11");
-        return;
-    }
+    // 没有数据可播放
+    ctl->buf.start = NULL;
+    ctl->buf.end = NULL;
+    // printf("11");
+    return;
+  }
     //uintptr_t hw_buf = AUDIO_SBUF_ADDR;
-    uint8_t *hw_buf = (uint8_t *)(uintptr_t)AUDIO_SBUF_ADDR;
-    for (uint32_t i = 0; i < len; i++) {
-      //outb(hw_buf + i, src[i]);
-      hw_buf[i] = src[i];
-    }
-    audio_count -= len;
-    outl(AUDIO_COUNT_ADDR, audio_count);
+  uint8_t *hw_buf = (uint8_t *)(uintptr_t)AUDIO_SBUF_ADDR;
+  for (uint32_t i = 0; i < len; i++) {
+    //outb(hw_buf + i, src[i]);
+    hw_buf[i] = src[i];
+  }
+  audio_count -= len;
+  outl(AUDIO_COUNT_ADDR, audio_count);
 
-    ctl->buf.start = (void *)hw_buf;
-    ctl->buf.end = (void *)(hw_buf + len);
+  ctl->buf.start = (void *)hw_buf;
+  ctl->buf.end = (void *)(hw_buf + len);
 }
