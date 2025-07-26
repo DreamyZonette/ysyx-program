@@ -62,7 +62,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
         
     // 复制一行像素
     for (uint32_t x = 0; x < draw_w; x++) {
-        fb[dst_start + x] = pixels[src_start + x];
+      fb[dst_start + x] = pixels[src_start + x];
     }
   }
   if (ctl->sync) {

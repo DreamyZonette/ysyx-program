@@ -41,18 +41,18 @@ void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
 }
 
 void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
-  if (ctrl->freq != 0) {
-    outl(AUDIO_FREQ_ADDR, ctrl->freq);
-    audio_freq = ctrl->freq;
-  }
-  if (ctrl->channels != 0) {
-    outl(AUDIO_CHANNELS_ADDR, ctrl->channels);
-    audio_channels = ctrl->channels;
-  }
-  if (ctrl->samples != 0) {
-    outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
-    audio_samples = ctrl->samples;
-  }
+  // if (ctrl->freq != 0) {
+  //   outl(AUDIO_FREQ_ADDR, ctrl->freq);
+  //   audio_freq = ctrl->freq;
+  // }
+  // if (ctrl->channels != 0) {
+  //   outl(AUDIO_CHANNELS_ADDR, ctrl->channels);
+  //   audio_channels = ctrl->channels;
+  // }
+  // if (ctrl->samples != 0) {
+  //   outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
+  //   audio_samples = ctrl->samples;
+  // }
   ctrl->freq = audio_freq;
   ctrl->channels = audio_channels;
   ctrl->samples = audio_samples;
@@ -71,12 +71,11 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
         // 没有数据可播放
         ctl->buf.start = NULL;
         ctl->buf.end = NULL;
-        printf("11\n");
         return;
     }
-    uintptr_t hw_buf = AUDIO_SBUF_ADDR;
+    uint8_t *hw_buf = (uint8_t *)(uintptr_t)AUDIO_SBUF_ADDR;
     for (uint32_t i = 0; i < len; i++) {
-        outb(hw_buf + i, src[i]);
+        hw_buf[i] = src[i];
     }
     outl(AUDIO_COUNT_ADDR, len);
     audio_count = len;
