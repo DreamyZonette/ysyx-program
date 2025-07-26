@@ -30,7 +30,7 @@ int atoi(const char* nptr) {
 }
 
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
-#define MEMORY_POOL_SIZE (32 * 1024 * 1024)
+#define MEMORY_POOL_SIZE (64 * 1024 * 1024)
 // 静态内存池
 static uint8_t memory_pool[MEMORY_POOL_SIZE];
 
