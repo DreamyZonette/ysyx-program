@@ -84,7 +84,7 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
     //outb(hw_buf + i, src[i]);
     hw_buf[i] = src[i];
   }
-  audio_count -= len;
+  audio_count = len;
   outl(AUDIO_COUNT_ADDR, audio_count);
 
   ctl->buf.start = (void *)hw_buf;
