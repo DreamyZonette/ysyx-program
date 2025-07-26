@@ -26,8 +26,8 @@ void __am_audio_init() {
   // audio_freq = inl(AUDIO_FREQ_ADDR);
   // audio_channels = inl(AUDIO_CHANNELS_ADDR);
   // audio_samples = inl(AUDIO_SAMPLES_ADDR);
-  audio_sbuf_size = inl(AUDIO_SBUF_SIZE_ADDR);
-  printf("%d\n", audio_sbuf_size);
+  //audio_sbuf_size = inl(AUDIO_SBUF_SIZE_ADDR);
+  //printf("%d\n", audio_sbuf_size);
 
   if (audio_sbuf_size > AUDIO_BUF_SIZE) {
     audio_sbuf_size = AUDIO_BUF_SIZE;
@@ -38,6 +38,7 @@ void __am_audio_init() {
 
 void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
   cfg->present = true;
+  printf("%d\n", cfg->bufsize);
   if(cfg->bufsize == 0)
   cfg->bufsize = audio_sbuf_size;
 }
