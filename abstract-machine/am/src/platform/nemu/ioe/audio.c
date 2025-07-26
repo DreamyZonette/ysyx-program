@@ -76,14 +76,17 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
     ctl->buf.end = NULL;
     return;
   }
+  if (len > audio_sbuf_size) {
+    len = audio_sbuf_size;
+  }
     //uintptr_t hw_buf = AUDIO_SBUF_ADDR;
   uint8_t *hw_buf = (uint8_t *)(uintptr_t)AUDIO_SBUF_ADDR;
   for (uint32_t i = 0; i < len; i++) {
     //outb(hw_buf + i, src[i]);
     hw_buf[i] = src[i];
   }
-  audio_count = len;
-  //outl(AUDIO_COUNT_ADDR, audio_count);
+  audio_count += len;
+  outl(AUDIO_COUNT_ADDR, audio_count);
 
   ctl->buf.start = (void *)hw_buf;
   ctl->buf.end = (void *)(hw_buf + len);
