@@ -36,29 +36,21 @@ void vga_update_screen();
 void device_update() {
   static uint64_t last = 0;
   uint64_t now = get_time();
-  //printf("1\n");
   if (now - last < 1000000 / TIMER_HZ) {
     return;
   }
-  //printf("2\n");
   last = now;
-  //printf("3\n");
   IFDEF(CONFIG_HAS_VGA, vga_update_screen());
 
 #ifndef CONFIG_TARGET_AM
-//printf("4\n");
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
-    printf("5\n");
     switch (event.type) {
-      
       case SDL_QUIT:
-      printf("6\n");
         nemu_state.state = NEMU_QUIT;
         break;
 #ifdef CONFIG_HAS_KEYBOARD
       // If a key was pressed
-      printf("7\n");
       case SDL_KEYDOWN:
       case SDL_KEYUP: {
         uint8_t k = event.key.keysym.scancode;
