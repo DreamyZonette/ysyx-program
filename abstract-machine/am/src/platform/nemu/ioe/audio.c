@@ -26,7 +26,7 @@ void __am_audio_init() {
   // audio_freq = inl(AUDIO_FREQ_ADDR);
   // audio_channels = inl(AUDIO_CHANNELS_ADDR);
   // audio_samples = inl(AUDIO_SAMPLES_ADDR);
-  //audio_sbuf_size = inl(AUDIO_SBUF_SIZE_ADDR);
+  audio_sbuf_size = inl(AUDIO_SBUF_SIZE_ADDR);
   //printf("%d\n", audio_sbuf_size);
 
   if (audio_sbuf_size > AUDIO_BUF_SIZE) {
