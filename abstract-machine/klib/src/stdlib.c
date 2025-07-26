@@ -41,8 +41,9 @@ static uint8_t *heap_brk = NULL;
 // 初始化堆
 void init_heap() {
     // 假设堆从 0x80000000 开始，大小为 16MB
-    heap_start = (uint8_t *)0x80000000;
-    heap_end = heap_start + 16 * 1024 * 1024; // 16MB
+    extern char _end;
+    heap_start = (uint8_t *)(((uintptr_t)&_end + 4095) & ~4095);
+    heap_end = heap_start + 32 * 1024 * 1024; // 16MB
     heap_brk = heap_start;
 }
 
