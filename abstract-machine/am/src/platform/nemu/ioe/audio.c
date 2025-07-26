@@ -53,8 +53,6 @@ void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
     outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
     audio_samples = ctrl->samples;
   }
-  // printf("audio freq: %d, channels: %d, samples: %d\n", ctrl->freq, 
-  //     ctrl->channels, ctrl->samples);
   // ctrl->freq = audio_freq;
   // ctrl->channels = audio_channels;
   // ctrl->samples = audio_samples;
@@ -63,8 +61,7 @@ void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
 
 void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
   audio_count = stat->count;
-  printf("audio count: %d\n", stat->count);
-  outl(AUDIO_COUNT_ADDR, audio_count);
+  //outl(AUDIO_COUNT_ADDR, audio_count);
 }
 
 void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
@@ -75,7 +72,6 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
     // 没有数据可播放
     ctl->buf.start = NULL;
     ctl->buf.end = NULL;
-    // printf("11");
     return;
   }
     //uintptr_t hw_buf = AUDIO_SBUF_ADDR;
