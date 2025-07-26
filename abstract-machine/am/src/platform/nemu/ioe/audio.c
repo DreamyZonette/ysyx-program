@@ -20,14 +20,12 @@ static int audio_count = 0;
 
 
 void __am_audio_init() {
-  printf("%d\n", inl(AUDIO_INIT_ADDR));
   outl(AUDIO_INIT_ADDR, 1);
-  printf("%d\n", inl(AUDIO_INIT_ADDR));
 
-  audio_freq = inl(AUDIO_FREQ_ADDR);
-  audio_channels = inl(AUDIO_CHANNELS_ADDR);
-  audio_samples = inl(AUDIO_SAMPLES_ADDR);
-  audio_sbuf_size = inl(AUDIO_SBUF_SIZE_ADDR);
+  // audio_freq = inl(AUDIO_FREQ_ADDR);
+  // audio_channels = inl(AUDIO_CHANNELS_ADDR);
+  // audio_samples = inl(AUDIO_SAMPLES_ADDR);
+  // audio_sbuf_size = inl(AUDIO_SBUF_SIZE_ADDR);
 
   if (audio_sbuf_size > AUDIO_BUF_SIZE) {
     audio_sbuf_size = AUDIO_BUF_SIZE;
@@ -64,8 +62,8 @@ void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
 }
 
 void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
-  audio_count = inl(AUDIO_COUNT_ADDR);
-  stat->count = audio_count;
+  audio_count = stat->count;
+  outl(AUDIO_COUNT_ADDR, audio_count);
   printf("audio count: %d\n", audio_count);
 }
 
