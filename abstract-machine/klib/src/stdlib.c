@@ -42,7 +42,7 @@ typedef struct mem_block {
 } mem_block_t;
 
 // 空闲链表头
-static mem_block_t *free_list = (mem_block_t *)memory_pool;
+mem_block_t *free_list = (mem_block_t *)memory_pool;
 
 // 初始化内存池
 void init_memory_pool() {
