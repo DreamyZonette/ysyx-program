@@ -1,6 +1,6 @@
 TOP_NAME = top
-#IMG ?= /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-npc.bin
-IMG ?= 
+IMG ?= /home/long/ysyx-workbench/npc/add-minirv-npc.bin
+#IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 

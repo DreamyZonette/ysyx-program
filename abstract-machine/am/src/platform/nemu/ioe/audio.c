@@ -14,8 +14,7 @@ static uint32_t audio_freq = 44100;
 static uint32_t audio_channels = 2;
 static uint32_t audio_samples = 1024;
 static uint32_t audio_sbuf_size = AUDIO_BUF_SIZE;
-static uint8_t  audio_sbuf[AUDIO_BUF_SIZE];
-static uint32_t audio_write_pos = 0; 
+static int audio_count = 0; 
 
 
 
@@ -46,9 +45,12 @@ void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
 }
 
 void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
-  stat->count = inl(AUDIO_COUNT_ADDR);
+  audio_count = inl(AUDIO_COUNT_ADDR);
+  stat->count = audio_count;
 }
 
 void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
-  Area area = ctl->buf;
+  audio_count = inl(AUDIO_COUNT_ADDR);
+  ctl->buf.start = AUDIO_SBUF_ADDR;
+  ctl->buf.end = AUDIO_SBUF_ADDR + audio_count;
 }
