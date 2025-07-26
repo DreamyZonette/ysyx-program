@@ -71,6 +71,7 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
         // 没有数据可播放
         ctl->buf.start = NULL;
         ctl->buf.end = NULL;
+        printf("11\n");
         return;
     }
     uintptr_t hw_buf = AUDIO_SBUF_ADDR;
