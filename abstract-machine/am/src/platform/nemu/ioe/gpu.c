@@ -38,36 +38,36 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  // if (width == 0 || height == 0) {
-  //       am_get_gpu_config();
-  //   }
-  //   if (ctl->x >= width || ctl->y >= height) return;
+  if (width == 0 || height == 0) {
+        am_get_gpu_config();
+    }
+    if (ctl->x >= width || ctl->y >= height) return;
 
-  //   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  //   uint32_t *pixels = (uint32_t *)ctl->pixels;
+    uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+    uint32_t *pixels = (uint32_t *)ctl->pixels;
 
-  //   uint32_t draw_w = ctl->w;
-  //   uint32_t draw_h = ctl->h;
+    uint32_t draw_w = ctl->w;
+    uint32_t draw_h = ctl->h;
 
-  //   if (ctl->x + draw_w > width) {
-  //     draw_w = width - ctl->x;
-  //   }
-  //   if (ctl->y + draw_h > height) {
-  //     draw_h = height - ctl->y;
-  //   }
+    if (ctl->x + draw_w > width) {
+      draw_w = width - ctl->x;
+    }
+    if (ctl->y + draw_h > height) {
+      draw_h = height - ctl->y;
+    }
 
-  // if (draw_w == 0 || draw_h == 0) return;
+  if (draw_w == 0 || draw_h == 0) return;
 
-  // for (uint32_t y = 0; y < draw_h; y++) {
-  //   // 计算当前行在源和目标中的起始位置
-  //   uint32_t src_start = y * ctl->w;
-  //   uint32_t dst_start = (ctl->y + y) * width + ctl->x;
+  for (uint32_t y = 0; y < draw_h; y++) {
+    // 计算当前行在源和目标中的起始位置
+    uint32_t src_start = y * ctl->w;
+    uint32_t dst_start = (ctl->y + y) * width + ctl->x;
         
-  //   // 复制一行像素
-  //   for (uint32_t x = 0; x < draw_w; x++) {
-  //       fb[dst_start + x] = pixels[src_start + x];
-  //   }
-  // }
+    // 复制一行像素
+    for (uint32_t x = 0; x < draw_w; x++) {
+        fb[dst_start + x] = pixels[src_start + x];
+    }
+  }
 
 
   if (ctl->sync) {
