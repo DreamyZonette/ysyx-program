@@ -33,7 +33,7 @@ static uint32_t screen_size() {
 
 static void *vmem = NULL;
 static uint32_t *vgactl_port_base = NULL;
-#define SYNC_ADDR (CONFIG_VGA_CTL_MMIO + 4)
+#define AM_SYNC_ADDR (CONFIG_VGA_CTL_MMIO + 4)
 
 #ifdef CONFIG_VGA_SHOW_SCREEN
 #ifndef CONFIG_TARGET_AM
