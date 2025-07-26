@@ -65,6 +65,8 @@ void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
 }
 
 void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
+  audio_count = inl(AUDIO_COUNT_ADDR);
+  printf("%d\n", audio_count);
   Area *area = &ctl->buf;
   uint8_t *src = (uint8_t *)area->start;
   uint32_t len = (uint8_t *)area->end - src;
