@@ -20,7 +20,9 @@ static int audio_count = 0;
 
 
 void __am_audio_init() {
+  printf("%d\n", inl(AUDIO_INIT_ADDR));
   outl(AUDIO_INIT_ADDR, 1);
+  printf("%d\n", inl(AUDIO_INIT_ADDR));
 
   audio_freq = inl(AUDIO_FREQ_ADDR);
   audio_channels = inl(AUDIO_CHANNELS_ADDR);
@@ -53,8 +55,8 @@ void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
     outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
     audio_samples = ctrl->samples;
   }
-  printf("audio freq: %d, channels: %d, samples: %d\n", ctrl->freq, 
-      ctrl->channels, ctrl->samples);
+  // printf("audio freq: %d, channels: %d, samples: %d\n", ctrl->freq, 
+  //     ctrl->channels, ctrl->samples);
   // ctrl->freq = audio_freq;
   // ctrl->channels = audio_channels;
   // ctrl->samples = audio_samples;
