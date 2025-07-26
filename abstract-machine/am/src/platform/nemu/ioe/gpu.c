@@ -1,19 +1,25 @@
 #include <am.h>
 #include <nemu.h>
-#include <stdio.h>
 
 
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
-static uint32_t size = 0;
+//static uint32_t size = 0;
+static uint32_t width = 0;
+static uint32_t height = 0;
 
-static uint32_t am_get_gpu_size(){
-  return inl(FB_ADDR);
+static void am_get_gpu_config() {
+    uint32_t config = inl(VGACTL_ADDR);
+    width = config >> 16;
+    height = config & 0xFFFF;
 }
 
+// static uint32_t am_get_gpu_size(){
+//   return inl(FB_ADDR);
+// }
+
 void __am_gpu_init() {
-  if(size == 0) size = am_get_gpu_size();
-  printf("%x\n", size);
+  am_get_gpu_config();
 
   int i;
   int w = 32;  // TODO: get the correct width
@@ -27,7 +33,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
     .width = 32, .height = 32,
-    .vmemsz = 0
+    .vmemsz = width * height * sizeof(uint32_t)
   };
 }
 
