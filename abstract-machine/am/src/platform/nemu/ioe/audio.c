@@ -61,7 +61,7 @@ void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
 void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
   audio_count = inl(AUDIO_COUNT_ADDR);
   stat->count = audio_count;
-  printf("audio count: %d\n");
+  printf("audio count: %d\n", audio_count);
 }
 
 void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
