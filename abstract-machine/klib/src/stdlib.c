@@ -30,9 +30,9 @@ int atoi(const char* nptr) {
 }
 
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
-#define MEMORY_POOL_SIZE (32 * 1024 * 1024)
+#define MEMORY_POOL_SIZE (128 * 1024 * 1024)
 // 静态内存池
-uint8_t memory_pool[MEMORY_POOL_SIZE];
+static uint8_t memory_pool[MEMORY_POOL_SIZE];
 
 // 内存块结构
 typedef struct mem_block {
@@ -42,7 +42,7 @@ typedef struct mem_block {
 } mem_block_t;
 
 // 空闲链表头
-mem_block_t *free_list = (mem_block_t *)memory_pool;
+static mem_block_t *free_list = (mem_block_t *)memory_pool;
 
 // 初始化内存池
 void init_memory_pool() {
