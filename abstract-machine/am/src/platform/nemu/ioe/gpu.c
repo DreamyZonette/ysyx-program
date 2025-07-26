@@ -41,7 +41,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
         am_get_gpu_config();
     }
     if (ctl->x >= width || ctl->y >= height) return;
-  outl(SYNC_ADDR, 1);
+  //outl(SYNC_ADDR, 1);
 
     uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
     uint32_t *pixels = (uint32_t *)ctl->pixels;
