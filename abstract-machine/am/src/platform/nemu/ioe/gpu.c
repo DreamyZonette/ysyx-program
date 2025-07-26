@@ -14,25 +14,23 @@ static void am_get_gpu_config() {
 }
 
 void __am_gpu_init() {
-  //am_get_gpu_config();
+  am_get_gpu_config();
 
   int i;
-  int w = 32;  
-  int h = 32;  
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  for (i = 0; i < w * h; i ++) fb[i] = i;
+  for (i = 0; i < width * height; i ++) fb[i] = 0;
   outl(SYNC_ADDR, 1);
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
-  // if (width == 0 || height == 0) {
-  //   //am_get_gpu_config();
-  // }
+  if (width == 0 || height == 0) {
+    am_get_gpu_config();
+  }
   
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
-    .width = 32, .height = 32,
-    .vmemsz = 32 * 32 * sizeof(uint32_t)
+    .width = width, .height = height,
+    .vmemsz = width * height * sizeof(uint32_t)
   };
 }
 
@@ -41,7 +39,6 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
         am_get_gpu_config();
     }
     if (ctl->x >= width || ctl->y >= height) return;
-  //outl(SYNC_ADDR, 1);
 
     uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
     uint32_t *pixels = (uint32_t *)ctl->pixels;
@@ -68,11 +65,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
         fb[dst_start + x] = pixels[src_start + x];
     }
   }
-
-
-  // if (ctl->sync) {
-  //   outl(SYNC_ADDR, 1);
-  // }
+  if (ctl->sync) {
+    outl(SYNC_ADDR, 1);
+  }
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
