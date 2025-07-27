@@ -28,8 +28,9 @@
 
     wire addi_signal;
     wire andi_signal;
-    //wire slti_signal;
+    wire slti_signal;
     wire xori_signal;
+    wire ori_signal;
     wire ebreak_signal;
     wire jalr_signal;
     wire lbu_signal;
@@ -56,6 +57,8 @@
     wire sltu_signal;
     wire mul_signal;
     wire mulh_signal;
+    wire mulhu_signal;
+    wire mulhsu_signal;
     wire div_signal;
     wire divu_signal;
     wire rem_signal;
@@ -113,8 +116,9 @@
     .o_wmask(wmask),
     .o_addi_signal(addi_signal),
     .o_andi_signal(andi_signal),
-    //.o_slti_signal(slti_signal),
+    .o_slti_signal(slti_signal),
     .o_xori_signal(xori_signal),
+    .o_ori_signal(ori_signal),
     .o_ebreak_signal(ebreak_signal),
     .o_jalr_signal(jalr_signal),
     .o_lbu_signal(lbu_signal),
@@ -141,6 +145,8 @@
     .o_sltu_signal(sltu_signal),
     .o_mul_signal(mul_signal),
     .o_mulh_signal(mulh_signal),
+    .o_mulhu_signal(mulhu_signal),
+    .o_mulhsu_signal(mulhsu_signal),
     .o_div_signal(div_signal),
     .o_divu_signal(divu_signal),
     .o_rem_signal(rem_signal),
@@ -173,11 +179,12 @@
     .i_lbu_signal(lbu_signal),
     .i_lhu_signal(lhu_signal),
     .i_xori_signal(xori_signal),
+    .i_ori_signal(ori_signal),
     .i_andi_signal(andi_signal),
     .i_slli_signal(slli_signal),
     .i_srli_signal(srli_signal),
     .i_srai_signal(srai_signal),
-    //.i_slti_signal(slti_signal),
+    .i_slti_signal(slti_signal),
     .i_sltiu_signal(sltiu_signal),
     .i_beq_signal(beq_signal),
     .i_bne_signal(bne_signal),
@@ -196,6 +203,8 @@
     .i_sra_signal(sra_signal),
     .i_mul_signal(mul_signal),
     .i_mulh_signal(mulh_signal),
+    .i_mulhu_signal(mulhu_signal),
+    .i_mulhsu_signal(mulhsu_signal),
     .i_div_signal(div_signal),
     .i_divu_signal(divu_signal),
     .i_rem_signal(rem_signal),

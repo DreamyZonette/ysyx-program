@@ -17,7 +17,9 @@ module Itype (
     output reg o_lhu_signal,
     output reg o_andi_signal,
     output reg o_xori_signal,
+    output reg o_slti_signal,
     output reg o_sltiu_signal,
+    output reg o_ori_signal,
     output o_halt_signal
 );
 
@@ -58,7 +60,9 @@ module Itype (
         o_lhu_signal    = 1'b0;
         o_andi_signal   = 1'b0;
         o_xori_signal   = 1'b0;
+        o_ori_signal    = 1'b0;
         o_sltiu_signal  = 1'b0;
+        o_slti_signal   = 1'b0;
         sign_extended   = 1'b0;
         zero_extended   = 1'b0;
         shamt_signal    = 1'b0;
@@ -83,7 +87,9 @@ module Itype (
             o_addi_signal  = (fun1 == 3'b000) ? 1'b1 : 1'b0;
             o_andi_signal  = (fun1 == 3'b111) ? 1'b1 : 1'b0;
             o_xori_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
+            o_ori_signal   = (fun1 == 3'b110) ? 1'b1 : 1'b0;
             o_sltiu_signal = (fun1 == 3'b011) ? 1'b1 : 1'b0;
+            o_slti_signal  = (fun1 == 3'b010) ? 1'b1 : 1'b0;
             // 涉及shamt
             if(shamt_detect == 7'b0000000) begin
                 // 7'b0000000
@@ -96,7 +102,7 @@ module Itype (
             shamt_signal = o_slli_signal | o_srli_signal | o_srai_signal;
            
             // 根据指令类型选择扩展方式
-            sign_extended = (fun1 == 3'b000 || fun1 == 3'b111 || fun1 == 3'b100) ? 1'b1 : 1'b0; // addi/andi/xori
+            sign_extended = (fun1 == 3'b000 || fun1 == 3'b111 || fun1 == 3'b100 || fun1 == 3'b010 || fun1 == 3'b110) ? 1'b1 : 1'b0; // addi/andi/xori/slti/ori
             zero_extended = (fun1 == 3'b011) ? 1'b1 : 1'b0; // sltiu
         end
         7'b1110011: begin  // ebreak
