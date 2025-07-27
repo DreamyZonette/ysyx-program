@@ -59,7 +59,7 @@ extern "C" void pmem_write(int addr, int len, int data) {
   
   if(addr == SERIAL_PORT){
     putchar(char(data));
-    printf("串口传出数据%08x\n", data);
+    // printf("串口传出数据%08x\n", data);
   }
   else{
     #if CONFIG_MTRACE
