@@ -34,4 +34,10 @@ typedef uint16_t ioaddr_t;
 
 #include <debug.h>
 
+extern VerilatedContext* contextp;
+#if CONFIG_WAVE
+extern VerilatedVcdC* tfp;
+#endif
+extern Vtop* top;
+
 #endif
