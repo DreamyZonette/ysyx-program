@@ -30,10 +30,15 @@ static void internal_pmem_write(paddr_t addr, int len, word_t data) {
 
 extern "C" int pmem_read(int addr, int len) {
   uint32_t ret;
-  ret = internal_pmem_read(paddr_t(addr), len);
-  #if CONFIG_MTRACE
-    printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", paddr_t(addr), len, ret);
-  #endif
+  if (raddr == RTC_LO_ADDR || raddr == RTC_HI_ADDR) { 
+    // 返回当前时间
+  }
+  else{
+    ret = internal_pmem_read(paddr_t(addr), len);
+    #if CONFIG_MTRACE
+      printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", paddr_t(addr), len, ret);
+    #endif
+  }
   return ret;
 }
 
