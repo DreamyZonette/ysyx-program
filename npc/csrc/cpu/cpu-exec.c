@@ -115,6 +115,7 @@ void assert_fail_msg() {
 #ifdef CONFIG_IRINGBUF
   print_iringbuf(cpu.pc);
 #else
+  void isa_reg_display();
   isa_reg_display();
 #endif
   statistic();
