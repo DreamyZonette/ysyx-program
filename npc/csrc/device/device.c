@@ -72,7 +72,7 @@ void init_device() {
   init_map();
 
   #if CONFIG_HAS_SERIAL 
-    printf("init serial\n");
+    // printf("init serial\n");
     init_serial(); 
   #endif
   #if CONFIG_HAS_TIMER
