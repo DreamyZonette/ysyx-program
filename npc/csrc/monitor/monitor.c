@@ -87,7 +87,7 @@ static void welcome() {
   Log("Build time: %s, %s", __TIME__, __DATE__);
   printf("Welcome to %s-NPC!\n", ANSI_FMT("riscv32e", ANSI_FG_YELLOW ANSI_BG_RED));
   printf("For help, type \"help\"\n");
-  printf("\33[1;33m%s\n",npc_logo);
+  printf("\33[1;33m%s\33[0m\n",npc_logo);
 }
 
 static long load_img() {
