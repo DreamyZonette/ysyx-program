@@ -1,6 +1,6 @@
 #include <am.h>
 #include <nemu.h>
-// #include <stdio.h>
+#include <stdio.h>
 
 #define AUDIO_FREQ_ADDR      (AUDIO_ADDR + 0x00)
 #define AUDIO_CHANNELS_ADDR  (AUDIO_ADDR + 0x04)
@@ -41,18 +41,26 @@ void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
 }
 
 void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
-  if (ctrl->freq) {
-    outl(AUDIO_FREQ_ADDR, ctrl->freq);
-  }
-  if (ctrl->channels) {
-    outl(AUDIO_CHANNELS_ADDR, ctrl->channels);
-  }
-  if (ctrl->samples) {
-    outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
-  }
-  // ctrl->freq = audio_freq;
-  // ctrl->channels = audio_channels;
-  // ctrl->samples = audio_samples;
+  // if (ctrl->freq) {
+  //   outl(AUDIO_FREQ_ADDR, ctrl->freq);
+  // }
+  // if (ctrl->channels) {
+  //   outl(AUDIO_CHANNELS_ADDR, ctrl->channels);
+  // }
+  // if (ctrl->samples) {
+  //   outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
+  // }
+   uint32_t freq = ctrl->freq ? ctrl->freq : 44100;
+  uint32_t channels = ctrl->channels ? ctrl->channels : 2;
+  uint32_t samples = ctrl->samples ? ctrl->samples : 1024;
+  
+  outl(AUDIO_FREQ_ADDR, freq);
+  outl(AUDIO_CHANNELS_ADDR, channels);
+  outl(AUDIO_SAMPLES_ADDR, samples);
+  
+  // 记录设置
+  printf("Audio config: freq=%u, channels=%u, samples=%u\n",
+         freq, channels, samples);
   
 }
 
@@ -82,24 +90,6 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
     len = free_space;
   }
     if (len == 0) return;
-    // 阻塞等待直到有足够空间
-    // while (free_space < len) {
-    //     // 等待一段时间后重新检查
-    //     //usleep(1000); // 1ms延迟，避免忙等待
-    //     for (volatile int i = 0; i < 1000; i++);
-
-    //     used = inl(AUDIO_COUNT_ADDR);
-    //     free_space = audio_sbuf_size - used;
-    // }
-    
-    // 计算写入位置（环形缓冲区）
-    //uint32_t write_ptr = used % audio_sbuf_size;
-    
-    // 计算第一段长度（从写入位置到缓冲区末尾）
-    // uint32_t first_chunk = audio_sbuf_size - write_ptr;
-    // if (first_chunk > len) {
-    //     first_chunk = len;
-    // }
     
     uint8_t *hw_buf = (uint8_t *)(uintptr_t)AUDIO_SBUF_ADDR;
     if (app_wp + len <= total_size) {
