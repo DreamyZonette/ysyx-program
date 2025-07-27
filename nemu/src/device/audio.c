@@ -94,6 +94,8 @@ static void audio_io_handler(uint32_t offset, int len, bool is_write) {
           wp = 0;
           audio_base[reg_wp] = 0;
           audio_base[reg_rp] = 0;
+        printf("SDL audio initialized: freq=%d, channels=%d, samples=%d\n",
+             have.freq, have.channels, have.samples);
         } else {
           Log("Audio init failed: %s", SDL_GetError());
         }

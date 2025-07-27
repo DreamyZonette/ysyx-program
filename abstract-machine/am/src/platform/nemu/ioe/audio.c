@@ -1,6 +1,5 @@
 #include <am.h>
 #include <nemu.h>
-#include <stdio.h>
 
 #define AUDIO_FREQ_ADDR      (AUDIO_ADDR + 0x00)
 #define AUDIO_CHANNELS_ADDR  (AUDIO_ADDR + 0x04)
@@ -13,12 +12,6 @@
 
 #define AUDIO_BUF_SIZE 0x10000
 
-// static uint32_t audio_freq = 44100;
-// static uint32_t audio_channels = 2;
-// static uint32_t audio_samples = 1024;
-// static uint32_t audio_sbuf_size = 0;
-// static int audio_count = 0; 
-//static int audio_write_ptr = 0; 
 static uint32_t app_wp = 0;
 
 
@@ -34,33 +27,18 @@ void __am_audio_init() {
 void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
   cfg->present = true;
   cfg->bufsize = inl(AUDIO_SBUF_SIZE_ADDR);
-  // audio_sbuf_size = cfg->bufsize;
-  // printf("%d\n", cfg->bufsize);
-  // if(cfg->bufsize == 0)
-  // cfg->bufsize = audio_sbuf_size;
 }
 
 void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
-  // if (ctrl->freq) {
-  //   outl(AUDIO_FREQ_ADDR, ctrl->freq);
-  // }
-  // if (ctrl->channels) {
-  //   outl(AUDIO_CHANNELS_ADDR, ctrl->channels);
-  // }
-  // if (ctrl->samples) {
-  //   outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
-  // }
-   uint32_t freq = ctrl->freq ? ctrl->freq : 44100;
-  uint32_t channels = ctrl->channels ? ctrl->channels : 2;
-  uint32_t samples = ctrl->samples ? ctrl->samples : 1024;
-  
-  outl(AUDIO_FREQ_ADDR, freq);
-  outl(AUDIO_CHANNELS_ADDR, channels);
-  outl(AUDIO_SAMPLES_ADDR, samples);
-  
-  // 记录设置
-  printf("Audio config: freq=%u, channels=%u, samples=%u\n",
-         freq, channels, samples);
+  if (ctrl->freq) {
+    outl(AUDIO_FREQ_ADDR, ctrl->freq);
+  }
+  if (ctrl->channels) {
+    outl(AUDIO_CHANNELS_ADDR, ctrl->channels);
+  }
+  if (ctrl->samples) {
+    outl(AUDIO_SAMPLES_ADDR, ctrl->samples);
+  }
   
 }
 
