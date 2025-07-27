@@ -18,6 +18,8 @@ void init_serial();
 void send_key(uint8_t, bool);
 void vga_update_screen();
 
+uint64_t get_time();
+
 void device_update() {
   static uint64_t last = 0;
   uint64_t now = get_time();
