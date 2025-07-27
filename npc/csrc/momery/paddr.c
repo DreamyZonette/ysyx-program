@@ -38,7 +38,7 @@ extern "C" int pmem_read(int addr, int len) {
   addr = paddr_t(addr);
   uint32_t ret;
   if (addr == RTC_LO_ADDR || addr == RTC_HI_ADDR) { 
-    // 返回当前时间
+    ret = mmio_read(addr, len)
   }
   else{
     ret = internal_pmem_read(addr, len);
@@ -82,7 +82,6 @@ word_t paddr_read(paddr_t addr, int len) {
 void paddr_write(paddr_t addr, int len, word_t data) {
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   #if CONFIG_DEVICE
-  printf("1\n");
   mmio_write(addr, len, data);
   return;
   #endif
