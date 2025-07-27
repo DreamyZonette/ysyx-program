@@ -10,6 +10,7 @@
   int count = 0;
 #endif
 
+uint64_t g_nr_guest_inst = 0;
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
 char p[128];
