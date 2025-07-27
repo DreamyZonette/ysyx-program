@@ -7,7 +7,7 @@
 static uint64_t base_time = 0;
 
 static uint64_t am_get_time() {
-   inl(RTC_ADDR + 4); // clear pending interrupts
+  //inl(RTC_ADDR + 4); // clear pending interrupts
   uint32_t hi, lo;
   lo = inl(RTC_ADDR);
   hi = inl(RTC_ADDR + 4);
