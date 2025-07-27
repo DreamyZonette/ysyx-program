@@ -71,10 +71,10 @@ void init_device() {
   IFDEF(CONFIG_TARGET_AM, ioe_init());
   init_map();
 
-  // #if CONFIG_HAS_SERIAL 
+  #if CONFIG_HAS_SERIAL 
     printf("init serial\n");
     init_serial(); 
-  // #endif
+  #endif
   #if CONFIG_HAS_TIMER
     init_timer();
   #endif

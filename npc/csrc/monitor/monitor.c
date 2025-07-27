@@ -17,6 +17,7 @@ void init_isa();
 void sdb_set_batch_mode();
 void init_difftest(char *ref_so_file, long img_size, int port);
 void init_log(const char *log_file);
+void init_device();
 
 unsigned char npc_logo[] = {// minirv
   0x0a, 0x20, 0x5f, 0x5f, 0x20, 0x20, 0x20, 0x20, 0x5f, 0x5f, 0x20, 0x20,
@@ -206,5 +207,7 @@ void init_monitor(int argc, char *argv[]) {
   init_difftest(diff_so_file, img_size, difftest_port);
   #endif
 
+  init_device();
+  
   welcome();
 }
