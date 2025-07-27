@@ -152,7 +152,7 @@ static void execute(uint64_t n) {
     if(top->halt == 1){
       npc_state.halt_pc = top->de_pc;
       npc_state.halt_ret = top->reg_data[10];
-      npc_state.state = NPC_ABORT;
+      // npc_state.state = NPC_ABORT;
     }
 
     if (npc_state.state != NPC_RUNNING) break;
