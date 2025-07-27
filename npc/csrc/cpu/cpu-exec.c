@@ -127,6 +127,7 @@ static void execute(uint64_t n) {
     if(sim_finish) {
       npc_state.halt_pc = top->de_pc;
       npc_state.halt_ret = top->reg_data[10]; // 寄存器返回值
+      printf("%d", npc_state.halt_ret);
       if(is_hit_good_trap)npc_state.state = NPC_END;
     }
 
