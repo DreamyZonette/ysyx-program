@@ -58,7 +58,8 @@ extern "C" void pmem_write(int addr, int len, int data) {
   else if(len == 4) mask = 0xffffffff;
   
   if(addr == SERIAL_PORT){
-    putchar(char(data));
+    // putchar(char(data));
+    mmio_write(addr, len, data);
     // printf("串口传出数据%08x\n", data);
   }
   else{
