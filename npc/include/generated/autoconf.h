@@ -4,6 +4,7 @@
 #define CONFIG_FTRACE 0
 #define CONFIG_TRACE 0
 #define CONFIG_DIFFTEST 1
+#define CONFIG_DEVICE 1
 
 #define CONFIG_HAS_AUDIO 0
 #define CONFIG_HAS_SERIAL 1
