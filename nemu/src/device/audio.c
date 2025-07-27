@@ -44,19 +44,6 @@ enum {
 // } SDL_AudioSpec;
 
 
-// SDL_AudioSpec s = {};
-// s.format = AUDIO_S16SYS;  // 假设系统中音频数据的格式总是使用16位有符号数来表示
-// s.channels = 2;          // 假设系统中音频数据总是双声道
-// s.freq = 44100;          // 假设系统中音频数据的采样率为44.1kHz
-// s.samples = 1024;        // 假设系统中音频数据缓冲区的大小为1024个采样点
-// s.size = s.samples * 2 * 2;  // 计算音频数据缓冲区的大小
-// s.silence = 0;           // 计算静音值
-// s.userdata = NULL;        // 不使用
-// s.callback = NULL;        // 不使用
-
-// SDL_InitSubSystem(SDL_INIT_AUDIO);
-// SDL_OpenAudio(&s, NULL);
-// SDL_PauseAudio(0);
 static SDL_AudioDeviceID dev = 0;
 static uint32_t rp = 0;  // 环形缓冲区读取位置
 static uint32_t wp = 0;  // 环形缓冲区写入位置
@@ -94,8 +81,8 @@ static void audio_io_handler(uint32_t offset, int len, bool is_write) {
           wp = 0;
           audio_base[reg_wp] = 0;
           audio_base[reg_rp] = 0;
-        printf("SDL audio initialized: freq=%d, channels=%d, samples=%d\n",
-             have.freq, have.channels, have.samples);
+        // printf("SDL audio initialized: freq=%d, channels=%d, samples=%d\n",
+        //      have.freq, have.channels, have.samples);
         } else {
           Log("Audio init failed: %s", SDL_GetError());
         }
