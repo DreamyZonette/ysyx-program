@@ -27,7 +27,9 @@ void device_update() {
     return;
   }
   last = now;
-  IFDEF(CONFIG_HAS_VGA, vga_update_screen());
+  #if CONFIG_HAS_VGA
+  vga_update_screen();
+  #endif
 
 #if CONFIG_HAS_AUDIO
   // 添加音频更新处理
