@@ -11,6 +11,7 @@
 #endif
 
 uint64_t g_nr_guest_inst = 0;
+static uint64_t g_timer = 0; // unit: us
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
 char p[128];
@@ -102,12 +103,12 @@ void single_cycle() {
 }
 
 static void statistic() {
-//   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
-// #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
-//   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
-//   Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
-//   if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
-//   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
+  IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
+#define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
+  Log("host time spent = " NUMBERIC_FMT " us", g_timer);
+  Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
+  if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
+  else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 
 if(npc_state.state == NPC_ABORT) assert(0);
 }
@@ -169,8 +170,12 @@ void cpu_exec(uint64_t n){
       return;
     default: npc_state.state = NPC_RUNNING;
   }
-  
+    uint64_t timer_start = get_time();
+
     execute(n);
+
+    uint64_t timer_end = get_time();
+    g_timer += timer_end - timer_start;
 
     switch (npc_state.state) {
     case NPC_RUNNING: npc_state.state = NPC_STOP; break;
