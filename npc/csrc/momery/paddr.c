@@ -49,13 +49,13 @@ extern "C" void pmem_write(int addr, int len, int data) {
   
   if(addr == SERIAL_PORT){
     putchar(char(data));
-    //printf("串口传出数据%08x\n", data);
+    printf("串口传出数据%08x\n", data);
   }
   else{
     #if CONFIG_MTRACE
     printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
   #endif
-  //printf("pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    printf("pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
     internal_pmem_write(addr, len, data);
   }
   
