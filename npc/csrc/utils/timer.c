@@ -19,7 +19,7 @@ static uint64_t boot_time = 0;
 static uint64_t get_time_internal() {
 #if defined(CONFIG_TARGET_AM)
   uint64_t us = io_read(AM_TIMER_UPTIME).us;
-  //printf("%lx\n", us);
+  printf("%lx\n", us);
 #elif defined(CONFIG_TIMER_GETTIMEOFDAY)
   struct timeval now;
   gettimeofday(&now, NULL);
@@ -29,7 +29,7 @@ static uint64_t get_time_internal() {
   struct timespec now;
   clock_gettime(CLOCK_MONOTONIC_COARSE, &now);
   uint64_t us = now.tv_sec * 1000000 + now.tv_nsec / 1000;
-  printf("%lx\n", us);
+  // printf("%lx\n", us);
 #endif
   return us;
 }
