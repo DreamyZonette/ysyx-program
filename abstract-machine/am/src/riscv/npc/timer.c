@@ -1,5 +1,6 @@
 #include <am.h>
 #include <riscv/riscv.h>
+#include <stdio.h>
 
 #define DEVICE_BASE 0xa0000000
 #define RTC_ADDR  (DEVICE_BASE + 0x0000048)
@@ -21,7 +22,7 @@ void __am_timer_init() {
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint64_t now = am_get_time();
   uptime->us = now - base_time;// (μs)
-  putch('T');
+  printf("%d\n", uptime->us);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
