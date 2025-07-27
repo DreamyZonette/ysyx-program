@@ -12,7 +12,6 @@
 
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
-bool is_hit_good_trap = true;
 char p[128];
 int print_on = 0;
 CPU_state dut = {
@@ -21,7 +20,6 @@ CPU_state dut = {
 };
 
 extern "C" void dpi_ebreak() {
-    // is_hit_good_trap = false;
     sim_finish = true;  // 触发仿真结束
 }
 extern "C" void dpi_return() {
@@ -130,7 +128,12 @@ static void execute(uint64_t n) {
       npc_state.halt_pc = top->de_pc;
       npc_state.halt_ret = top->reg_data[10]; // 寄存器返回值
       printf("%d\n", npc_state.halt_ret);
-      if(is_hit_good_trap)npc_state.state = NPC_END;
+      npc_state.state = NPC_END;
+    }
+    if(top->halt == 1){
+      npc_state.halt_pc = top->de_pc;
+      npc_state.halt_ret = top->reg_data[10];
+      npc_state.state = NPC_ABORT;
     }
 
     if (npc_state.state != NPC_RUNNING) break;
