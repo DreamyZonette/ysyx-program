@@ -2,7 +2,7 @@
 #include <riscv/riscv.h>
 
 #define DEVICE_BASE 0xa0000000
-#define RTC_ADDR        (DEVICE_BASE + 0x0000048)
+#define RTC_ADDR  (DEVICE_BASE + 0x0000048)
 
 static uint64_t base_time = 0;
 
