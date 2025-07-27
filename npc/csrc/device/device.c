@@ -44,7 +44,7 @@ void device_update() {
       case SDL_QUIT:
         npc_state.state = NPC_QUIT;
         break;
-#ifdef CONFIG_HAS_KEYBOARD
+#if CONFIG_HAS_KEYBOARD
       // If a key was pressed
       case SDL_KEYDOWN:
       case SDL_KEYUP: {
