@@ -1,5 +1,6 @@
 #include <memory/paddr.h>
 #include <memory/host.h> 
+#include <device/mmio.h>
 
 #define DEVICE_BASE 0xa0000000
 #define MMIO_BASE 0xa0000000
@@ -26,6 +27,11 @@ static word_t internal_pmem_read(paddr_t addr, int len) {
 
 static void internal_pmem_write(paddr_t addr, int len, word_t data) {
   host_write(guest_to_host(addr), len, data);
+}
+
+static void out_of_bound(paddr_t addr) {
+  panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
+      addr, PMEM_LEFT, PMEM_RIGHT, top->de_pc);
 }
 
 extern "C" int pmem_read(int addr, int len) {
@@ -62,4 +68,17 @@ extern "C" void pmem_write(int addr, int len, int data) {
     printf("pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
     internal_pmem_write(addr, len, data);
   }
+}
+
+word_t paddr_read(paddr_t addr, int len) {
+  if (likely(in_pmem(addr))) return pmem_read(addr, len);
+  IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
+  out_of_bound(addr);
+  return 0;
+}
+
+void paddr_write(paddr_t addr, int len, word_t data) {
+  if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
+  IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
+  out_of_bound(addr);
 }
