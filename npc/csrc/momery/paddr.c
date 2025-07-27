@@ -46,6 +46,10 @@ extern "C" int pmem_read(int addr, int len) {
 extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
   data = word_t(data);
+  uint32_t mask = 0;
+  if(len == 1) mask = 0xff;
+  else if(len == 2) mask = 0xffff;
+  else if(len == 4) mask = 0xffffffff;
   
   if(addr == SERIAL_PORT){
     putchar(char(data));
@@ -58,5 +62,4 @@ extern "C" void pmem_write(int addr, int len, int data) {
     printf("pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
     internal_pmem_write(addr, len, data);
   }
-  
 }
