@@ -143,6 +143,7 @@ static void execute(uint64_t n) {
   #endif
 
     trace_and_difftest();
+    g_nr_guest_inst ++;
     single_cycle();
 
     if(sim_finish) {
