@@ -1,6 +1,13 @@
 #include <memory/paddr.h>
 #include <memory/host.h> 
 
+#define DEVICE_BASE 0xa0000000
+#define MMIO_BASE 0xa0000000
+// 串口
+#define SERIAL_PORT     (DEVICE_BASE + 0x00003f8)
+// 时钟
+#define RTC_LO_ADDR  (DEVICE_BASE + 0x0000048)
+#define RTC_HI_ADDR  (DEVICE_BASE + 0x000004c)
 
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
@@ -22,7 +29,8 @@ static void internal_pmem_write(paddr_t addr, int len, word_t data) {
 }
 
 extern "C" int pmem_read(int addr, int len) {
-  uint32_t ret = internal_pmem_read(paddr_t(addr), len);
+  uint32_t ret;
+  ret = internal_pmem_read(paddr_t(addr), len);
   #if CONFIG_MTRACE
     printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", paddr_t(addr), len, ret);
   #endif
@@ -30,8 +38,15 @@ extern "C" int pmem_read(int addr, int len) {
 }
 
 extern "C" void pmem_write(int addr, int len, int data) {
-  #if CONFIG_MTRACE
+  addr = paddr_t(addr);
+  data = word_t(data);
+  
+  if(addr == SERIAL_PORT){putchar(char(data));}
+  else{
+    #if CONFIG_MTRACE
     printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", paddr_t(addr), len, word_t(data));
   #endif
-  internal_pmem_write(paddr_t(addr), len, word_t(data));
+    internal_pmem_write(addr, len, data);
+  }
+  
 }
