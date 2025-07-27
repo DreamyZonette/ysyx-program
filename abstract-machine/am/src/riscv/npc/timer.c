@@ -21,6 +21,7 @@ void __am_timer_init() {
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint64_t now = am_get_time();
   uptime->us = now - base_time;// (μs)
+  putch('T');
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
