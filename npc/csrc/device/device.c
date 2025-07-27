@@ -29,7 +29,7 @@ void device_update() {
   last = now;
   IFDEF(CONFIG_HAS_VGA, vga_update_screen());
 
-#ifdef CONFIG_HAS_AUDIO
+#if CONFIG_HAS_AUDIO
   // 添加音频更新处理
   extern void audio_update(void);
   audio_update();
