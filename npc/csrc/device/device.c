@@ -75,7 +75,7 @@ void init_device() {
     init_serial(); 
   #endif
   #if CONFIG_HAS_TIMER
-    printf("init timer\n");
+    // printf("init timer\n");
     init_timer();
   #endif
   #if CONFIG_HAS_VGA
