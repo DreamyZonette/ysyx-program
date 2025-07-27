@@ -28,6 +28,7 @@ VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
+LDFLAGS += -LDFLAGS -lSDL2
 #LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
 #LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
 #LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
