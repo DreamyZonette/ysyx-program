@@ -125,19 +125,17 @@ static void execute(uint64_t n) {
     single_cycle();
 
     if(sim_finish) {
-        if(is_hit_good_trap)npc_state.state = NPC_END;
+      npc_state.halt_pc = top->de_pc;
+      npc_state.halt_ret = top->reg_data[10]; // 寄存器返回值
+      if(is_hit_good_trap)npc_state.state = NPC_END;
     }
-    //printf("%d\n", top->halt);
 
-    if(npc_state.halt_ret != 1) {
-      if(!sim_finish) npc_state.halt_pc = top->de_pc;
-      if(!sim_finish) npc_state.halt_ret = top->halt;
-    }
-    else {
-        npc_state.state = NPC_ABORT;
-    }
-    // else{
-    //     npc_state.state = NPC_STOP;
+    // if(npc_state.halt_ret != 1) {
+    //   if(!sim_finish) npc_state.halt_pc = top->de_pc;
+    //   if(!sim_finish) npc_state.halt_ret = top->halt;
+    // }
+    // else {
+    //     npc_state.state = NPC_ABORT;
     // }
     if (npc_state.state != NPC_RUNNING) break;
   }
