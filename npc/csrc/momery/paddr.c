@@ -65,7 +65,7 @@ extern "C" void pmem_write(int addr, int len, int data) {
     #if CONFIG_MTRACE
     printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
   #endif
-    printf("pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    // printf("pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
     internal_pmem_write(addr, len, data);
   }
 }
