@@ -100,7 +100,14 @@ void single_cycle() {
   step_and_dump_wave();
 }
 
-
+void assert_fail_msg() {
+#ifdef CONFIG_IRINGBUF
+  print_iringbuf(cpu.pc);
+#else
+  isa_reg_display();
+#endif
+  statistic();
+}
 
 static void execute(uint64_t n) {
     if(n <= PRINT_COUNT) print_on = 1;

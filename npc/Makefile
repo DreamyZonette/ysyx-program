@@ -19,6 +19,7 @@ VSRCS += $(VPATH)/top.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(wildcard $(CPATH)/**/*.c)
 CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.c)
+CSRCS += $(wildcard $(CPATH)/device/io/*.c)
 
 CFLAGS ?= -Wall 
 CFLAGS +=  -CFLAGS "$(INCLUDES)" 
