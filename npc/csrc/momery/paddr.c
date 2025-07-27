@@ -83,6 +83,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   #if CONFIG_DEVICE
   mmio_write(addr, len, data);
+  return;
   #endif
   out_of_bound(addr);
 }
