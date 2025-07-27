@@ -30,8 +30,10 @@ extern "C" void dpi_return() {
 
 void step_and_dump_wave(){
     top->eval();
+    #if CONFIG_WAVE
     contextp->timeInc(1);   
     tfp->dump(contextp->time());
+    #endif
 }
 
 static void trace_and_difftest() {
