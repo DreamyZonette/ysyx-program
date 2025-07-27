@@ -38,7 +38,7 @@ void device_update() {
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
       case SDL_QUIT:
-        nemu_state.state = NEMU_QUIT;
+        npc_state.state = NPC_QUIT;
         break;
 #ifdef CONFIG_HAS_KEYBOARD
       // If a key was pressed
