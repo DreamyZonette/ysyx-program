@@ -33,7 +33,7 @@
 #define SB_ADDR_RIGHT (CONFIG_SB_ADDR + 0x10000 - 1)
 // 帧缓存区
 #define FB_ADDR_LEFT (CONFIG_FB_ADDR)
-#define FB_ADDR_RIGHT (CONFIG_FB_ADDR + 0x10000 - 1)
+#define FB_ADDR_RIGHT (CONFIG_FB_ADDR + 0x75300 - 1)
 
 
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
@@ -69,7 +69,8 @@ extern "C" int pmem_read(int addr, int len) {
       addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
       addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
       addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
-      addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT) { 
+      addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
+      addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT) { 
     ret = mmio_read(addr, len);
   }
   else{
@@ -97,7 +98,8 @@ extern "C" void pmem_write(int addr, int len, int data) {
       addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
       addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
       addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
-      addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT){
+      addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
+      addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT){
     // putchar(char(data));
     mmio_write(addr, len, data);
     // printf("串口传出数据%08x\n", data);
