@@ -54,6 +54,7 @@ bool ioe_init() {
   __am_gpu_init();
   __am_timer_init();
   __am_audio_init();
+  putch('1');
   return true;
 }
 
