@@ -46,7 +46,7 @@ extern "C" int pmem_read(int addr, int len) {
       if (addr != top->de_pc){
         char s[128];
         sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
-        log_write(s);
+        log_write("%s\n", s);
       }
       //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
 
@@ -68,7 +68,7 @@ extern "C" void pmem_write(int addr, int len, int data) {
     #if CONFIG_MTRACE
     char s[128];
     sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
-    log_write(s);
+    log_write("%s\n", s);
     //printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
 
   #endif
