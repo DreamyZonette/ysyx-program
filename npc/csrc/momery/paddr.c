@@ -2,21 +2,35 @@
 #include <memory/host.h> 
 #include <device/mmio.h>
 
-#define DEVICE_BASE 0xa0000000
-#define MMIO_BASE 0xa0000000
+// #define CONFIG_SERIAL_MMIO 0xa00003f8
+// #define CONFIG_RTC_MMIO 0xa0000048
+// #define CONFIG_I8042_DATA_MMIO 0xa0000060
+// #define CONFIG_VGA_CTL_MMIO 0xa0000100
+// #define CONFIG_AUDIO_CTL_MMIO 0xa0000200
+// #define CONFIG_SDCARD_CTL_MMIO 0xa3000000
+// #define CONFIG_SB_ADDR 0xa1200000
+// #define CONFIG_FB_ADDR 0xa1000000
 // 串口
-#define SERIAL_PORT     (DEVICE_BASE + 0x00003f8)
+#define SERIAL_PORT_LEFT      CONFIG_SERIAL_MMIO
+#define SERIAL_PORT_RIGHT    (CONFIG_SERIAL_MMIO + 7)
 // 时钟
-#define RTC_LO_ADDR  (DEVICE_BASE + 0x0000048)
-#define RTC_HI_ADDR  (DEVICE_BASE + 0x000004c)
+#define RTC_ADDR_LEFT  CONFIG_RTC_MMIO
+#define RTC_ADDR_RIGHT  (CONFIG_RTC_MMIO + 7)
 // 键盘
-#define I8042_DATA_ADDR (DEVICE_BASE + 0xa0000060)
+#define I8042_DATA_ADDR_LEFT (CONFIG_I8042_DATA_MMIO)
+#define I8042_DATA_ADDR_RIGHT (CONFIG_I8042_DATA_MMIO + 3)
 // 屏幕
-#define VGA_CTL_ADDR (DEVICE_BASE + 0xa0000100)
+#define VGA_CTL_ADDR_LEFT (CONFIG_VGA_CTL_MMIO)
+#define VGA_CTL_ADDR_RIGHT (CONFIG_VGA_CTL_MMIO + 7)
 // 声卡
-#define AUDIO_CTL_ADDR (DEVICE_BASE + 0xa0000200)
+#define AUDIO_CTL_ADDR_LEFT (CONFIG_AUDIO_CTL_MMIO)
+#define AUDIO_CTL_ADDR_RIGHT (CONFIG_AUDIO_CTL_MMIO + 7)
 // 存储卡
-#define SDCARD_CTL_ADDR (DEVICE_BASE + 0xa3000000)
+#define SDCARD_CTL_ADDR_LEFT (CONFIG_SDCARD_CTL_MMIO)
+#define SDCARD_CTL_ADDR_RIGHT (CONFIG_SDCARD_CTL_MMIO + 7)
+// 屏幕缓冲区
+#define SB_ADDR_LEFT (CONFIG_SB_ADDR)
+#define SB_ADDR_RIGHT (CONFIG_SB_ADDR + 0x100000 - 1)
 
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
@@ -45,10 +59,13 @@ static void out_of_bound(paddr_t addr) {
 extern "C" int pmem_read(int addr, int len) {
   addr = paddr_t(addr);
   uint32_t ret;
-  if (addr == SERIAL_PORT || addr == RTC_LO_ADDR || \
-      addr == RTC_HI_ADDR || addr == I8042_DATA_ADDR || \
-      addr == VGA_CTL_ADDR || addr == AUDIO_CTL_ADDR || \
-      addr == SDCARD_CTL_ADDR) { 
+  if (addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
+      addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
+      addr >= I8042_DATA_ADDR_LEFT && addr <= I8042_DATA_ADDR_RIGHT || \
+      addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
+      addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
+      addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
+      addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT) { 
     ret = mmio_read(addr, len);
   }
   else{
@@ -70,10 +87,13 @@ extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
   data = word_t(data);
   
-  if(addr == SERIAL_PORT || addr == RTC_LO_ADDR || \
-      addr == RTC_HI_ADDR || addr == I8042_DATA_ADDR || \
-      addr == VGA_CTL_ADDR || addr == AUDIO_CTL_ADDR || \
-      addr == SDCARD_CTL_ADDR){
+  if(addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
+      addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
+      addr >= I8042_DATA_ADDR_LEFT && addr <= I8042_DATA_ADDR_RIGHT || \
+      addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
+      addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
+      addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
+      addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT){
     // putchar(char(data));
     mmio_write(addr, len, data);
     // printf("串口传出数据%08x\n", data);
