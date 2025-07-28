@@ -195,8 +195,9 @@ void init_monitor(int argc, char *argv[]) {
   parse_args(argc, argv);
 
   init_rand();  
-
+  #if CONFIG_LOG
   init_log(log_file);
+  #endif
 
   init_mem();
 

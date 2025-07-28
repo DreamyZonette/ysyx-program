@@ -39,7 +39,7 @@ ARGS ?=
 ARGS += -i $(IMG)     # 启用镜像文件
 #ARGS += -e $(ELF)	  # 启用ftrace
 #ARGS += -b      	  # 启用批处理
-ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
+#ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 
 $(shell mkdir -p $(BUILD_DIR))
 
