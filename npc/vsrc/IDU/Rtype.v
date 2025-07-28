@@ -52,8 +52,8 @@ module Rtype (
         // o_mulhsu_signal = 1'b0;
         // o_div_signal    = 1'b0;
         // o_divu_signal   = 1'b0;
-        o_rem_signal    = 1'b0;
-        o_remu_signal   = 1'b0;
+        // o_rem_signal    = 1'b0;
+        // o_remu_signal   = 1'b0;
         o_sll_signal    = 1'b0;
         o_sra_signal    = 1'b0;
         o_srl_signal    = 1'b0;
