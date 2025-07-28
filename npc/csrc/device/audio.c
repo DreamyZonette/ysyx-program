@@ -1,18 +1,3 @@
-/***************************************************************************************
-* Copyright (c) 2014-2024 Zihao Yu, Nanjing University
-*
-* NEMU is licensed under Mulan PSL v2.
-* You can use this software according to the terms and conditions of the Mulan PSL v2.
-* You may obtain a copy of Mulan PSL v2 at:
-*          http://license.coscl.org.cn/MulanPSL2
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*
-* See the Mulan PSL v2 for more details.
-***************************************************************************************/
-
 #include <common.h>
 #include <device/map.h>
 #include <SDL2/SDL.h>
@@ -29,20 +14,6 @@ enum {
   reg_rp,       // 只读的读指针
   nr_reg
 };
-//参考
-// typedef struct SDL_AudioSpec
-// {
-//     int freq;                   /**< DSP frequency -- samples per second */
-//     SDL_AudioFormat format;     /**< Audio data format */
-//     Uint8 channels;             /**< Number of channels: 1 mono, 2 stereo */
-//     Uint8 silence;              /**< Audio buffer silence value (calculated) */
-//     Uint16 samples;             /**< Audio buffer size in sample FRAMES (total samples divided by channel count) */
-//     Uint16 padding;             /**< Necessary for some compile environments */
-//     Uint32 size;                /**< Audio buffer size in bytes (calculated) */
-//     SDL_AudioCallback callback; /**< Callback that feeds the audio device (NULL to use SDL_QueueAudio()). */
-//     void *userdata;             /**< Userdata passed to callback (ignored for NULL callbacks). */
-// } SDL_AudioSpec;
-
 
 static SDL_AudioDeviceID dev = 0;
 static uint32_t rp = 0;  // 环形缓冲区读取位置

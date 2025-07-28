@@ -1,6 +1,10 @@
 #include <am.h>
-#include <nemu.h>
+#include <riscv/riscv.h>
 
+#define DEVICE_BASE 0xa0000000
+#define MMIO_BASE 0xa0000000
+#define AUDIO_ADDR      (DEVICE_BASE + 0x0000200)
+#define AUDIO_SBUF_ADDR (MMIO_BASE   + 0x1200000)
 #define AUDIO_FREQ_ADDR      (AUDIO_ADDR + 0x00)
 #define AUDIO_CHANNELS_ADDR  (AUDIO_ADDR + 0x04)
 #define AUDIO_SAMPLES_ADDR   (AUDIO_ADDR + 0x08)
@@ -9,8 +13,8 @@
 #define AUDIO_COUNT_ADDR     (AUDIO_ADDR + 0x14)
 #define AUDIO_WP_ADDR     (AUDIO_ADDR + 0x18)
 #define AUDIO_RP_ADDR     (AUDIO_ADDR + 0x1c)
-
 #define AUDIO_BUF_SIZE 0x10000
+
 
 static uint32_t app_wp = 0;
 

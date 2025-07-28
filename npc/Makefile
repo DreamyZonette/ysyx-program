@@ -1,6 +1,6 @@
 TOP_NAME = top
-#IMG ?= /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-npc.bin
-IMG ?= 
+IMG ?= /home/long/ysyx-workbench/npc/add-minirv-npc.bin
+#IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
@@ -19,6 +19,7 @@ VSRCS += $(VPATH)/top.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(wildcard $(CPATH)/**/*.c)
 CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.c)
+CSRCS += $(wildcard $(CPATH)/device/io/*.c)
 
 CFLAGS ?= -Wall 
 CFLAGS +=  -CFLAGS "$(INCLUDES)" 
@@ -27,16 +28,18 @@ VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
+LDFLAGS += -LDFLAGS -lSDL2
 LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
 LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
 LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
 
 VERILATOR = verilator
 ARGS ?= 
-#ARGS += -d $(NEMU_SO) # 启用difftest
+ARGS += -d $(NEMU_SO) # 启用difftest
 ARGS += -i $(IMG)     # 启用镜像文件
 #ARGS += -e $(ELF)	  # 启用ftrace
-ARGS += -b      	  # 启用批处理
+#ARGS += -b      	  # 启用批处理
+ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 
 $(shell mkdir -p $(BUILD_DIR))
 

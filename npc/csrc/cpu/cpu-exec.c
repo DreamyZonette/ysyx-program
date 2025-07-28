@@ -10,9 +10,10 @@
   int count = 0;
 #endif
 
+uint64_t g_nr_guest_inst = 0;
+static uint64_t g_timer = 0; // unit: us
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
-bool is_hit_good_trap = true;
 char p[128];
 int print_on = 0;
 CPU_state dut = {
@@ -21,7 +22,6 @@ CPU_state dut = {
 };
 
 extern "C" void dpi_ebreak() {
-    // is_hit_good_trap = false;
     sim_finish = true;  // 触发仿真结束
 }
 extern "C" void dpi_return() {
@@ -30,8 +30,10 @@ extern "C" void dpi_return() {
 
 void step_and_dump_wave(){
     top->eval();
+    #if CONFIG_WAVE
     contextp->timeInc(1);   
     tfp->dump(contextp->time());
+    #endif
 }
 
 static void trace_and_difftest() {
@@ -100,7 +102,24 @@ void single_cycle() {
   step_and_dump_wave();
 }
 
+static void statistic() {
+  IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
+#define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
+  Log("host time spent = " NUMBERIC_FMT " us", g_timer);
+  Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
+  if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
+  else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
+}
 
+void assert_fail_msg() {
+#ifdef CONFIG_IRINGBUF
+  print_iringbuf(cpu.pc);
+#else
+  void isa_reg_display();
+  isa_reg_display();
+#endif
+  statistic();
+}
 
 static void execute(uint64_t n) {
     if(n <= PRINT_COUNT) print_on = 1;
@@ -122,37 +141,25 @@ static void execute(uint64_t n) {
   #endif
 
     trace_and_difftest();
+    g_nr_guest_inst ++;
     single_cycle();
 
     if(sim_finish) {
-        if(is_hit_good_trap)npc_state.state = NPC_END;
+      npc_state.halt_pc = top->de_pc;
+      npc_state.halt_ret = top->reg_data[10]; // 寄存器返回值
+      npc_state.state = NPC_END;
     }
-    //printf("%d\n", top->halt);
+    if(top->halt == 1){
+      npc_state.halt_pc = top->de_pc;
+      npc_state.halt_ret = top->reg_data[10];
+      // npc_state.state = NPC_ABORT;
+    }
 
-    if(npc_state.halt_ret != 1) {
-      if(!sim_finish) npc_state.halt_pc = top->de_pc;
-      if(!sim_finish) npc_state.halt_ret = top->halt;
-    }
-    else {
-        npc_state.state = NPC_ABORT;
-    }
-    // else{
-    //     npc_state.state = NPC_STOP;
-    // }
     if (npc_state.state != NPC_RUNNING) break;
   }
 }
 
-static void statistic() {
-//   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
-// #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
-//   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
-//   Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
-//   if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
-//   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 
-if(npc_state.state == NPC_ABORT) assert(0);
-}
 
 void cpu_exec(uint64_t n){
     if(sim_finish) npc_state.state = NPC_END;
@@ -162,8 +169,12 @@ void cpu_exec(uint64_t n){
       return;
     default: npc_state.state = NPC_RUNNING;
   }
-  
+    uint64_t timer_start = get_time();
+
     execute(n);
+
+    uint64_t timer_end = get_time();
+    g_timer += timer_end - timer_start;
 
     switch (npc_state.state) {
     case NPC_RUNNING: npc_state.state = NPC_STOP; break;

@@ -17,7 +17,7 @@ extern NPCState npc_state;
 
 // ----------- timer -----------
 
-//uint64_t get_time();
+uint64_t get_time();
 
 // ----------- log -----------
 
@@ -41,20 +41,21 @@ extern NPCState npc_state;
 
 #define ANSI_FMT(str, fmt) fmt str ANSI_NONE
 
-// #define log_write(...) IFDEF(CONFIG_TARGET_NATIVE_ELF, \
-//   do { \
-//     extern FILE* log_fp; \
-//     extern bool log_enable(); \
-//     if (log_enable() && log_fp != NULL) { \
-//       fprintf(log_fp, __VA_ARGS__); \
-//       fflush(log_fp); \
-//     } \
-//   } while (0) \
-// )
+#define log_write(...) IFDEF(CONFIG_TARGET_NATIVE_ELF, \
+  do { \
+    extern FILE* log_fp; \
+    extern bool log_enable(); \
+    if (log_enable() && log_fp != NULL) { \
+      fprintf(log_fp, __VA_ARGS__); \
+      fflush(log_fp); \
+    } \
+  } while (0) \
+)
 
 #define _Log(...) \
   do { \
     printf(__VA_ARGS__); \
+    log_write(__VA_ARGS__); \
   } while (0)
 
 

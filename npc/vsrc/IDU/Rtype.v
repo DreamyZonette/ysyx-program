@@ -12,6 +12,8 @@ module Rtype (
     output reg o_sltu_signal,
     output reg o_mul_signal,
     output reg o_mulh_signal,
+    output reg o_mulhu_signal,
+    output reg o_mulhsu_signal,
     output reg o_div_signal,
     output reg o_divu_signal,
     output reg o_rem_signal,
@@ -37,22 +39,24 @@ module Rtype (
 
     always @ (*) begin
         // 初始化
-        o_add_signal  = 1'b0;
-        o_and_signal  = 1'b0;
-        o_or_signal   = 1'b0;
-        o_xor_signal  = 1'b0;
-        o_sub_signal  = 1'b0;
-        o_slt_signal  = 1'b0;
-        o_sltu_signal = 1'b0;
-        o_mul_signal  = 1'b0;
-        o_mulh_signal = 1'b0;
-        o_div_signal  = 1'b0;
-        o_divu_signal = 1'b0;
-        o_rem_signal  = 1'b0;
-        o_remu_signal = 1'b0;
-        o_sll_signal  = 1'b0;
-        o_sra_signal  = 1'b0;
-        o_srl_signal  = 1'b0;
+        o_add_signal    = 1'b0;
+        o_and_signal    = 1'b0;
+        o_or_signal     = 1'b0;
+        o_xor_signal    = 1'b0;
+        o_sub_signal    = 1'b0;
+        o_slt_signal    = 1'b0;
+        o_sltu_signal   = 1'b0;
+        o_mul_signal    = 1'b0;
+        o_mulh_signal   = 1'b0;
+        o_mulhu_signal  = 1'b0;
+        o_mulhsu_signal = 1'b0;
+        o_div_signal    = 1'b0;
+        o_divu_signal   = 1'b0;
+        o_rem_signal    = 1'b0;
+        o_remu_signal   = 1'b0;
+        o_sll_signal    = 1'b0;
+        o_sra_signal    = 1'b0;
+        o_srl_signal    = 1'b0;
         unknown_intstruction = 1'b0;
 
         // 指令识别
@@ -73,12 +77,14 @@ module Rtype (
                     o_sra_signal  = (fun1 == 3'b101) ? 1'b1 : 1'b0;
                 end
                 else if (fun2 == 7'b0000001) begin
-                    o_mul_signal  = (fun1 == 3'b000) ? 1'b1 : 1'b0;
-                    o_mulh_signal = (fun1 == 3'b001) ? 1'b1 : 1'b0;
-                    o_div_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
-                    o_divu_signal = (fun1 == 3'b101) ? 1'b1 : 1'b0;
-                    o_rem_signal  = (fun1 == 3'b110) ? 1'b1 : 1'b0;
-                    o_remu_signal = (fun1 == 3'b111) ? 1'b1 : 1'b0;
+                    o_mul_signal   = (fun1 == 3'b000) ? 1'b1 : 1'b0;
+                    o_mulh_signal  = (fun1 == 3'b001) ? 1'b1 : 1'b0;
+                    o_mulhu_signal = (fun1 == 3'b010) ? 1'b1 : 1'b0;
+                    o_mulhsu_signal= (fun1 == 3'b011) ? 1'b1 : 1'b0;
+                    o_div_signal   = (fun1 == 3'b100) ? 1'b1 : 1'b0;
+                    o_divu_signal  = (fun1 == 3'b101) ? 1'b1 : 1'b0;
+                    o_rem_signal   = (fun1 == 3'b110) ? 1'b1 : 1'b0;
+                    o_remu_signal  = (fun1 == 3'b111) ? 1'b1 : 1'b0;
                 end
                 else begin
                     unknown_intstruction = 1'b1;

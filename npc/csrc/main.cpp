@@ -13,22 +13,30 @@ void sdb_mainloop();
 // void engine_start();
 
 VerilatedContext* contextp;
+#if CONFIG_WAVE
 VerilatedVcdC* tfp;
+#endif
 Vtop* top;
 
 
 void sim_init(){
     contextp = new VerilatedContext;
+    #if CONFIG_WAVE
     tfp = new VerilatedVcdC;
+    #endif
     top = new Vtop;
+    #if CONFIG_WAVE
     contextp->traceEverOn(true);
     top->trace(tfp,0);
     tfp->open("/home/long/ysyx-workbench/npc/build/wave.vcd");
+    #endif
 }
 
 void sim_exit(){
     step_and_dump_wave();
+    #if CONFIG_WAVE
     tfp->close();
+    #endif
 }
 
 

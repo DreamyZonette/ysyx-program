@@ -14,11 +14,12 @@ module alu (
     input             i_lbu_signal,
     input             i_lhu_signal,
     input             i_xori_signal,
+    input             i_ori_signal,
     input             i_andi_signal,
     input             i_slli_signal,
     input             i_srli_signal,
     input             i_srai_signal,
-    //input             i_slti_signal,
+    input             i_slti_signal,
     input             i_sltiu_signal,
     input             i_beq_signal,
     input             i_bne_signal,
@@ -37,7 +38,8 @@ module alu (
     input             i_sra_signal,
     input             i_mul_signal,
     input             i_mulh_signal,
-    //input             i_mulhsu_signal,
+    input             i_mulhu_signal,
+    input             i_mulhsu_signal,
     input             i_div_signal,
     input             i_divu_signal,
     input             i_rem_signal,
@@ -78,6 +80,8 @@ module alu (
             o_data = i_src1 + i_imm;
         end else if(i_xori_signal == 1'b1) begin
             o_data = i_src1 ^ i_imm;
+        end else if(i_ori_signal == 1'b1) begin
+            o_data = i_src1 | i_imm;
         end else if(i_andi_signal == 1'b1) begin
             o_data = i_src1 & i_imm;
         end else if(i_slli_signal == 1'b1) begin
@@ -86,8 +90,8 @@ module alu (
             o_data = i_src1 >> i_shamt;
         end else if(i_srai_signal == 1'b1) begin
             o_data = srai_data;
-        // end else if(i_slti_signal == 1'b1) begin
-        //     o_data = $signed(i_src1) < $signed(i_imm) ? 32'h1 : 32'h0;
+        end else if(i_slti_signal == 1'b1) begin
+            o_data = $signed(i_src1) < $signed(i_imm) ? 32'h1 : 32'h0;
         end else if(i_sltiu_signal == 1'b1) begin
             o_data = i_src1 < i_imm ? 32'h1 : 32'h0;
         end else if(i_ebreak_signal == 1'b1) begin
@@ -122,8 +126,10 @@ module alu (
             o_data = i_src1 * i_src2;
         end else if(i_mulh_signal == 1'b1) begin
             o_data = $signed(i_src1) * $signed(i_src2) >> 32;
-        // end else if(i_mulhsu_signal == 1'b1) begin
-        //     o_data = $signed(i_src1) * i_src2 >> 32;
+        end else if(i_mulhu_signal == 1'b1) begin
+            o_data = i_src1 * i_src2 >> 32;
+        end else if(i_mulhsu_signal == 1'b1) begin
+            o_data = $signed(i_src1) * i_src1 >> 32;
         end else if(i_div_signal == 1'b1) begin
             o_data = $signed(i_src1) / $signed(i_src2);
         end else if(i_divu_signal == 1'b1) begin

@@ -28,6 +28,16 @@ typedef word_t vaddr_t;
 #include <assert.h>
 #include <stdlib.h>
 
+
+#define FMT_PADDR MUXDEF(PMEM64, "0x%016" PRIx64, "0x%08" PRIx32)
+typedef uint16_t ioaddr_t;
+
 #include <debug.h>
+
+extern VerilatedContext* contextp;
+#if CONFIG_WAVE
+extern VerilatedVcdC* tfp;
+#endif
+extern Vtop* top;
 
 #endif

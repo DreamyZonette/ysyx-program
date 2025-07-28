@@ -1,18 +1,3 @@
-/***************************************************************************************
-* Copyright (c) 2014-2024 Zihao Yu, Nanjing University
-*
-* NEMU is licensed under Mulan PSL v2.
-* You can use this software according to the terms and conditions of the Mulan PSL v2.
-* You may obtain a copy of Mulan PSL v2 at:
-*          http://license.coscl.org.cn/MulanPSL2
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*
-* See the Mulan PSL v2 for more details.
-***************************************************************************************/
-
 #include <common.h>
 #include <utils.h>
 #include <device/alarm.h>
@@ -33,6 +18,7 @@ void init_alarm();
 void send_key(uint8_t, bool);
 void vga_update_screen();
 
+
 void device_update() {
   static uint64_t last = 0;
   uint64_t now = get_time();
@@ -40,9 +26,11 @@ void device_update() {
     return;
   }
   last = now;
-  IFDEF(CONFIG_HAS_VGA, vga_update_screen());
+  #if CONFIG_HAS_VGA
+  vga_update_screen();
+  #endif
 
-#ifdef CONFIG_HAS_AUDIO
+#if CONFIG_HAS_AUDIO
   // 添加音频更新处理
   extern void audio_update(void);
   audio_update();
@@ -53,9 +41,9 @@ void device_update() {
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
       case SDL_QUIT:
-        nemu_state.state = NEMU_QUIT;
+        npc_state.state = NPC_QUIT;
         break;
-#ifdef CONFIG_HAS_KEYBOARD
+#if CONFIG_HAS_KEYBOARD
       // If a key was pressed
       case SDL_KEYDOWN:
       case SDL_KEYUP: {
@@ -82,13 +70,27 @@ void init_device() {
   IFDEF(CONFIG_TARGET_AM, ioe_init());
   init_map();
 
-  IFDEF(CONFIG_HAS_SERIAL, init_serial());
-  IFDEF(CONFIG_HAS_TIMER, init_timer());
-  IFDEF(CONFIG_HAS_VGA, init_vga());
-  IFDEF(CONFIG_HAS_KEYBOARD, init_i8042());
-  IFDEF(CONFIG_HAS_AUDIO, init_audio());
-  IFDEF(CONFIG_HAS_DISK, init_disk());
-  IFDEF(CONFIG_HAS_SDCARD, init_sdcard());
+  #if CONFIG_HAS_SERIAL 
+    init_serial(); 
+  #endif
+  #if CONFIG_HAS_TIMER
+    init_timer();
+  #endif
+  #if CONFIG_HAS_VGA
+    init_vga();
+  #endif
+  #if CONFIG_HAS_KEYBOARD
+    init_i8042();
+  #endif
+  #if CONFIG_HAS_AUDIO
+    init_audio();
+  #endif
+  #if CONFIG_HAS_DISK
+    init_disk();
+  #endif
+  #if CONFIG_HAS_SDCARD
+    init_sdcard();
+  #endif
 
   IFNDEF(CONFIG_TARGET_AM, init_alarm());
 }

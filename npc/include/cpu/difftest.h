@@ -19,7 +19,7 @@
 #include <common.h>
 #include <difftest-def.h>
 
-#ifdef CONFIG_DIFFTEST
+#if CONFIG_DIFFTEST
 void difftest_skip_ref();
 void difftest_skip_dut(int nr_ref, int nr_dut);
 void difftest_set_patch(void (*fn)(void *arg), void *arg);
@@ -40,14 +40,14 @@ extern void (*ref_difftest_regcpy)(void *dut, bool direction);
 extern void (*ref_difftest_exec)(uint64_t n);
 extern void (*ref_difftest_raise_intr)(uint64_t NO);
 
-// static inline bool difftest_check_reg(const char *name, vaddr_t pc, word_t ref, word_t dut) {
-//   if (ref != dut) {
-//     Log("%s is different after executing instruction at pc = " FMT_WORD
-//         ", right = " FMT_WORD ", wrong = " FMT_WORD ", diff = " FMT_WORD,
-//         name, pc, ref, dut, ref ^ dut);
-//     return false;
-//   }
-//   return true;
-// }
+static inline bool difftest_check_reg(const char *name, vaddr_t pc, word_t ref, word_t dut) {
+  if (ref != dut) {
+    Log("%s is different after executing instruction at pc = " FMT_WORD
+        ", right = " FMT_WORD ", wrong = " FMT_WORD ", diff = " FMT_WORD,
+        name, pc, ref, dut, ref ^ dut);
+    return false;
+  }
+  return true;
+}
 
 #endif
