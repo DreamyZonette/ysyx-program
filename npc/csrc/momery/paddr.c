@@ -42,7 +42,7 @@ extern "C" int pmem_read(int addr, int len) {
   //   addr -= offset;
   //   len += offset;
   // }
-  // uint32_t ret;
+  uint32_t ret;
   if (addr == RTC_LO_ADDR || addr == RTC_HI_ADDR) { 
     ret = mmio_read(addr, len);
   }
