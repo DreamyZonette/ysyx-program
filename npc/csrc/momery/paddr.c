@@ -43,7 +43,11 @@ extern "C" int pmem_read(int addr, int len) {
   else{
     ret = internal_pmem_read(addr, len);
     #if CONFIG_MTRACE
-      if (addr != top->de_pc)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+      if (addr != top->de_pc){
+        char s[128];
+        sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+        log_write(s);
+      }
       //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
 
     #endif
@@ -62,13 +66,10 @@ extern "C" void pmem_write(int addr, int len, int data) {
   }
   else{
     #if CONFIG_MTRACE
-    printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
-    //if (addr == 0x80011071 || addr == 0x80011070) {
-     // printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
-      // printf("0x%08x\n", top->de_pc);
-      // printf("0x%08x\n ", internal_pmem_read(addr, len));
-      //printf("%d\n ", g_nr_guest_inst);
-    //}
+    char s[128];
+    sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    log_write(s);
+    //printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
 
   #endif
     internal_pmem_write(addr, len, data);
