@@ -4,7 +4,7 @@
 #include <cpu/difftest.h>
 
 
-#define PRINT_COUNT 4
+#define MAX_INST_TO_PRINT 10
 #if CONFIG_FTRACE
 #include "/home/long/ysyx-workbench/npc/csrc/monitor/elf_reader.h"
   int count = 0;
@@ -12,6 +12,9 @@
 
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
+
+void device_update();
+
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
 char p[128];
@@ -122,7 +125,7 @@ void assert_fail_msg() {
 }
 
 static void execute(uint64_t n) {
-    if(n <= PRINT_COUNT) print_on = 1;
+    if(n <= MAX_INST_TO_PRINT) print_on = 1;
   for (;n > 0; n --) {
     #if CONFIG_ITRACE
   if(!sim_finish){
@@ -144,6 +147,9 @@ static void execute(uint64_t n) {
     trace_and_difftest();
     g_nr_guest_inst ++;
     single_cycle();
+    #if CONFIG_DEVICE
+    device_update();
+    #endif
 
     if(sim_finish) {
       npc_state.halt_pc = top->de_pc;
