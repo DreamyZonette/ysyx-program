@@ -32,10 +32,10 @@ static void *lut[128] = {
   [AM_TIMER_UPTIME] = __am_timer_uptime,
   [AM_INPUT_CONFIG] = __am_input_config,
   [AM_INPUT_KEYBRD] = __am_input_keybrd,
-  [AM_UART_CONFIG]  = __am_uart_config,
   [AM_GPU_CONFIG  ] = __am_gpu_config,
   [AM_GPU_FBDRAW  ] = __am_gpu_fbdraw,
   [AM_GPU_STATUS  ] = __am_gpu_status,
+  [AM_UART_CONFIG]  = __am_uart_config,
   [AM_AUDIO_CONFIG] = __am_audio_config,
   [AM_AUDIO_CTRL  ] = __am_audio_ctrl,
   [AM_AUDIO_STATUS] = __am_audio_status,
@@ -54,7 +54,6 @@ bool ioe_init() {
   __am_gpu_init();
   __am_timer_init();
   __am_audio_init();
-  putch('1');
   return true;
 }
 
@@ -140,8 +139,6 @@ void __am_gpu_status(AM_GPU_STATUS_T *status) {
 }
 
 //================audio==================
-#define DEVICE_BASE 0xa0000000
-#define MMIO_BASE 0xa0000000
 #define AUDIO_ADDR      (DEVICE_BASE + 0x0000200)
 #define AUDIO_SBUF_ADDR (MMIO_BASE   + 0x1200000)
 #define AUDIO_FREQ_ADDR      (AUDIO_ADDR + 0x00)
