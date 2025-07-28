@@ -128,7 +128,7 @@ static void execute(uint64_t n) {
   if(!sim_finish){
     snprintf(p, sizeof(p), "pc:%08x => 0x%08x", top->de_pc, top->de_inst);
     log_write("%s\n", p);
-    printf("%s\n", p);
+    // printf("%s\n", p);
     p[0] = '\0';
   }
   #else

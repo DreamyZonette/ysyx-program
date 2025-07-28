@@ -31,6 +31,10 @@
 // 声卡缓存区
 #define SB_ADDR_LEFT (CONFIG_SB_ADDR)
 #define SB_ADDR_RIGHT (CONFIG_SB_ADDR + 0x10000 - 1)
+// 帧缓存区
+#define FB_ADDR_LEFT (CONFIG_FB_ADDR)
+#define FB_ADDR_RIGHT (CONFIG_FB_ADDR + 0x10000 - 1)
+
 
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
