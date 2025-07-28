@@ -38,7 +38,7 @@ extern "C" int pmem_read(int addr, int len) {
   addr = paddr_t(addr);
   int offset = 0;
   if(addr % 4 != 0){
-    offset = address % 4;
+    offset = addr % 4;
     addr -= offset;
     len += offset;
   }
