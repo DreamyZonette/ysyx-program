@@ -18,7 +18,8 @@ static uint64_t am_get_time() {
 
 void __am_timer_init() {
   base_time = am_get_time();
-  base_rtc = 1672531200;
+  // base_rtc = 1672531200;
+  base_rtc = am_get_time();
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
