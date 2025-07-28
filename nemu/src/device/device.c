@@ -79,7 +79,8 @@ void sdl_clear_event_queue() {
 }
 
 void init_device() {
-  IFDEF(CONFIG_TARGET_AM, ioe_init());
+  IFDEF(CONFIG_TARGET_AM, printf("ioe init done\n"));
+  // IFDEF(CONFIG_TARGET_AM, ioe_init(); printf("ioe init done\n"));
   init_map();
 
   IFDEF(CONFIG_HAS_SERIAL, init_serial());
