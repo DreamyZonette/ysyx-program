@@ -50,7 +50,7 @@ extern "C" int pmem_read(int addr, int len) {
   }
   return ret;
 }
-
+extern uint64_t g_nr_guest_inst;
 extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
   data = word_t(data);
@@ -67,7 +67,7 @@ extern "C" void pmem_write(int addr, int len, int data) {
       printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
       printf("0x%08x\n", top->de_pc);
       printf("0x%08x\n ", internal_pmem_read(addr, len));
-      npc_state.state != NPC_STOP;
+      printf("%d\n ", g_nr_guest_inst);
     }
 
   #endif
