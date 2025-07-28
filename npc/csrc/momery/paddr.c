@@ -43,7 +43,7 @@ extern "C" int pmem_read(int addr, int len) {
   else{
     ret = internal_pmem_read(addr, len);
     #if CONFIG_MTRACE
-      printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+      if (addr != top->de_pc)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
     #endif
   }
   return ret;
