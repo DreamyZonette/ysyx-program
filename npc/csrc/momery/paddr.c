@@ -9,6 +9,14 @@
 // 时钟
 #define RTC_LO_ADDR  (DEVICE_BASE + 0x0000048)
 #define RTC_HI_ADDR  (DEVICE_BASE + 0x000004c)
+// 键盘
+#define CONFIG_I8042_DATA_MMIO (DEVICE_BASE + 0xa0000060)
+// 屏幕
+#define CONFIG_VGA_CTL_MMIO (DEVICE_BASE + 0xa0000100)
+// 声卡
+#define CONFIG_AUDIO_CTL_MMIO (DEVICE_BASE + 0xa0000200)
+// 存储卡
+#define CONFIG_SDCARD_CTL_MMIO (DEVICE_BASE + 0xa3000000)
 
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
@@ -37,7 +45,10 @@ static void out_of_bound(paddr_t addr) {
 extern "C" int pmem_read(int addr, int len) {
   addr = paddr_t(addr);
   uint32_t ret;
-  if (addr == RTC_LO_ADDR || addr == RTC_HI_ADDR) { 
+  if (addr == CONFIG_SERIAL_MMIO || addr == RTC_LO_ADDR || \
+      addr == RTC_HI_ADDR || addr == CONFIG_I8042_DATA_MMIO || \
+      addr == CONFIG_VGA_CTL_MMIO || addr == CONFIG_AUDIO_CTL_MMIO || \
+      addr == CONFIG_SDCARD_CTL_MMIO) { 
     ret = mmio_read(addr, len);
   }
   else{
@@ -59,7 +70,10 @@ extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
   data = word_t(data);
   
-  if(addr == SERIAL_PORT){
+  if(addr == CONFIG_SERIAL_MMIO || addr == RTC_LO_ADDR || \
+      addr == RTC_HI_ADDR || addr == CONFIG_I8042_DATA_MMIO || \
+      addr == CONFIG_VGA_CTL_MMIO || addr == CONFIG_AUDIO_CTL_MMIO || \
+      addr == CONFIG_SDCARD_CTL_MMIO){
     // putchar(char(data));
     mmio_write(addr, len, data);
     // printf("串口传出数据%08x\n", data);
