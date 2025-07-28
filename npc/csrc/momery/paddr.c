@@ -36,13 +36,13 @@ static void out_of_bound(paddr_t addr) {
 
 extern "C" int pmem_read(int addr, int len) {
   addr = paddr_t(addr);
-  int offset = 0;
-  if(addr & 3 != 0){
-    offset = addr & 3;
-    addr -= offset;
-    len += offset;
-  }
-  uint32_t ret;
+  // int offset = 0;
+  // if(addr & 3 != 0){
+  //   offset = addr & 3;
+  //   addr -= offset;
+  //   len += offset;
+  // }
+  // uint32_t ret;
   if (addr == RTC_LO_ADDR || addr == RTC_HI_ADDR) { 
     ret = mmio_read(addr, len);
   }
@@ -52,7 +52,7 @@ extern "C" int pmem_read(int addr, int len) {
       if (addr != top->de_pc)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
     #endif
   }
-  ret = ret >> (offset * 8);
+  // ret = ret >> (offset * 8);
   return ret;
 }
 
