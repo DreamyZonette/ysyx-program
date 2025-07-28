@@ -116,8 +116,8 @@ module Itype (
             o_lh_signal   = (fun1 == 3'b001) ? 1'b1 : 1'b0;
             o_lbu_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
             o_lhu_signal  = (fun1 == 3'b101) ? 1'b1 : 1'b0;
-            sign_extended = (fun1 == 3'b010 || fun1 == 3'b000 || fun1 == 3'b001) ? 1'b1 : 1'b0; // lw/lb/lh
-            zero_extended = (fun1 == 3'b100 || fun1 == 3'b101) ? 1'b1 : 1'b0; // lbu/lhu
+            sign_extended = (fun1 == 3'b010 || fun1 == 3'b000 || fun1 == 3'b001 || fun1 == 3'b100 || fun1 == 3'b101) ? 1'b1 : 1'b0; // lw/lb/lh/ lbu/lhu
+            //zero_extended = () ? 1'b1 : 1'b0; 
         end
         default: begin
             unknown_intstruction = 1'b1;

@@ -28,8 +28,22 @@ assign o_load_signal = ren;
 
 always @(negedge i_sys_clk) begin
     //if (valid) begin // 有读写请求时
-        if (ren) begin
-            rdata <= pmem_read(i_data, 4);
+        // if (ren) begin
+            // rdata <= pmem_read(i_data, 4);
+            //适配对齐访存
+            if(i_lw_signal == 1'b1) begin
+                rdata <= pmem_read(i_data, 4);
+            end else if(i_lhu_signal == 1'b1) begin
+                rdata <= pmem_read(i_data, 2);
+            end else if(i_lh_signal == 1'b1) begin
+                rdata <= pmem_read(i_data, 2);
+            end else if(i_lbu_signal == 1'b1) begin
+                rdata <= pmem_read(i_data, 1);
+            end else if(i_lb_signal == 1'b1) begin
+                rdata <= pmem_read(i_data, 1);
+            // end else begin
+            //     rdata <= 0;
+            // end
         end
         else if (wen) begin // 有写请求时
             pmem_write(i_data, {28'b0, i_wmask} , i_src2);

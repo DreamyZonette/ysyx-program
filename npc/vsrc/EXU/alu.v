@@ -36,14 +36,14 @@ module alu (
     input             i_xor_signal,
     input             i_srl_signal,
     input             i_sra_signal,
-    input             i_mul_signal,
-    input             i_mulh_signal,
-    input             i_mulhu_signal,
-    input             i_mulhsu_signal,
-    input             i_div_signal,
-    input             i_divu_signal,
-    input             i_rem_signal,
-    input             i_remu_signal,
+    // input             i_mul_signal,
+    // input             i_mulh_signal,
+    // input             i_mulhu_signal,
+    // input             i_mulhsu_signal,
+    // input             i_div_signal,
+    // input             i_divu_signal,
+    // input             i_rem_signal,
+    // input             i_remu_signal,
     input             i_auipc_signal,
     input             i_lui_signal,
     input             i_add_signal,
@@ -57,7 +57,7 @@ module alu (
     output reg [31:0] o_data
     );
 
-    wire [31:0] srai_data;
+    wire [31:0] srai_result;
 
     always @ (*) begin
         o_data = 32'b0;
@@ -89,7 +89,7 @@ module alu (
         end else if(i_srli_signal == 1'b1) begin
             o_data = i_src1 >> i_shamt;
         end else if(i_srai_signal == 1'b1) begin
-            o_data = srai_data;
+            o_data = srai_result;
         end else if(i_slti_signal == 1'b1) begin
             o_data = $signed(i_src1) < $signed(i_imm) ? 32'h1 : 32'h0;
         end else if(i_sltiu_signal == 1'b1) begin
@@ -122,22 +122,22 @@ module alu (
             o_data = i_src1 >> i_src2[4:0];
         end else if(i_sra_signal == 1'b1) begin
             o_data = $signed(i_src1) >>> i_src2[4:0];
-        end else if(i_mul_signal == 1'b1) begin
-            o_data = i_src1 * i_src2;
-        end else if(i_mulh_signal == 1'b1) begin
-            o_data = $signed(i_src1) * $signed(i_src2) >> 32;
-        end else if(i_mulhu_signal == 1'b1) begin
-            o_data = i_src1 * i_src2 >> 32;
-        end else if(i_mulhsu_signal == 1'b1) begin
-            o_data = $signed(i_src1) * i_src1 >> 32;
-        end else if(i_div_signal == 1'b1) begin
-            o_data = $signed(i_src1) / $signed(i_src2);
-        end else if(i_divu_signal == 1'b1) begin
-            o_data = i_src1 / i_src2;
-        end else if(i_rem_signal == 1'b1) begin
-            o_data = $signed(i_src1) % $signed(i_src2);
-        end else if(i_remu_signal == 1'b1) begin
-            o_data = i_src1 % i_src2;
+        // end else if(i_mul_signal == 1'b1) begin
+        //     o_data = i_src1 * i_src2;
+        // end else if(i_mulh_signal == 1'b1) begin
+        //     o_data = $signed(i_src1) * $signed(i_src2) >> 32;
+        // end else if(i_mulhu_signal == 1'b1) begin
+        //     o_data = i_src1 * i_src2 >> 32;
+        // end else if(i_mulhsu_signal == 1'b1) begin
+        //     o_data = $signed(i_src1) * i_src2 >> 32;
+        // end else if(i_div_signal == 1'b1) begin
+        //     o_data = $signed(i_src1) / $signed(i_src2);
+        // end else if(i_divu_signal == 1'b1) begin
+        //     o_data = i_src1 / i_src2;
+        // end else if(i_rem_signal == 1'b1) begin
+        //     o_data = $signed(i_src1) % $signed(i_src2);
+        // end else if(i_remu_signal == 1'b1) begin
+        //     o_data = i_src1 % i_src2;
         // B型
         end else if(i_beq_signal == 1'b1) begin
             o_B_jump_signal = (i_src1 == i_src2) ? 1'b1 : 1'b0;
@@ -170,14 +170,17 @@ module alu (
             o_data = i_src1 + i_imm;
         end 
         else begin
-            o_halt_signal = 1'b1;
+            //o_halt_signal = 1'b1;
+            o_data = 32'b0;         // 无操作
+            o_B_jump_signal = 1'b0;
+            o_halt_signal = 1'b0;   // 不停止
         end
     end
     
 ArithmeticRightShift ArithmeticRightShift_u(
     .i_src1(i_src1),
     .i_shamt(i_shamt),
-    .o_data(srai_data)
+    .o_data(srai_result)
 );
 
 endmodule

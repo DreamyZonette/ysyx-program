@@ -38,14 +38,14 @@ module IDU (
     output  o_sub_signal,
     output  o_slt_signal,
     output  o_sltu_signal,
-    output  o_mul_signal,
-    output  o_mulh_signal,
-    output  o_mulhu_signal,
-    output  o_mulhsu_signal,
-    output  o_div_signal,
-    output  o_divu_signal,
-    output  o_rem_signal,
-    output  o_remu_signal,
+    // output  o_mul_signal,
+    // output  o_mulh_signal,
+    // output  o_mulhu_signal,
+    // output  o_mulhsu_signal,
+    // output  o_div_signal,
+    // output  o_divu_signal,
+    // output  o_rem_signal,
+    // output  o_remu_signal,
     output  o_sra_signal,
     output  o_srl_signal,
     output  o_beq_signal,
@@ -159,8 +159,6 @@ module IDU (
 
 
     always @(*) begin
-        o_src1 = 32'b0;
-        o_src2 = 32'b0;
         o_imm = 32'b0;
         o_offset = 32'b0;
         rs1 = 5'b0;
@@ -169,32 +167,51 @@ module IDU (
         o_shamt  = 6'b0;
         if(Itype_signal == 1'b1) begin
             rs1 = I_rs1;
+            rs2 = 5'b0;
             rd  = I_rd;
             o_imm = I_imm;
             o_shamt = I_shamt;
+            o_offset = 32'b0;
         end
         else if(Utype_signal == 1'b1) begin
+            rs1 = 5'b0;
+            rs2 = 5'b0;
             rd  = U_rd;
             o_imm = U_imm;
+            o_offset = 32'b0;
+            o_shamt  = 6'b0;
         end
         else if(Btype_signal == 1'b1) begin
             o_offset = B_offset;
             rs1 = B_rs1;
             rs2 = B_rs2;
+            rd  = 5'b0;
+            o_shamt  = 6'b0;
+            o_imm = 32'b0;
         end
         else if(Jtype_signal == 1'b1) begin
             o_offset  = J_offset;
+            rs1 = 5'b0;
+            rs2 = 5'b0;
             rd  = J_rd;
+            o_shamt  = 6'b0;
+            o_imm = 32'b0;
         end
         else if(Stype_signal == 1'b1) begin
             o_imm  = S_imm;
             rs1  = S_rs1;
             rs2  = S_rs2;
+            rd   = 5'b0;
+            o_shamt  = 6'b0;
+            o_offset = 32'b0;
         end
         else if(Rtype_signal == 1'b1) begin
+            o_imm = 32'b0;
             rs1  = R_rs1;
             rs2  = R_rs2;
             rd   = R_rd;
+            o_shamt  = 6'b0;
+            o_offset = 32'b0;
         end
     end
 
@@ -277,14 +294,14 @@ module IDU (
     .o_sub_signal(o_sub_signal),
     .o_slt_signal(o_slt_signal),
     .o_sltu_signal(o_sltu_signal),
-    .o_mul_signal(o_mul_signal),
-    .o_mulh_signal(o_mulh_signal),
-    .o_mulhu_signal(o_mulhu_signal),
-    .o_mulhsu_signal(o_mulhsu_signal),
-    .o_div_signal(o_div_signal),
-    .o_divu_signal(o_divu_signal), 
-    .o_rem_signal(o_rem_signal),
-    .o_remu_signal(o_remu_signal),
+    // .o_mul_signal(o_mul_signal),
+    // .o_mulh_signal(o_mulh_signal),
+    // .o_mulhu_signal(o_mulhu_signal),
+    // .o_mulhsu_signal(o_mulhsu_signal),
+    // .o_div_signal(o_div_signal),
+    // .o_divu_signal(o_divu_signal), 
+    // .o_rem_signal(o_rem_signal),
+    // .o_remu_signal(o_remu_signal),
     .o_sll_signal(o_sll_signal),
     .o_sra_signal(o_sra_signal),
     .o_srl_signal(o_srl_signal),

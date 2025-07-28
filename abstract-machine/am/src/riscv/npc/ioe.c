@@ -9,13 +9,13 @@ void __am_audio_init();
 void __am_timer_rtc(AM_TIMER_RTC_T *);
 void __am_timer_uptime(AM_TIMER_UPTIME_T *);
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *);
-// void __am_gpu_config(AM_GPU_CONFIG_T *);
-// void __am_gpu_status(AM_GPU_STATUS_T *);
-// void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *);
-// void __am_audio_config(AM_AUDIO_CONFIG_T *);
-// void __am_audio_ctrl(AM_AUDIO_CTRL_T *);
-// void __am_audio_status(AM_AUDIO_STATUS_T *);
-// void __am_audio_play(AM_AUDIO_PLAY_T *);
+void __am_gpu_config(AM_GPU_CONFIG_T *);
+void __am_gpu_status(AM_GPU_STATUS_T *);
+void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *);
+void __am_audio_config(AM_AUDIO_CONFIG_T *);
+void __am_audio_ctrl(AM_AUDIO_CTRL_T *);
+void __am_audio_status(AM_AUDIO_STATUS_T *);
+void __am_audio_play(AM_AUDIO_PLAY_T *);
 // void __am_disk_config(AM_DISK_CONFIG_T *cfg);
 // void __am_disk_status(AM_DISK_STATUS_T *stat);
 // void __am_disk_blkio(AM_DISK_BLKIO_T *io);
@@ -32,14 +32,14 @@ static void *lut[128] = {
   [AM_TIMER_UPTIME] = __am_timer_uptime,
   [AM_INPUT_CONFIG] = __am_input_config,
   [AM_INPUT_KEYBRD] = __am_input_keybrd,
+  [AM_GPU_CONFIG  ] = __am_gpu_config,
+  [AM_GPU_FBDRAW  ] = __am_gpu_fbdraw,
+  [AM_GPU_STATUS  ] = __am_gpu_status,
   [AM_UART_CONFIG]  = __am_uart_config,
-  // [AM_GPU_CONFIG  ] = __am_gpu_config,
-  // [AM_GPU_FBDRAW  ] = __am_gpu_fbdraw,
-  // [AM_GPU_STATUS  ] = __am_gpu_status,
-  // [AM_AUDIO_CONFIG] = __am_audio_config,
-  // [AM_AUDIO_CTRL  ] = __am_audio_ctrl,
-  // [AM_AUDIO_STATUS] = __am_audio_status,
-  // [AM_AUDIO_PLAY  ] = __am_audio_play,
+  [AM_AUDIO_CONFIG] = __am_audio_config,
+  [AM_AUDIO_CTRL  ] = __am_audio_ctrl,
+  [AM_AUDIO_STATUS] = __am_audio_status,
+  [AM_AUDIO_PLAY  ] = __am_audio_play,
   // [AM_DISK_CONFIG ] = __am_disk_config,
   // [AM_DISK_STATUS ] = __am_disk_status,
   // [AM_DISK_BLKIO  ] = __am_disk_blkio,
@@ -51,9 +51,9 @@ static void fail(void *buf) { panic("access nonexist register"); }
 bool ioe_init() {
   for (int i = 0; i < LENGTH(lut); i++)
     if (!lut[i]) lut[i] = fail;
-  // __am_gpu_init();
+  __am_gpu_init();
   __am_timer_init();
-  // __am_audio_init();
+  __am_audio_init();
   return true;
 }
 
@@ -139,8 +139,6 @@ void __am_gpu_status(AM_GPU_STATUS_T *status) {
 }
 
 //================audio==================
-#define DEVICE_BASE 0xa0000000
-#define MMIO_BASE 0xa0000000
 #define AUDIO_ADDR      (DEVICE_BASE + 0x0000200)
 #define AUDIO_SBUF_ADDR (MMIO_BASE   + 0x1200000)
 #define AUDIO_FREQ_ADDR      (AUDIO_ADDR + 0x00)
