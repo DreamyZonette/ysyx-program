@@ -7,7 +7,7 @@
 #define CONFIG_DIFFTEST 0
 #define CONFIG_DEVICE 1
 
-#define CONFIG_HAS_AUDIO 0
+#
 #define CONFIG_HAS_SERIAL 1
 #define CONFIG_HAS_TIMER 1
 #define CONFIG_HAS_VGA 0
