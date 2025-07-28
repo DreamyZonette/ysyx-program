@@ -37,7 +37,6 @@ void device_update() {
 #endif
 
 #ifndef CONFIG_TARGET_AM
-printf("device_update\n");
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
