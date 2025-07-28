@@ -37,17 +37,15 @@ void device_update() {
 #endif
 
 #ifndef CONFIG_TARGET_AM
+printf("device_update\n");
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
-    printf("in device_update\n");
     switch (event.type) {
       case SDL_QUIT:
         npc_state.state = NPC_QUIT;
-        printf("1\n");
         break;
 #if CONFIG_HAS_KEYBOARD
       // If a key was pressed
-      printf("2\n");
       case SDL_KEYDOWN:
       case SDL_KEYUP: {
         uint8_t k = event.key.keysym.scancode;
