@@ -44,7 +44,10 @@ word_t map_read(paddr_t addr, int len, IOMap *map) {
   uint8_t *space_ptr = (uint8_t *)map->space;
   word_t ret = host_read(space_ptr + offset, len);
   #if CONFIG_DTRACE
-    printf("map_read: addr = " FMT_PADDR ", len = %d, data = " FMT_WORD "\n", addr, len, ret);
+    char s [128];
+    snprintf(s, 128, "map_read: addr = " FMT_PADDR ", len = %d, data = " FMT_WORD "\n", addr, len, ret);
+    //printf("map_read: addr = " FMT_PADDR ", len = %d, data = " FMT_WORD "\n", addr, len, ret);
+    log_write("%s\n", s);
   #endif
   return ret;
 }
@@ -56,7 +59,9 @@ void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   uint8_t *space_ptr = (uint8_t *)map->space;
   host_write(space_ptr + offset, len, data);
   #if CONFIG_DTRACE
-    printf("map_write: addr = " FMT_PADDR ", len = %d, data = " FMT_WORD "\n", addr, len, data);
+    char s [128];
+    snprintf(s, 128, "map_write: addr = " FMT_PADDR ", len = %d, data = " FMT_WORD "\n", addr, len, data);
+    log_write("%s\n", s);
   #endif
   invoke_callback(map->callback, offset, len, true);
 }
