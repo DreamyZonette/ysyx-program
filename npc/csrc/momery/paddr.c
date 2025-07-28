@@ -37,8 +37,8 @@ static void out_of_bound(paddr_t addr) {
 extern "C" int pmem_read(int addr, int len) {
   addr = paddr_t(addr);
   int offset = 0;
-  if(addr % 4 != 0){
-    offset = addr % 4;
+  if(addr & 3 != 0){
+    offset = addr & 3;
     addr -= offset;
     len += offset;
   }
