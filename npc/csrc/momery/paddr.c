@@ -63,7 +63,10 @@ extern "C" void pmem_write(int addr, int len, int data) {
   else{
     #if CONFIG_MTRACE
     // printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
-    if (addr == 0x80011071 || addr == 0x80011070) printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    if (addr == 0x80011071 || addr == 0x80011070) {
+      printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+      printf("0x%08x\n", top->de_pc);
+    }
 
   #endif
     internal_pmem_write(addr, len, data);
