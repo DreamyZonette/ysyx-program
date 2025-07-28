@@ -36,12 +36,6 @@ static void out_of_bound(paddr_t addr) {
 
 extern "C" int pmem_read(int addr, int len) {
   addr = paddr_t(addr);
-  // int offset = 0;
-  // if(addr & 3 != 0){
-  //   offset = addr & 3;
-  //   addr -= offset;
-  //   len += offset;
-  // }
   uint32_t ret;
   if (addr == RTC_LO_ADDR || addr == RTC_HI_ADDR) { 
     ret = mmio_read(addr, len);
@@ -49,20 +43,17 @@ extern "C" int pmem_read(int addr, int len) {
   else{
     ret = internal_pmem_read(addr, len);
     #if CONFIG_MTRACE
-      if (addr != top->de_pc)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+      // if (addr != top->de_pc)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+      if (addr == 0x80011071)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+
     #endif
   }
-  // ret = ret >> (offset * 8);
   return ret;
 }
 
 extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
   data = word_t(data);
-  // uint32_t mask = 0;
-  // if(len == 1) mask = 0xff;
-  // else if(len == 2) mask = 0xffff;
-  // else if(len == 4) mask = 0xffffffff;
   
   if(addr == SERIAL_PORT){
     // putchar(char(data));
@@ -71,9 +62,10 @@ extern "C" void pmem_write(int addr, int len, int data) {
   }
   else{
     #if CONFIG_MTRACE
-    printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    // printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    if (addr == 0x80011071) printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+
   #endif
-    // printf("pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
     internal_pmem_write(addr, len, data);
   }
 }
