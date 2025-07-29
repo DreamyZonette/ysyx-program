@@ -67,7 +67,7 @@ module alu (
         if(i_addi_signal == 1'b1) begin
             o_data = i_src1 + i_imm;
         end else if(i_jalr_signal == 1'b1) begin
-            o_data = i_src1 + i_offset;
+            o_data = i_src1 + i_imm;
         end else if(i_lb_signal == 1'b1) begin
             o_data = i_src1 + i_imm;
         end else if(i_lh_signal == 1'b1) begin
