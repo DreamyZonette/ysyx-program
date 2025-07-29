@@ -3,7 +3,6 @@ module alu (
     input [31:0] i_src1,
     input [31:0] i_src2,
     input [31:0] i_imm ,
-    input [31:0] i_offset,
     input [31:0] i_pc_data,
     input             i_addi_signal,
     input             i_jalr_signal,

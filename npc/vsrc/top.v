@@ -42,7 +42,6 @@
     wire [31:0] imm;
     wire [31:0] src1;
     wire [31:0] src2;
-    wire [31:0] offset;
     wire [31:0] next_pc;
     wire [31:0] pc;
     wire [31:0] instruction;
@@ -72,7 +71,6 @@
     .o_src1(src1),
     .o_src2(src2),
     .o_imm(imm),
-    .o_offset(offset),
     .o_wmask(wmask),
     .o_addi_signal(addi_signal),
     .o_ebreak_signal(ebreak_signal),
@@ -92,7 +90,6 @@
     .i_src1(src1),
     .i_src2(src2),
     .i_imm(imm),
-    .i_offset(offset),
     .i_pc_data(pc),
     .i_addi_signal(addi_signal),
     .i_jalr_signal(jalr_signal),
