@@ -6,6 +6,7 @@ module Stype (
     output reg [3:0] o_wmask,
     output reg o_sw_signal,
     output reg o_sb_signal,
+    output reg o_sh_signal,
     output o_halt_signal
 );
 
@@ -27,6 +28,7 @@ module Stype (
         // 初始化
         o_sw_signal     = 1'b0;
         o_sb_signal     = 1'b0;
+        o_sh_signal     = 1'b0;
         sign_extended   = 1'b0;
         zero_extended   = 1'b0;
         unknown_intstruction = 1'b0;
@@ -37,7 +39,8 @@ module Stype (
         7'b0100011: begin // store
             o_sw_signal = (fun == 3'b010) ? 1'b1 : 1'b0;
             o_sb_signal = (fun == 3'b000) ? 1'b1 : 1'b0;
-            sign_extended = (fun == 3'b010 || fun == 3'b000) ? 1'b1 : 1'b0;
+            o_sh_signal = (fun == 3'b001) ? 1'b1 : 1'b0;
+            sign_extended = (fun == 3'b010 || fun == 3'b000 || fun == 3'b001) ? 1'b1 : 1'b0;
         end
         default: begin
             unknown_intstruction = 1'b1;
@@ -60,6 +63,8 @@ module Stype (
             o_wmask = 4'd4;
         end else if (o_sb_signal == 1'b1) begin
             o_wmask = 4'd1;
+    end else if (o_sh_signal == 1'b1) begin
+            o_wmask = 4'd2;
         end else begin
             o_wmask = 4'd0;
         end
