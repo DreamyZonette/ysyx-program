@@ -60,7 +60,7 @@ __am_asm_trap:
   mv a0, sp
   call __am_irq_handle
   // NEW
-  mv sp, a0
+  
   // end NEW
 
   LOAD t1, OFFSET_STATUS(sp)
@@ -71,4 +71,5 @@ __am_asm_trap:
   MAP(REGS, POP)
 
   addi sp, sp, CONTEXT_SIZE
+  mv sp, a0
   mret
