@@ -29,7 +29,7 @@
 
 CPU_state cpu = {
     .csr = {
-        [0] = 0x1800,   // 只初始化csr[0]为0x1800，其他元素为0
+        [0] = 0x1800,   // 只初始化mstatus为0x1800，其他元素为0
     }
 };
 uint64_t g_nr_guest_inst = 0;
