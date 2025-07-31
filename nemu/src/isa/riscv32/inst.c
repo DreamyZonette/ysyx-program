@@ -28,15 +28,7 @@
 #define R(i) gpr(i)
 #define Mr vaddr_read
 #define Mw vaddr_write
-#define mstatus csr(0x300) // mstatus
-#define misa csr(0x301) // misa
-#define mie csr(0x304) // mie
-#define mtvec csr(0x305) // mtvec
-#define mscratch csr(0x340) // mscratch
-#define mepc csr(0x341) // mepc
-#define mcause csr(0x342) // mcause
-#define mtval csr(0x343) // mtval
-#define mip csr(0x380) // mip
+
 
 enum {
   TYPE_I, TYPE_U, TYPE_S,
