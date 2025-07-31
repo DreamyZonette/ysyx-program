@@ -14,8 +14,16 @@ Context* __am_irq_handle(Context *c) {
 
     switch (cause) {
       case 0:
-        ev.event=EVENT_YIELD;printf("Trap: EVENT_YIELD\n"); break;
-      default: ev.event = EVENT_ERROR; printf("Trap: EVENT_ERROR\n"); break;
+        ev.event=EVENT_YIELD;
+        #ifdef CONFIG_ETRACE
+        printf("Trap: EVENT_YIELD\n"); 
+        #endif
+        break;
+      default: ev.event = EVENT_ERROR; 
+        #ifdef CONFIG_ETRACE
+        printf("Trap: EVENT_ERROR\n"); 
+        #endif
+        break;
     }
 
     c = user_handler(ev, c);
