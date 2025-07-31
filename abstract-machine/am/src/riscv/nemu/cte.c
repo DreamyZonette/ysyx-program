@@ -13,7 +13,7 @@ Context* __am_irq_handle(Context *c) {
     uint32_t cause = c->mcause;
 
     //int is_interrupt = (cause & 0x80000000)!= 0;
-
+    //cause = cause & 0x7fffffff;
 
     switch (cause) {
       case 8:
@@ -51,7 +51,9 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 }
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  return NULL;
+  Context *c = (Context*)(kstack.end - 1);
+
+  return c;
 }
 
 void yield() {
