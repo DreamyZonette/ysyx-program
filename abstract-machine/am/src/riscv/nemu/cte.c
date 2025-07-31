@@ -5,6 +5,13 @@
 static Context* (*user_handler)(Event, Context*) = NULL;
 
 Context* __am_irq_handle(Context *c) {
+  printf("CTX MEM LAYOUT:\n");
+  printf("gpr[5]: offset=%d\n", (void*)&c->gpr[5] - (void*)c);
+  printf("mcause: offset=%d\n", (void*)&c->mcause - (void*)c);
+  
+  // 2. 检查x5(t0)值（参考屏幕截图中的0x00000006）
+  printf("x5(t0)=0x%08d\n", c->gpr[5]);
+
   if (user_handler) {
     Event ev = {0};
     switch (c->mcause) {
