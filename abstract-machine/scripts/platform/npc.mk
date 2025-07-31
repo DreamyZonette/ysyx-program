@@ -29,4 +29,8 @@ image: image-dep
 
 run: insert-arg
 	$(MAKE) -C $(NPC_HOME) ISA=$(ISA) run  IMG=$(IMAGE).bin
+
+gdb: insert-arg
+	$(MAKE) -C $(NPC_HOME) ISA=$(ISA) gdb  IMG=$(IMAGE).bin
+    
 .PHONY: insert-arg
