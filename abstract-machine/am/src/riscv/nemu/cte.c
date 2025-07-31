@@ -12,8 +12,13 @@ Context* __am_irq_handle(Context *c) {
 
     uint32_t cause = c->mcause;
 
+    int is_interrupt = (cause & 0x80000000)!= 0;
+
+
     switch (cause) {
-      case 0:
+      case 8:
+      case 9:
+      case 11:
         ev.event=EVENT_YIELD;
         #ifdef CONFIG_ETRACE
         printf("Trap: EVENT_YIELD\n"); 
