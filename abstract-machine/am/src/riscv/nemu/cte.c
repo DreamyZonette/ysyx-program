@@ -3,7 +3,7 @@
 #include <klib.h>
 
 static Context* (*user_handler)(Event, Context*) = NULL;
-#define CONFIG_ETRACE
+//#define CONFIG_ETRACE
 
 Context* __am_irq_handle(Context *c) {
 
