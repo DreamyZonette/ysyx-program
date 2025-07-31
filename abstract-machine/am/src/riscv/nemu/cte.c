@@ -12,7 +12,7 @@ Context* __am_irq_handle(Context *c) {
 
     uint32_t cause = c->mcause;
 
-    int is_interrupt = (cause & 0x80000000)!= 0;
+    //int is_interrupt = (cause & 0x80000000)!= 0;
 
 
     switch (cause) {
