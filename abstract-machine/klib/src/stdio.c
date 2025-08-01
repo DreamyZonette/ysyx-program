@@ -6,7 +6,7 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 
-void itoa(int num, char *str);
+void am_itoa(int num, char *str);
 
 int printf(const char *fmt, ...) {
   va_list args;
@@ -46,7 +46,7 @@ int printf(const char *fmt, ...) {
         {
           int num = va_arg(args, int);
           char str[20];
-          itoa(num, str);
+          am_itoa(num, str);
 
           int len = 0;
           while (str[len] != '\0') len++;
@@ -129,7 +129,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
           // 处理 %d 格式说明符
           int num = va_arg(ap, int);  // 从 va_list 提取整数参数
           char str[20];
-          itoa(num, str);  // 将整数转换为字符串
+          am_itoa(num, str);  // 将整数转换为字符串
           for (int i = 0; str[i] != '\0'; i++) {
             *p++ = str[i];
           }
@@ -191,7 +191,7 @@ int sprintf(char *out, const char *fmt, ...) {
         {
           int num = va_arg(args, int);
           char str[20];
-          itoa(num, str);
+          am_itoa(num, str);
           for(int i = 0; str[i] != '\0'; i++)
           {
             *p++ = str[i];
@@ -259,7 +259,7 @@ int snprintf(char *out, size_t n, const char *fmt, ...) {
           // 处理 %d 格式说明符
           int num = va_arg(args, int);
           char str[20];
-          itoa(num, str);
+          am_itoa(num, str);
           for (int i = 0; str[i] != '\0' && count < n - 1; i++) {
             *p++ = str[i];
             count++;
@@ -336,7 +336,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
                     int num = va_arg(ap, int);
                     // 将整数转换为字符串并写入缓冲区
                     char str[20];
-                    itoa(num, str);
+                    am_itoa(num, str);
                     for (int i = 0; str[i] != '\0' && (count < n - 1); i++) {
                         if (p) *p = str[i];
                         p++;
@@ -396,7 +396,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
 
 
 
-void itoa(int num, char *str)
+void am_itoa(int num, char *str)
 {
   if (num == 0) {
         str[0] = '0';
@@ -436,5 +436,6 @@ void itoa(int num, char *str)
         end--;
     }
 }
+
 
 #endif
