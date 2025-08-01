@@ -20,6 +20,7 @@ Context* __am_irq_handle(Context *c) {
       case 9:
       case 11:
         ev.event=EVENT_YIELD;
+        c->mepc += 4;
         #ifdef CONFIG_ETRACE
         printf("Trap: EVENT_YIELD\n"); 
         #endif
