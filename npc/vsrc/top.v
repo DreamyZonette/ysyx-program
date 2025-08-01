@@ -103,6 +103,8 @@
     wire [31:0] mstatus_wdata;
     wire [31:0] mtvec_wdata;
     wire [31:0] mepc_wdata;
+    wire [31:0] csr_wdata;
+
 
 
     PC PC_u(
@@ -265,7 +267,7 @@
     .i_mtvec_rdata(mtvec),
     .i_mepc_rdata(mepc),
     .i_mcause_rdata(mcause),
-    .o_csr_wdata(),
+    .o_csr_wdata(csr_wdata),
     .o_reg_wdata(wdata),
     .o_mstatus_wdata(mstatus_wdata),
     .o_mtvec_wdata(mtvec_wdata),
@@ -295,7 +297,7 @@
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
     .i_ecall_signal(ecall_signal),
-    .i_csr_wdata(exu_data),
+    .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),
     .i_mcause_wdata(mcause_wdata),
     .i_mstatus_wdata(mstatus_wdata),
@@ -305,7 +307,7 @@
     .o_mtvec(mtvec),
     .o_mepc(mepc),
     .o_mcause(mcause),
-    .o_csr_data(csr_data)
+    .o_rcsr_data(csr_data)
 );
    
     endmodule
