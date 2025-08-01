@@ -58,11 +58,12 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 //   void *pdir;
 // };
 
-#define CONTEXT_SIZE  ((NR_REGS + 3) * 4)
+// #define CONTEXT_SIZE  ((NR_REGS + 3) * 4)
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   uintptr_t stack_top = (uintptr_t)(kstack.end);
-  Context *c = (Context*)(stack_top - CONTEXT_SIZE);
+  stack_top = stack_top & ~0xF;
+  Context *c = (Context*)(stack_top - sizeof(Context));
   
   memset(c, 0, sizeof(Context));
   c->mepc = (uintptr_t)entry;
