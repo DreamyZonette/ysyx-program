@@ -59,16 +59,14 @@ __am_asm_trap:
 
   mv a0, sp
   call __am_irq_handle
+  // NEW
+  mv sp, a0
+  // end NEW
 
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
   csrw mstatus, t1
   csrw mepc, t2
-
-    // NEW
-  mv sp, a0
-  // end NEW
-
 
   MAP(REGS, POP)
 
