@@ -21,14 +21,14 @@ Context* __am_irq_handle(Context *c) {
       case 11:
         ev.event=EVENT_YIELD;
         c->mepc += 4;
-        #ifdef CONFIG_ETRACE
-        printf("Trap: EVENT_YIELD\n"); 
-        #endif
+          #ifdef CONFIG_ETRACE
+          printf("Trap: EVENT_YIELD\n"); 
+          #endif
         break;
       default: ev.event = EVENT_ERROR; 
-        #ifdef CONFIG_ETRACE
-        printf("Trap: EVENT_ERROR\n"); 
-        #endif
+          #ifdef CONFIG_ETRACE
+          printf("Trap: EVENT_ERROR\n"); 
+          #endif
         break;
     }
     // printf("处理前上下文: %d\n", c);
