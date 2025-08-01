@@ -3,7 +3,7 @@
 #include <klib.h>
 
 static Context* (*user_handler)(Event, Context*) = NULL;
-#define CONFIG_ETRACE
+//#define CONFIG_ETRACE
 
 Context* __am_irq_handle(Context *c) {
 
@@ -59,7 +59,7 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 // };
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  uintptr_t stack_top = (uintptr_t)(kstack.end + 1);
+  uintptr_t stack_top = (uintptr_t)(kstack.end);
   Context *c = (Context*)(stack_top - sizeof(Context));
   memset(c, 0, sizeof(Context));
   c->mepc = (uintptr_t)entry;
