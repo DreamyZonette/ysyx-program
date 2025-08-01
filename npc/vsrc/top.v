@@ -307,7 +307,7 @@
     .o_mtvec(mtvec),
     .o_mepc(mepc),
     .o_mcause(mcause),
-    .o_rcsr_data(csr_data)
+    .o_csr_rdata(csr_data)
 );
    
     endmodule
