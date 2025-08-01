@@ -31,10 +31,10 @@ Context* __am_irq_handle(Context *c) {
         #endif
         break;
     }
-    printf("处理前上下文: %d\n", c);
+    // printf("处理前上下文: %d\n", c);
     c = user_handler(ev, c);
     assert(c != NULL);
-    printf("处理后上下文: %d\n", c);
+    // printf("处理后上下文: %d\n", c);
   }
 
   return c;
@@ -51,13 +51,6 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 
   return true;
 }
-// struct Context {
-//   uintptr_t gpr[NR_REGS];
-//   uintptr_t mcause;
-//   uintptr_t mstatus;
-//   uintptr_t mepc;
-//   void *pdir;
-// };
 
 // #define CONTEXT_SIZE  ((NR_REGS + 3) * 4)
 
@@ -71,8 +64,8 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   c->gpr[10] = (uintptr_t)arg;
   c->gpr[2] = stack_top;
   c->mstatus = 0x1800;
-  printf("创建上下文: %d -> 大小=%d, 栈顶=%d\n", 
-       c, sizeof(Context), stack_top);
+  // printf("创建上下文: %d -> 大小=%d, 栈顶=%d\n", 
+  //      c, sizeof(Context), stack_top);
   return c;
 }
 
