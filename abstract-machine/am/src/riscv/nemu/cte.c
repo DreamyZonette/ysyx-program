@@ -30,10 +30,10 @@ Context* __am_irq_handle(Context *c) {
         #endif
         break;
     }
-
+    printf("处理前上下文: %d\n", c);
     c = user_handler(ev, c);
     assert(c != NULL);
-    printf("%d\n", c);
+    printf("处理后上下文: %d\n", c);
   }
 
   return c;
