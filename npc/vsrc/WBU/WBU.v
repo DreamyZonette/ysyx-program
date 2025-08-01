@@ -71,10 +71,10 @@ module WBU(
         end else if (i_ecall_signal == 1'b1) begin
             reg_wdata = 32'h0;
             csr_wdata = 32'h0;
-            o_mepc_wdata = i_cur_pc + 4;
-            o_mcause_wdata = 32'd11;
-            o_mstatus_wdata = 32'h0;
-            o_mtvec_wdata = 32'h0;
+            o_mepc_wdata = i_cur_pc + 4;// 是否需要+4待验证
+            o_mcause_wdata = 32'd11; // 没有实现特权级转换
+            o_mstatus_wdata = i_mstatus_rdata;
+            o_mtvec_wdata = i_mtvec_rdata;
         end
         else begin
             reg_wdata = i_exu_data;
