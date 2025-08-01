@@ -7,6 +7,7 @@
 
 
 void am_itoa(int num, char *str);
+void am_long_itoa(long num, char *str);
 
 int printf(const char *fmt, ...) {
   va_list args;
@@ -72,6 +73,39 @@ int printf(const char *fmt, ...) {
           p ++;
           break;
         }
+         case 'l':
+        if (*(p+1) == 'd') {
+          long num = va_arg(args, long);
+          char str[20];
+          am_long_itoa(num, str);
+
+          int len = 0;
+          while (str[len] != '\0') len++;
+          
+          int is_negative = (num < 0);
+          int digits = is_negative ? len - 1 : len;
+          int padding = width - digits;
+          if (padding < 0) {
+            padding = 0;
+          }
+
+          if (zero_pad) {
+            for (int i = 0; i < padding; i++) {
+              putch('0');
+              count ++;
+            }
+          }
+          for(int i = 0; str[i] != '\0'; i++)
+          {
+            putch(str[i]);
+            count ++;
+          }
+          p ++;
+          break;
+        } else {
+            // 无效
+        }
+        break;
         case 's':
         {
           char *str = va_arg(args, char *);
@@ -411,6 +445,46 @@ void am_itoa(int num, char *str)
     if (num < 0) {
         is_negative = 1;
         unum = (unsigned int)(-num);  // 避免溢出
+    } else {
+        unum = num;
+    }
+
+    while (unum > 0) {
+        str[i++] = '0' + (unum % 10);
+        unum /= 10;
+    }
+
+    if (is_negative) {
+        str[i++] = '-';
+    }
+
+    str[i] = '\0';
+    
+    // 反转字符串
+    int start = 0, end = i - 1;
+    while (start < end) {
+        char tmp = str[start];
+        str[start] = str[end];
+        str[end] = tmp;
+        start++;
+        end--;
+    }
+}
+void am_long_itoa(long num, char *str)
+{
+  if (num == 0) {
+        str[0] = '0';
+        str[1] = '\0';
+        return;
+    }
+
+    int i = 0;
+    int is_negative = 0;
+    unsigned long unum;  // 使用无符号数处理最小负数
+
+    if (num < 0) {
+        is_negative = 1;
+        unum = (unsigned long)(-num);  // 避免溢出
     } else {
         unum = num;
     }
