@@ -62,7 +62,7 @@ __am_asm_trap:
   call __am_irq_handle
   // NEW
   //STORE a0, OFFSET_SP(sp)
-  //mv sp, a0
+  mv sp, a0
   // end NEW
 
   LOAD t1, OFFSET_STATUS(sp)
