@@ -40,8 +40,13 @@ f(30) f(31)
 .align 3
 .globl __am_asm_trap
 __am_asm_trap:
+  mv t3, sp// NEW
   addi sp, sp, -CONTEXT_SIZE
 
+// NEW
+  LOAD sp, OFFSET_SP(sp)
+  STORE t3, OFFSET_SP(sp)
+  // end NEW
   MAP(REGS, PUSH)
 
   csrr t0, mcause
