@@ -100,9 +100,9 @@
     wire [31:0] mepc;
     wire [31:0] mcause;
     wire [31:0] mcause_wdata;
-    wire [31:0] mstatus_wdata
-    wire [31:0] mtvec_wdata
-    wire [31:0] mepc_wdata
+    wire [31:0] mstatus_wdata;
+    wire [31:0] mtvec_wdata;
+    wire [31:0] mepc_wdata;
 
 
     PC PC_u(
@@ -249,14 +249,28 @@
 
     WBU WBU_u (
     .i_sys_rst_n(sys_rst_n),
+    .i_exu_data(exu_data),
+    .i_cur_pc(pc),
     .i_B_jump_signal(o_B_jump_signal),
     .i_jal_signal(jal_signal),
     .i_jalr_signal(jalr_signal),
     .i_load_signal(load_signal),
+    .i_csrrw_signal(csrrw_signal),
+    .i_csrrs_signal(csrrs_signal),
+    .i_mret_signal(mret_signal),
+    .i_ecall_signal(ecall_signal),
     .i_load_wdata(rdata),
-    .i_cur_pc(pc),
-    .i_exu_data(exu_data),
+    .i_csr_rdata(csr_data),
+    .i_mstatus_rdata(mstatus),
+    .i_mtvec_rdata(mtvec),
+    .i_mepc_rdata(mepc),
+    .i_mcause_rdata(mcause),
+    .o_csr_wdata(),
     .o_reg_wdata(wdata),
+    .o_mstatus_wdata(mstatus_wdata),
+    .o_mtvec_wdata(mtvec_wdata),
+    .o_mepc_wdata(mepc_wdata),
+    .o_mcause_wdata(mcause_wdata),
     .o_next_pc(next_pc)
     );
 
