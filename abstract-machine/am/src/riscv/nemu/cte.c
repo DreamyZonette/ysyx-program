@@ -61,7 +61,7 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 // #define CONTEXT_SIZE  ((NR_REGS + 3) * 4)
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  uintptr_t stack_top = (uintptr_t)(kstack.end);
+  uintptr_t stack_top = (uintptr_t)(kstack.end - 1);
   stack_top = stack_top & ~0xF;
   Context *c = (Context*)(stack_top - sizeof(Context));
   
