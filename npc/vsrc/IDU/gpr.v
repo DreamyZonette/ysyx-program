@@ -10,14 +10,13 @@ module gpr  (
     output [31:0] o_reg_data [0:31]
     );
     
-    
+    /* verilator lint_off UNUSEDSIGNAL */
     wire [31:0] wen;
+    /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] reg_file [0:31]; // 32 个寄存器
 
     assign o_reg_data = reg_file;
-    /* verilator lint_off UNUSEDSIGNAL */
     assign wen = (i_rd != 5'b0)? (32'b1 << i_rd) : 32'b0; // 写使能信号
-    /* verilator lint_on UNUSEDSIGNAL */
 
     // // 写使能信号
     // always @(*) begin   
