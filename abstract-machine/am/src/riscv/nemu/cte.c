@@ -3,16 +3,38 @@
 #include <klib.h>
 
 static Context* (*user_handler)(Event, Context*) = NULL;
+//#define CONFIG_ETRACE
 
 Context* __am_irq_handle(Context *c) {
+
   if (user_handler) {
     Event ev = {0};
-    switch (c->mcause) {
-      default: ev.event = EVENT_ERROR; break;
-    }
 
+    uint32_t cause = c->mcause;
+
+    //int is_interrupt = (cause & 0x80000000)!= 0;
+    //cause = cause & 0x7fffffff;
+
+    switch (cause) {
+      case 8:
+      case 9:
+      case 11:
+        ev.event=EVENT_YIELD;
+        c->mepc += 4;
+        #ifdef CONFIG_ETRACE
+        printf("Trap: EVENT_YIELD\n"); 
+        #endif
+        break;
+      default: ev.event = EVENT_ERROR; 
+        #ifdef CONFIG_ETRACE
+        printf("Trap: EVENT_ERROR\n"); 
+        #endif
+        break;
+    }
+    // printf("处理前上下文: %d\n", c);
     c = user_handler(ev, c);
     assert(c != NULL);
+    // printf("处理后上下文: %d\n", c);
   }
 
   return c;
@@ -30,8 +52,21 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
   return true;
 }
 
+// #define CONTEXT_SIZE  ((NR_REGS + 3) * 4)
+
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  return NULL;
+  uintptr_t stack_top = (uintptr_t)(kstack.end);
+  stack_top = stack_top & ~0xF;
+  Context *c = (Context*)(stack_top - sizeof(Context) + 4);
+  
+  memset(c, 0, sizeof(Context));
+  c->mepc = (uintptr_t)entry;
+  c->gpr[10] = (uintptr_t)arg;
+  c->gpr[2] = stack_top;
+  c->mstatus = 0x1800;
+  // printf("创建上下文: %d -> 大小=%d, 栈顶=%d\n", 
+  //      c, sizeof(Context), stack_top);
+  return c;
 }
 
 void yield() {
