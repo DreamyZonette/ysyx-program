@@ -27,11 +27,7 @@
  */
 #define MAX_INST_TO_PRINT 10
 
-CPU_state cpu = {
-    .csr = {
-        [0] = 0x1800,   // 只初始化mstatus为0x1800，其他元素为0
-    }
-};
+CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
