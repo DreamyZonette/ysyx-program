@@ -44,7 +44,7 @@ __am_asm_trap:
   addi sp, sp, -CONTEXT_SIZE
 
 // NEW
-  LOAD sp, OFFSET_SP(sp)
+  // LOAD sp, OFFSET_SP(sp)
   STORE t3, OFFSET_SP(sp)
   // end NEW
   MAP(REGS, PUSH)
