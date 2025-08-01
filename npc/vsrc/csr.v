@@ -16,10 +16,10 @@ module csr (
 );
 
 reg [3:0] wen;
-wire mstatus_wdata;
-wire mtvec_wdata;
-wire mepc_wdata;
-wire mcause_wdata;
+wire [31:0] mstatus_wdata;
+wire [31:0] mtvec_wdata;
+wire [31:0] mepc_wdata;
+wire [31:0] mcause_wdata;
 
 assign mstatus_wdata = (i_ecall_signal == 1'b1) ? i_mstatus_wdata : i_csr_wdata;
 assign mtvec_wdata   = (i_ecall_signal == 1'b1) ? i_mtvec_wdata   : i_csr_wdata;
