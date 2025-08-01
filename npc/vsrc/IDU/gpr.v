@@ -28,18 +28,51 @@ module gpr  (
     end
 
     // 生成 32 个寄存器
-    genvar i;
-    generate
-        for (i = 0; i < 32; i = i + 1) begin : register_instances
-            Reg #(32) Reg_u (
-                .clk(i_sys_clk),
-                .sys_rst_n(i_sys_rst_n),
-                .wen(wen [i]),
-                .i_data(i_data),
-                .o_data(reg_file[i])   
-            );
-        end
-    endgenerate
+    Reg #(32, 32'b0) zero (i_sys_clk, i_sys_rst_n, i_data[0], reg_file[0], wen[0]);
+    Reg #(32, 32'b0) ra   (i_sys_clk, i_sys_rst_n, i_data[1], reg_file[1], wen[1]);
+    Reg #(32, 32'b0) sp   (i_sys_clk, i_sys_rst_n, i_data[2], reg_file[2], wen[2]);
+    Reg #(32, 32'b0) gp   (i_sys_clk, i_sys_rst_n, i_data[3], reg_file[3], wen[3]);
+    Reg #(32, 32'b0) tp   (i_sys_clk, i_sys_rst_n, i_data[4], reg_file[4], wen[4]);
+    Reg #(32, 32'b0) t0   (i_sys_clk, i_sys_rst_n, i_data[5], reg_file[5], wen[5]);
+    Reg #(32, 32'b0) t1   (i_sys_clk, i_sys_rst_n, i_data[6], reg_file[6], wen[6]);
+    Reg #(32, 32'b0) t2   (i_sys_clk, i_sys_rst_n, i_data[7], reg_file[7], wen[7]);
+    Reg #(32, 32'b0) s0   (i_sys_clk, i_sys_rst_n, i_data[8], reg_file[8], wen[8]);
+    Reg #(32, 32'b0) s1   (i_sys_clk, i_sys_rst_n, i_data[9], reg_file[9], wen[9]);
+    Reg #(32, 32'b0) a0   (i_sys_clk, i_sys_rst_n, i_data[10], reg_file[10], wen[10]);
+    Reg #(32, 32'b0) a1   (i_sys_clk, i_sys_rst_n, i_data[11], reg_file[11], wen[11]);
+    Reg #(32, 32'b0) a2   (i_sys_clk, i_sys_rst_n, i_data[12], reg_file[12], wen[12]);
+    Reg #(32, 32'b0) a3   (i_sys_clk, i_sys_rst_n, i_data[13], reg_file[13], wen[13]);
+    Reg #(32, 32'b0) a4   (i_sys_clk, i_sys_rst_n, i_data[14], reg_file[14], wen[14]);
+    Reg #(32, 32'b0) a5   (i_sys_clk, i_sys_rst_n, i_data[15], reg_file[15], wen[15]);
+    Reg #(32, 32'b0) a6   (i_sys_clk, i_sys_rst_n, i_data[16], reg_file[16], wen[16]);
+    Reg #(32, 32'b0) a7   (i_sys_clk, i_sys_rst_n, i_data[17], reg_file[17], wen[17]);
+    Reg #(32, 32'b0) s2   (i_sys_clk, i_sys_rst_n, i_data[18], reg_file[18], wen[18]);
+    Reg #(32, 32'b0) s3   (i_sys_clk, i_sys_rst_n, i_data[19], reg_file[19], wen[19]);
+    Reg #(32, 32'b0) s4   (i_sys_clk, i_sys_rst_n, i_data[20], reg_file[20], wen[20]);
+    Reg #(32, 32'b0) s5   (i_sys_clk, i_sys_rst_n, i_data[21], reg_file[21], wen[21]);
+    Reg #(32, 32'b0) s6   (i_sys_clk, i_sys_rst_n, i_data[22], reg_file[22], wen[22]);
+    Reg #(32, 32'b0) s7   (i_sys_clk, i_sys_rst_n, i_data[23], reg_file[23], wen[23]);
+    Reg #(32, 32'b0) s8   (i_sys_clk, i_sys_rst_n, i_data[24], reg_file[24], wen[24]);
+    Reg #(32, 32'b0) s9   (i_sys_clk, i_sys_rst_n, i_data[25], reg_file[25], wen[25]);
+    Reg #(32, 32'b0) s10  (i_sys_clk, i_sys_rst_n, i_data[26], reg_file[26], wen[26]);
+    Reg #(32, 32'b0) s11  (i_sys_clk, i_sys_rst_n, i_data[27], reg_file[27], wen[27]);
+    Reg #(32, 32'b0) t3   (i_sys_clk, i_sys_rst_n, i_data[28], reg_file[28], wen[28]);
+    Reg #(32, 32'b0) t4   (i_sys_clk, i_sys_rst_n, i_data[29], reg_file[29], wen[29]);
+    Reg #(32, 32'b0) t5   (i_sys_clk, i_sys_rst_n, i_data[30], reg_file[30], wen[30]);
+    Reg #(32, 32'b0) t6   (i_sys_clk, i_sys_rst_n, i_data[31], reg_file[31], wen[31]);
+
+    // genvar i;
+    // generate
+    //     for (i = 0; i < 32; i = i + 1) begin : register_instances
+    //         Reg #(32) Reg_u (
+    //             .clk(i_sys_clk),
+    //             .sys_rst_n(i_sys_rst_n),
+    //             .wen(wen [i]),
+    //             .i_data(i_data),
+    //             .o_data(reg_file[i])   
+    //         );
+    //     end
+    // endgenerate
 
 
 // 读取寄存器
