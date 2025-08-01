@@ -6,7 +6,7 @@ module alu (
     input [31:0] i_offset,
     input [31:0] i_pc_data,
     input [5:0]       i_shamt,
-    input             i_csr_data,
+    input [31:0]      i_csr_data,
     input             i_addi_signal,
     input             i_jalr_signal,
     input             i_lb_signal,
