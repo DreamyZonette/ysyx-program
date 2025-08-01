@@ -60,7 +60,10 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   uintptr_t stack_top = (uintptr_t)(kstack.end);
-  Context *c = (Context*)(stack_top - sizeof(Context));
+  uintptr_t stack_start = (uintptr_t)(kstack.start);
+  // Context *c = (Context*)(stack_top - sizeof(Context));
+  Context *c = (Context*)(stack_start + sizeof(Context));
+  
   memset(c, 0, sizeof(Context));
   c->mepc = (uintptr_t)entry;
   c->gpr[10] = (uintptr_t)arg;
