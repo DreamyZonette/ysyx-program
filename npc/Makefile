@@ -15,7 +15,7 @@ INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 
 VSRCS := $(wildcard $(VPATH)/**/*.v)
-VSRCS += $(VPATH)/top.v
+VSRCS += $(VPATH)/*.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(wildcard $(CPATH)/**/*.c)
 CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.c)
