@@ -11,21 +11,22 @@ module gpr  (
     );
     
     
-    reg  [31:0] wen;
+    wire [31:0] wen;
     wire [31:0] reg_file [0:31]; // 32 个寄存器
 
     assign o_reg_data = reg_file;
 
+    assign wen = (i_rd != 5'b0)? (32'b1 << i_rd) : 32'b0; // 写使能信号
 
-    // 写使能信号
-    always @(*) begin   
-        if (i_rd != 5'b0) begin // x0 寄存器不可写
-            wen = (32'b1 << i_rd); // 直接左移生成 one-hot 信号
-        end
-        else begin
-            wen = 32'b0;
-        end
-    end
+    // // 写使能信号
+    // always @(*) begin   
+    //     if (i_rd != 5'b0) begin // x0 寄存器不可写
+    //         wen = (32'b1 << i_rd); // 直接左移生成 one-hot 信号
+    //     end
+    //     else begin
+    //         wen = 32'b0;
+    //     end
+    // end
 
     // 生成 32 个寄存器
     Reg #(32, 32'b0) zero (i_sys_clk, i_sys_rst_n, i_data, reg_file[0], wen[0]);
