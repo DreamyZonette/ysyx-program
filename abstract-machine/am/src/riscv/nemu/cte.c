@@ -67,7 +67,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   memset(c, 0, sizeof(Context));
   c->mepc = (uintptr_t)entry;
   c->gpr[10] = (uintptr_t)arg;
-  c->gpr[2] = stack_top;
+  c->gpr[2] = stack_top - CONTEXT_SIZE;
   c->mstatus = 0x1800;
   return c;
 }
