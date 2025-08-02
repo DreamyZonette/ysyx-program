@@ -162,8 +162,8 @@ static void execute(uint64_t n) {
     // dut.diff_mepc = top->de_mepc;
   #endif
     g_nr_guest_inst ++;
-    single_cycle();
     trace_and_difftest();
+    single_cycle();
     #if CONFIG_DEVICE
     device_update();
     #endif
