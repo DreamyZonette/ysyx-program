@@ -32,20 +32,20 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     printf("pc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", pc, ref_r->pc);
     return false;
   }
-  if(dut.mstatus != ref_r->csr[0]){
-    printf("mstatus \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.mstatus, ref_r->csr[0]);
+  if(dut.diff_mstatus != ref_r->csr[0]){
+    printf("mstatus \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mstatus, ref_r->csr[0]);
     return false;
   }
-  if(dut.mepc != ref_r->csr[5]){
-    printf("mepc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.mstmepcatus, ref_r->csr[5]);
+  if(dut.diff_mepc != ref_r->csr[5]){
+    printf("mepc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mepc, ref_r->csr[5]);
     return false;
   }
-  if(dut.mtvec != ref_r->csr[3]){
-    printf("mtvec \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.mtvec, ref_r->csr[3]);
+  if(dut.diff_mtvec != ref_r->csr[3]){
+    printf("mtvec \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mtvec, ref_r->csr[3]);
     return false;
   }
-  if(dut.mcause != ref_r->csr[6]){
-    printf("mcause \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.mcause, ref_r->csr[6]);
+  if(dut.diff_mcause != ref_r->csr[6]){
+    printf("mcause \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mcause, ref_r->csr[6]);
     return false;
   }
 

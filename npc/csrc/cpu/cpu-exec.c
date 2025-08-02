@@ -23,11 +23,10 @@ CPU_state dut = {
   .gpr = {0},            // 所有寄存器初始化为0
   .pc = 0x80000000,       // PC初始化为0x80000000
   .next_pc = 0x80000000,
-  .mstatus = 0,
-  .mcause = 0,
-  .mtval = 0,
-  .mtvec = 0x80000000,
-  .mepc = 0x80000000
+  .diff_mstatus = 0,
+  .diff_mcause = 0,
+  .diff_mtvec = 0x80000000,
+  .diff_mepc = 0x80000000
 };
 
 extern "C" void dpi_ebreak() {
@@ -152,10 +151,10 @@ static void execute(uint64_t n) {
     }
     dut.pc = top->de_pc;
     dut.next_pc = top->de_next_pc;
-    dut.mstatus = top->de_mstatus;
-    dut.mcause = top->de_mcause;
-    dut.mtvec = top->de_mtvec;
-    dut.mepc = top->de_mepc;
+    dut.diff_mstatus = top->de_mstatus;
+    dut.diff_mcause = top->de_mcause;
+    dut.diff_mtvec = top->de_mtvec;
+    dut.diff_mepc = top->de_mepc;
   #endif
     g_nr_guest_inst ++;
     single_cycle();
