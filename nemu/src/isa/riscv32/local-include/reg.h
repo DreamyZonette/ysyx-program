@@ -42,14 +42,14 @@ static inline int check_csr_idx(int idx) {
 #define csr(idx) (cpu.csr[check_csr_idx(idx)])
 
 #define mstatus csr(0x300) // mstatus
-#define misa csr(0x301) // misa
-#define mie csr(0x304) // mie
+// #define misa csr(0x301) // misa
+// #define mie csr(0x304) // mie
 #define mtvec csr(0x305) // mtvec
-#define mscratch csr(0x340) // mscratch
+// #define mscratch csr(0x340) // mscratch
 #define mepc csr(0x341) // mepc
 #define mcause csr(0x342) // mcause
-#define mtval csr(0x343) // mtval
-#define mip csr(0x380) // mip
+// #define mtval csr(0x343) // mtval
+// #define mip csr(0x380) // mip
 
 static inline const char* reg_name(int idx) {
   extern const char* regs[];
