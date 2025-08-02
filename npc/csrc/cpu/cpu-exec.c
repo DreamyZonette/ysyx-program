@@ -27,7 +27,7 @@ CPU_state dut = {
   .diff_mcause = 0,
   .diff_mtvec = 0x80000000,
   .diff_mepc = 0x80000000,
-  .csr = {0}
+  .csr = {0},
 };
 
 extern "C" void dpi_ebreak() {
