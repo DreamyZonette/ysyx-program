@@ -35,7 +35,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   if (skip == true){
     if(ref_r->mstatus == 0x1800) skip = false;
     count++;
-    if(count % 1000000 == 0) {
+    if(count % 100000 == 0) {
       printf("skip: %lld\n", count);
     }
   }
