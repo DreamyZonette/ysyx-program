@@ -1,6 +1,7 @@
 #include <memory/paddr.h>
 #include <memory/host.h> 
 #include <device/mmio.h>
+#include <cpu/difftest.h>
 
 // #define CONFIG_SERIAL_MMIO 0xa00003f8
 // #define CONFIG_RTC_MMIO 0xa0000048
@@ -71,6 +72,9 @@ extern "C" int pmem_read(int addr, int len) {
       addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
       addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
       addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT) { 
+    #if CONFIG_DIFFTEST
+      difftest_skip_ref();
+      #endif
     ret = mmio_read(addr, len);
   }
   else{
@@ -101,6 +105,9 @@ extern "C" void pmem_write(int addr, int len, int data) {
       addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
       addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT){
     // putchar(char(data));
+    #if CONFIG_DIFFTEST
+      difftest_skip_ref();
+      #endif
     mmio_write(addr, len, data);
     // printf("串口传出数据%08x\n", data);
   }
