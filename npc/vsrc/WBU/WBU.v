@@ -47,6 +47,7 @@ module WBU(
     end
 
     always @(*) begin
+        o_mcause_wdata = i_mcause_rdata;
         if (i_load_signal == 1'b1) begin
             reg_wdata = i_load_wdata;
             csr_wdata = 32'h0;
