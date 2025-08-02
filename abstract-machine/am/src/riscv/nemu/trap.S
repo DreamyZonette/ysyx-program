@@ -59,9 +59,10 @@ __am_asm_trap:
   csrw mstatus, t1
 
   mv a0, sp
-  call __am_irq_handle
+  call __am_irq_handle //yieal-os
+  // call ev_handler //RTT
+
   // NEW
-  // STORE a0, OFFSET_SP(sp)
   mv sp, a0
   // end NEW
 

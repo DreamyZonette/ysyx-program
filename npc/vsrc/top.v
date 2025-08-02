@@ -6,7 +6,11 @@
         output [31:0] de_next_pc,
         output [31:0] de_inst,
         output halt,
-        output [31:0] reg_data [0:31]
+        output [31:0] reg_data [0:31],
+        output [31:0] de_mstatus,
+        output [31:0] de_mtvec,
+        output [31:0] de_mepc,
+        output [31:0] de_mcause
     );
 
     import "DPI-C" function void dpi_ebreak();
@@ -25,6 +29,11 @@
     assign de_pc = pc;
     assign de_next_pc = next_pc;
     assign de_inst = instruction;
+    assign de_mstatus = mstatus;
+    assign de_mtvec = mtvec;
+    assign de_mepc = mepc;
+    assign de_mcause = mcause;
+
 
     wire addi_signal;
     wire andi_signal;
@@ -72,6 +81,10 @@
     wire blt_signal;
     wire bltu_signal;
     wire sh_signal;
+    wire csrrs_signal;
+    wire csrrw_signal;
+    wire ecall_signal;
+    wire mret_signal;
     wire IDU_halt_signal;
     wire EXU_halt_signal;
     wire [31:0] wdata;
@@ -84,10 +97,22 @@
     wire [31:0] pc;
     wire [31:0] instruction;
     wire [3:0] wmask;
-    wire [31:0] data;
+    wire [31:0] exu_data;
     wire [31:0] rdata;
     wire o_B_jump_signal;
     wire load_signal;
+    wire [11:0] csr_addr;
+    wire [31:0] csr_data;
+    wire [31:0] mstatus;
+    wire [31:0] mtvec;
+    wire [31:0] mepc;
+    wire [31:0] mcause;
+    wire [31:0] mcause_wdata;
+    wire [31:0] mstatus_wdata;
+    wire [31:0] mtvec_wdata;
+    wire [31:0] mepc_wdata;
+    wire [31:0] csr_wdata;
+
 
 
     PC PC_u(
@@ -114,6 +139,7 @@
     .o_offset(offset),
     .o_shamt(shamt),
     .o_wmask(wmask),
+    .o_csr_addr(csr_addr),
     .o_addi_signal(addi_signal),
     .o_andi_signal(andi_signal),
     .o_slti_signal(slti_signal),
@@ -160,6 +186,10 @@
     .o_blt_signal(blt_signal),
     .o_bltu_signal(bltu_signal),
     .o_sh_signal(sh_signal),
+    .o_csrrs_signal(csrrs_signal),
+    .o_csrrw_signal(csrrw_signal),
+    .o_ecall_signal(ecall_signal),
+    .o_mret_signal(mret_signal),
     .o_halt_signal(IDU_halt_signal),
     .o_reg_data(reg_data)
     );
@@ -171,6 +201,7 @@
     .i_offset(offset),
     .i_pc_data(pc),
     .i_shamt(shamt),
+    .i_csr_data(csr_data),
     .i_addi_signal(addi_signal),
     .i_jalr_signal(jalr_signal),
     .i_lb_signal(lb_signal),
@@ -217,21 +248,39 @@
     .i_slt_signal(slt_signal),
     .i_sltu_signal(sltu_signal),
     .i_ebreak_signal(ebreak_signal),
+    .i_csrrs_signal(csrrs_signal),
+    .i_csrrw_signal(csrrw_signal),
+    .i_ecall_signal(ecall_signal),
+    .i_mret_signal(mret_signal),
     .o_B_jump_signal(o_B_jump_signal),
     .o_halt_signal(EXU_halt_signal),
-    .o_data(data)
+    .o_data(exu_data)
     );
 
     WBU WBU_u (
     .i_sys_rst_n(sys_rst_n),
+    .i_exu_data(exu_data),
+    .i_cur_pc(pc),
     .i_B_jump_signal(o_B_jump_signal),
     .i_jal_signal(jal_signal),
     .i_jalr_signal(jalr_signal),
     .i_load_signal(load_signal),
+    .i_csrrw_signal(csrrw_signal),
+    .i_csrrs_signal(csrrs_signal),
+    .i_mret_signal(mret_signal),
+    .i_ecall_signal(ecall_signal),
     .i_load_wdata(rdata),
-    .i_cur_pc(pc),
-    .i_sys_wdata(data),
+    .i_csr_rdata(csr_data),
+    .i_mstatus_rdata(mstatus),
+    .i_mtvec_rdata(mtvec),
+    .i_mepc_rdata(mepc),
+    .i_mcause_rdata(mcause),
+    .o_csr_wdata(csr_wdata),
     .o_reg_wdata(wdata),
+    .o_mstatus_wdata(mstatus_wdata),
+    .o_mtvec_wdata(mtvec_wdata),
+    .o_mepc_wdata(mepc_wdata),
+    .o_mcause_wdata(mcause_wdata),
     .o_next_pc(next_pc)
     );
 
@@ -247,10 +296,26 @@
     .i_sh_signal(sh_signal),
     .i_sw_signal(sw_signal),
     .i_src2(src2),
-    .i_data(data),
+    .i_data(exu_data),
     .i_wmask(wmask),
     .o_load_signal(load_signal),
     .o_rdata(rdata)
+);
+    csr csr_u (
+    .i_sys_clk(sys_clk),
+    .i_sys_rst_n(sys_rst_n),
+    .i_ecall_signal(ecall_signal),
+    .i_csr_wdata(csr_wdata),
+    .i_csr_addr(csr_addr),
+    .i_mcause_wdata(mcause_wdata),
+    .i_mstatus_wdata(mstatus_wdata),
+    .i_mtvec_wdata(mtvec_wdata),
+    .i_mepc_wdata(mepc_wdata),
+    .o_mstatus(mstatus),
+    .o_mtvec(mtvec),
+    .o_mepc(mepc),
+    .o_mcause(mcause),
+    .o_csr_rdata(csr_data)
 );
    
     endmodule

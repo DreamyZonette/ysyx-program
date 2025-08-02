@@ -6,6 +6,7 @@ module alu (
     input [31:0] i_offset,
     input [31:0] i_pc_data,
     input [5:0]       i_shamt,
+    input [31:0]      i_csr_data,
     input             i_addi_signal,
     input             i_jalr_signal,
     input             i_lb_signal,
@@ -52,6 +53,10 @@ module alu (
     input             i_slt_signal,
     input             i_sltu_signal,
     input             i_ebreak_signal,
+    input             i_csrrs_signal,
+    input             i_csrrw_signal,
+    input             i_ecall_signal,
+    input             i_mret_signal,
     output reg        o_B_jump_signal,
     output reg        o_halt_signal,
     output reg [31:0] o_data
@@ -94,6 +99,14 @@ module alu (
             o_data = $signed(i_src1) < $signed(i_imm) ? 32'h1 : 32'h0;
         end else if(i_sltiu_signal == 1'b1) begin
             o_data = i_src1 < i_imm ? 32'h1 : 32'h0;
+        end else if(i_csrrw_signal == 1'b1) begin
+            o_data = i_src1;
+        end else if(i_csrrs_signal == 1'b1) begin
+            o_data = i_csr_data | i_src1;
+        end else if(i_ecall_signal == 1'b1) begin
+            o_data = 0;
+        end else if(i_mret_signal == 1'b1) begin
+            o_data = 0;
         end else if(i_ebreak_signal == 1'b1) begin
             o_data = 0;
         // U型

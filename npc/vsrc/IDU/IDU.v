@@ -9,6 +9,7 @@ module IDU (
     output reg [31:0]  o_offset,
     output reg [5:0]   o_shamt,
     output     [3:0]  o_wmask,
+    output     [11:0]  o_csr_addr,
     output  o_addi_signal,
     output  o_andi_signal,
     output  o_xori_signal,
@@ -55,6 +56,10 @@ module IDU (
     output  o_blt_signal,
     output  o_bltu_signal,
     output  o_sh_signal,
+    output  o_csrrs_signal,
+    output  o_csrrw_signal,
+    output  o_ecall_signal,
+    output  o_mret_signal,
     output  o_halt_signal,
     output  [31:0] o_reg_data [0:31]
     );
@@ -225,6 +230,7 @@ module IDU (
         .o_rs1(I_rs1),
         .o_shamt(I_shamt),
         .o_rd(I_rd),
+        .o_csr_addr(o_csr_addr),
         .o_addi_signal(o_addi_signal),
         .o_ebreak_signal(o_ebreak_signal),
         .o_jalr_signal(o_jalr_signal),
@@ -241,6 +247,10 @@ module IDU (
         .o_ori_signal(o_ori_signal),
         .o_slti_signal(o_slti_signal),
         .o_sltiu_signal(o_sltiu_signal),
+        .o_csrrs_signal(o_csrrs_signal),
+        .o_csrrw_signal(o_csrrw_signal),
+        .o_ecall_signal(o_ecall_signal),
+        .o_mret_signal(o_mret_signal), // 原本是Rtype_u的输出
         .o_halt_signal(I_halt_signal)
     );
     Utype Utype_u(
