@@ -43,12 +43,20 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
       cpu.gpr[i] = top->gpr[i];
     }
     cpu.pc = top->pc;
+    cpu.csr[0] = top->mstatus; // 只复制mstatus寄存器
+    cpu.csr[5] = top->mepc; // 只复制mepc寄存器
+    cpu.csr[6] = top->mcause; // 只复制mcause寄存器
+    cpu.csr[3] = top->mtvec; // 只复制mtvec寄存器
   }
   else{
     for(int i = 0; i < RISCV_GPR_NUM; i++){
       top->gpr[i] = cpu.gpr[i];
     }
     top->pc = cpu.pc;
+    top->mstatus = cpu.csr[0]; // 只复制mstatus寄存器
+    top->mepc = cpu.csr[5]; // 只复制mepc寄存器
+    top->mcause = cpu.csr[6]; // 只复制mcause寄存器
+    top->mtvec = cpu.csr[3]; // 只复制mtvec寄存器
   }
 }
 

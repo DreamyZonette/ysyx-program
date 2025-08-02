@@ -6,7 +6,11 @@
         output [31:0] de_next_pc,
         output [31:0] de_inst,
         output halt,
-        output [31:0] reg_data [0:31]
+        output [31:0] reg_data [0:31],
+        output [31:0] de_mstatus,
+        output [31:0] de_mtvec,
+        output [31:0] de_mepc,
+        output [31:0] de_mcause
     );
 
     import "DPI-C" function void dpi_ebreak();
@@ -25,6 +29,10 @@
     assign de_pc = pc;
     assign de_next_pc = next_pc;
     assign de_inst = instruction;
+    assign de_mstatus = mstatus;
+    assign de_mtvec = mtvec;
+    assign de_mepc = mepc;
+    assign de_mcause = mcause;
 
 
     wire addi_signal;
