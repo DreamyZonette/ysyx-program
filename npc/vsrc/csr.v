@@ -44,7 +44,7 @@ always @(*) begin
         o_csr_rdata = o_mepc;
     end else if(i_csr_addr == 12'h342) begin
         wen[3] = 1'b1;
-        o_csr_rdata = o_mcause
+        o_csr_rdata = o_mcause;
     end
 end
 
