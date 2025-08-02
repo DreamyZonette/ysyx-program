@@ -4,7 +4,7 @@
 #define CONFIG_FTRACE 0
 #define CONFIG_DTRACE 0
 #define CONFIG_TRACE 0
-#define CONFIG_DIFFTEST 0
+#define CONFIG_DIFFTEST 1
 #define CONFIG_DEVICE 1
 #define CONFIG_LOG 1
 
