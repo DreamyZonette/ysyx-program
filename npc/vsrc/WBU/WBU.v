@@ -47,26 +47,25 @@ module WBU(
     end
 
     always @(*) begin
-        o_mcause_wdata = i_mcause_rdata;
         if (i_load_signal == 1'b1) begin
             reg_wdata = i_load_wdata;
             csr_wdata = 32'h0;
             o_mepc_wdata = 32'h0;
-            o_mcause_wdata = 32'h0;
+            o_mcause_wdata = i_mcause_rdata;
             o_mstatus_wdata = 32'h0;
             o_mtvec_wdata = 32'h0;
         end else if (i_jal_signal == 1'b1 || i_jalr_signal == 1'b1)begin
             reg_wdata = i_cur_pc + 4;
             csr_wdata = 32'h0;
             o_mepc_wdata = 32'h0;
-            o_mcause_wdata = 32'h0;
+            o_mcause_wdata = i_mcause_rdata;
             o_mstatus_wdata = 32'h0;
             o_mtvec_wdata = 32'h0;
         end else if (i_csrrs_signal == 1'b1 || i_csrrw_signal == 1'b1) begin
             csr_wdata = i_exu_data;
             reg_wdata = i_csr_rdata;
             o_mepc_wdata = 32'h0;
-            o_mcause_wdata = 32'h0;
+            o_mcause_wdata = i_mcause_rdata;
             o_mstatus_wdata = 32'h0;
             o_mtvec_wdata = 32'h0;
         end else if (i_ecall_signal == 1'b1) begin
@@ -81,7 +80,7 @@ module WBU(
             reg_wdata = i_exu_data;
             csr_wdata = 32'h0;
             o_mepc_wdata = 32'h0;
-            o_mcause_wdata = 32'h0;
+            o_mcause_wdata = i_mcause_rdata;
             o_mstatus_wdata = 32'h0;
             o_mtvec_wdata = 32'h0;
         end
