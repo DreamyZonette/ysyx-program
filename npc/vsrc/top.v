@@ -123,7 +123,7 @@
     );
     
     IFU IFU_u (
-    .i_sys_clk(sys_clk),
+    // .i_sys_clk(sys_clk),
     .i_pc(pc),
     .o_instruction(instruction)
     );
