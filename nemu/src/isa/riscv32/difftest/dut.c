@@ -19,6 +19,7 @@
 extern CPU_state cpu;
 
 bool skip = true;
+long long int count = 0;
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   
@@ -33,7 +34,10 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   }
   if (skip == true){
     if(ref_r->mstatus == 0x1800) skip = false;
-    printf("skip\n");
+    count++;
+    if(count % 1000000 == 0) {
+      printf("skip: %lld\n", count);
+    }
   }
   else{
     if (cpu.mstatus != ref_r->mstatus){
