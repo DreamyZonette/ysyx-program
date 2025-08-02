@@ -22,7 +22,7 @@ module WBU(
     output reg [31:0] o_mtvec_wdata,
     output reg [31:0] o_mepc_wdata,
     output reg [31:0] o_mcause_wdata,
-    output reg [31:0] o_next_pc = 32'h8000_0000
+    output reg [31:0] o_next_pc = 32'h8000_0004
 );
 
     reg [31:0] reg_wdata;
@@ -34,7 +34,7 @@ module WBU(
     assign o_csr_wdata = csr_wdata;
     always @(*) begin
         if (!i_sys_rst_n) begin
-            o_next_pc = 32'h8000_0000;
+            o_next_pc = 32'h8000_0004;
         end else if (jump_signal == 1'b1)begin
             o_next_pc = i_exu_data;
         end else if (i_mret_signal == 1'b1)begin
