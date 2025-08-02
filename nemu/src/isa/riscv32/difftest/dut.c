@@ -37,6 +37,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   // }
   if (skip == true){
     if(ref_r->mstatus == 0x1800) skip = false;
+    printf("skip\n");
   }
   else{
     if (cpu.mstatus != ref_r->mstatus){
