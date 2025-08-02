@@ -11,6 +11,8 @@ typedef struct {
   vaddr_t diff_mepc;
   vaddr_t diff_mtvec;
   vaddr_t diff_mcause;
+  //仅供difftest使用
+  vaddr_t csr[6];
 } riscv32_CPU_state;
 
 #define CPU_state riscv32_CPU_state
