@@ -6,6 +6,7 @@
 typedef struct {
   word_t gpr[32];
   vaddr_t pc;
+  vaddr_t next_pc;
 } riscv32_CPU_state;
 
 #define CPU_state riscv32_CPU_state

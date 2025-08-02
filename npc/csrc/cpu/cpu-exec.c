@@ -21,7 +21,8 @@ char p[128];
 int print_on = 0;
 CPU_state dut = {
   .gpr = {0},            // 所有寄存器初始化为0
-  .pc = 0x80000000       // PC初始化为0x80000000
+  .pc = 0x80000000,       // PC初始化为0x80000000
+  .next_pc = 0x80000000
 };
 
 extern "C" void dpi_ebreak() {
@@ -42,12 +43,8 @@ void step_and_dump_wave(){
 static void trace_and_difftest() {
 
   #if CONFIG_DIFFTEST
-  for(int i = 0; i < 32; i++){
-    dut.gpr[i] = top->reg_data[i];
-  }
-  dut.pc = top->de_pc;
   //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
-  difftest_step(top->de_pc, top->de_next_pc);
+  difftest_step(dut.pc, dut.next_pc);
   #endif
 
   #if CONFIG_FTRACE
@@ -144,9 +141,16 @@ static void execute(uint64_t n) {
   }
   #endif
 
-    trace_and_difftest();
+  #if CONFIG_DIFFTEST
+    for(int i = 0; i < 32; i++){
+      dut.gpr[i] = top->reg_data[i];
+    }
+    dut.pc = top->de_pc;
+    dut.next_pc = top->de_next_pc;
+  #endif
     g_nr_guest_inst ++;
     single_cycle();
+    trace_and_difftest();
     #if CONFIG_DEVICE
     device_update();
     #endif
