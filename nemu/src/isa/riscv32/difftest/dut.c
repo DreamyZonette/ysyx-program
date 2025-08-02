@@ -31,13 +31,9 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     return false;
     }
   }
-  // if (pc != ref_r->pc) {
-  //   printf("pc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", pc, ref_r->pc);
-  //   return false;
-  // }
   if (skip == true){
     if(ref_r->mstatus == 0x1800) skip = false;
-    printf("skip\n");
+    // printf("skip\n");
   }
   else{
     if (cpu.mstatus != ref_r->mstatus){
