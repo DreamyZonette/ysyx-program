@@ -28,10 +28,10 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     return false;
     }
   }
-  // if(dut.next_pc != ref_r->pc) {
-  //   printf("pc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.next_pc, ref_r->pc);
-  //   return false;
-  // }
+  if(dut.next_pc != ref_r->pc) {
+    printf("pc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.next_pc, ref_r->pc);
+    return false;
+  }
   // if(dut.diff_mstatus != ref_r->csr[0]){
   //   printf("mstatus \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mstatus, ref_r->csr[0]);
   //   return false;
