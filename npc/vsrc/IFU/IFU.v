@@ -1,5 +1,5 @@
 module IFU(
-    // input i_sys_clk,
+    input i_sys_clk,
     input [31:0] i_pc,
     output [31:0] o_instruction
 );
