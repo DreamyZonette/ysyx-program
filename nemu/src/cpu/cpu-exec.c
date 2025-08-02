@@ -28,17 +28,10 @@
 #define MAX_INST_TO_PRINT 10
 
 CPU_state cpu = {
-    .csr = {
-        [0] = 0x1800,   // 只初始化mstatus为0x1800，其他元素为0
-        [1] = 0,
-        [2] = 0,
-        [3] = 0,
-        [4] = 0,
-        [5] = 0,
-        [6] = 0,
-        [7] = 0,
-        [8] = 0,
-    }
+  .mstatus = 0x1800,
+  .mepc = 0,
+  .mcause = 0,
+  .mtvec = 0,
 };
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
