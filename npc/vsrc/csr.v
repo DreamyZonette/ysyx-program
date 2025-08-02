@@ -29,16 +29,22 @@ assign mcause_wdata  = (i_ecall_signal == 1'b1) ? i_mcause_wdata  : i_csr_wdata;
 
 always @(*) begin
     wen = 4'b0;
+    o_csr_rdata = 32'b0;
     if(i_ecall_signal == 1'b1) begin
         wen = 4'b0011;
+        o_csr_rdata = 32'b0;
     end else if(i_csr_addr == 12'h300) begin
         wen[0] = 1'b1;
+        o_csr_rdata = o_mstatus;
     end else if(i_csr_addr == 12'h305) begin
         wen[1] = 1'b1;
+        o_csr_rdata = o_mtvec;
     end else if(i_csr_addr == 12'h341) begin
         wen[2] = 1'b1;
+        o_csr_rdata = o_mepc;
     end else if(i_csr_addr == 12'h342) begin
         wen[3] = 1'b1;
+        o_csr_rdata = o_mcause
     end
 end
 
