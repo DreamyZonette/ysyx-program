@@ -123,7 +123,7 @@
     );
     
     IFU IFU_u (
-    //.i_sys_clk(sys_clk),
+    .i_sys_clk(sys_clk),
     .i_pc(pc),
     .o_instruction(instruction)
     );
@@ -317,5 +317,17 @@
     .o_mcause(mcause),
     .o_csr_rdata(csr_data)
 );
+gpr gpr_u(
+    .i_sys_clk(i_sys_clk),
+    .i_sys_rst_n(i_sys_rst_n), 
+    .i_rs1(rs1),
+    .i_rs2(rs2),
+    .i_rd(rd),
+    .i_data(wdata),
+    .o_src1(o_src1),
+    .o_src2(o_src2),
+    .o_reg_data(o_reg_data)
+);
+
    
     endmodule
