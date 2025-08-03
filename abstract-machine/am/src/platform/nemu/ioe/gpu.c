@@ -65,7 +65,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
       fb[dst_start + x] = pixels[src_start + x];
     }
   }
-  if (ctl->sync) {
+  if (ctl->sync == false) {
     putch('1');
     outl(SYNC_ADDR, 1);
   }
