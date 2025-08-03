@@ -75,6 +75,7 @@ static inline void update_screen() {
 void vga_update_screen() {
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
+  printf("vga: go in to update screen\n");
   if (vgactl_port_base == NULL) return;
     
     // 检查同步寄存器是否被设置
