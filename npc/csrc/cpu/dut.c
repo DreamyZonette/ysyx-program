@@ -16,38 +16,20 @@ void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 #if CONFIG_DIFFTEST
 
 void isa_reg_display();
-extern CPU_state dut;
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   
   for(int i = 0; i < 32; i ++){
     uint32_t ref_value = ref_r->gpr[i];
     uint32_t value = gpr(i);
+    // printf("local:0x%08x\tref:0x%08x\n", value, ref_value);
     if(value != ref_value) {
     printf("gpr[%d] \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", i, value, ref_value);
     return false;
     }
   }
-  // if(dut.next_pc != ref_r->pc) {
-  //   printf("pc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.next_pc, ref_r->pc);
-  //   return false;
-  // }
-  // if(dut.diff_mstatus != ref_r->csr[0]){
-  //   printf("mstatus \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mstatus, ref_r->csr[0]);
-  //   return false;
-  // }
-  // if(dut.diff_mepc != ref_r->csr[5]){
-  //   printf("mepc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mepc, ref_r->csr[5]);
-  //   return false;
-  // }
-  // if(dut.diff_mtvec != ref_r->csr[3]){
-  //   printf("mtvec \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mtvec, ref_r->csr[3]);
-  //   return false;
-  // }
-  // if(dut.diff_mcause != ref_r->csr[6]){
-  //   printf("mcause \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mcause, ref_r->csr[6]);
-  //   return false;
-  // }
+  
+  //if(value == ref_value) return true;
 
   return true;
 }

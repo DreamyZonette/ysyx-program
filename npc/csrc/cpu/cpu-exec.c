@@ -21,13 +21,7 @@ char p[128];
 int print_on = 0;
 CPU_state dut = {
   .gpr = {0},            // 所有寄存器初始化为0
-  .pc = 0x80000000,       // PC初始化为0x80000000
-  .next_pc = 0x80000000,
-  // .diff_mstatus = 0,
-  // .diff_mepc = 0x80000000,
-  // .diff_mtvec = 0x80000000,
-  // .diff_mcause = 0,
-  // .csr = {0},
+  .pc = 0x80000000       // PC初始化为0x80000000
 };
 
 extern "C" void dpi_ebreak() {
@@ -48,8 +42,12 @@ void step_and_dump_wave(){
 static void trace_and_difftest() {
 
   #if CONFIG_DIFFTEST
+  for(int i = 0; i < 32; i++){
+    dut.gpr[i] = top->reg_data[i];
+  }
+  dut.pc = top->de_pc;
   //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
-  difftest_step(dut.pc, dut.next_pc);
+  difftest_step(top->de_pc, top->de_next_pc);
   #endif
 
   #if CONFIG_FTRACE
@@ -101,9 +99,9 @@ static void trace_and_difftest() {
 }
 
 void single_cycle() {
-  top->sys_clk ^= 1; top->eval();
+  top->sys_clk = 0; top->eval();
   step_and_dump_wave();
-  top->sys_clk ^= 1; top->eval();
+  top->sys_clk = 1; top->eval();
   step_and_dump_wave();
 }
 
@@ -114,10 +112,6 @@ static void statistic() {
   Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
   if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
-  #if CONFIG_WAVE
-  void sim_exit();
-  sim_exit();
-  #endif
 }
 
 void assert_fail_msg() {
@@ -150,20 +144,9 @@ static void execute(uint64_t n) {
   }
   #endif
 
-  #if CONFIG_DIFFTEST
-    for(int i = 0; i < 32; i++){
-      dut.gpr[i] = top->reg_data[i];
-    }
-    dut.pc = top->de_pc;
-    dut.next_pc = top->de_next_pc;
-    // dut.diff_mstatus = top->de_mstatus;
-    // dut.diff_mcause = top->de_mcause;
-    // dut.diff_mtvec = top->de_mtvec;
-    // dut.diff_mepc = top->de_mepc;
-  #endif
+    trace_and_difftest();
     g_nr_guest_inst ++;
     single_cycle();
-    trace_and_difftest();
     #if CONFIG_DEVICE
     device_update();
     #endif

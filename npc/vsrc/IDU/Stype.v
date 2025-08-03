@@ -3,10 +3,11 @@ module Stype (
     output [4:0] o_rs1,
     output [4:0] o_rs2,
     output reg [31:0] o_imm,
+    output reg [3:0] o_wmask,
     output reg o_sw_signal,
     output reg o_sb_signal,
     output reg o_sh_signal,
-    output o_unknown_inst
+    output o_halt_signal
 );
 
     wire [11:0] imm;
@@ -21,7 +22,7 @@ module Stype (
     assign o_rs1  = i_inst[19:15];
     assign o_rs2  = i_inst[24:20];
     assign imm    = {i_inst[31:25], i_inst[11:7]};
-    assign o_unknown_inst = unknown_intstruction;
+    assign o_halt_signal = unknown_intstruction;
 
     always @ (*) begin
         // 初始化
@@ -31,6 +32,7 @@ module Stype (
         sign_extended   = 1'b0;
         zero_extended   = 1'b0;
         unknown_intstruction = 1'b0;
+        o_wmask = 4'b0;
 
         // 指令识别
     case (opcode)
@@ -57,6 +59,15 @@ module Stype (
             o_imm = 32'b0;
         end
 
+        if (o_sw_signal == 1'b1) begin
+            o_wmask = 4'd4;
+        end else if (o_sb_signal == 1'b1) begin
+            o_wmask = 4'd1;
+    end else if (o_sh_signal == 1'b1) begin
+            o_wmask = 4'd2;
+        end else begin
+            o_wmask = 4'd0;
+        end
     end
 
 

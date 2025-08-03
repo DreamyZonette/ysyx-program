@@ -16,9 +16,6 @@
 #include <isa.h>
 #include <cpu/difftest.h>
 #include "../local-include/reg.h"
-extern CPU_state cpu;
-
-bool skip = true;
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   
@@ -31,27 +28,8 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     return false;
     }
   }
-  if (skip == true){
-    if(ref_r->mstatus == 0x1800) skip = false;
-  }
-  else{
-    if (cpu.mstatus != ref_r->mstatus){
-      printf("mstatus \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", cpu.mstatus, ref_r->mstatus);
-      return false;
-    }
-    else if (cpu.mepc != ref_r->mepc){
-      printf("mepc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", cpu.mepc, ref_r->mepc);
-      return false;
-    }
-    else if (cpu.mcause != ref_r->mcause){
-      printf("mcause \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", cpu.mcause, ref_r->mcause);
-      return false;
-    }
-    else if (cpu.mtvec != ref_r->mtvec){
-      printf("mtvec \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", cpu.mtvec, ref_r->mtvec);
-      return false;
-    }
-  }
+  
+  //if(value == ref_value) return true;
 
   return true;
 }
