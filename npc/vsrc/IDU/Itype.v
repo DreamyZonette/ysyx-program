@@ -25,7 +25,7 @@ module Itype (
     output reg o_csrrw_signal,
     output reg o_ecall_signal,
     output reg o_mret_signal,
-    output o_halt_signal
+    output o_unknown_inst
 );
 
     wire [11:0] imm;
@@ -49,7 +49,7 @@ module Itype (
     assign imm          = i_inst[31:20];
     assign shamt_detect = i_inst[31:25];
     assign o_rd         = (o_jalr_signal == 1'b1) ? jalr_rd : rd;
-    assign o_halt_signal =  unknown_intstruction | shamt_halt;
+    assign o_unknown_inst =  unknown_intstruction | shamt_halt;
     assign csr_addr     = i_inst[31:20];
     assign o_csr_addr   = (o_csrrs_signal == 1'b1 || o_csrrw_signal == 1'b1) ? csr_addr : 12'b0;
 

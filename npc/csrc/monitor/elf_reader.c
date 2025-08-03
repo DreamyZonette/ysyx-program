@@ -50,8 +50,8 @@ if (functab) {
     }
 
     // 2. 定位节区头部表
-    fseek(fp, ehdr.e_shoff, SEEK_SET);
-    Elf32_Shdr shdr[ehdr.e_shnum];
+    fseek(fp, ehdr.e_shoff, SEEK_SET);// section在elf文件的偏移位置
+    Elf32_Shdr shdr[ehdr.e_shnum]; // 节头表中有多少个节入口
     //fread(shdr, sizeof(Elf32_Shdr), ehdr.e_shnum, fp);
 		if (fread(shdr, sizeof(Elf32_Shdr), ehdr.e_shnum, fp) != ehdr.e_shnum) {
 			fprintf(stderr, "Failed to read section headers\n");
@@ -60,9 +60,9 @@ if (functab) {
 		}
 
     // 3. 获取.shstrtab（节区名称表）
-    Elf32_Shdr shstrtab_hdr = shdr[ehdr.e_shstrndx];
-    char shstrtab[shstrtab_hdr.sh_size];
-    fseek(fp, shstrtab_hdr.sh_offset, SEEK_SET);
+    Elf32_Shdr shstrtab_hdr = shdr[ehdr.e_shstrndx];// 这个section就是字符串表,e_shstrndxs指向字符串表的节区号
+    char shstrtab[shstrtab_hdr.sh_size]; //表示字符串表的大小
+    fseek(fp, shstrtab_hdr.sh_offset, SEEK_SET); // ELF文件的开始到字符串表的第一个字节的偏移量
     //fread(shstrtab, shstrtab_hdr.sh_size, 1, fp);
 		if (fread(shstrtab, shstrtab_hdr.sh_size, 1, fp) != 1) {
 			fprintf(stderr, "Failed to read section string table\n");
@@ -74,22 +74,22 @@ if (functab) {
     Elf32_Shdr symtab_hdr, strtab_hdr;
     int found_symtab = 0, found_strtab = 0;
 
-    for (int i = 0; i < ehdr.e_shnum; i++) {
-        char* name = shstrtab + shdr[i].sh_name;
+    for (int i = 0; i < ehdr.e_shnum; i++) { // 节入口个数
+      char* name = shstrtab + shdr[i].sh_name; // 节名称
         
-        if (strcmp(name, ".symtab") == 0) {
-            symtab_hdr = shdr[i];
-            found_symtab = 1;
-        } else if (strcmp(name, ".strtab") == 0) {
-            strtab_hdr = shdr[i];
-            found_strtab = 1;
-        }
+      if (strcmp(name, ".symtab") == 0) {
+        symtab_hdr = shdr[i];
+        found_symtab = 1;
+      } else if (strcmp(name, ".strtab") == 0) {
+        strtab_hdr = shdr[i];
+        found_strtab = 1;
+      }
     }
 
     if (!found_symtab || !found_strtab) {
-        fprintf(stderr, "Required sections not found\n");
-        fclose(fp);
-        return;
+      fprintf(stderr, "Required sections not found\n");
+      fclose(fp);
+      return;
 		}
     // 5. 读取.strtab内容
     char* strtab = (char*)malloc(strtab_hdr.sh_size);
@@ -119,31 +119,31 @@ if (functab) {
     for (int i = 0; i < sym_count; i++) {
         unsigned char type = ELF32_ST_TYPE(symbols[i].st_info);
         if (type == STT_FUNC) {  // 过滤函数符号
-            char* func_name = strtab + symbols[i].st_name;
+          char* func_name = strtab + symbols[i].st_name;
             
-        if (functab_count >= functab_capacity) {
-        // 计算新容量：首次分配32个，之后每次翻倍
-        int new_capacity = (functab_capacity == 0) ? 32 : functab_capacity * 2;
-        
-        // 重新分配内存
-        Functab *new_tab = (Functab*)realloc(functab, new_capacity * sizeof(Functab));
-        
-        if (!new_tab) {
-            // 内存分配失败处理
-            fprintf(stderr, "Error: Memory allocation failed for %d functions\n", new_capacity);
-            fprintf(stderr, "Current function count: %d, aborting further processing\n", functab_count);
-            break;  // 中断循环
-        }
-        functab = new_tab;
-        functab_capacity = new_capacity;
-        //printf("Resized function table to %d entries\n", functab_capacity);
-      }
+          if (functab_count >= functab_capacity) {
+          // 计算新容量：首次分配32个，之后每次翻倍
+            int new_capacity = (functab_capacity == 0) ? 32 : functab_capacity * 2;
+            
+            // 重新分配内存
+            Functab *new_tab = (Functab*)realloc(functab, new_capacity * sizeof(Functab));
+            
+            if (!new_tab) {
+                // 内存分配失败处理
+              fprintf(stderr, "Error: Memory allocation failed for %d functions\n", new_capacity);
+              fprintf(stderr, "Current function count: %d, aborting further processing\n", functab_count);
+              break;  // 中断循环
+            }
+            functab = new_tab;
+            functab_capacity = new_capacity;
+            //printf("Resized function table to %d entries\n", functab_capacity);
+          }
 
-						strncpy(functab[functab_count].func_name, func_name, sizeof(functab[0].func_name) - 1);
-						functab[functab_count].func_name[sizeof(functab[0].func_name) - 1] = '\0';
-						functab[functab_count].value = symbols[i].st_value;
-						functab_count ++;
-						//printf("  [%s@%08x]\n", func_name, symbols[i].st_value);
+					strncpy(functab[functab_count].func_name, func_name, sizeof(functab[0].func_name) - 1);
+					functab[functab_count].func_name[sizeof(functab[0].func_name) - 1] = '\0';
+					functab[functab_count].value = symbols[i].st_value;
+					functab_count ++;
+					//printf("  [%s@%08x]\n", func_name, symbols[i].st_value);
         }
     }
 
@@ -153,7 +153,7 @@ if (functab) {
 		// }
 
     // 7. 清理资源
-    free(strtab);
-    free(symbols);
-    fclose(fp);
+  free(strtab);
+  free(symbols);
+  fclose(fp);
 }
