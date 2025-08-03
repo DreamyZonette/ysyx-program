@@ -36,6 +36,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 
+  putch('2');
   if (width == 0 || height == 0) {
         am_get_gpu_config();
     }
@@ -66,7 +67,6 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
       fb[dst_start + x] = pixels[src_start + x];
     }
   }
-  putch('2');
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
   }
