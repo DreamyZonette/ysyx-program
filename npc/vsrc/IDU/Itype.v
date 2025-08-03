@@ -4,6 +4,7 @@ module Itype (
     output [4:0] o_rs1,
     output [5:0] o_shamt,
     output reg [31:0] o_imm,
+    output     [11:0] o_csr_addr,
     output reg o_jalr_signal,
     output reg o_addi_signal,
     output reg o_lw_signal,
@@ -20,7 +21,11 @@ module Itype (
     output reg o_slti_signal,
     output reg o_sltiu_signal,
     output reg o_ori_signal,
-    output o_halt_signal
+    output reg o_csrrs_signal,
+    output reg o_csrrw_signal,
+    output reg o_ecall_signal,
+    output reg o_mret_signal,
+    output o_unknown_inst
 );
 
     wire [11:0] imm;
@@ -28,6 +33,7 @@ module Itype (
     wire [6:0] opcode;
     wire [4:0] rd;
     wire [6:0] shamt_detect;
+    wire [11:0] csr_addr;
     reg sign_extended;
     reg zero_extended;
     reg [4:0] jalr_rd;
@@ -43,7 +49,9 @@ module Itype (
     assign imm          = i_inst[31:20];
     assign shamt_detect = i_inst[31:25];
     assign o_rd         = (o_jalr_signal == 1'b1) ? jalr_rd : rd;
-    assign o_halt_signal =  unknown_intstruction | shamt_halt;
+    assign o_unknown_inst =  unknown_intstruction | shamt_halt;
+    assign csr_addr     = i_inst[31:20];
+    assign o_csr_addr   = (o_csrrs_signal == 1'b1 || o_csrrw_signal == 1'b1) ? csr_addr : 12'b0;
 
     always @ (*) begin
         // 初始化
@@ -66,6 +74,10 @@ module Itype (
         sign_extended   = 1'b0;
         zero_extended   = 1'b0;
         shamt_signal    = 1'b0;
+        o_csrrs_signal  = 1'b0;
+        o_csrrw_signal  = 1'b0;
+        o_ecall_signal  = 1'b0;
+        o_mret_signal   = 1'b0;
         unknown_intstruction = 1'b0;
         jalr_rd = 5'b0;
         
@@ -108,6 +120,13 @@ module Itype (
         7'b1110011: begin  // ebreak
             if(i_inst == 32'b 00000000000100000000000001110011) begin
                 o_ebreak_signal = 1'b1;
+            end else if(i_inst == 32'b00000000000000000000000001110011) begin
+                o_ecall_signal = 1'b1;
+            end else if(i_inst == 32'b00110000001000000000000001110011) begin
+                o_mret_signal = 1'b1;
+            end else begin
+                o_csrrw_signal = (fun1 == 3'b001) ? 1'b1 : 1'b0;
+                o_csrrs_signal = (fun1 == 3'b010) ? 1'b1 : 1'b0;
             end
         end
         7'b0000011: begin  // load

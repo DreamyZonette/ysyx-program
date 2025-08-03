@@ -9,7 +9,7 @@ module Btype (
     output reg o_bgeu_signal,
     output reg o_blt_signal,
     output reg o_bltu_signal,
-    output o_halt_signal
+    output o_unknown_inst
 );
 
     wire [11:0] offset;
@@ -24,7 +24,7 @@ module Btype (
     assign o_rs1   = i_inst[19:15];
     assign o_rs2   = i_inst[24:20];
     assign offset  = {i_inst[31], i_inst[7], i_inst[30:25], i_inst[11:8]};
-    assign o_halt_signal = unknown_intstruction;
+    assign o_unknown_inst = unknown_intstruction;
     
     always @(*) begin
         o_beq_signal  = 1'b0;
