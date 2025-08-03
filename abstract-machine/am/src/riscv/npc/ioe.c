@@ -1,6 +1,5 @@
 #include <am.h>
 #include <klib-macros.h>
-#include <riscv/riscv.h>
 
 void __am_timer_init();
 void __am_gpu_init();

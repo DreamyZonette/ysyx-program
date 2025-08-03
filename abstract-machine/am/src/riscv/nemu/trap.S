@@ -60,10 +60,9 @@ __am_asm_trap:
 
   mv a0, sp
   call __am_irq_handle //yieal-os
-  // call ev_handler //RTT
 
   // NEW
-  mv sp, a0
+  // mv sp, a0
   // end NEW
 
   LOAD t1, OFFSET_STATUS(sp)
