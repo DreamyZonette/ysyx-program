@@ -145,6 +145,7 @@
     .i_pc(pc),
     .i_pc_valid(pc_valid),
     .i_idu_ready(idu_ready),
+    .i_load_valid(load_valid),
     .o_ifu_valid(ifu_valid),
     .o_ifu_ready(ifu_ready),
     .o_instruction(instruction)
