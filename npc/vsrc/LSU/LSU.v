@@ -10,7 +10,6 @@ module LSU(
     input wire i_sh_signal,
     input wire i_sw_signal,
     input wire i_exu_valid,
-    input wire i_idu_valid,
     input wire i_wbu_ready,
     input wire i_load_valid,
     input wire i_store_valid,
@@ -59,10 +58,10 @@ always @(*) begin
     else begin
         case (state)
             IDLE: begin
-                if(i_exu_valid && i_idu_valid && load_signal) begin
+                if(i_exu_valid  && load_signal) begin
                     next_state = LOAD;
                 end
-                else if(i_exu_valid && i_idu_valid && store_signal) begin
+                else if(i_exu_valid  && store_signal) begin
                     next_state = STORE;
                 end
                 else begin
@@ -107,7 +106,7 @@ always @(posedge i_sys_clk) begin
         addr_latched <= 32'b0;
         data_latched <= 32'b0;
     end
-    else if (state == IDLE && i_exu_valid && i_idu_valid) begin
+    else if (state == IDLE && i_exu_valid ) begin
         // 锁存指令类型
         mem_op_type <= {
             i_lbu_signal, i_lhu_signal, i_lb_signal, i_lh_signal, i_lw_signal,
