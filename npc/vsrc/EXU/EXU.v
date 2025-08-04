@@ -68,14 +68,13 @@ localparam LS_DONE   = 3'd4;
 
 reg [2:0] state;
 reg [2:0] next_state;
+reg alu_done;
 wire LS_signal;
-wire alu_done;
 wire B_jump_signal;
 wire [31:0] data;
 
 assign LS_signal = i_lb_signal | i_lh_signal | i_lw_signal | i_lbu_signal | i_lhu_signal | 
                     i_sw_signal | i_sh_signal | i_sb_signal;
-assign alu_done = 1'b1;// 目前都是单周期实现
 assign o_exu_ready = (state == IDLE);
 assign o_exu_valid = (state == DONE) | (state == LS_DONE);
     
@@ -281,6 +280,7 @@ always @(posedge i_sys_clk) begin
         csrrw_signal_reg <= 1'b0;
         ecall_signal_reg <= 1'b0;
         mret_signal_reg <= 1'b0;
+        alu_done <= 1'b0;
     end
     else if (state == IDLE && i_idu_valid)begin
         imm_reg <= i_imm;
@@ -335,6 +335,10 @@ always @(posedge i_sys_clk) begin
         src1_reg <= i_src1;
         src2_reg <= i_src2;
         csr_data_reg <= i_csr_data;
+        alu_done <= 1'b1; // 目前都是单周期实现
+    end
+    else if (state == DONE || state == LS_DONE) begin
+        alu_done <= 1'b0;
     end
 end
 

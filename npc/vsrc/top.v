@@ -356,6 +356,7 @@ gpr gpr_u(
     .i_rd(rd),
     .i_data(wdata),
     .i_idu_valid(idu_valid),
+    .i_wbu_valid(wbu_valid),
     .o_src1(src1),
     .o_src2(src2),
     .o_reg_data(reg_data)
