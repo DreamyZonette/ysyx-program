@@ -178,7 +178,7 @@ always @(*) begin
             mem_op_type[2]: o_rdata = {{24{rdata[7]}}, rdata[7:0]}; // lb
             mem_op_type[3]: o_rdata = {{16{rdata[15]}}, rdata[15:0]}; // lh
             mem_op_type[4]: o_rdata = rdata; // lw
-            default: o_rdata <= 32'b0;
+            default: o_rdata = 32'b0;
         endcase
     end
 end
