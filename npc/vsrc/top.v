@@ -319,7 +319,7 @@
     .i_sh_signal(sh_signal),
     .i_sw_signal(sw_signal),
     .i_exu_valid(exu_valid),
-    // .i_idu_valid(idu_valid),
+    .i_idu_valid(idu_valid),
     .i_wbu_ready(wbu_ready),
     .i_load_valid(load_valid),
     .i_store_valid(store_valid),
