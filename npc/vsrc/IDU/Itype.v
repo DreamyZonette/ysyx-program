@@ -114,8 +114,8 @@ module Itype (
             shamt_signal = o_slli_signal | o_srli_signal | o_srai_signal;
            
             // 根据指令类型选择扩展方式
-            sign_extended = (fun1 == 3'b000 || fun1 == 3'b111 || fun1 == 3'b100 || fun1 == 3'b010 || fun1 == 3'b110) ? 1'b1 : 1'b0; // addi/andi/xori/slti/ori
-            zero_extended = (fun1 == 3'b011) ? 1'b1 : 1'b0; // sltiu
+            sign_extended = (fun1 == 3'b000 || fun1 == 3'b111 || fun1 == 3'b100 || fun1 == 3'b010 || fun1 == 3'b110 || fun1 == 3'b011) ? 1'b1 : 1'b0; // addi/andi/xori/slti/ori
+            
         end
         7'b1110011: begin  // ebreak
             if(i_inst == 32'b 00000000000100000000000001110011) begin
