@@ -52,10 +52,10 @@ module WBU(
     reg [31:0] mtvec_wdata;
     reg [31:0] mepc_wdata;
     reg [31:0] mcause_wdata;
-    // reg B_jump_signal_reg;
+    reg B_jump_signal_reg;
 
     // 控制信号
-    wire jump_signal = i_jalr_signal | i_B_jump_signal | i_jal_signal;
+    wire jump_signal = i_jalr_signal | B_jump_signal_reg | i_jal_signal;
 
     assign o_reg_wdata = reg_wdata;
     assign o_csr_wdata = csr_wdata;
@@ -71,15 +71,17 @@ module WBU(
     assign o_mcause_wdata = mcause_wdata;
 
     // 信号锁存
-    // always @(posedge i_sys_clk) begin
-    //     if (!i_sys_rst_n) begin
-    //         B_jump_signal_reg <= 1'b0;
-    //     end
-    //     else if (i_exu_valid) begin
-    //         B_jump_signal_reg <= i_B_jump_signal;
-    //     end
-    //     else if 
-    // end
+    always @(posedge i_sys_clk) begin
+        if (!i_sys_rst_n) begin
+            B_jump_signal_reg <= 1'b0;
+        end
+        else if (i_exu_valid) begin
+            B_jump_signal_reg <= i_B_jump_signal;
+        end
+        else if (o_wbu_valid) begin
+            B_jump_signal_reg <= 1'b0;
+        end
+    end
 
     // 状态更新逻辑
     always @(*) begin
