@@ -44,7 +44,9 @@
     wire lsu_valid;
     wire lsu_ready;
     wire csr_valid;
+    /* verilator lint_off UNUSEDSIGNAL */
     wire csr_ready;
+    /* verilator lint_on UNUSEDSIGNAL */
     wire load_valid; // 存储成功信号
     wire store_valid; // 存储成功信号
     // 没有实现存储器，所以恒为1
