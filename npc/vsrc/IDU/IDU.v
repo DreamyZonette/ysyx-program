@@ -304,6 +304,16 @@ module IDU (
                 offset = 32'b0;
                 csr_addr = 12'b0;
             end
+            // 避免锁存器
+            else begin
+                imm = 32'b0;
+                rs1 = 5'b0;
+                rs2 = 5'b0;
+                rd  = 5'b0;
+                shamt = 6'b0;
+                offset = 32'b0;
+                csr_addr = 12'b0;
+            end
         end
     end
 
