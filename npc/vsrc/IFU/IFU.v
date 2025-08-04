@@ -4,7 +4,7 @@ module IFU(
     input wire [31:0] i_pc,
     input wire i_pc_valid,
     input wire i_idu_ready,
-    input wire i_load_valid
+    input wire i_load_valid,
     output wire o_ifu_valid,
     output wire o_ifu_ready,
     output wire [31:0] o_instruction
