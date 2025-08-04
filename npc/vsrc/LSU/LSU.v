@@ -48,7 +48,7 @@ assign load_signal = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i
 assign store_signal = i_sb_signal | i_sh_signal | i_sw_signal;
 assign o_load_signal = load_signal;
 assign o_lsu_ready = (state == IDLE);
-assign o_lsu_valid = (state == LOAD_DONE) || (state == STORE && i_store_valid);
+assign o_lsu_valid = (state == LOAD_DONE);
 
 // 状态转移逻辑
 always @(*) begin
