@@ -165,7 +165,7 @@ static void execute(uint64_t n) {
     // dut.diff_mtvec = top->de_mtvec;
     // dut.diff_mepc = top->de_mepc;
       if (dut.pc != dut.next_pc){
-        printf("diff test:pc:%08x => 0x%08x\n", dut.pc, dut.next_pc);
+        printf("difftest:pc:%08x => 0x%08x\n", dut.pc, dut.next_pc);
         for(int i = 0; i < 32; i++){
         dut.gpr[i] = top->reg_data[i];
       }
