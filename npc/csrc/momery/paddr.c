@@ -124,7 +124,7 @@ word_t paddr_read(paddr_t addr, int len) {
     char s[128];
     sprintf(s, "paddr_read(0x%08x, %d, 0x%08x)\n", addr, len);
     log_write("%s\n", s);
-  out_of_bound(addr);
+    out_of_bound(addr);
   return 0;
 }
 
