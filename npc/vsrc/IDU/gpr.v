@@ -19,7 +19,7 @@ module gpr  (
     reg [4:0] rs1_reg;
     reg [4:0] rs2_reg;
     reg [4:0] rd_reg;
-    wire data;
+    wire [31:0] data;
 
     assign data = i_wbu_valid ? i_data : data; // 写数据
     assign o_reg_data = reg_file;
