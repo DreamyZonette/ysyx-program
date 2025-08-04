@@ -49,7 +49,9 @@ static void trace_and_difftest() {
 
   #if CONFIG_DIFFTEST
   //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
-  difftest_step(dut.pc, dut.next_pc);
+  if (dut.pc != dut.next_pc){
+    difftest_step(dut.pc, dut.next_pc);
+  } 
   #endif
 
   #if CONFIG_FTRACE
@@ -151,15 +153,23 @@ static void execute(uint64_t n) {
   #endif
 
   #if CONFIG_DIFFTEST
-    for(int i = 0; i < 32; i++){
-      dut.gpr[i] = top->reg_data[i];
+    if(dut.pc < 0x80000000 || dut.pc >= 0x90000000){
+      dut.pc = top->de_pc;
+      dut.next_pc = top->de_next_pc;
     }
-    dut.pc = top->de_pc;
-    dut.next_pc = top->de_next_pc;
+    else {
+      dut.pc = dut.next_pc;
+      dut.next_pc = top->de_pc;
     // dut.diff_mstatus = top->de_mstatus;
     // dut.diff_mcause = top->de_mcause;
     // dut.diff_mtvec = top->de_mtvec;
     // dut.diff_mepc = top->de_mepc;
+      if (dut.pc != dut.next_pc){
+        for(int i = 0; i < 32; i++){
+        dut.gpr[i] = top->reg_data[i];
+      }
+    }
+
   #endif
     g_nr_guest_inst ++;
     single_cycle();
