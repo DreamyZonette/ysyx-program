@@ -372,7 +372,7 @@ module IDU (
     .o_sw_signal(o_sw_signal),
     .o_sb_signal(o_sb_signal),
     .o_sh_signal(o_sh_signal),
-    .o_unknown_inst(S_unknown_inst),
+    .o_unknown_inst(S_unknown_inst)
     );
     Rtype Rtype_u(
     .i_inst(inst_reg),
