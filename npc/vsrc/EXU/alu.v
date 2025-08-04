@@ -88,7 +88,7 @@ module alu (
         end else if(i_slti_signal == 1'b1) begin
             o_data = $signed(i_src1) < $signed(i_imm) ? 32'h1 : 32'h0;
         end else if(i_sltiu_signal == 1'b1) begin
-            o_data = i_src1 < i_imm ? 32'h1 : 32'h0;
+            o_data = $unsigned(i_src1) < $unsigned(i_imm) ? 32'h1 : 32'h0;
         end else if(i_csrrw_signal == 1'b1) begin
             o_data = i_src1;
         end else if(i_csrrs_signal == 1'b1) begin
