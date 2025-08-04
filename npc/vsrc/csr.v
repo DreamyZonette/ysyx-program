@@ -12,7 +12,9 @@ module csr (
     output [31:0] o_mtvec,
     output [31:0] o_mepc,
     output [31:0] o_mcause,
-    output reg [31:0] o_csr_rdata
+    output reg [31:0] o_csr_rdata,
+    output wire o_csr_valid,
+    output wire o_csr_ready
 );
 
 reg [3:0] wen;
@@ -25,6 +27,8 @@ assign mstatus_wdata = (i_ecall_signal == 1'b1) ? i_mstatus_wdata : i_csr_wdata;
 assign mtvec_wdata   = (i_ecall_signal == 1'b1) ? i_mtvec_wdata   : i_csr_wdata;
 assign mepc_wdata    = (i_ecall_signal == 1'b1) ? i_mepc_wdata    : i_csr_wdata;
 assign mcause_wdata  = (i_ecall_signal == 1'b1) ? i_mcause_wdata  : i_csr_wdata;
+assign o_csr_valid = 1'b1;
+assign o_csr_ready = 1'b1;
 
 
 always @(*) begin
