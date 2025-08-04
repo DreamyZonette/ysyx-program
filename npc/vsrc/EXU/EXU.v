@@ -60,11 +60,11 @@ module EXU(
 
 );
 
-localparam IDLE      = 3'd000;
-localparam ALU       = 3'd001;
-localparam LS_ALU    = 3'd010;
-localparam DONE      = 3'd011;
-localparam LS_DONE   = 3'd100;
+localparam IDLE      = 3'd0;
+localparam ALU       = 3'd1;
+localparam LS_ALU    = 3'd2;
+localparam DONE      = 3'd3;
+localparam LS_DONE   = 3'd4;
 
 reg [2:0] state;
 reg [2:0] next_state;
