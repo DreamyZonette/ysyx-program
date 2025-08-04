@@ -283,13 +283,10 @@ always @(posedge i_sys_clk) begin
         mret_signal_reg <= 1'b0;
     end
     else if (state == IDLE && i_idu_valid)begin
-        src1_reg <= i_src1;
-        src2_reg <= i_src2;
         imm_reg <= i_imm;
         offset_reg <= i_offset;
         pc_data_reg <= i_pc_data;
         shamt_reg <= i_shamt;
-        csr_data_reg <= i_csr_data;
         addi_signal_reg <= i_addi_signal;
         jalr_signal_reg <= i_jalr_signal;
         lb_signal_reg <= i_lb_signal;
@@ -332,6 +329,12 @@ always @(posedge i_sys_clk) begin
         csrrw_signal_reg <= i_csrrw_signal;
         ecall_signal_reg <= i_ecall_signal;
         mret_signal_reg <= i_mret_signal;
+    end
+    // 查看波形发现寄存器的值是慢一个周期的
+    else if (state == ALU || state == LS_ALU) begin
+        src1_reg <= i_src1;
+        src2_reg <= i_src2;
+        csr_data_reg <= i_csr_data;
     end
 end
 
