@@ -55,7 +55,6 @@ module WBU(
     reg jump_signal_reg;
 
     // 控制信号
-    wire jump_signal = i_jalr_signal | i_B_jump_signal | i_jal_signal;
 
     assign o_reg_wdata = reg_wdata;
     assign o_csr_wdata = csr_wdata;
