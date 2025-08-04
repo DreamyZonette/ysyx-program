@@ -143,7 +143,6 @@ static void execute(uint64_t n) {
       dut.pc = dut.next_pc;
       dut.next_pc = top->de_pc;
     }
-  }
     #if CONFIG_ITRACE
   if(!sim_finish){
     if (dut.pc != dut.next_pc){
