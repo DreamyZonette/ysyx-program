@@ -134,11 +134,11 @@ always @(posedge i_sys_clk) begin
                  if (i_load_valid) begin
                     // 根据锁存的指令类型执行加载
                     case (1'b1)
-                        mem_op_type[0]: rdata <= pmem_read(addr_latched, 1); // lbu
-                        mem_op_type[1]: rdata <= pmem_read(addr_latched, 2); // lhu
-                        mem_op_type[2]: rdata <= pmem_read(addr_latched, 1); // lb
-                        mem_op_type[3]: rdata <= pmem_read(addr_latched, 2); // lh
-                        mem_op_type[4]: rdata <= pmem_read(addr_latched, 4); // lw
+                        mem_op_type[7]: rdata <= pmem_read(addr_latched, 1); // lbu
+                        mem_op_type[6]: rdata <= pmem_read(addr_latched, 2); // lhu
+                        mem_op_type[5]: rdata <= pmem_read(addr_latched, 1); // lb
+                        mem_op_type[4]: rdata <= pmem_read(addr_latched, 2); // lh
+                        mem_op_type[3]: rdata <= pmem_read(addr_latched, 4); // lw
                         default: rdata <= 32'b0;
                     endcase
                 end
@@ -157,9 +157,9 @@ always @(posedge i_sys_clk) begin
                 if (i_store_valid) begin
                     // 根据锁存的指令类型执行存储
                     case (1'b1)
-                        mem_op_type[5]: pmem_write(addr_latched, 1, data_latched); // sb
-                        mem_op_type[6]: pmem_write(addr_latched, 2, data_latched); // sh
-                        mem_op_type[7]: pmem_write(addr_latched, 4, data_latched); // sw
+                        mem_op_type[2]: pmem_write(addr_latched, 1, data_latched); // sb
+                        mem_op_type[1]: pmem_write(addr_latched, 2, data_latched); // sh
+                        mem_op_type[0]: pmem_write(addr_latched, 4, data_latched); // sw
                         default: ; // 无操作
                     endcase
                 end
@@ -176,11 +176,11 @@ always @(*) begin
     end
     else begin
         case (1'b1) 
-            mem_op_type[0]: o_rdata = {24'b0, rdata[7:0]};  // lbu
-            mem_op_type[1]: o_rdata = {16'b0, rdata[15:0]}; // lhu
-            mem_op_type[2]: o_rdata = {{24{rdata[7]}}, rdata[7:0]}; // lb
-            mem_op_type[3]: o_rdata = {{16{rdata[15]}}, rdata[15:0]}; // lh
-            mem_op_type[4]: o_rdata = rdata; // lw
+            mem_op_type[7]: o_rdata = {24'b0, rdata[7:0]};  // lbu
+            mem_op_type[6]: o_rdata = {16'b0, rdata[15:0]}; // lhu
+            mem_op_type[5]: o_rdata = {{24{rdata[7]}}, rdata[7:0]}; // lb
+            mem_op_type[4]: o_rdata = {{16{rdata[15]}}, rdata[15:0]}; // lh
+            mem_op_type[3]: o_rdata = rdata; // lw
             default: o_rdata = 32'b0;
         endcase
     end
