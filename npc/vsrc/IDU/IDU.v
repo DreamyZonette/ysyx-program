@@ -238,71 +238,71 @@ module IDU (
         endcase
     end
 
-
-    always @(posedge i_sys_clk) begin
+    // 用时序发现会落后一个周期，所以还是用组合逻辑
+    always @(*) begin
         if(!i_sys_rst_n) begin
-            imm <= 32'b0;
-            offset <= 32'b0;
-            rs1 <= 5'b0;
-            rs2 <= 5'b0;
-            rd  <= 5'b0;
-            shamt  <= 6'b0;
-            csr_addr <= 12'b0;
+            imm = 32'b0;
+            offset = 32'b0;
+            rs1 = 5'b0;
+            rs2 = 5'b0;
+            rd  = 5'b0;
+            shamt  = 6'b0;
+            csr_addr = 12'b0;
         end
         else if (state == DECODE) begin
             if(Itype_signal == 1'b1) begin
-                rs1 <= I_rs1;
-                rs2 <= 5'b0;
-                rd  <= I_rd;
-                imm <= I_imm;
-                shamt <= I_shamt;
-                offset <= 32'b0;
-                csr_addr <= I_csr_addr;
+                rs1 = I_rs1;
+                rs2 = 5'b0;
+                rd  = I_rd;
+                imm = I_imm;
+                shamt = I_shamt;
+                offset = 32'b0;
+                csr_addr = I_csr_addr;
             end
             else if(Utype_signal == 1'b1) begin
-                rs1 <= 5'b0;
-                rs2 <= 5'b0;
-                rd  <= U_rd;
-                imm <= U_imm;
-                offset <= 32'b0;
-                shamt  <= 6'b0;
-                csr_addr <= 12'b0;
+                rs1 = 5'b0;
+                rs2 = 5'b0;
+                rd  = U_rd;
+                imm = U_imm;
+                offset = 32'b0;
+                shamt  = 6'b0;
+                csr_addr = 12'b0;
             end
             else if(Btype_signal == 1'b1) begin
-                offset <= B_offset;
-                rs1 <= B_rs1;
-                rs2 <= B_rs2;
-                rd  <= 5'b0;
-                shamt  <= 6'b0;
-                imm <= 32'b0;
-                csr_addr <= 12'b0;
+                offset = B_offset;
+                rs1 = B_rs1;
+                rs2 = B_rs2;
+                rd  = 5'b0;
+                shamt = 6'b0;
+                imm = 32'b0;
+                csr_addr = 12'b0;
             end
             else if(Jtype_signal == 1'b1) begin
-                offset  <= J_offset;
-                rs1 <= 5'b0;
-                rs2 <= 5'b0;
-                rd  <= J_rd;
-                shamt  <= 6'b0;
-                imm <= 32'b0;
-                csr_addr <= 12'b0;
+                offset  = J_offset;
+                rs1 = 5'b0;
+                rs2 = 5'b0;
+                rd  = J_rd;
+                shamt  = 6'b0;
+                imm = 32'b0;
+                csr_addr = 12'b0;
             end
             else if(Stype_signal == 1'b1) begin
-                imm  <= S_imm;
-                rs1  <= S_rs1;
-                rs2  <= S_rs2;
-                rd   <= 5'b0;
-                shamt  <= 6'b0;
-                offset <= 32'b0;
-                csr_addr <= 12'b0;
+                imm  = S_imm;
+                rs1  = S_rs1;
+                rs2  = S_rs2;
+                rd   = 5'b0;
+                shamt = 6'b0;
+                offset = 32'b0;
+                csr_addr = 12'b0;
             end
             else if(Rtype_signal == 1'b1) begin
-                imm <= 32'b0;
-                rs1  <= R_rs1;
-                rs2  <= R_rs2;
-                rd   <= R_rd;
-                shamt  <= 6'b0;
-                offset <= 32'b0;
-                csr_addr <= 12'b0;
+                imm = 32'b0;
+                rs1 = R_rs1;
+                rs2 = R_rs2;
+                rd  = R_rd;
+                shamt = 6'b0;
+                offset = 32'b0;
+                csr_addr = 12'b0;
             end
         end
     end
