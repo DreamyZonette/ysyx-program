@@ -11,6 +11,7 @@ module LSU(
     input wire i_sw_signal,
     input wire i_exu_valid,
     input wire i_wbu_ready,
+    input wire i_idu_valid,
     input wire i_load_valid,
     input wire i_store_valid,
     input wire [31:0] i_src2,
@@ -107,13 +108,15 @@ always @(posedge i_sys_clk) begin
         data_latched <= 32'b0;
     end
     else if (state == IDLE && i_exu_valid ) begin
-        // 锁存指令类型
+        
+        addr_latched <= i_data;
+        data_latched <= i_src2;
+    end
+    else if(state == IDLE && i_idu_valid) begin
         mem_op_type <= {
             i_lbu_signal, i_lhu_signal, i_lb_signal, i_lh_signal, i_lw_signal,
             i_sb_signal, i_sh_signal, i_sw_signal
         };
-        addr_latched <= i_data;
-        data_latched <= i_src2;
     end
 end
 
