@@ -169,6 +169,7 @@ static void execute(uint64_t n) {
         dut.gpr[i] = top->reg_data[i];
       }
     }
+  }
 
   #endif
     g_nr_guest_inst ++;
