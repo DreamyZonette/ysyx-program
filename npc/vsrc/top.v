@@ -206,7 +206,7 @@
     .o_csrrw_signal(csrrw_signal),
     .o_ecall_signal(ecall_signal),
     .o_mret_signal(mret_signal),
-    .o_unknown_inst(unknown_instruction),
+    .o_unknown_inst(unknown_instruction)
     );
 
     EXU EXU_u (
