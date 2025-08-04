@@ -121,7 +121,7 @@ end
 always @(posedge i_sys_clk) begin
     if (!i_sys_rst_n) begin
         rdata <= 32'b0;
-        o_rdata <= 32'b0;
+        // o_rdata <= 32'b0;
     end
     else begin
         case (state) 
