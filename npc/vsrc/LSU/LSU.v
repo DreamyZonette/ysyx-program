@@ -141,14 +141,14 @@ always @(posedge i_sys_clk) begin
                 end
             end
             LOAD_DONE: begin 
-                case (1'b1)
-                    mem_op_type[0]: o_rdata <= {24'b0, rdata[7:0]};  // lbu
-                    mem_op_type[1]: o_rdata <= {16'b0, rdata[15:0]}; // lhu
-                    mem_op_type[2]: o_rdata <= {{24{rdata[7]}}, rdata[7:0]}; // lb
-                    mem_op_type[3]: o_rdata <= {{16{rdata[15]}}, rdata[15:0]}; // lh
-                    mem_op_type[4]: o_rdata <= rdata; // lw
-                    default: o_rdata <= rdata;
-                endcase
+                // case (1'b1)
+                //     mem_op_type[0]: o_rdata <= {24'b0, rdata[7:0]};  // lbu
+                //     mem_op_type[1]: o_rdata <= {16'b0, rdata[15:0]}; // lhu
+                //     mem_op_type[2]: o_rdata <= {{24{rdata[7]}}, rdata[7:0]}; // lb
+                //     mem_op_type[3]: o_rdata <= {{16{rdata[15]}}, rdata[15:0]}; // lh
+                //     mem_op_type[4]: o_rdata <= rdata; // lw
+                //     default: o_rdata <= rdata;
+                // endcase
             end
             STORE: begin
                 if (i_store_valid) begin
