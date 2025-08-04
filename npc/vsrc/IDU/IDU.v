@@ -110,7 +110,7 @@ module IDU (
     reg [31:0] inst_reg;
 
     assign o_idu_ready = (state == IDLE);
-    assign o_idu_valid = (state == VALID);
+    assign o_idu_valid = (state == VALID) || (state == DECODE && decode_valid);
     assign o_offset = offset;
     assign o_imm = imm;
     assign o_shamt = shamt;
