@@ -289,6 +289,7 @@
     .i_exu_valid(exu_valid), 
     .i_lsu_valid(lsu_valid), 
     .i_csr_valid(csr_valid), 
+    .i_idu_valid(idu_valid), 
     .i_pc_ready(pc_ready), 
     .i_load_wdata(rdata),
     .i_csr_rdata(csr_data),

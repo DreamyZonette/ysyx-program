@@ -15,6 +15,7 @@ module WBU(
     input wire i_lsu_valid, // NEW
     input wire i_csr_valid, // NEW
     input wire i_pc_ready, // NEW
+    input wire i_idu_valid, // NEW
     input wire [31:0] i_load_wdata,
     input wire [31:0] i_csr_rdata,
     /* verilator lint_off UNUSEDSIGNAL */
@@ -51,6 +52,8 @@ module WBU(
     reg [31:0] mtvec_wdata;
     reg [31:0] mepc_wdata;
     reg [31:0] mcause_wdata;
+    reg jump_signal_reg;
+
     // 控制信号
     wire jump_signal = i_jalr_signal | i_B_jump_signal | i_jal_signal;
 
@@ -67,6 +70,16 @@ module WBU(
     assign o_mepc_wdata = mepc_wdata;
     assign o_mcause_wdata = mcause_wdata;
 
+    // 信号锁存
+    always @(posedge i_sys_clk) begin
+        if (!i_sys_rst_n) begin
+            jump_signal_reg <= 1'b0;
+        end
+        else if (i_idu_valid) begin
+            jump_signal_reg <= i_jalr_signal | i_B_jump_signal | i_jal_signal;
+        end
+    end
+
     // 状态更新逻辑
     always @(*) begin
         if(!i_sys_rst_n) begin
@@ -79,7 +92,7 @@ module WBU(
                             next_state = LOAD_WAIT;
                         end else if (i_csrrs_signal == 1'b1 || i_csrrw_signal == 1'b1) begin
                             next_state = CSR_WAIT;
-                        end else if (jump_signal == 1'b1) begin
+                        end else if (jump_signal_reg == 1'b1) begin
                             next_state = JUMP_WAIT;
                         end else if (i_mret_signal == 1'b1) begin
                             next_state = MRET_WAIT;
@@ -158,7 +171,7 @@ module WBU(
                 IDLE: begin
                     if (i_exu_valid) begin
                         next_pc <= i_cur_pc + 4;
-                        if (jump_signal == 1'b1) begin
+                        if (jump_signal_reg == 1'b1) begin
                             next_pc <= i_exu_data;
                             if (i_jal_signal || i_jalr_signal) begin
                                 reg_wdata <= i_cur_pc + 4; // 保存返回地址
