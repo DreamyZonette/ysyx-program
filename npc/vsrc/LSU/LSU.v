@@ -166,6 +166,23 @@ always @(posedge i_sys_clk) begin
     end
 end
 
+// 输出逻辑
+always @(*) begin
+    if (!i_sys_rst_n) begin
+        o_rdata = 32'b0;
+    end
+    else begin
+        case (1'b1) 
+            mem_op_type[0]: o_rdata = {24'b0, rdata[7:0]};  // lbu
+            mem_op_type[1]: o_rdata = {16'b0, rdata[15:0]}; // lhu
+            mem_op_type[2]: o_rdata = {{24{rdata[7]}}, rdata[7:0]}; // lb
+            mem_op_type[3]: o_rdata = {{16{rdata[15]}}, rdata[15:0]}; // lh
+            mem_op_type[4]: o_rdata = rdata; // lw
+            default: o_rdata <= 32'b0;
+        endcase
+    end
+end
+
 // 状态更新逻辑
 always @(posedge i_sys_clk) begin
     if (!i_sys_rst_n) begin
