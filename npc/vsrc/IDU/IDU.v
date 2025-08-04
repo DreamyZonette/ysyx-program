@@ -61,7 +61,7 @@ module IDU (
 
     localparam IDLE = 2'b00;
     localparam DECODE = 2'b01;
-    localparam VALID = 2'b10;
+    // localparam VALID = 2'b10;
 
     reg [1:0] state;
     reg [1:0] next_state;
@@ -110,7 +110,7 @@ module IDU (
     reg [31:0] inst_reg;
 
     assign o_idu_ready = (state == IDLE);
-    assign o_idu_valid = (state == VALID) || (state == DECODE && decode_valid);
+    assign o_idu_valid = (state == DECODE && decode_valid);
     assign o_offset = offset;
     assign o_imm = imm;
     assign o_shamt = shamt;
@@ -136,21 +136,21 @@ module IDU (
                     end
                 end
                 DECODE: begin
-                    if(decode_valid) begin
-                        next_state = VALID;
+                    if(decode_valid && i_lsu_ready && i_exu_ready) begin
+                        next_state = IDLE;
                     end
                     else begin
                         next_state = DECODE;
                     end
                 end
-                VALID: begin
-                    if (i_lsu_ready && i_exu_ready) begin
-                        next_state = IDLE;
-                    end
-                    else begin
-                        next_state = VALID;
-                    end
-                end 
+                // VALID: begin
+                //     if (i_lsu_ready && i_exu_ready) begin
+                //         next_state = IDLE;
+                //     end
+                //     else begin
+                //         next_state = VALID;
+                //     end
+                // end 
                 default: begin
                     next_state = IDLE;
                 end
