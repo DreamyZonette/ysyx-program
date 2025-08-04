@@ -71,7 +71,7 @@ always @(posedge i_sys_clk) begin
             end
             WAIT_READY: begin
                 instruction <= instruction;
-                ifu_valid <= ifu_valid;
+                ifu_valid <= 1'b0;
 
                 if (i_idu_ready == 1'b1) begin
                     ifu_valid <= 1'b0;
