@@ -1,7 +1,6 @@
    module top (
         input sys_clk,
         input sys_rst_n,
-        // input [31:0] inst,
         output [31:0] de_pc,
         output [31:0] de_next_pc,
         output [31:0] de_inst,
@@ -14,18 +13,15 @@
     );
 
     import "DPI-C" function void dpi_ebreak();
-    // import "DPI-C" function void dpi_return();
 
     always @(posedge sys_clk) begin
             if (ebreak_signal == 1'b1) begin
                 dpi_ebreak();  // 调用 DPI-C 函数
             end
-            // else if (instruction == 32'h0000006F) begin
-            //     dpi_return();
-            // end
         end
 
-    assign halt = EXU_halt_signal | IDU_halt_signal;
+    // 调试信号
+    assign halt = unknown_instruction;
     assign de_pc = pc;
     assign de_next_pc = next_pc;
     assign de_inst = instruction;
@@ -34,7 +30,30 @@
     assign de_mepc = mepc;
     assign de_mcause = mcause;
 
+    // 多周期协议信号
+    wire pc_valid;
+    wire pc_ready;
+    wire wbu_valid;
+    wire wbu_ready;
+    wire ifu_valid;
+    wire ifu_ready;
+    wire idu_valid;
+    wire idu_ready;
+    wire exu_valid;
+    wire exu_ready;
+    wire lsu_valid;
+    wire lsu_ready;
+    wire csr_valid;
+    /* verilator lint_off UNUSEDSIGNAL */
+    wire csr_ready;
+    /* verilator lint_on UNUSEDSIGNAL */
+    wire load_valid; // 存储成功信号
+    wire store_valid; // 存储成功信号
+    // 没有实现存储器，所以恒为1
+    assign load_valid = 1'b1;
+    assign store_valid = 1'b1;
 
+    // 译码指令信号
     wire addi_signal;
     wire andi_signal;
     wire slti_signal;
@@ -64,14 +83,6 @@
     wire sub_signal;
     wire slt_signal;
     wire sltu_signal;
-    // wire mul_signal;
-    // wire mulh_signal;
-    // wire mulhu_signal;
-    // wire mulhsu_signal;
-    // wire div_signal;
-    // wire divu_signal;
-    // wire rem_signal;
-    // wire remu_signal;
     wire sra_signal;
     wire srl_signal;
     wire beq_signal;
@@ -85,8 +96,9 @@
     wire csrrw_signal;
     wire ecall_signal;
     wire mret_signal;
-    wire IDU_halt_signal;
-    wire EXU_halt_signal;
+    wire unknown_instruction;
+
+    // 数据传输信号
     wire [31:0] wdata;
     wire [31:0] imm;
     wire [31:0] src1;
@@ -96,7 +108,6 @@
     wire [31:0] next_pc;
     wire [31:0] pc;
     wire [31:0] instruction;
-    wire [3:0] wmask;
     wire [31:0] exu_data;
     wire [31:0] rdata;
     wire o_B_jump_signal;
@@ -112,19 +123,31 @@
     wire [31:0] mtvec_wdata;
     wire [31:0] mepc_wdata;
     wire [31:0] csr_wdata;
+    wire [4:0] rs1;
+    wire [4:0] rs2;
+    wire [4:0] rd;
 
-
-
+    // 实例化模块
     PC PC_u(
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
+    .i_wbu_valid(wbu_valid),
+    .i_ifu_ready(ifu_ready),
     .i_next_pc(next_pc),
+    .o_pc_valid(pc_valid),
+    .o_pc_ready(pc_ready), 
     .o_pc(pc)
     );
     
     IFU IFU_u (
-    //.i_sys_clk(sys_clk),
+    .i_sys_clk(sys_clk),
+    .i_sys_rst_n(sys_rst_n),
     .i_pc(pc),
+    .i_pc_valid(pc_valid),
+    .i_idu_ready(idu_ready),
+    .i_load_valid(load_valid),
+    .o_ifu_valid(ifu_valid),
+    .o_ifu_ready(ifu_ready),
     .o_instruction(instruction)
     );
 
@@ -132,13 +155,17 @@
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
     .i_inst(instruction),
-    .i_wdata(wdata),
-    .o_src1(src1),
-    .o_src2(src2),
+    .i_ifu_valid(ifu_valid),
+    .i_exu_ready(exu_ready),
+    .i_lsu_ready(lsu_ready),
+    .o_idu_ready(idu_ready),
+    .o_idu_valid(idu_valid),
+    .o_rs1(rs1),
+    .o_rs2(rs2),
+    .o_rd(rd),
     .o_imm(imm),
     .o_offset(offset),
     .o_shamt(shamt),
-    .o_wmask(wmask),
     .o_csr_addr(csr_addr),
     .o_addi_signal(addi_signal),
     .o_andi_signal(andi_signal),
@@ -169,14 +196,6 @@
     .o_sub_signal(sub_signal),
     .o_slt_signal(slt_signal),
     .o_sltu_signal(sltu_signal),
-    // .o_mul_signal(mul_signal),
-    // .o_mulh_signal(mulh_signal),
-    // .o_mulhu_signal(mulhu_signal),
-    // .o_mulhsu_signal(mulhsu_signal),
-    // .o_div_signal(div_signal),
-    // .o_divu_signal(divu_signal),
-    // .o_rem_signal(rem_signal),
-    // .o_remu_signal(remu_signal),
     .o_sra_signal(sra_signal),
     .o_srl_signal(srl_signal),
     .o_beq_signal(beq_signal),
@@ -190,11 +209,12 @@
     .o_csrrw_signal(csrrw_signal),
     .o_ecall_signal(ecall_signal),
     .o_mret_signal(mret_signal),
-    .o_halt_signal(IDU_halt_signal),
-    .o_reg_data(reg_data)
+    .o_unknown_inst(unknown_instruction)
     );
 
     EXU EXU_u (
+    .i_sys_clk(sys_clk),
+    .i_sys_rst_n(sys_rst_n),
     .i_src1(src1),
     .i_src2(src2),
     .i_imm(imm),
@@ -232,14 +252,6 @@
     .i_xor_signal(xor_signal),
     .i_srl_signal(srl_signal),
     .i_sra_signal(sra_signal),
-    // .i_mul_signal(mul_signal),
-    // .i_mulh_signal(mulh_signal),
-    // .i_mulhu_signal(mulhu_signal),
-    // .i_mulhsu_signal(mulhsu_signal),
-    // .i_div_signal(div_signal),
-    // .i_divu_signal(divu_signal),
-    // .i_rem_signal(rem_signal),
-    // .i_remu_signal(remu_signal),
     .i_auipc_signal(auipc_signal),
     .i_lui_signal(lui_signal),
     .i_add_signal(add_signal),
@@ -252,13 +264,18 @@
     .i_csrrw_signal(csrrw_signal),
     .i_ecall_signal(ecall_signal),
     .i_mret_signal(mret_signal),
+    .i_idu_valid(idu_valid),
+    .i_wbu_ready(wbu_ready),
+    .i_lsu_ready(lsu_ready),
+    .o_exu_valid(exu_valid),
+    .o_exu_ready(exu_ready),
     .o_B_jump_signal(o_B_jump_signal),
-    .o_halt_signal(EXU_halt_signal),
     .o_data(exu_data)
     );
 
     WBU WBU_u (
     .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(sys_clk),
     .i_exu_data(exu_data),
     .i_cur_pc(pc),
     .i_B_jump_signal(o_B_jump_signal),
@@ -269,6 +286,11 @@
     .i_csrrs_signal(csrrs_signal),
     .i_mret_signal(mret_signal),
     .i_ecall_signal(ecall_signal),
+    .i_exu_valid(exu_valid), 
+    .i_lsu_valid(lsu_valid), 
+    .i_csr_valid(csr_valid), 
+    .i_idu_valid(idu_valid), 
+    .i_pc_ready(pc_ready), 
     .i_load_wdata(rdata),
     .i_csr_rdata(csr_data),
     .i_mstatus_rdata(mstatus),
@@ -281,12 +303,14 @@
     .o_mtvec_wdata(mtvec_wdata),
     .o_mepc_wdata(mepc_wdata),
     .o_mcause_wdata(mcause_wdata),
-    .o_next_pc(next_pc)
+    .o_next_pc(next_pc),
+    .o_wbu_ready(wbu_ready), 
+    .o_wbu_valid(wbu_valid) 
     );
 
     LSU LSU_u (
     .i_sys_clk(sys_clk),
-    //.i_sys_rst_n(sys_rst_n),
+    .i_sys_rst_n(sys_rst_n),
     .i_lbu_signal(lbu_signal),
     .i_lhu_signal(lhu_signal),
     .i_lb_signal(lb_signal),
@@ -295,16 +319,24 @@
     .i_sb_signal(sb_signal),
     .i_sh_signal(sh_signal),
     .i_sw_signal(sw_signal),
+    .i_exu_valid(exu_valid),
+    .i_idu_valid(idu_valid),
+    .i_wbu_ready(wbu_ready),
+    .i_load_valid(load_valid),
+    .i_store_valid(store_valid),
     .i_src2(src2),
     .i_data(exu_data),
-    .i_wmask(wmask),
     .o_load_signal(load_signal),
-    .o_rdata(rdata)
+    .o_rdata(rdata),
+    .o_lsu_valid(lsu_valid),
+    .o_lsu_ready(lsu_ready)
 );
     csr csr_u (
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
     .i_ecall_signal(ecall_signal),
+    .i_idu_valid(idu_valid),
+    .i_wbu_valid(wbu_valid),
     .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),
     .i_mcause_wdata(mcause_wdata),
@@ -315,7 +347,23 @@
     .o_mtvec(mtvec),
     .o_mepc(mepc),
     .o_mcause(mcause),
-    .o_csr_rdata(csr_data)
+    .o_csr_rdata(csr_data),
+    .o_csr_valid(csr_valid),
+    .o_csr_ready(csr_ready)
 );
+gpr gpr_u(
+    .i_sys_clk(sys_clk),
+    .i_sys_rst_n(sys_rst_n), 
+    .i_rs1(rs1),
+    .i_rs2(rs2),
+    .i_rd(rd),
+    .i_data(wdata),
+    .i_idu_valid(idu_valid),
+    .i_wbu_valid(wbu_valid),
+    .o_src1(src1),
+    .o_src2(src2),
+    .o_reg_data(reg_data)
+);
+
    
     endmodule
