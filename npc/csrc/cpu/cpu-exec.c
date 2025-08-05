@@ -72,7 +72,7 @@ static void trace_and_difftest() {
   }
   
   //int ret = decode_exec(s);
-  char blank [40];
+  char blank [100];
   int j = 0;
   if (is_call) {
     count += 2;
