@@ -23,7 +23,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
     epc+=4;
   }
   MCAUSE = NO;
-  MEPC = epc + 4;
+  MEPC = epc;
 
   return MTVEC;
 }
