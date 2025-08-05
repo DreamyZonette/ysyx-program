@@ -336,6 +336,7 @@
     .i_sys_rst_n(sys_rst_n),
     .i_ecall_signal(ecall_signal),
     .i_idu_valid(idu_valid),
+    .i_wbu_valid(wbu_valid),
     .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),
     .i_mcause_wdata(mcause_wdata),
