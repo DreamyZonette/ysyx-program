@@ -53,7 +53,7 @@ always @(*) begin
     o_csr_rdata = 32'b0;
     if(ecall_signal_reg == 1'b1) begin
         if (i_wbu_valid) begin
-            wen = 4'b1111;
+            wen = 4'b1100; // 只写入 mcause 和 mepc
         end
         o_csr_rdata = 32'b0;
     end else if(csr_addr_reg == 12'h300) begin
