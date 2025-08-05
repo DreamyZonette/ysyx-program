@@ -16,9 +16,9 @@ module LSU(
     output reg [31:0] o_rdata
 );
 
-import "DPI-C" function int pmem_read(input int addr, input int len);
-import "DPI-C" function void pmem_write(
-    input int addr, int len, input int data);
+// import "DPI-C" function int pmem_read(input int addr, input int len);
+// import "DPI-C" function void pmem_write(
+//     input int addr, int len, input int data);
 
 reg [31:0] rdata;
 //wire valid = i_sys_clk;
@@ -27,34 +27,31 @@ wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal
 assign o_load_signal = ren;
 
 always @(negedge i_sys_clk) begin
-    //if (valid) begin // 有读写请求时
-        // if (ren) begin
+        //适配对齐访存
+        if(i_lw_signal == 1'b1) begin
             // rdata <= pmem_read(i_data, 4);
-            //适配对齐访存
-            if(i_lw_signal == 1'b1) begin
-                rdata <= pmem_read(i_data, 4);
-            end else if(i_lhu_signal == 1'b1) begin
-                rdata <= pmem_read(i_data, 2);
-            end else if(i_lh_signal == 1'b1) begin
-                rdata <= pmem_read(i_data, 2);
-            end else if(i_lbu_signal == 1'b1) begin
-                rdata <= pmem_read(i_data, 1);
-            end else if(i_lb_signal == 1'b1) begin
-                rdata <= pmem_read(i_data, 1);
-            // end else begin
-            //     rdata <= 0;
-            // end
+            rdata <= ram_rdata;
+        end else if(i_lhu_signal == 1'b1) begin
+            // rdata <= pmem_read(i_data, 2);
+            rdata <= ram_rdata;
+        end else if(i_lh_signal == 1'b1) begin
+            // rdata <= pmem_read(i_data, 2);
+            rdata <= ram_rdata;
+        end else if(i_lbu_signal == 1'b1) begin
+            // rdata <= pmem_read(i_data, 1);
+            rdata <= ram_rdata;
+        end else if(i_lb_signal == 1'b1) begin
+            // rdata <= pmem_read(i_data, 1);
+            rdata <= ram_rdata;
         end
         else if (wen) begin // 有写请求时
-            pmem_write(i_data, {28'b0, i_wmask} , i_src2);
+            // pmem_write(i_data, {28'b0, i_wmask} , i_src2);
+            // pmem_write(i_data, {28'b0, i_wmask} , i_src2);
             rdata <= 0;
         end
         else begin
             rdata <= 0;
         end
-    // end else begin
-    //     rdata = 0;
-    // end
 end
 
 always @(*) begin
@@ -72,4 +69,12 @@ always @(*) begin
         o_rdata = 0;
     end
 end
+
+// 实例化测试用
+wire [31:0] ram_rdata
+ram ram_u (
+    .addr(i_data),
+    .wdata(i_src2),
+    .rdata(ram_rdata)
+);
 endmodule

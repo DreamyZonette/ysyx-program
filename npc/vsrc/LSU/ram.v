@@ -1,41 +1,41 @@
 /* verilator lint_off DECLFILENAME */
-module ram #(WIDTH = 32, INS_BYTES = 4, PC_LEN = 32)(
-    input clk,
-    input rst,
-    input [WIDTH-1:0] data_in,
-    input [PC_LEN-1:0] addr,
-    input [INS_BYTES-1:0] byte_en,
-    output [WIDTH-1:0] data_out,
-    input ram_signal
-    );
-    
-    reg [WIDTH-1:0] ram_mem [32'h80001024:32'h80000000 + 2048-1] = '{default:0};
+module ram (
+    /* verilator lint_off UNUSEDSIGNAL */
+    input [31:0] addr,
+    input [31:0] wdata,
+    /* verilator lint_on UNUSEDSIGNAL */
+    output reg [31:0] rdata
+);
+    wire [31:0] ram_out [255:0];
+    wire [7:0] ram_offset;
 
-    always @(posedge clk) begin
-        if (rst) begin
-            ram_mem[addr] <= 0;
-        end
-        else if (ram_signal) begin
-            if (byte_en == 4'b0001) begin
-                ram_mem[addr] <= {ram_mem[addr][WIDTH-1:8], data_in[7:0]};
-            end
-            else if (byte_en == 4'b0010) begin
-                ram_mem[addr] <= {ram_mem[addr][WIDTH-1:16], data_in[15:0]};
-            end
-            else if (byte_en == 4'b0100) begin
-                ram_mem[addr] <= {ram_mem[addr][WIDTH-1:24], data_in[23:0]};
-            end
-            else if (byte_en == 4'b1111) begin
-                ram_mem[addr] <= data_in;
-            end
-            else begin
-                ram_mem[addr] <= ram_mem[addr];
-            end
-        end
-        
+    assign ram_offset = addr[7:0];
+
+    genvar i;
+    generate
+        for (i = 0; i < 256; i = i + 1) begin : ram_mem
+        Reg #(
+        .WIDTH(32),        // 设置寄存器宽度为32位
+        .RESET_VAL(0)      // 复位值为0（可自定义）
+        ) u_reg (
+        .clk(1),
+        .sys_rst_n(1),
+        .i_data(wdata),   // 所有寄存器共享数据输入
+        .o_data(ram_out[i]),// 独立输出到总线数组
+        .wen(1'b1)   // 独立的地址译码写使能
+        );
+    end
+    endgenerate
+
+    always @(*) begin
+        rdata = ram_out[ram_offset];
     end
 
-    assign data_out = ram_mem[addr];
+    
+
+
+
+
 
 endmodule
-/* verilator lint_off DECLFILENAME */
+ /* verilator lint_on DECLFILENAME */
