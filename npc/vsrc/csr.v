@@ -1,18 +1,19 @@
 module csr (
-    input i_sys_clk,
-    input i_sys_rst_n,
-    input i_ecall_signal,
-    input i_idu_valid,
-    input [31:0] i_csr_wdata,
-    input [11:0] i_csr_addr,
-    input [31:0] i_mstatus_wdata,
-    input [31:0] i_mtvec_wdata,
-    input [31:0] i_mepc_wdata,
-    input [31:0] i_mcause_wdata,
-    output [31:0] o_mstatus,
-    output [31:0] o_mtvec,
-    output [31:0] o_mepc,
-    output [31:0] o_mcause,
+    input wire i_sys_clk,
+    input wire i_sys_rst_n,
+    input wire i_ecall_signal,
+    input wire i_idu_valid,
+    input wire i_wbu_valid,
+    input wire [31:0] i_csr_wdata,
+    input wire [11:0] i_csr_addr,
+    input wire [31:0] i_mstatus_wdata,
+    input wire [31:0] i_mtvec_wdata,
+    input wire [31:0] i_mepc_wdata,
+    input wire [31:0] i_mcause_wdata,
+    output wire [31:0] o_mstatus,
+    output wire [31:0] o_mtvec,
+    output wire [31:0] o_mepc,
+    output wire [31:0] o_mcause,
     output reg [31:0] o_csr_rdata,
     output wire o_csr_valid,
     output wire o_csr_ready
@@ -51,19 +52,29 @@ always @(*) begin
     wen = 4'b0;
     o_csr_rdata = 32'b0;
     if(ecall_signal_reg == 1'b1) begin
-        wen = 4'b1111;
+        if (i_wbu_valid) begin
+            wen = 4'b1111;
+        end
         o_csr_rdata = 32'b0;
     end else if(csr_addr_reg == 12'h300) begin
-        wen[0] = 1'b1;
+        if (i_wbu_valid) begin
+            wen[0] = 1'b1;
+        end
         o_csr_rdata = o_mstatus;
     end else if(csr_addr_reg == 12'h305) begin
-        wen[1] = 1'b1;
+        if (i_wbu_valid) begin
+            wen[1] = 1'b1;
+        end
         o_csr_rdata = o_mtvec;
     end else if(csr_addr_reg == 12'h341) begin
-        wen[2] = 1'b1;
+        if (i_wbu_valid) begin
+            wen[2] = 1'b1;
+        end
         o_csr_rdata = o_mepc;
     end else if(csr_addr_reg == 12'h342) begin
-        wen[3] = 1'b1;
+        if (i_wbu_valid) begin
+            wen[3] = 1'b1;
+        end
         o_csr_rdata = o_mcause;
     end
 end
