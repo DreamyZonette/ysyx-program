@@ -120,9 +120,9 @@ module Itype (
         7'b1110011: begin  // ebreak
             if(i_inst == 32'b 00000000000100000000000001110011) begin
                 o_ebreak_signal = 1'b1;
-            end else if(i_inst == 32'b00000000000000000000000001110011) begin
+            end else if(i_inst == 32'h00000073) begin
                 o_ecall_signal = 1'b1;
-            end else if(i_inst == 32'b00110000001000000000000001110011) begin
+            end else if(i_inst == 32'h30200073) begin
                 o_mret_signal = 1'b1;
             end else begin
                 o_csrrw_signal = (fun1 == 3'b001) ? 1'b1 : 1'b0;
