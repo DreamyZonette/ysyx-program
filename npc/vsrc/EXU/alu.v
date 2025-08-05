@@ -95,6 +95,7 @@ module alu (
             o_data = i_csr_data | i_src1;
         end else if(i_ecall_signal == 1'b1) begin
             o_data = 0;
+            $strobe("alu: ecall_on");
         end else if(i_mret_signal == 1'b1) begin
             o_data = 0;
         end else if(i_ebreak_signal == 1'b1) begin

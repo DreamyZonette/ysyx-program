@@ -122,6 +122,7 @@ module Itype (
                 o_ebreak_signal = 1'b1;
             end else if(i_inst == 32'h00000073) begin
                 o_ecall_signal = 1'b1;
+                $strobe("idu_ecall_on");
             end else if(i_inst == 32'h30200073) begin
                 o_mret_signal = 1'b1;
             end else begin

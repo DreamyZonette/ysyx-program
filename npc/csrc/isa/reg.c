@@ -23,7 +23,6 @@ void isa_reg_display() {
 			count = 0;
 		}
 	}
-	printf("\n");
 	printf("\033[32mmstatus\033[0m: \033[33m%08x\033[0m\t", top->de_mstatus);
 	printf("\033[32mmcause\033[0m: \033[33m%08x\033[0m\t", top->de_mcause);
 	printf("\033[32mmepc\033[0m: \033[33m%08x\033[0m\t", top->de_mepc);
