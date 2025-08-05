@@ -46,7 +46,7 @@ int printf(const char *fmt, ...) {
         case 'd':
         {
           int num = va_arg(args, int);
-          char str[20];
+          char str[30];
           am_itoa(num, str);
 
           int len = 0;
@@ -77,7 +77,7 @@ int printf(const char *fmt, ...) {
         if (*(p+1) == 'd') {
           p ++;
           long num = va_arg(args, long);
-          char str[20];
+          char str[30];
           am_long_itoa(num, str);
 
           int len = 0;

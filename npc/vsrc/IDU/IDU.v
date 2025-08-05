@@ -61,7 +61,7 @@ module IDU (
 
     localparam IDLE = 2'b00;
     localparam DECODE = 2'b01;
-    localparam VALID = 2'b10;
+    // localparam VALID = 2'b10;
 
     reg [1:0] state;
     reg [1:0] next_state;
@@ -110,7 +110,7 @@ module IDU (
     reg [31:0] inst_reg;
 
     assign o_idu_ready = (state == IDLE);
-    assign o_idu_valid = (state == VALID);
+    assign o_idu_valid = (state == DECODE && decode_valid);
     assign o_offset = offset;
     assign o_imm = imm;
     assign o_shamt = shamt;
@@ -136,21 +136,21 @@ module IDU (
                     end
                 end
                 DECODE: begin
-                    if(decode_valid) begin
-                        next_state = VALID;
+                    if(decode_valid && i_lsu_ready && i_exu_ready) begin
+                        next_state = IDLE;
                     end
                     else begin
                         next_state = DECODE;
                     end
                 end
-                VALID: begin
-                    if (i_lsu_ready && i_exu_ready) begin
-                        next_state = IDLE;
-                    end
-                    else begin
-                        next_state = VALID;
-                    end
-                end 
+                // VALID: begin
+                //     if (i_lsu_ready && i_exu_ready) begin
+                //         next_state = IDLE;
+                //     end
+                //     else begin
+                //         next_state = VALID;
+                //     end
+                // end 
                 default: begin
                     next_state = IDLE;
                 end
@@ -238,72 +238,92 @@ module IDU (
         endcase
     end
 
-
-    always @(posedge i_sys_clk) begin
+    // 用时序发现会落后一个周期，所以还是用组合逻辑
+    always @(*) begin
         if(!i_sys_rst_n) begin
-            imm <= 32'b0;
-            offset <= 32'b0;
-            rs1 <= 5'b0;
-            rs2 <= 5'b0;
-            rd  <= 5'b0;
-            shamt  <= 6'b0;
-            csr_addr <= 12'b0;
+            imm = 32'b0;
+            offset = 32'b0;
+            rs1 = 5'b0;
+            rs2 = 5'b0;
+            rd  = 5'b0;
+            shamt  = 6'b0;
+            csr_addr = 12'b0;
         end
         else if (state == DECODE) begin
             if(Itype_signal == 1'b1) begin
-                rs1 <= I_rs1;
-                rs2 <= 5'b0;
-                rd  <= I_rd;
-                imm <= I_imm;
-                shamt <= I_shamt;
-                offset <= 32'b0;
-                csr_addr <= I_csr_addr;
+                rs1 = I_rs1;
+                rs2 = 5'b0;
+                rd  = I_rd;
+                imm = I_imm;
+                shamt = I_shamt;
+                offset = 32'b0;
+                csr_addr = I_csr_addr;
             end
             else if(Utype_signal == 1'b1) begin
-                rs1 <= 5'b0;
-                rs2 <= 5'b0;
-                rd  <= U_rd;
-                imm <= U_imm;
-                offset <= 32'b0;
-                shamt  <= 6'b0;
-                csr_addr <= 12'b0;
+                rs1 = 5'b0;
+                rs2 = 5'b0;
+                rd  = U_rd;
+                imm = U_imm;
+                offset = 32'b0;
+                shamt  = 6'b0;
+                csr_addr = 12'b0;
             end
             else if(Btype_signal == 1'b1) begin
-                offset <= B_offset;
-                rs1 <= B_rs1;
-                rs2 <= B_rs2;
-                rd  <= 5'b0;
-                shamt  <= 6'b0;
-                imm <= 32'b0;
-                csr_addr <= 12'b0;
+                offset = B_offset;
+                rs1 = B_rs1;
+                rs2 = B_rs2;
+                rd  = 5'b0;
+                shamt = 6'b0;
+                imm = 32'b0;
+                csr_addr = 12'b0;
             end
             else if(Jtype_signal == 1'b1) begin
-                offset  <= J_offset;
-                rs1 <= 5'b0;
-                rs2 <= 5'b0;
-                rd  <= J_rd;
-                shamt  <= 6'b0;
-                imm <= 32'b0;
-                csr_addr <= 12'b0;
+                offset  = J_offset;
+                rs1 = 5'b0;
+                rs2 = 5'b0;
+                rd  = J_rd;
+                shamt  = 6'b0;
+                imm = 32'b0;
+                csr_addr = 12'b0;
             end
             else if(Stype_signal == 1'b1) begin
-                imm  <= S_imm;
-                rs1  <= S_rs1;
-                rs2  <= S_rs2;
-                rd   <= 5'b0;
-                shamt  <= 6'b0;
-                offset <= 32'b0;
-                csr_addr <= 12'b0;
+                imm  = S_imm;
+                rs1  = S_rs1;
+                rs2  = S_rs2;
+                rd   = 5'b0;
+                shamt = 6'b0;
+                offset = 32'b0;
+                csr_addr = 12'b0;
             end
             else if(Rtype_signal == 1'b1) begin
-                imm <= 32'b0;
-                rs1  <= R_rs1;
-                rs2  <= R_rs2;
-                rd   <= R_rd;
-                shamt  <= 6'b0;
-                offset <= 32'b0;
-                csr_addr <= 12'b0;
+                imm = 32'b0;
+                rs1 = R_rs1;
+                rs2 = R_rs2;
+                rd  = R_rd;
+                shamt = 6'b0;
+                offset = 32'b0;
+                csr_addr = 12'b0;
             end
+            // 避免锁存器
+            else begin
+                imm = 32'b0;
+                rs1 = 5'b0;
+                rs2 = 5'b0;
+                rd  = 5'b0;
+                shamt = 6'b0;
+                offset = 32'b0;
+                csr_addr = 12'b0;
+            end
+        end
+        // 避免锁存器
+            else begin
+            imm = 32'b0;
+            rs1 = 5'b0;
+            rs2 = 5'b0;
+            rd  = 5'b0;
+            shamt = 6'b0;
+            offset = 32'b0;
+            csr_addr = 12'b0;
         end
     end
 
@@ -372,7 +392,7 @@ module IDU (
     .o_sw_signal(o_sw_signal),
     .o_sb_signal(o_sb_signal),
     .o_sh_signal(o_sh_signal),
-    .o_unknown_inst(S_unknown_inst),
+    .o_unknown_inst(S_unknown_inst)
     );
     Rtype Rtype_u(
     .i_inst(inst_reg),

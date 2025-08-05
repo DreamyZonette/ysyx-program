@@ -3,7 +3,7 @@
 #include <klib.h>
 
 static Context* (*user_handler)(Event, Context*) = NULL;
-//#define CONFIG_ETRACE
+#define CONFIG_ETRACE
 
 Context* __am_irq_handle(Context *c) {
 
@@ -15,7 +15,7 @@ Context* __am_irq_handle(Context *c) {
     switch (cause) {
       case 8: case 9: case 11:
         ev.event=EVENT_YIELD;
-        // c->mepc += 4;
+        c->mepc += 4;
           #ifdef CONFIG_ETRACE
           printf("Trap: EVENT_YIELD\n"); 
           #endif
