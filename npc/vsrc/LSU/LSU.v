@@ -11,7 +11,9 @@ module LSU(
     input i_sw_signal,
     input [31:0] i_src2,
     input [31:0] i_data,
+    /* verilator lint_off UNUSEDSIGNAL */
     input [3:0] i_wmask,//表示写哪些位
+    /* verilator lint_on UNUSEDSIGNAL */
     output            o_load_signal,
     output reg [31:0] o_rdata
 );
