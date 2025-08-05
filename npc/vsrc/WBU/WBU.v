@@ -101,7 +101,7 @@ module WBU(
                             next_state = MRET_WAIT;
                         end else if (i_ecall_signal == 1'b1) begin
                             next_state = ECALL_WAIT;
-                            $strobe("wbu:ecall_wait");
+                            // $strobe("wbu:ecall_wait");
                         end else begin
                             next_state = WBU_DONE;
                         end
@@ -182,7 +182,7 @@ module WBU(
                             end
                         end
                         else if (i_ecall_signal == 1'b1) begin
-                            $strobe("wbu:ecall_start:next_pc = 0x%08x, mtvec = 0x%08x, mepc = 0x%08x, mcause = 0x%08x", next_pc, i_mtvec_rdata, i_cur_pc + 4, 32'd11);
+                            // $strobe("wbu:ecall_start:next_pc = 0x%08x, mtvec = 0x%08x, mepc = 0x%08x, mcause = 0x%08x", next_pc, i_mtvec_rdata, i_cur_pc + 4, 32'd11);
                             next_pc <= i_mtvec_rdata;
                             mepc_wdata <= i_cur_pc + 4;
                             mcause_wdata <= 32'd11; // 没有实现特权级转换
