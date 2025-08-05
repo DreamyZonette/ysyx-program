@@ -1,6 +1,8 @@
 /* verilator lint_off DECLFILENAME */
 module rom (
+    /* verilator lint_off UNUSEDSIGNAL */
     input [31:0] addr,
+    /* verilator lint_on UNUSEDSIGNAL */
     output reg [31:0] rdata
 );
     wire [31:0] rom_out [255:0];
