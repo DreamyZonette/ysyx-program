@@ -71,7 +71,7 @@ always @(*) begin
 end
 
 // 实例化测试用
-wire [31:0] ram_rdata
+wire [31:0] ram_rdata;
 ram ram_u (
     .addr(i_data),
     .wdata(i_src2),
