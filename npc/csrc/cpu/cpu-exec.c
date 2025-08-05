@@ -55,7 +55,7 @@ static void trace_and_difftest() {
   #endif
 
   #if CONFIG_FTRACE
-  if (dut.pc != dut.next_pc){
+  //if (dut.pc != dut.next_pc){
   int is_call = 0;
   int is_ret = 0;
 
@@ -98,7 +98,7 @@ static void trace_and_difftest() {
     printf("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
     //log_write("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
   }
-}
+// }
   
   //return ret;
 #endif
