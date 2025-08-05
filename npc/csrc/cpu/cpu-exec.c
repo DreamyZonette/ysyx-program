@@ -55,6 +55,7 @@ static void trace_and_difftest() {
   #endif
 
   #if CONFIG_FTRACE
+  if (dut.pc != dut.next_pc){
   int is_call = 0;
   int is_ret = 0;
 
@@ -82,8 +83,8 @@ static void trace_and_difftest() {
     blank[count] = '\0';
     for(int i = 0; i < functab_count; i ++){
       if(functab[i].value == top->de_next_pc){
-        //log_write("0x%08x:%s call [%s@0x%08x]", top->de_pc, blank, functab[i].func_name, functab[i].value);
-        printf("0x%08x:%s call [%s@0x%08x]\n", top->de_pc, blank, functab[i].func_name, functab[i].value);
+        log_write("0x%08x:%s call [%s@0x%08x]", top->de_pc, blank, functab[i].func_name, functab[i].value);
+        //printf("0x%08x:%s call [%s@0x%08x]\n", top->de_pc, blank, functab[i].func_name, functab[i].value);
         break;
       }
     }
@@ -94,9 +95,10 @@ static void trace_and_difftest() {
       blank[j] = ' ';
     }
     blank[count] = '\0';
-    printf("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
-    //log_write("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
+    //printf("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
+    log_write("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
   }
+}
   
   //return ret;
 #endif
