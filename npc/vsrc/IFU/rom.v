@@ -15,9 +15,9 @@ module rom (
         .WIDTH(32),        // 设置寄存器宽度为32位
         .RESET_VAL(0)      // 复位值为0（可自定义）
         ) u_reg (
-        .clk(clk),
-        .sys_rst_n(sys_rst_n),
-        .i_data(i_data),   // 所有寄存器共享数据输入
+        .clk(1),
+        .sys_rst_n(1),
+        .i_data(0),   // 所有寄存器共享数据输入
         .o_data(rom_out[i]),// 独立输出到总线数组
         .wen(1'b0)   // 独立的地址译码写使能
         );
