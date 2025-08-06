@@ -325,7 +325,7 @@ module IDU (
     .i_rd(rd),
     .i_data(wdata),
     .o_src1(o_src1),
-    .o_src2(o_src2)//,
+    .o_src2(o_src2),
     .o_reg_data(o_reg_data)
     );
 
