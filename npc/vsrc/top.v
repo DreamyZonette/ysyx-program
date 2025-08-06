@@ -190,8 +190,8 @@
     .o_csrrw_signal(csrrw_signal),
     .o_ecall_signal(ecall_signal),
     .o_mret_signal(mret_signal),
-    .o_halt_signal(IDU_halt_signal),
-    .o_reg_data(reg_data)
+    .o_halt_signal(IDU_halt_signal)// ,
+    // .o_reg_data(reg_data)
     );
 
     EXU EXU_u (

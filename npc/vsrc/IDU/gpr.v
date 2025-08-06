@@ -6,8 +6,8 @@ module gpr  (
     input  [4:0] i_rd,
     input  [31:0] i_data,
     output [31:0] o_src1,
-    output [31:0] o_src2,
-    output [31:0] o_reg_data [0:31]
+    output [31:0] o_src2//,
+    //output [31:0] o_reg_data [0:31]
     );
     
     /* verilator lint_off UNUSEDSIGNAL */
@@ -15,7 +15,7 @@ module gpr  (
     /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] reg_file [0:31]; // 32 个寄存器
 
-    assign o_reg_data = reg_file;
+    //assign o_reg_data = reg_file;
     assign wen = (i_rd != 5'b0)? (32'b1 << i_rd) : 32'b0; // 写使能信号
 
     // 生成 32 个寄存器
