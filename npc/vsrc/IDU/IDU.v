@@ -60,8 +60,8 @@ module IDU (
     output  o_csrrw_signal,
     output  o_ecall_signal,
     output  o_mret_signal,
-    output  o_halt_signal//,
-    //output  [31:0] o_reg_data [0:31]
+    output  o_halt_signal,
+    output  [31:0] o_reg_data [0:31]
     );
 
     wire [6:0]  opcode;
@@ -326,7 +326,7 @@ module IDU (
     .i_data(wdata),
     .o_src1(o_src1),
     .o_src2(o_src2)//,
-    //.o_reg_data(o_reg_data)
+    .o_reg_data(o_reg_data)
     );
 
     endmodule

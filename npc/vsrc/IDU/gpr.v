@@ -6,8 +6,8 @@ module gpr  (
     input  [4:0] i_rd,
     input  [31:0] i_data,
     output [31:0] o_src1,
-    output [31:0] o_src2//,
-    //output [31:0] o_reg_data [0:31]
+    output [31:0] o_src2,
+    output [31:0] o_reg_data [0:31]
     );
     
     /* verilator lint_off UNUSEDSIGNAL */
