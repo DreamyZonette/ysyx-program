@@ -47,8 +47,6 @@
     /* verilator lint_off UNUSEDSIGNAL */
     wire csr_ready;
     /* verilator lint_on UNUSEDSIGNAL */
-    wire load_valid; // 存储成功信号
-    wire store_valid; // 存储成功信号
 
     // 译码指令信号
     wire addi_signal;
