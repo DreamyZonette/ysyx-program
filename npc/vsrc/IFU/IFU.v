@@ -87,7 +87,7 @@ always @(posedge i_sys_clk) begin
     end
 end
 
-sram  #(1) sram_u (
+sram  #(10) sram_u (
     .i_sys_clk(i_sys_clk),
     .i_sys_rst_n(i_sys_rst_n),
     .i_addr(i_pc), // address
