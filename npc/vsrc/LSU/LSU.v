@@ -218,7 +218,7 @@ ram # (1)ram_u
     .i_waddr(addr_latched), 
     .i_rvalid(rvalid), 
     .i_wen(wen), 
-    .i_wmask, 
+    .i_wmask(wmask), 
     .i_wdata(data_latched), 
     .o_rdata(rdata),
     .o_ram_valid(ram_valid)
