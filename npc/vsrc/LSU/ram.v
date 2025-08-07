@@ -84,7 +84,7 @@ always @(posedge i_sys_clk) begin
                 else begin
                     count <= count + 1;
                     if(count == DELAY - 1) begin
-                    sram_data <= pmem_read(i_addr, 4);
+                    sram_data <= pmem_read(i_raddr, 4);
                     end
                 end
             end
@@ -95,7 +95,7 @@ always @(posedge i_sys_clk) begin
                 else begin
                     count <= count + 1;
                     if(count == DELAY - 1) begin
-                    pmem_write(i_addr, i_wmask, i_wdata);
+                    pmem_write(i_waddr, i_wmask, i_wdata);
                     end
                 end
             end
