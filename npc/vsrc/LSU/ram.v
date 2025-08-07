@@ -95,7 +95,9 @@ always @(posedge i_sys_clk) begin
                 else begin
                     count <= count + 1;
                     if(count == DELAY - 1) begin
+                    /* verilator lint_off WIDTHEXPAND */
                     pmem_write(i_waddr, i_wmask, i_wdata);
+                    /* verilator lint_on WIDTHEXPAND */
                     end
                 end
             end
