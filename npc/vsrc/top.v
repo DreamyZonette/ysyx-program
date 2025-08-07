@@ -49,9 +49,6 @@
     /* verilator lint_on UNUSEDSIGNAL */
     wire load_valid; // 存储成功信号
     wire store_valid; // 存储成功信号
-    // 没有实现存储器，所以恒为1
-    assign load_valid = 1'b1;
-    assign store_valid = 1'b1;
 
     // 译码指令信号
     wire addi_signal;
@@ -321,8 +318,6 @@
     .i_exu_valid(exu_valid),
     .i_idu_valid(idu_valid),
     .i_wbu_ready(wbu_ready),
-    .i_load_valid(load_valid),
-    .i_store_valid(store_valid),
     .i_src2(src2),
     .i_data(exu_data),
     .o_load_signal(load_signal),
