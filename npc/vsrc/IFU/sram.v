@@ -57,11 +57,10 @@ always @(posedge i_sys_clk) begin
     else begin
         case (state)
             IDLE: begin
-                // count <= 0;
-                if (i_read_signal) begin
-                    sram_data <= pmem_read(i_addr, 4);
-                    count <= count + 1;  
-                end
+                count <= 0;
+                // if (i_read_signal) begin
+                //     count <= count + 1;  
+                // end
             end
             READ: begin
                 if(count >= DELAY) begin
@@ -69,6 +68,9 @@ always @(posedge i_sys_clk) begin
                 end
                 else begin
                     count <= count + 1;
+                    if(count == 0) begin
+                    sram_data <= pmem_read(i_addr, 4);
+                    end
                 end
             end
             default: begin

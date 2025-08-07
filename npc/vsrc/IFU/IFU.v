@@ -8,7 +8,7 @@ module IFU(
     output wire o_ifu_ready,
     output wire [31:0] o_instruction
 );
-import "DPI-C" function int pmem_read(input int raddr, input int len);
+// import "DPI-C" function int pmem_read(input int raddr, input int len);
 
 localparam IDLE = 1'b0;
 localparam WAIT_READY = 1'b1;
@@ -34,7 +34,8 @@ always @(*) begin
         case (state)
             IDLE: begin
                 // 只有没有待处理指令时才接受新请求
-                if(i_pc_valid && sram_valid) begin
+                // if(i_pc_valid && sram_valid) begin
+                if(sram_valid) begin
                     next_state = WAIT_READY;
                 end
                 else begin
@@ -65,7 +66,7 @@ always @(posedge i_sys_clk) begin
             IDLE: begin
                 instruction <= instruction;
                 
-                if(i_pc_valid) begin
+                if(sram_valid) begin
                     instruction <= sram_data; 
                 end
             end
