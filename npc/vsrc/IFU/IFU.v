@@ -13,7 +13,7 @@ module IFU(
 localparam IDLE = 1'b0;
 localparam WAIT_READY = 1'b1;
 
-reg [31:0] instruction;
+// reg [31:0] instruction;
 reg state;
 reg next_state;
 wire read_signal;
@@ -21,7 +21,8 @@ wire sram_valid;
 wire [31:0] sram_data;
 
 assign o_ifu_valid = (state == WAIT_READY) && sram_valid;
-assign o_instruction = instruction; 
+// assign o_instruction = instruction; 
+assign o_instruction = sram_data; 
 assign o_ifu_ready = (state == IDLE) || 
                      (state == WAIT_READY && i_idu_ready); 
 assign read_signal = (state == IDLE) && i_pc_valid;
@@ -57,24 +58,25 @@ always @(*) begin
 end
 
 // 状态机状态处理
-always @(posedge i_sys_clk) begin
-    if(!i_sys_rst_n) begin
-        instruction <= 32'b0;
-    end
-    else begin
-        case (state)
-            IDLE: begin
-                instruction <= instruction;
+// always @(posedge i_sys_clk) begin
+//     if(!i_sys_rst_n) begin
+//         instruction <= 32'b0;
+//     end
+//     else begin
+//         case (state)
+//             IDLE: begin
+//                 instruction <= instruction;
                 
-                if(sram_valid) begin
-                    instruction <= sram_data; 
-                end
-            end
-            WAIT_READY: begin end
-            default: begin end
-        endcase 
-    end
-end
+//             end
+//             WAIT_READY: begin 
+//                 if(sram_valid) begin
+//                     instruction <= sram_data; 
+//                 end
+//             end
+//             default: begin end
+//         endcase 
+//     end
+// end
 
 // 状态机状态更新
 always @(posedge i_sys_clk) begin
