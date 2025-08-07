@@ -24,7 +24,7 @@ assign o_ifu_valid = (state == WAIT_READY) && sram_valid;
 // assign o_instruction = instruction; 
 assign o_instruction = sram_data; 
 assign o_ifu_ready = (state == IDLE) || 
-                     (state == WAIT_READY && i_idu_ready); 
+                     (state == WAIT_READY && i_idu_ready && sram_valid); 
 assign read_signal = (state == IDLE) && i_pc_valid;
 
 // 状态机转移关系
@@ -87,7 +87,8 @@ always @(posedge i_sys_clk) begin
     end
 end
 
-sram  #(10) sram_u (
+sram  #(1) // 延时周期
+sram_u (
     .i_sys_clk(i_sys_clk),
     .i_sys_rst_n(i_sys_rst_n),
     .i_addr(i_pc), // address
