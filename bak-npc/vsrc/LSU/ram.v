@@ -2,13 +2,13 @@
 module ram # (parameter DELAY = 1)(
     input wire i_sys_clk,
     input wire i_sys_rst_n,
-    input wire [31:0] i_raddr, 
-    input wire [31:0] i_waddr, 
-    input wire i_rvalid, 
-    input wire i_wen, 
-    input wire [3:0]i_wmask, 
-    input wire [31:0]i_wdata, 
-    output wire [31:0] o_rdata,
+    input wire [31:0] i_raddr, // read address
+    input wire [31:0] i_waddr, // write address
+    input wire i_rvalid, // store signal
+    input wire i_wen, // load signal
+    input wire [3:0]i_wmask, // write mask
+    input wire [31:0]i_wdata, // write data
+    output wire [31:0] o_rdata,// read data
     output wire o_ram_valid
 );
 
