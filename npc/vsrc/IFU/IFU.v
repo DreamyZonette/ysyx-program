@@ -20,7 +20,7 @@ wire read_signal;
 wire sram_valid;
 wire [31:0] sram_data;
 
-assign o_ifu_valid = (state == WAIT_READY) ;
+assign o_ifu_valid = (state == WAIT_READY) && sram_valid;
 assign o_instruction = instruction; 
 assign o_ifu_ready = (state == IDLE) || 
                      (state == WAIT_READY && i_idu_ready); 
@@ -34,8 +34,8 @@ always @(*) begin
         case (state)
             IDLE: begin
                 // 只有没有待处理指令时才接受新请求
-                // if(i_pc_valid && sram_valid) begin
-                if(sram_valid) begin
+                if(i_pc_valid) begin
+                // if(sram_valid) begin
                     next_state = WAIT_READY;
                 end
                 else begin
@@ -43,7 +43,7 @@ always @(*) begin
                 end
             end
             WAIT_READY: begin
-                if(i_idu_ready) begin
+                if(i_idu_ready && sram_valid) begin
                     next_state = IDLE;
                 end else begin
                     next_state = WAIT_READY;
