@@ -203,7 +203,7 @@ always @(posedge i_sys_clk) begin
 end
 
 
-sram # (20)ram_u
+sram # (5)ram_u
 (
     .i_sys_clk(i_sys_clk),
     .i_sys_rst_n(i_sys_rst_n),
