@@ -150,15 +150,15 @@ always @(posedge i_sys_clk) begin
   end
 end
 
-reg [3:0] lsfr_data;
+reg [4:0] lsfr_data;
 reg [11:0] delay_count;
 always @(posedge i_sys_clk) begin
     if (!i_sys_rst_n) begin
-        lsfr_data <= 4'b1111;
+        lsfr_data <= 5'b11111;
         delay_count <= DELAY;
     end
     else if (state == IDLE)begin
-        lsfr_data <= {lsfr_data[2:0], lsfr_data[3] ^ lsfr_data[1]};
+        lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
         if (i_arvalid || i_awvalid && i_wvalid) begin
             /* verilator lint_off WIDTHEXPAND */
             delay_count <= lsfr_data + DELAY;
@@ -167,7 +167,7 @@ always @(posedge i_sys_clk) begin
         end
     end
     else begin
-        lsfr_data <= {lsfr_data[2:0], lsfr_data[3] ^ lsfr_data[1]};
+        lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
     end
 end
 
