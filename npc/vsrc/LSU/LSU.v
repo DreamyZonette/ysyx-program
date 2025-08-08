@@ -60,9 +60,9 @@ assign o_load_signal = load_signal;
 assign o_lsu_ready = (state == IDLE);
 assign o_lsu_valid = (state == LOAD_DONE);
 
-assign axi_arvalid = (state == LOAD;
+assign axi_arvalid = (state == LOAD);
 assign axi_awvalid = (state == STORE);
-assign axi_wvalid = (state == STORE )
+assign axi_wvalid = (state == STORE);
 assign axi_rready = (state == LOAD) || (state == LOAD_DONE);
 assign axi_bready = (state == STORE);
 
