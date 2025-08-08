@@ -150,23 +150,26 @@ always @(posedge i_sys_clk) begin
   end
 end
 
-// reg [4:0] lsfr_data;
-// reg [11:0] delay_count;
-// always @(posedge i_sys_clk) begin
-//     if (!i_sys_rst_n) begin
-//         lsfr_data <= 5'b11111;
-//         delay_count <= DELAY;
-//     end
-//     else if (state == IDLE)begin
-//         lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
-//             /* verilator lint_off WIDTHEXPAND */
-//         delay_count <= lsfr_data + DELAY;
-//             // $strobe("delay_count = %d", delay_count);
-//             /* verilator lint_on WIDTHEXPAND */
-//     end
-//     else begin
-//         lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
-//     end
-// end
+reg [4:0] lsfr_data;
+reg [11:0] delay_count;
+always @(posedge i_sys_clk) begin
+    if (!i_sys_rst_n) begin
+        lsfr_data <= 5'b11111;
+        delay_count <= DELAY;
+    end
+    else if (state == IDLE)begin
+        lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
+            /* verilator lint_off WIDTHEXPAND */
+        delay_count <= lsfr_data + DELAY;
+            /* verilator lint_on WIDTHEXPAND */
+    end
+    else begin
+        lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
+    end
+    if (state == IDLE) $strobe("IDLE: delay_count = %d", delay_count);
+    if (state == READ) $strobe("READ: delay_count = %d", delay_count);
+    if (state == WRITE) $strobe("WRITE: delay_count = %d", delay_count);
+    if (state == RESP) $strobe("RESP: delay_count = %d", delay_count);
+end
 
 endmodule
