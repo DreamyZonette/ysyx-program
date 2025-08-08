@@ -162,6 +162,7 @@ always @(posedge i_sys_clk) begin
         if (i_arvalid || i_awvalid && i_wvalid) begin
             /* verilator lint_off WIDTHEXPAND */
             delay_count <= lsfr_data + DELAY;
+            $strobe("delay_count = %d", delay_count);
             /* verilator lint_on WIDTHEXPAND */
         end
     end
