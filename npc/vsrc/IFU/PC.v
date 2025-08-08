@@ -12,8 +12,8 @@ module PC #(PC_LEN = 32)(
     reg [PC_LEN-1:0] pc;
     reg pc_valid;
 
-    // assign o_pc_valid = pc_valid;
-    assign o_pc_valid = i_wbu_valid && i_ifu_ready;
+    assign o_pc_valid = pc_valid;
+    // assign o_pc_valid = i_wbu_valid && i_ifu_ready;
     assign o_pc = pc;
     assign o_pc_ready = i_ifu_ready;
     
