@@ -82,8 +82,8 @@ always @(posedge i_sys_clk) begin
                 state <= READ;
                 count <= count + 1;
                 $strobe("IDLE: delay_count = %d", delay_count);
-                if(count == DELAY-1) begin
-                // if(count == delay_count-1) begin
+                // if(count == DELAY-1) begin
+                if(count == delay_count-1) begin
                     sram_data <= pmem_read(i_araddr, 4);
                     rvalid <= 1;
                     rresp <= 2'b00; // 认为每一次都会成功
@@ -96,8 +96,8 @@ always @(posedge i_sys_clk) begin
                 state <= WRITE;
                 count <= count + 1;
                 $strobe("IDLE: delay_count = %d", delay_count);
-                if(count == DELAY-1) begin
-                // if(count == delay_count-1) begin
+                // if(count == DELAY-1) begin
+                if(count == delay_count-1) begin
                 /* verilator lint_off WIDTHEXPAND */
                     pmem_write(i_awaddr, i_wstrb, i_wdata);
                 /* verilator lint_on WIDTHEXPAND */
@@ -110,14 +110,14 @@ always @(posedge i_sys_clk) begin
 
         READ: begin
             $strobe("READ: delay_count = %d", delay_count);
-            if(count == DELAY-1) begin
-            // if(count == delay_count-1) begin
+            // if(count == DELAY-1) begin
+            if(count == delay_count-1) begin
                 sram_data <= pmem_read(araddr, 4);
                 rvalid <= 1;
                 rresp <= 2'b00; // 认为每一次都会成功
             end
-            if(count >= DELAY && i_rready) begin // 握手完成
-            // if(count >= delay_count && i_rready) begin // 握手完成
+            // if(count >= DELAY && i_rready) begin // 握手完成
+            if(count >= delay_count && i_rready) begin // 握手完成
                 state <= IDLE;
                 rvalid <= 0;
                 count <= 0;
@@ -126,8 +126,8 @@ always @(posedge i_sys_clk) begin
             end
 
             WRITE: begin
-            if(count == DELAY-1) begin
-            // if(count == delay_count-1) begin
+            // if(count == DELAY-1) begin
+            if(count == delay_count-1) begin
                 /* verilator lint_off WIDTHEXPAND */
                 pmem_write(awaddr, wstrb, wdata);
                 /* verilator lint_on WIDTHEXPAND */
@@ -135,12 +135,10 @@ always @(posedge i_sys_clk) begin
                 bresp <= 2'b00; // 认为每一次都会成功
                 state <= RESP;
             end
-            if(count >= DELAY) state <= RESP;
-            // if(count >= delay_count) state <= RESP;
+            // if(count >= DELAY) state <= RESP;
+            if(count >= delay_count) state <= RESP;
             else count <= count + 1;
             end
-            // if(count < DELAY) count <= count + 1;
-            // end
 
         RESP: begin
             if(i_bready) begin // 等待响应握手
