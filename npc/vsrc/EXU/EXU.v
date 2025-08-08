@@ -186,11 +186,11 @@ always @(*) begin
         o_B_jump_signal = 1'b0;
     end
     else begin
-        o_data <= 32'h0;
-        o_B_jump_signal <= 1'b0;
+        o_data = 32'h0;
+        o_B_jump_signal = 1'b0;
         if (alu_done) begin
-            o_data <= data;
-            o_B_jump_signal <= B_jump_signal;
+            o_data = data;
+            o_B_jump_signal = B_jump_signal;
         end
     end
 end
