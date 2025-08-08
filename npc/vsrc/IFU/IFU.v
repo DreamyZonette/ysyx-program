@@ -87,8 +87,8 @@ always @(posedge i_sys_clk) begin
     end
 end
 
-sram  #(1) // 延时周期
-sram_u (
+rom  #(1) // 延时周期
+rom_u (
     .i_sys_clk(i_sys_clk),
     .i_sys_rst_n(i_sys_rst_n),
     .i_addr(i_pc), // address
