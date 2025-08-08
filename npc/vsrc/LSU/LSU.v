@@ -91,7 +91,9 @@ always @(*) begin
                     if (i_wbu_ready) begin
                         next_state = IDLE;
                     end
-                   next_state = LOAD_DONE; 
+                    else begin
+                        next_state = LOAD_DONE; 
+                    end
                 end
                 else begin
                     next_state = LOAD;
