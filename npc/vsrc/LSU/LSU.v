@@ -32,11 +32,13 @@ reg [31:0] axi_araddr; // 锁存地址
 reg [31:0] axi_awaddr; // 锁存地址
 reg [31:0] axi_wdata; // 锁存数据
 reg [3:0] axi_wstrb;
+/* verilator lint_off UNUSEDSIGNAL */
 reg write_wrong;
 reg read_wrong;
+/* verilator lint_on UNUSEDSIGNAL */
 
 wire axi_arvalid;
-wire wen;
+// wire wen;
 wire [31:0] axi_rdata;
 wire load_signal;
 wire store_signal;
