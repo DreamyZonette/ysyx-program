@@ -81,6 +81,7 @@ always @(posedge i_sys_clk) begin
                 araddr <= i_araddr;
                 state <= READ;
                 count <= count + 1;
+                $strobe("IDLE: delay_count = %d", delay_count);
                 if(count == DELAY-1) begin
                 // if(count == delay_count-1) begin
                     sram_data <= pmem_read(i_araddr, 4);
@@ -94,6 +95,7 @@ always @(posedge i_sys_clk) begin
                 wstrb <= i_wstrb;
                 state <= WRITE;
                 count <= count + 1;
+                $strobe("IDLE: delay_count = %d", delay_count);
                 if(count == DELAY-1) begin
                 // if(count == delay_count-1) begin
                 /* verilator lint_off WIDTHEXPAND */
@@ -107,6 +109,7 @@ always @(posedge i_sys_clk) begin
         end
 
         READ: begin
+            $strobe("READ: delay_count = %d", delay_count);
             if(count == DELAY-1) begin
             // if(count == delay_count-1) begin
                 sram_data <= pmem_read(araddr, 4);
@@ -162,15 +165,16 @@ always @(posedge i_sys_clk) begin
             /* verilator lint_off WIDTHEXPAND */
         delay_count <= lsfr_data + DELAY;
             /* verilator lint_on WIDTHEXPAND */
-        $strobe("IDLE: delay_count = %d", delay_count);
+        // $strobe("IDLE: delay_count = %d", delay_count);
     end
     else begin
         lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
+        delay_count <= delay_count;
     end
     
-    if (state == READ) $strobe("READ: delay_count = %d", delay_count);
-    if (state == WRITE) $strobe("WRITE: delay_count = %d", delay_count);
-    if (state == RESP) $strobe("RESP: delay_count = %d", delay_count);
+    // if (state == READ) $strobe("READ: delay_count = %d", delay_count);
+    // if (state == WRITE) $strobe("WRITE: delay_count = %d", delay_count);
+    // if (state == RESP) $strobe("RESP: delay_count = %d", delay_count);
 end
 
 endmodule
