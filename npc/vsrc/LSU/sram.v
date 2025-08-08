@@ -82,7 +82,7 @@ always @(posedge i_sys_clk) begin
                 state <= READ;
                 count <= count + 1;
                 if(count == DELAY-1) begin
-                    sram_data <= pmem_read(araddr, 4);
+                    sram_data <= pmem_read(i_araddr, 4);
                     rvalid <= 1;
                     rresp <= 2'b00; // 认为每一次都会成功
                 end
@@ -95,7 +95,7 @@ always @(posedge i_sys_clk) begin
                 count <= count + 1;
                 if(count == DELAY-1) begin
                 /* verilator lint_off WIDTHEXPAND */
-                    pmem_write(awaddr, wstrb, wdata);
+                    pmem_write(i_awaddr, i_wstrb, i_wdata);
                     /* verilator lint_on WIDTHEXPAND */
                     bvalid <= 1; // 触发B响应
                     bresp <= 2'b00; // 认为每一次都会成功
@@ -129,7 +129,7 @@ always @(posedge i_sys_clk) begin
             end
             if(count >= DELAY) state <= RESP;
             else count <= count + 1;
-        end
+            end
             // if(count < DELAY) count <= count + 1;
             // end
 
