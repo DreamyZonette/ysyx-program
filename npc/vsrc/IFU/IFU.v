@@ -93,7 +93,7 @@ end
 //     .o_sram_valid(sram_valid)
 // );
 
-sram # (10)rom_u
+sram # (20)rom_u
 (
     .i_sys_clk(i_sys_clk),
     .i_sys_rst_n(i_sys_rst_n),
