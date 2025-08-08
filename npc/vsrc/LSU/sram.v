@@ -81,12 +81,12 @@ always @(posedge i_sys_clk) begin
                 araddr <= i_araddr;
                 state <= READ;
                 count <= count + 1;
-                // if(count == DELAY-1) begin
-                if(count == delay_count-1) begin
-                    sram_data <= pmem_read(i_araddr, 4);
-                    rvalid <= 1;
-                    rresp <= 2'b00; // 认为每一次都会成功
-                end
+                // // if(count == DELAY-1) begin
+                // if(count == delay_count-1) begin
+                //     sram_data <= pmem_read(i_araddr, 4);
+                //     rvalid <= 1;
+                //     rresp <= 2'b00; // 认为每一次都会成功
+                // end
             end 
             else if(i_awvalid && i_wvalid) begin // 关键修改：同步检测双通道
                 awaddr <= i_awaddr;
@@ -95,14 +95,14 @@ always @(posedge i_sys_clk) begin
                 state <= WRITE;
                 count <= count + 1;
                 // if(count == DELAY-1) begin
-                if(count == delay_count-1) begin
-                /* verilator lint_off WIDTHEXPAND */
-                    pmem_write(i_awaddr, i_wstrb, i_wdata);
-                /* verilator lint_on WIDTHEXPAND */
-                    bvalid <= 1; // 触发B响应
-                    bresp <= 2'b00; // 认为每一次都会成功
-                    state <= RESP;
-                end
+                // if(count == delay_count-1) begin
+                // /* verilator lint_off WIDTHEXPAND */
+                //     pmem_write(i_awaddr, i_wstrb, i_wdata);
+                // /* verilator lint_on WIDTHEXPAND */
+                //     bvalid <= 1; // 触发B响应
+                //     bresp <= 2'b00; // 认为每一次都会成功
+                //     state <= RESP;
+                // end
             end
         end
 
@@ -155,7 +155,7 @@ reg [11:0] delay_count;
 always @(posedge i_sys_clk) begin
     if (!i_sys_rst_n) begin
         lsfr_data <= 4'b1111;
-        delay_count <= 1;
+        delay_count <= DELAY;
     end
     else if (state == IDLE)begin
         lsfr_data <= {lsfr_data[2:0], lsfr_data[3] ^ lsfr_data[1]};
