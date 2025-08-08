@@ -27,9 +27,9 @@ module PC #(PC_LEN = 32)(
                 pc <= i_next_pc;
                 // pc_valid <= 1;
             end
-            else if (pc_valid && !i_ifu_ready) begin
-                // pc_valid <= 0;
-            end
+            // else if (pc_valid && !i_ifu_ready) begin
+            //     // pc_valid <= 0;
+            // end
             else begin
                 // pc_valid <= 0;
             end
