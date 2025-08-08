@@ -55,8 +55,8 @@ module EXU(
     input wire i_lsu_ready,
     output wire o_exu_valid,
     output wire o_exu_ready,
-    output reg o_B_jump_signal,
-    output reg [31:0] o_data
+    output wire o_B_jump_signal,
+    output wire [31:0] o_data
 
 );
 
@@ -150,6 +150,9 @@ always @(*) begin
 end
 
 // 状态执行逻辑
+
+assign o_B_jump_signal = B_jump_signal;
+assign o_data = data;
 // always @(posedge i_sys_clk) begin
 //     if (!i_sys_rst_n) begin
 //         o_data <= 32'h0;
@@ -180,20 +183,20 @@ end
 //     end               
 // end
 
-always @(*) begin
-    if (!i_sys_rst_n) begin
-        o_data = 32'h0;
-        o_B_jump_signal = 1'b0;
-    end
-    else begin
-        o_data = 32'h0;
-        o_B_jump_signal = 1'b0;
-        if (o_exu_valid) begin
-            o_data = data;
-            o_B_jump_signal = B_jump_signal;
-        end
-    end
-end
+// always @(*) begin
+//     if (!i_sys_rst_n) begin
+//         o_data = 32'h0;
+//         o_B_jump_signal = 1'b0;
+//     end
+//     else begin
+//         o_data = 32'h0;
+//         o_B_jump_signal = 1'b0;
+//         if (o_exu_valid) begin
+//             o_data = data;
+//             o_B_jump_signal = B_jump_signal;
+//         end
+//     end
+// end
 
 // 状态更新逻辑
 always @(posedge i_sys_clk) begin
