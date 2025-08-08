@@ -10,7 +10,7 @@ module PC #(PC_LEN = 32)(
     output wire [PC_LEN-1:0] o_pc
     );
     reg [PC_LEN-1:0] pc;
-    // reg pc_valid;
+    reg pc_valid;
 
     // assign o_pc_valid = pc_valid;
     assign o_pc_valid = i_wbu_valid && i_ifu_ready;
@@ -20,18 +20,18 @@ module PC #(PC_LEN = 32)(
     always @(posedge i_sys_clk) begin
         if (!i_sys_rst_n)begin
             pc <= 32'h80000000;
-            // pc_valid <= 1;
+            pc_valid <= 1;
         end 
         else begin
             if (i_wbu_valid && i_ifu_ready) begin
                 pc <= i_next_pc;
-                // pc_valid <= 1;
+                pc_valid <= 1;
             end
-            // else if (pc_valid && !i_ifu_ready) begin
-            //     // pc_valid <= 0;
-            // end
+            else if (pc_valid && !i_ifu_ready) begin
+                pc_valid <= 0;
+            end
             else begin
-                // pc_valid <= 0;
+                pc_valid <= 0;
             end
         end
     end
