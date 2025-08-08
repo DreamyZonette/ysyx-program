@@ -82,7 +82,7 @@ always @(posedge i_sys_clk) begin
                 state <= READ;
                 count <= count + 1;
                 // if(count == DELAY-1) begin
-                if(count == delay_count-1) begin
+                if(count == delay_count+DELAY-1) begin
                     sram_data <= pmem_read(i_araddr, 4);
                     rvalid <= 1;
                     rresp <= 2'b00; // 认为每一次都会成功
@@ -95,7 +95,7 @@ always @(posedge i_sys_clk) begin
                 state <= WRITE;
                 count <= count + 1;
                 // if(count == DELAY-1) begin
-                if(count == delay_count-1) begin
+                if(count == delay_count+DELAY-1) begin
                 /* verilator lint_off WIDTHEXPAND */
                     pmem_write(i_awaddr, i_wstrb, i_wdata);
                     /* verilator lint_on WIDTHEXPAND */
@@ -108,13 +108,13 @@ always @(posedge i_sys_clk) begin
 
         READ: begin
             // if(count == DELAY-1) begin
-            if(count == delay_count-1) begin
+            if(count == delay_count+DELAY-1) begin
                 sram_data <= pmem_read(araddr, 4);
                 rvalid <= 1;
                 rresp <= 2'b00; // 认为每一次都会成功
             end
             // if(count >= DELAY && i_rready) begin // 握手完成
-            if(count >= delay_count && i_rready) begin // 握手完成
+            if(count >= delay_count+DELAY && i_rready) begin // 握手完成
                 state <= IDLE;
                 rvalid <= 0;
                 count <= 0;
@@ -124,7 +124,7 @@ always @(posedge i_sys_clk) begin
 
             WRITE: begin
             // if(count == DELAY-1) begin
-            if(count == delay_count-1) begin
+            if(count == delay_count+DELAY-1) begin
                 /* verilator lint_off WIDTHEXPAND */
                 pmem_write(awaddr, wstrb, wdata);
                 /* verilator lint_on WIDTHEXPAND */
@@ -133,7 +133,7 @@ always @(posedge i_sys_clk) begin
                 state <= RESP;
             end
             // if(count >= DELAY) state <= RESP;
-            if(count >= delay_count) state <= RESP;
+            if(count >= delay_count+DELAY) state <= RESP;
             else count <= count + 1;
             end
             // if(count < DELAY) count <= count + 1;
@@ -151,7 +151,7 @@ always @(posedge i_sys_clk) begin
 end
 
 reg [3:0] lsfr_data;
-reg [3:0] delay_count;
+reg [11:0] delay_count;
 always @(posedge i_sys_clk) begin
     if (!i_sys_rst_n) begin
         lsfr_data <= 4'b1111;
@@ -160,7 +160,9 @@ always @(posedge i_sys_clk) begin
     else if (state == IDLE)begin
         lsfr_data <= {lsfr_data[2:0], lsfr_data[3] ^ lsfr_data[1]};
         if (i_arvalid || i_awvalid && i_wvalid) begin
+            /* verilator lint_off WIDTHEXPAND */
             delay_count <= lsfr_data + 1;
+            /* verilator lint_on WIDTHEXPAND */
         end
     end
     else begin
