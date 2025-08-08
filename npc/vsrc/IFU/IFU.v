@@ -31,11 +31,10 @@ wire [1:0] axi_bresp;
 wire axi_wready;
 wire read_wrong;
 
-assign o_ifu_valid = (state == WAIT_READY) && sram_valid;
-// assign o_instruction = instruction; 
+assign o_ifu_valid = (state == WAIT_READY) && axi_rvalid;
 assign o_instruction = axi_rdata; 
 assign o_ifu_ready = (state == IDLE) || 
-                     (state == WAIT_READY && i_idu_ready && sram_valid); 
+                     (state == WAIT_READY && i_idu_ready && axi_rvalid); 
 assign axi_arvalid = (state == IDLE) && i_pc_valid;
 assign axi_rready = (state == WAIT_READY) && i_idu_ready;
 assign axi_araddr = i_pc;
