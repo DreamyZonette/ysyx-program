@@ -160,19 +160,21 @@ always @(posedge i_sys_clk) begin
     end
     else if (state == IDLE)begin
         lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
-            /* verilator lint_off WIDTHEXPAND */
+        if(lsfr_data == 5'b00000) begin
+            lsfr_data <= 5'b11111; // 避免全0
+        end
+        /* verilator lint_off WIDTHEXPAND */
         delay_count <= lsfr_data + DELAY;
-            /* verilator lint_on WIDTHEXPAND */
-        // $strobe("IDLE: delay_count = %d", delay_count);
+        /* verilator lint_on WIDTHEXPAND */
+        if(i_arvalid || i_awvalid || i_wvalid) begin
+            delay_count <= delay_count;
+        end
     end
     else begin
         lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
         delay_count <= delay_count;
     end
     
-    // if (state == READ) $strobe("READ: delay_count = %d", delay_count);
-    // if (state == WRITE) $strobe("WRITE: delay_count = %d", delay_count);
-    // if (state == RESP) $strobe("RESP: delay_count = %d", delay_count);
 end
 
 endmodule
