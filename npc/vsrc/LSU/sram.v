@@ -77,53 +77,68 @@ always @(posedge i_sys_clk) begin
   end else begin
     case(state)
         IDLE: begin
-        if(i_arvalid) begin
-            araddr <= i_araddr;
-            state <= READ;
-            count <= 0;
-        end 
-        else if(i_awvalid && i_wvalid) begin // 关键修改：同步检测双通道
-            awaddr <= i_awaddr;
-            wdata <= i_wdata;
-            wstrb <= i_wstrb;
-            state <= WRITE;
-            count <= 0;
-        end
+            if(i_arvalid) begin
+                araddr <= i_araddr;
+                state <= READ;
+                count <= count + 1;
+                if(count == DELAY-1) begin
+                    sram_data <= pmem_read(araddr, 4);
+                    rvalid <= 1;
+                    rresp <= 2'b00; // 认为每一次都会成功
+                end
+            end 
+            else if(i_awvalid && i_wvalid) begin // 关键修改：同步检测双通道
+                awaddr <= i_awaddr;
+                wdata <= i_wdata;
+                wstrb <= i_wstrb;
+                state <= WRITE;
+                count <= count + 1;
+                if(count == DELAY-1) begin
+                /* verilator lint_off WIDTHEXPAND */
+                    pmem_write(awaddr, wstrb, wdata);
+                    /* verilator lint_on WIDTHEXPAND */
+                    bvalid <= 1; // 触发B响应
+                    bresp <= 2'b00; // 认为每一次都会成功
+                    state <= RESP;
+                end
+            end
         end
 
         READ: begin
-        if(count == DELAY-1) begin
-            sram_data <= pmem_read(araddr, 4);
-            rvalid <= 1;
-            rresp <= 2'b00; // 认为每一次都会成功
-        end
-        if(count >= DELAY && i_rready) begin // 握手完成
-            state <= IDLE;
-            rvalid <= 0;
-            // rresp <= 2'b00; // 认为每一次都会成功
-        end else count <= count + 1;
-        end
+            if(count == DELAY-1) begin
+                sram_data <= pmem_read(araddr, 4);
+                rvalid <= 1;
+                rresp <= 2'b00; // 认为每一次都会成功
+            end
+            if(count >= DELAY && i_rready) begin // 握手完成
+                state <= IDLE;
+                rvalid <= 0;
+                count <= 0;
+                // rresp <= 2'b00; // 认为每一次都会成功
+            end else count <= count + 1;
+            end
 
-        WRITE: begin
-        if(count == DELAY-1) begin
-            /* verilator lint_off WIDTHEXPAND */
-            pmem_write(awaddr, wstrb, wdata);
-            /* verilator lint_on WIDTHEXPAND */
-            bvalid <= 1; // 触发B响应
-            bresp <= 2'b00; // 认为每一次都会成功
-            state <= RESP;
+            WRITE: begin
+            if(count == DELAY-1) begin
+                /* verilator lint_off WIDTHEXPAND */
+                pmem_write(awaddr, wstrb, wdata);
+                /* verilator lint_on WIDTHEXPAND */
+                bvalid <= 1; // 触发B响应
+                bresp <= 2'b00; // 认为每一次都会成功
+                state <= RESP;
+            end
+            if(count >= DELAY) state <= RESP;
+            else count <= count + 1;
         end
-        if(count >= DELAY) state <= RESP;
-        else count <= count + 1;
-        end
-        // if(count < DELAY) count <= count + 1;
-        // end
+            // if(count < DELAY) count <= count + 1;
+            // end
 
         RESP: begin
-        if(i_bready) begin // 等待响应握手
-            bvalid <= 0;
-            state <= IDLE;
-        end
+            if(i_bready) begin // 等待响应握手
+                bvalid <= 0;
+                state <= IDLE;
+                count <= 0;
+            end
         end
     endcase
   end
