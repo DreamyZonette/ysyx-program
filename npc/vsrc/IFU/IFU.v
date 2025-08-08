@@ -25,11 +25,13 @@ wire [1:0] axi_rresp;
 wire axi_rvalid;
 
 // 为实例化声明 未使用
+/* verilator lint_off UNUSEDSIGNAL */
 wire axi_awready;
 wire axi_bvalid;
 wire [1:0] axi_bresp;
 wire axi_wready;
 wire read_wrong;
+/* verilator lint_on UNUSEDSIGNAL */
 
 assign o_ifu_valid = (state == WAIT_READY) && axi_rvalid;
 assign o_instruction = axi_rdata; 
