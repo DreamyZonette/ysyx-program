@@ -188,7 +188,7 @@ always @(*) begin
     else begin
         o_data = 32'h0;
         o_B_jump_signal = 1'b0;
-        if (alu_done) begin
+        if (o_exu_valid) begin
             o_data = data;
             o_B_jump_signal = B_jump_signal;
         end
