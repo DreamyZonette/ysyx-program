@@ -150,34 +150,49 @@ always @(*) begin
 end
 
 // 状态执行逻辑
-always @(posedge i_sys_clk) begin
+// always @(posedge i_sys_clk) begin
+//     if (!i_sys_rst_n) begin
+//         o_data <= 32'h0;
+//         o_B_jump_signal <= 1'b0;
+//     end
+//     else begin
+//         case(state)
+//             IDLE: begin
+//                 o_data <= 32'h0;
+//                 o_B_jump_signal <= 1'b0;
+//             end
+//             ALU: begin
+//                 if (alu_done) begin
+//                     o_data <= data;
+//                     o_B_jump_signal <= B_jump_signal;
+//                 end
+//             end
+//             LS_ALU: begin
+//                 if (alu_done) begin
+//                     o_data <= data;
+//                     o_B_jump_signal <= B_jump_signal;
+//                 end
+//             end
+//             DONE: begin end
+//             LS_DONE: begin end
+//             default: begin end
+//         endcase
+//     end               
+// end
+
+always @(*) begin
     if (!i_sys_rst_n) begin
-        o_data <= 32'h0;
-        o_B_jump_signal <= 1'b0;
+        o_data = 32'h0;
+        o_B_jump_signal = 1'b0;
     end
     else begin
-        case(state)
-            IDLE: begin
-                o_data <= 32'h0;
-                o_B_jump_signal <= 1'b0;
-            end
-            ALU: begin
-                if (alu_done) begin
-                    o_data <= data;
-                    o_B_jump_signal <= B_jump_signal;
-                end
-            end
-            LS_ALU: begin
-                if (alu_done) begin
-                    o_data <= data;
-                    o_B_jump_signal <= B_jump_signal;
-                end
-            end
-            DONE: begin end
-            LS_DONE: begin end
-            default: begin end
-        endcase
-    end               
+        o_data <= 32'h0;
+        o_B_jump_signal <= 1'b0;
+        if (alu_done) begin
+            o_data <= data;
+            o_B_jump_signal <= B_jump_signal;
+        end
+    end
 end
 
 // 状态更新逻辑
