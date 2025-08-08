@@ -76,8 +76,8 @@ wire [31:0] data;
 assign LS_signal = i_lb_signal | i_lh_signal | i_lw_signal | i_lbu_signal | i_lhu_signal | 
                     i_sw_signal | i_sh_signal | i_sb_signal;
 assign o_exu_ready = (state == IDLE);
-assign o_exu_valid = (state == DONE) | (state == LS_DONE) | 
-                    (state == ALU && alu_done && i_wbu_ready) | 
+assign o_exu_valid = (state == DONE) || (state == LS_DONE) || 
+                    (state == ALU && alu_done && i_wbu_ready) || 
                     (state == LS_ALU && alu_done && i_lsu_ready);
     
 // 状态转移逻辑
