@@ -159,12 +159,10 @@ always @(posedge i_sys_clk) begin
     end
     else if (state == IDLE)begin
         lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
-        if (i_arvalid || i_awvalid && i_wvalid) begin
             /* verilator lint_off WIDTHEXPAND */
-            delay_count <= lsfr_data + DELAY;
+        delay_count <= lsfr_data + DELAY;
             // $strobe("delay_count = %d", delay_count);
             /* verilator lint_on WIDTHEXPAND */
-        end
     end
     else begin
         lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
