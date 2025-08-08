@@ -162,11 +162,12 @@ always @(posedge i_sys_clk) begin
             /* verilator lint_off WIDTHEXPAND */
         delay_count <= lsfr_data + DELAY;
             /* verilator lint_on WIDTHEXPAND */
+        $strobe("IDLE: delay_count = %d", delay_count);
     end
     else begin
         lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
     end
-    if (state == IDLE) $strobe("IDLE: delay_count = %d", delay_count);
+    
     if (state == READ) $strobe("READ: delay_count = %d", delay_count);
     if (state == WRITE) $strobe("WRITE: delay_count = %d", delay_count);
     if (state == RESP) $strobe("RESP: delay_count = %d", delay_count);
