@@ -55,8 +55,8 @@ module EXU(
     input wire i_lsu_ready,
     output wire o_exu_valid,
     output wire o_exu_ready,
-    output wire o_B_jump_signal,
-    output wire [31:0] o_data
+    output reg o_B_jump_signal,
+    output reg [31:0] o_data
 
 );
 
@@ -76,9 +76,7 @@ wire [31:0] data;
 assign LS_signal = i_lb_signal | i_lh_signal | i_lw_signal | i_lbu_signal | i_lhu_signal | 
                     i_sw_signal | i_sh_signal | i_sb_signal;
 assign o_exu_ready = (state == IDLE);
-assign o_exu_valid = (state == DONE) || (state == LS_DONE) || 
-                    (state == ALU && alu_done && i_wbu_ready) || 
-                    (state == LS_ALU && alu_done && i_lsu_ready);
+assign o_exu_valid = (state == DONE) || (state == LS_DONE);
     
 // 状态转移逻辑
 always @(*) begin
@@ -102,12 +100,12 @@ always @(*) begin
             end
             ALU: begin
                 if(alu_done) begin
-                    if (i_wbu_ready) begin
-                        next_state = IDLE;
-                    end
-                    else begin
+                    // if (i_wbu_ready) begin
+                    //     next_state = IDLE;
+                    // end
+                    // else begin
                         next_state = DONE;
-                    end
+                    // end
                 end
                 else begin
                     next_state = ALU;
@@ -115,12 +113,12 @@ always @(*) begin
             end
             LS_ALU: begin
                 if(alu_done) begin
-                    if (i_lsu_ready) begin
-                        next_state = IDLE;
-                    end
-                    else begin
+                    // if (i_lsu_ready) begin
+                    //     next_state = IDLE;
+                    // end
+                    // else begin
                         next_state = LS_DONE;
-                    end   
+                    // end   
                 end
                 else begin
                     next_state = LS_ALU;
@@ -151,37 +149,37 @@ end
 
 // 状态执行逻辑
 
-assign o_B_jump_signal = B_jump_signal;
-assign o_data = data;
-// always @(posedge i_sys_clk) begin
-//     if (!i_sys_rst_n) begin
-//         o_data <= 32'h0;
-//         o_B_jump_signal <= 1'b0;
-//     end
-//     else begin
-//         case(state)
-//             IDLE: begin
-//                 o_data <= 32'h0;
-//                 o_B_jump_signal <= 1'b0;
-//             end
-//             ALU: begin
-//                 if (alu_done) begin
-//                     o_data <= data;
-//                     o_B_jump_signal <= B_jump_signal;
-//                 end
-//             end
-//             LS_ALU: begin
-//                 if (alu_done) begin
-//                     o_data <= data;
-//                     o_B_jump_signal <= B_jump_signal;
-//                 end
-//             end
-//             DONE: begin end
-//             LS_DONE: begin end
-//             default: begin end
-//         endcase
-//     end               
-// end
+// assign o_B_jump_signal = B_jump_signal;
+// assign o_data = data;
+always @(posedge i_sys_clk) begin
+    if (!i_sys_rst_n) begin
+        o_data <= 32'h0;
+        o_B_jump_signal <= 1'b0;
+    end
+    else begin
+        case(state)
+            IDLE: begin
+                o_data <= 32'h0;
+                o_B_jump_signal <= 1'b0;
+            end
+            ALU: begin
+                if (alu_done) begin
+                    o_data <= data;
+                    o_B_jump_signal <= B_jump_signal;
+                end
+            end
+            LS_ALU: begin
+                if (alu_done) begin
+                    o_data <= data;
+                    o_B_jump_signal <= B_jump_signal;
+                end
+            end
+            DONE: begin end
+            LS_DONE: begin end
+            default: begin end
+        endcase
+    end               
+end
 
 // always @(*) begin
 //     if (!i_sys_rst_n) begin
