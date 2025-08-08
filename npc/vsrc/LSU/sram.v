@@ -81,7 +81,7 @@ always @(posedge i_sys_clk) begin
                 araddr <= i_araddr;
                 state <= READ;
                 count <= count + 1;
-                $strobe("IDLE: delay_count = %d", delay_count);
+                // $strobe("IDLE: delay_count = %d", delay_count);
                 if(count == DELAY-1) begin
                 // if(count == delay_count-1) begin
                     sram_data <= pmem_read(i_araddr, 4);
@@ -95,7 +95,7 @@ always @(posedge i_sys_clk) begin
                 wstrb <= i_wstrb;
                 state <= WRITE;
                 count <= count + 1;
-                $strobe("IDLE: delay_count = %d", delay_count);
+                // $strobe("IDLE: delay_count = %d", delay_count);
                 if(count == DELAY-1) begin
                 // if(count == delay_count-1) begin
                 /* verilator lint_off WIDTHEXPAND */
@@ -109,7 +109,7 @@ always @(posedge i_sys_clk) begin
         end
 
         READ: begin
-            $strobe("READ: delay_count = %d", delay_count);
+            // $strobe("READ: delay_count = %d", delay_count);
             if(count == DELAY-1) begin
             // if(count == delay_count-1) begin
                 sram_data <= pmem_read(araddr, 4);
