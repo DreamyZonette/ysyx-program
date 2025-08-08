@@ -81,8 +81,8 @@ always @(posedge i_sys_clk) begin
                 araddr <= i_araddr;
                 state <= READ;
                 count <= count + 1;
-                // if(count == DELAY-1) begin
-                if(count == delay_count-1) begin
+                if(count == DELAY-1) begin
+                // if(count == delay_count-1) begin
                     sram_data <= pmem_read(i_araddr, 4);
                     rvalid <= 1;
                     rresp <= 2'b00; // 认为每一次都会成功
