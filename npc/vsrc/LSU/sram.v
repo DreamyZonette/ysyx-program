@@ -98,7 +98,7 @@ always @(posedge i_sys_clk) begin
                 if(count == delay_count-1) begin
                 /* verilator lint_off WIDTHEXPAND */
                     pmem_write(i_awaddr, i_wstrb, i_wdata);
-                    /* verilator lint_on WIDTHEXPAND */
+                /* verilator lint_on WIDTHEXPAND */
                     bvalid <= 1; // 触发B响应
                     bresp <= 2'b00; // 认为每一次都会成功
                     state <= RESP;
