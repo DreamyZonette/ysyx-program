@@ -151,7 +151,9 @@ always @(posedge i_sys_clk) begin
                 bvalid <= 0;
                 state <= IDLE;
                 count <= 0;
-                delay_count <= DELAY;
+                /* verilator lint_off WIDTHEXPAND */
+                delay_count <= lsfr_data + DELAY;
+                /* verilator lint_on WIDTHEXPAND */
             end
         end
     endcase
