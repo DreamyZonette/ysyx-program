@@ -63,9 +63,9 @@ always @(posedge i_sys_clk) begin
     end
 end
 
-assign o_arready = (state == RD_IDLE) && !i_awvalid;
-assign o_wready =  (state == WR_IDLE) && !w_latched; 
-assign o_awready = (state == WR_IDLE) && !aw_latched;
+assign o_arready = (rd_state == RD_IDLE) && !i_awvalid;
+assign o_wready =  (wr_state == WR_IDLE) && !w_latched; 
+assign o_awready = (wr_state == WR_IDLE) && !aw_latched;
 
 //----------------------------------
 // 读通道 FSM
