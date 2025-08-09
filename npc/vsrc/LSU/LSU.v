@@ -60,7 +60,7 @@ assign load_signal = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i
 assign store_signal = i_sb_signal | i_sh_signal | i_sw_signal;
 assign o_load_signal = load_signal | store_signal;
 assign o_lsu_ready = (state == IDLE);
-assign o_lsu_valid = (state == LOAD_DONE) || (state == LOAD && axi_rvalid && i_wbu_ready);
+assign o_lsu_valid = (state == LOAD_DONE) || (state == LOAD && axi_rvalid && i_wbu_ready) || (state == STORE && axi_bvalid);
 
 assign axi_arvalid = (state == LOAD);
 assign axi_awvalid = (state == STORE);
