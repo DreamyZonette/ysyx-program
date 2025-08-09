@@ -62,9 +62,12 @@ assign o_load_signal = load_signal | store_signal;
 assign o_lsu_ready = (state == IDLE);
 assign o_lsu_valid = (state == LOAD_DONE) || (state == LOAD && axi_rvalid && i_wbu_ready) || (state == STORE && axi_bvalid);
 
-assign axi_arvalid = (state == LOAD);
-assign axi_awvalid = (state == STORE);
-assign axi_wvalid = (state == STORE);
+// assign axi_arvalid = (state == LOAD);
+// assign axi_awvalid = (state == STORE);
+// assign axi_wvalid = (state == STORE);
+assign axi_arvalid = count >= delay_count ? (state == LOAD) : 0;
+assign axi_awvalid = count >= delay_count ? (state == STORE) : 0;
+assign axi_wvalid = count >= delay_count ? (state == STORE) : 0;
 assign axi_rready = (state == LOAD) || (state == LOAD_DONE);
 assign axi_bready = (state == STORE);
 
@@ -200,6 +203,40 @@ always @(posedge i_sys_clk) begin
             write_wrong <= axi_bresp != 2'b00;
         end
     end
+end
+
+reg [3:0] lsfr_data;
+reg [11:0] delay_count;
+reg [11:0] count;
+always @(posedge i_sys_clk) begin
+    if (!i_sys_rst_n) begin
+        lsfr_data <= 4'b1111;
+    end
+    else begin
+        if (lsfr_data == 4'b0000) begin
+            lsfr_data <= 4'b1111;
+        end
+        lsfr_data <= {lsfr_data[2:0], lsfr_data[3] ^ lsfr_data[1]};
+    end
+    
+end
+
+always @(posedge i_sys_clk) begin
+    if(state == IDLE && 
+    (i_exu_valid  && load_signal && axi_arready) || 
+    (i_exu_valid  && store_signal && axi_awready && axi_wready)) begin
+        /* verilator lint_off WIDTHEXPAND */
+        delay_count <= lsfr_data;
+        /* verilator lint_on WIDTHEXPAND */
+    end                
+end
+always @(posedge i_sys_clk) begin
+    if(state == LOAD || state == STORE) begin
+        if (count < delay_count) begin
+            count <= count + 1;
+        end
+    end 
+    count <= 0;               
 end
 
 
