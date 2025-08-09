@@ -159,6 +159,9 @@
     //--------------------
     // 实例化模块
     //--------------------
+    //--------------------
+    // PC模块
+    //--------------------
     PC PC_u(
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
@@ -169,7 +172,9 @@
     .o_pc_ready(pc_ready), 
     .o_pc(pc)
     );
-    
+    //--------------------
+    // IFU模块
+    //--------------------
     IFU IFU_u (
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
@@ -190,6 +195,9 @@
     .o_axi_rready(axi_ifu_rready)
     );
 
+    //--------------------
+    // IDU模块
+    //--------------------
     IDU IDU_u (
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
@@ -251,6 +259,9 @@
     .o_unknown_inst(unknown_instruction)
     );
 
+    //--------------------
+    // EXU模块
+    //--------------------
     EXU EXU_u (
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
@@ -312,6 +323,9 @@
     .o_data(exu_data)
     );
 
+    //--------------------
+    // WBU模块
+    //--------------------
     WBU WBU_u (
     .i_sys_rst_n(sys_rst_n),
     .i_sys_clk(sys_clk),
@@ -347,6 +361,9 @@
     .o_wbu_valid(wbu_valid) 
     );
 
+    //--------------------
+    // LSU模块
+    //--------------------
     LSU LSU_u (
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
@@ -390,6 +407,9 @@
     .i_axi_bvalid(axi_sram_bvalid),
     .o_axi_bready(axi_sram_bready)
 );
+    //--------------------
+    // CSR模块
+    //--------------------
     csr csr_u (
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
@@ -410,6 +430,10 @@
     .o_csr_valid(csr_valid),
     .o_csr_ready(csr_ready)
 );
+
+    //--------------------
+    // gpr模块
+    //--------------------
     gpr gpr_u(
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n), 
@@ -424,6 +448,9 @@
     .o_reg_data(reg_data)
 );
 
+    //--------------------
+    // rom模块
+    //--------------------
     sram # (1)rom_u
 (
     .i_sys_clk(sys_clk),
@@ -454,6 +481,9 @@
     /* verilator lint_on PINCONNECTEMPTY */
 );
 
+    //--------------------
+    // ram模块
+    //--------------------
     sram # (1)ram_u(
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
