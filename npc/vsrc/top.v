@@ -399,8 +399,8 @@
 );
 
     sram # (1)ram_u(
-    .i_sys_clk(i_sys_clk),
-    .i_sys_rst_n(i_sys_rst_n),
+    .i_sys_clk(sys_clk),
+    .i_sys_rst_n(sys_rst_n),
     // AR
     .i_araddr(axi_sram_araddr),
     .i_arvalid(axi_sram_arvalid), // 看做读使能
