@@ -19,8 +19,9 @@
                 dpi_ebreak();  // 调用 DPI-C 函数
             end
         end
-
+    //--------------------
     // 调试信号
+    //--------------------
     assign halt = unknown_instruction;
     assign de_pc = pc;
     assign de_next_pc = next_pc;
@@ -30,7 +31,9 @@
     assign de_mepc = mepc;
     assign de_mcause = mcause;
 
+    //--------------------
     // 多周期协议信号
+    //--------------------
     wire pc_valid;
     wire pc_ready;
     wire wbu_valid;
@@ -48,7 +51,9 @@
     wire csr_ready;
     /* verilator lint_on UNUSEDSIGNAL */
 
+    //--------------------
     // 译码指令信号
+    //--------------------
     wire addi_signal;
     wire andi_signal;
     wire slti_signal;
@@ -92,8 +97,9 @@
     wire ecall_signal;
     wire mret_signal;
     wire unknown_instruction;
-
+    //--------------------
     // 数据传输信号
+    //--------------------
     wire [31:0] wdata;
     wire [31:0] imm;
     wire [31:0] src1;
@@ -121,8 +127,9 @@
     wire [4:0] rs1;
     wire [4:0] rs2;
     wire [4:0] rd;
-
+    //--------------------
     // axi总线
+    //--------------------
     wire axi_sram_arready;
     wire axi_sram_awready;
     wire axi_sram_rvalid;
@@ -140,8 +147,18 @@
     wire [31:0] axi_sram_wdata; 
     wire [3:0] axi_sram_wstrb; 
     wire [31:0] axi_sram_rdata; 
+    //临时
+    wire axi_ifu_arvalid;
+    wire axi_ifu_arready;
+    wire [31:0] axi_ifu_rdata;
+    wire [31:0] axi_ifu_araddr;
+    wire axi_ifu_rready;
+    wire [1:0] axi_ifu_rresp;
+    wire axi_ifu_rvalid;
 
+    //--------------------
     // 实例化模块
+    //--------------------
     PC PC_u(
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),
@@ -161,7 +178,16 @@
     .i_idu_ready(idu_ready),
     .o_ifu_valid(ifu_valid),
     .o_ifu_ready(ifu_ready),
-    .o_instruction(instruction)
+    .o_instruction(instruction),
+    // axi总线
+    .o_axi_araddr(),
+    .o_axi_arvalid(),
+    .i_axi_arready(),
+
+    .i_axi_rdata(),
+    .i_axi_rresp(),
+    .i_axi_rvalid(),
+    .o_axi_rready()
     );
 
     IDU IDU_u (
@@ -398,33 +424,35 @@
     .o_reg_data(reg_data)
 );
 
-//     sram # (1)rom_u
-// (
-//     .i_sys_clk(sys_clk),
-//     .i_sys_rst_n(sys_rst_n),
-//     // AR
-//     .i_araddr(axi_araddr),
-//     .i_arvalid(axi_arvalid), // 看做读使能
-//     .o_arready(axi_arready),
-//     // R
-//     .o_rdata(axi_rdata),
-//     .o_rresp(axi_rresp),
-//     .o_rvalid(axi_rvalid),
-//     .i_rready(axi_rready),
-//     // AW
-//     .i_awaddr(32'b0), 
-//     .i_awvalid(1'b0), 
-//     .o_awready(axi_awready),
-//     // W
-//     .i_wvalid(1'b0), 
-//     .i_wstrb(4'b0), 
-//     .i_wdata(32'b0), 
-//     .o_wready(axi_wready),
-//     // B
-//     .o_bresp(axi_bresp),
-//     .o_bvalid(axi_bvalid),
-//     .i_bready(0)
-// );
+    sram # (1)rom_u
+(
+    .i_sys_clk(sys_clk),
+    .i_sys_rst_n(sys_rst_n),
+    // AR
+    .i_araddr(axi_ifu_araddr),
+    .i_arvalid(axi_ifu_arvalid), // 看做读使能
+    .o_arready(axi_ifu_arready),
+    // R
+    .o_rdata(axi_ifu_rdata),
+    .o_rresp(axi_ifu_rresp),
+    .o_rvalid(axi_ifu_rvalid),
+    .i_rready(axi_ifu_rready),
+    /* verilator lint_off PINCONNECTEMPTY */
+    // AW
+    .i_awaddr(32'b0), 
+    .i_awvalid(1'b0), 
+    .o_awready(),
+    // W
+    .i_wvalid(1'b0), 
+    .i_wstrb(4'b0), 
+    .i_wdata(32'b0), 
+    .o_wready(),
+    // B
+    .o_bresp(),
+    .o_bvalid(),
+    .i_bready(0)
+    /* verilator lint_on PINCONNECTEMPTY */
+);
 
     sram # (1)ram_u(
     .i_sys_clk(sys_clk),
