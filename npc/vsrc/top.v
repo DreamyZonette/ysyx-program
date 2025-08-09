@@ -398,6 +398,34 @@
     .o_reg_data(reg_data)
 );
 
+    sram # (1)rom_u
+(
+    .i_sys_clk(sys_clk),
+    .i_sys_rst_n(sys_rst_n),
+    // AR
+    .i_araddr(axi_araddr),
+    .i_arvalid(axi_arvalid), // 看做读使能
+    .o_arready(axi_arready),
+    // R
+    .o_rdata(axi_rdata),
+    .o_rresp(axi_rresp),
+    .o_rvalid(axi_rvalid),
+    .i_rready(axi_rready),
+    // AW
+    .i_awaddr(32'b0), 
+    .i_awvalid(1'b0), 
+    .o_awready(axi_awready),
+    // W
+    .i_wvalid(1'b0), 
+    .i_wstrb(4'b0), 
+    .i_wdata(32'b0), 
+    .o_wready(axi_wready),
+    // B
+    .o_bresp(axi_bresp),
+    .o_bvalid(axi_bvalid),
+    .i_bready(0)
+);
+
     sram # (1)ram_u(
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n),

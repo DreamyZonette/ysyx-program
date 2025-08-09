@@ -109,15 +109,15 @@ sram # (1)rom_u
     // AW
     .i_awaddr(32'b0), 
     .i_awvalid(1'b0), 
-    .o_awready(axi_awready),
+    .o_awready(),
     // W
     .i_wvalid(1'b0), 
     .i_wstrb(4'b0), 
     .i_wdata(32'b0), 
-    .o_wready(axi_wready),
+    .o_wready(),
     // B
-    .o_bresp(axi_bresp),
-    .o_bvalid(axi_bvalid),
+    .o_bresp(),
+    .o_bvalid(),
     .i_bready(0)
 );
 
