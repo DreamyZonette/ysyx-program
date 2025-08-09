@@ -147,11 +147,13 @@ always @(posedge i_sys_clk) begin
                 end
                 // 两者都到齐才进入写延迟
                 if (aw_latched && w_latched) begin
-                    /* verilator lint_off WIDTHEXPAND */
-                    wr_delay <= lsfr_data + DELAY;
-                    /* verilator lint_on WIDTHEXPAND */
-                    wr_count <= 0;
-                    wr_state <= WR_WAIT;
+                    if (!(rd_state != RD_IDLE && rd_addr == wr_addr)) begin
+                        /* verilator lint_off WIDTHEXPAND */
+                        wr_delay <= lsfr_data + DELAY;
+                        /* verilator lint_on WIDTHEXPAND */
+                        wr_count <= 0;
+                        wr_state <= WR_WAIT;
+                    end
                 end
             end
             WR_WAIT: begin
