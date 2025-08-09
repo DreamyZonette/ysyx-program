@@ -78,7 +78,9 @@ always @(posedge i_sys_clk) begin
   end else begin
     case(state)
         IDLE: begin
+            /* verilator lint_off WIDTHEXPAND */
             delay_count <= lsfr_data + DELAY;
+            /* verilator lint_on WIDTHEXPAND */
             if(i_arvalid) begin
                 araddr <= i_araddr;
                 state <= READ;
