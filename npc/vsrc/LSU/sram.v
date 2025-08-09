@@ -165,7 +165,7 @@ always @(posedge i_sys_clk) begin
         lsfr_data <= 4'b1111;
     end
     else if (state == IDLE)begin
-        lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
+        lsfr_data <= {lsfr_data[2:0], lsfr_data[3] ^ lsfr_data[1]};
         if(lsfr_data == 4'b0000) begin
             lsfr_data <= 4'b1111; // 避免全0
         end
