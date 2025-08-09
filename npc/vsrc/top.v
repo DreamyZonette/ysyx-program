@@ -180,14 +180,14 @@
     .o_ifu_ready(ifu_ready),
     .o_instruction(instruction),
     // axi总线
-    .o_axi_araddr(),
-    .o_axi_arvalid(),
-    .i_axi_arready(),
+    .o_axi_araddr(axi_ifu_araddr),
+    .o_axi_arvalid(axi_ifu_arvalid),
+    .i_axi_arready(axi_ifu_arready),
 
-    .i_axi_rdata(),
-    .i_axi_rresp(),
-    .i_axi_rvalid(),
-    .o_axi_rready()
+    .i_axi_rdata(axi_ifu_rdata),
+    .i_axi_rresp(axi_ifu_rresp),
+    .i_axi_rvalid(axi_ifu_rvalid),
+    .o_axi_rready(axi_ifu_rready)
     );
 
     IDU IDU_u (
