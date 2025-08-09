@@ -145,6 +145,7 @@ static void execute(uint64_t n) {
       dut.pc = dut.next_pc;
       dut.next_pc = top->de_pc;
     }
+    if (dut.pc != dut.next_pc) g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
     if (dut.pc != dut.next_pc){
@@ -178,7 +179,7 @@ static void execute(uint64_t n) {
   
 
   #endif
-    g_nr_guest_inst ++;
+    
     single_cycle();
     trace_and_difftest();
     #if CONFIG_DEVICE
