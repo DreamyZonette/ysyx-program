@@ -122,6 +122,25 @@
     wire [4:0] rs2;
     wire [4:0] rd;
 
+    // axi总线
+    wire axi_sram_arready;
+    wire axi_sram_awready;
+    wire axi_sram_rvalid;
+    wire axi_sram_rready;
+    wire axi_sram_wvalid;
+    wire axi_sram_wready;
+    wire axi_sram_bvalid;
+    wire axi_sram_bready;
+    wire axi_sram_awvalid;
+    wire axi_sram_arvalid;
+    wire [1:0] axi_sram_bresp;
+    wire [1:0] axi_sram_rresp;
+    wire [31:0] axi_sram_araddr; 
+    wire [31:0] axi_sram_awaddr; 
+    wire [31:0] axi_sram_wdata; 
+    wire [3:0] axi_sram_wstrb; 
+    wire [31:0] axi_sram_rdata; 
+
     // 实例化模块
     PC PC_u(
     .i_sys_clk(sys_clk),
@@ -321,7 +340,29 @@
     .o_load_signal(load_signal),
     .o_rdata(rdata),
     .o_lsu_valid(lsu_valid),
-    .o_lsu_ready(lsu_ready)
+    .o_lsu_ready(lsu_ready),
+    //axi
+    .o_axi_araddr(axi_sram_araddr),
+    .o_axi_arvalid(axi_sram_arvalid),
+    .i_axi_arready(axi_sram_arready),
+
+    .i_axi_rdata(axi_sram_rdata),
+    .i_axi_rresp(axi_sram_rresp),
+    .i_axi_rvalid(axi_sram_rvalid),
+    .o_axi_rready(axi_sram_rready),
+
+    .o_axi_awaddr(axi_sram_awaddr),
+    .o_axi_awvalid(axi_sram_awvalid),
+    .i_axi_awready(axi_sram_awready),
+    
+    .o_axi_wdata(axi_sram_wdata),
+    .o_axi_wstrb(axi_sram_wstrb),
+    .o_axi_wvalid(axi_sram_wvalid),
+    .i_axi_wready(axi_sram_wready),
+
+    .i_axi_bresp(axi_sram_bresp),
+    .i_axi_bvalid(axi_sram_bvalid),
+    .o_axi_bready(axi_sram_bready)
 );
     csr csr_u (
     .i_sys_clk(sys_clk),
@@ -343,7 +384,7 @@
     .o_csr_valid(csr_valid),
     .o_csr_ready(csr_ready)
 );
-gpr gpr_u(
+    gpr gpr_u(
     .i_sys_clk(sys_clk),
     .i_sys_rst_n(sys_rst_n), 
     .i_rs1(rs1),
@@ -357,6 +398,31 @@ gpr gpr_u(
     .o_reg_data(reg_data)
 );
 
-
+    sram # (1)ram_u(
+    .i_sys_clk(i_sys_clk),
+    .i_sys_rst_n(i_sys_rst_n),
+    // AR
+    .i_araddr(axi_sram_araddr),
+    .i_arvalid(axi_sram_arvalid), // 看做读使能
+    .o_arready(axi_sram_arready),
+    // R
+    .o_rdata(axi_sram_rdata),
+    .o_rresp(axi_sram_rresp),
+    .o_rvalid(axi_sram_rvalid),
+    .i_rready(axi_sram_rready),
+    // AW
+    .i_awaddr(axi_sram_awaddr), 
+    .i_awvalid(axi_sram_awvalid), // 看做写使能
+    .o_awready(axi_sram_awready),
+    // W
+    .i_wvalid(axi_sram_wvalid), 
+    .i_wstrb(axi_sram_wstrb), 
+    .i_wdata(axi_sram_wdata), 
+    .o_wready(axi_sram_wready),
+    // B
+    .o_bresp(axi_sram_bresp),
+    .o_bvalid(axi_sram_bvalid),
+    .i_bready(axi_sram_bready)
+);
    
     endmodule

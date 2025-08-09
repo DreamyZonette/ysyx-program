@@ -60,7 +60,7 @@ module WBU(
     assign o_reg_wdata = reg_wdata;
     assign o_csr_wdata = csr_wdata;
     assign o_next_pc = next_pc;
-    assign o_wbu_ready = (state == IDLE);
+    assign o_wbu_ready = (state == IDLE) || (state == LOAD_WAIT);
     assign o_wbu_valid = (state == WBU_DONE) || 
                      (state == MRET_WAIT && i_pc_ready) ||
                      (state == ECALL_WAIT && i_pc_ready) ||

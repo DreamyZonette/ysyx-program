@@ -151,7 +151,7 @@
     .i_inst(instruction),
     .i_ifu_valid(ifu_valid),
     .i_exu_ready(exu_ready),
-    .i_lsu_ready(lsu_ready),
+    // .i_lsu_ready(lsu_ready),
     .o_idu_ready(idu_ready),
     .o_idu_valid(idu_valid),
     .o_rs1(rs1),
@@ -356,6 +356,7 @@ gpr gpr_u(
     .o_src2(src2),
     .o_reg_data(reg_data)
 );
+
 
    
     endmodule
