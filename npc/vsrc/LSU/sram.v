@@ -57,7 +57,8 @@ always @(posedge i_sys_clk) begin
     if (!i_sys_rst_n) begin
         lsfr_data <= 5'b11111;
     end else begin
-        lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
+        // lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
+        lsfr_data <= 0;
         if (lsfr_data == 5'b00000)
             lsfr_data <= 5'b11111;
     end
