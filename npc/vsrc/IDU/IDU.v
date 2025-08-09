@@ -4,7 +4,7 @@ module IDU (
     input wire [31:0]  i_inst,
     input wire i_ifu_valid,
     input wire i_exu_ready,
-    input wire i_lsu_ready,
+    //input wire i_lsu_ready,
     output wire o_idu_ready,
     output wire o_idu_valid,
     output wire [4:0] o_rs1,
@@ -141,7 +141,7 @@ module IDU (
                 DECODE: begin
                     if(decode_valid) begin
                         if (LS_signal) begin
-                            if (i_lsu_ready && i_exu_ready) begin
+                            if (i_exu_ready) begin
                                 next_state = IDLE;
                             end
                             else begin
