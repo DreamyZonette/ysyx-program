@@ -120,7 +120,7 @@ end
 always @(posedge i_sys_clk) begin
     if (!i_sys_rst_n) begin
         wr_state <= WR_IDLE;
-        o_awready <= 1'b0;
+        // o_awready <= 1'b0;
         // o_wready <= 1'b0;
         o_bvalid <= 1'b0;
         o_bresp <= 2'b00;
@@ -131,11 +131,11 @@ always @(posedge i_sys_clk) begin
         case (wr_state)
             WR_IDLE: begin
                 // 接收 AW
-                o_awready <= !aw_latched;
+                // o_awready <= !aw_latched;
                 if (i_awvalid && o_awready) begin
                     wr_addr <= i_awaddr;
                     aw_latched <= 1'b1;
-                    o_awready <= 1'b0;
+                    // o_awready <= 1'b0;
                 end
                 // 接收 W
                 //o_wready <= !w_latched;
