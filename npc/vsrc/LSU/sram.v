@@ -52,14 +52,14 @@ reg [11:0] wr_count;
 reg [11:0] wr_delay;
 
 // LFSR 随机延迟
-reg [3:0] lsfr_data;
+reg [4:0] lsfr_data;
 always @(posedge i_sys_clk) begin
     if (!i_sys_rst_n) begin
-        lsfr_data <= 4'b1111;
+        lsfr_data <= 5'b11111;
     end else begin
-        lsfr_data <= {lsfr_data[2:0], lsfr_data[3] ^ lsfr_data[1]};
-        if (lsfr_data == 4'b0000)
-            lsfr_data <= 4'b1111;
+        lsfr_data <= {lsfr_data[3:0], lsfr_data[4] ^ lsfr_data[1]};
+        if (lsfr_data == 5'b00000)
+            lsfr_data <= 5'b11111;
     end
 end
 
