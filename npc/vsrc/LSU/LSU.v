@@ -236,7 +236,10 @@ always @(posedge i_sys_clk) begin
             count <= count + 1;
         end
     end 
-    count <= 0;               
+    else begin
+        count <= 0; 
+    end
+                  
 end
 
 
