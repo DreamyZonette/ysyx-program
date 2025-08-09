@@ -80,27 +80,29 @@ always @(posedge i_sys_clk) begin
             if(i_arvalid) begin
                 araddr <= i_araddr;
                 state <= READ;
-                count <= count + 1;
-                if(count == DELAY-1) begin
-                    sram_data <= pmem_read(i_araddr, 4);
-                    rvalid <= 1;
-                    rresp <= 2'b00; // 认为每一次都会成功
-                end
+                // count <= count + 1;
+                count <= 0;
+                // if(count == DELAY-1) begin
+                //     sram_data <= pmem_read(i_araddr, 4);
+                //     rvalid <= 1;
+                //     rresp <= 2'b00; // 认为每一次都会成功
+                // end
             end 
             else if(i_awvalid && i_wvalid) begin // 关键修改：同步检测双通道
                 awaddr <= i_awaddr;
                 wdata <= i_wdata;
                 wstrb <= i_wstrb;
                 state <= WRITE;
-                count <= count + 1;
-                if(count == DELAY-1) begin
-                /* verilator lint_off WIDTHEXPAND */
-                    pmem_write(i_awaddr, i_wstrb, i_wdata);
-                /* verilator lint_on WIDTHEXPAND */
-                    bvalid <= 1; // 触发B响应
-                    bresp <= 2'b00; // 认为每一次都会成功
-                    state <= RESP;
-                end
+                // count <= count + 1;
+                count <= 0;
+                // if(count == DELAY-1) begin
+                // /* verilator lint_off WIDTHEXPAND */
+                //     pmem_write(i_awaddr, i_wstrb, i_wdata);
+                // /* verilator lint_on WIDTHEXPAND */
+                //     bvalid <= 1; // 触发B响应
+                //     bresp <= 2'b00; // 认为每一次都会成功
+                //     state <= RESP;
+                // end
             end
         end
 
