@@ -5,7 +5,7 @@ module sram # (parameter DELAY = 1)(
     // AR
     input wire [31:0] i_araddr,
     input wire i_arvalid, // 看做读使能
-    output reg o_arready,
+    output wire o_arready,
     // R
     output reg [31:0] o_rdata,
     output reg [1:0] o_rresp,
@@ -14,12 +14,12 @@ module sram # (parameter DELAY = 1)(
     // AW
     input wire [31:0] i_awaddr, 
     input wire i_awvalid, // 看做写使能
-    output reg o_awready,
+    output wire o_awready,
     // W
     input wire i_wvalid, 
     input wire [3:0]i_wstrb, 
     input wire [31:0]i_wdata, 
-    output reg o_wready,
+    output wire o_wready,
     // B
     output reg [1:0] o_bresp,
     output reg o_bvalid,
@@ -63,6 +63,10 @@ always @(posedge i_sys_clk) begin
     end
 end
 
+assign o_arready = (state == RD_IDLE) && !i_awvalid;
+assign o_wready =  (state == WR_IDLE) && !w_latched; 
+assign o_awready = (state == WR_IDLE) && !aw_latched;
+
 //----------------------------------
 // 读通道 FSM
 //----------------------------------
@@ -70,7 +74,7 @@ end
 always @(posedge i_sys_clk) begin
     if (!i_sys_rst_n) begin
         rd_state <= RD_IDLE;
-        o_arready <= 1'b0;
+        //o_arready <= 1'b0;
         o_rvalid <= 1'b0;
         o_rdata <= 0;
         o_rresp <= 2'b00;
@@ -78,14 +82,14 @@ always @(posedge i_sys_clk) begin
     end else begin
         case (rd_state)
             RD_IDLE: begin
-                o_arready <= 1'b1;
+                //o_arready <= 1'b1;
                 if (i_arvalid) begin
                     rd_addr <= i_araddr;
                     /* verilator lint_off WIDTHEXPAND */
                     rd_delay <= lsfr_data + DELAY;
                     /* verilator lint_on WIDTHEXPAND */
                     rd_count <= 0;
-                    o_arready <= 1'b0;
+                    // o_arready <= 1'b0;
                     rd_state <= RD_WAIT;
                 end
             end
@@ -117,7 +121,7 @@ always @(posedge i_sys_clk) begin
     if (!i_sys_rst_n) begin
         wr_state <= WR_IDLE;
         o_awready <= 1'b0;
-        o_wready <= 1'b0;
+        // o_wready <= 1'b0;
         o_bvalid <= 1'b0;
         o_bresp <= 2'b00;
         aw_latched <= 1'b0;
@@ -134,12 +138,12 @@ always @(posedge i_sys_clk) begin
                     o_awready <= 1'b0;
                 end
                 // 接收 W
-                o_wready <= !w_latched;
+                //o_wready <= !w_latched;
                 if (i_wvalid && o_wready) begin
                     wr_data <= i_wdata;
                     wr_strb <= i_wstrb;
                     w_latched <= 1'b1;
-                    o_wready <= 1'b0;
+                    // o_wready <= 1'b0;
                 end
                 // 两者都到齐才进入写延迟
                 if (aw_latched && w_latched) begin
