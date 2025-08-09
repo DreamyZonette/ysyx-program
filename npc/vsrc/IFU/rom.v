@@ -1,42 +1,95 @@
-// /* verilator lint_off DECLFILENAME */
-// module rom # (ADDR_WIDTH = 32)(
-//     //input clk,
-//     input [ADDR_WIDTH-1:0] addr,// pc
-//     output reg [31:0] data
-// );
 
-//     // ROM 定义：1024 项，每项 32 位（4 字节）
-//     reg [31:0] rom_mem [0:1023];
+module rom # (parameter DELAY = 1)(
+    input i_sys_clk,
+    input i_sys_rst_n,
+    input [31:0] i_addr, // address
+    input i_read_signal, // read signal
+    output [31:0] o_sram_data,
+    output o_sram_valid
+);
 
-//     // 地址转换为索引（按 4 字节对齐）
-//     wire [31:0] shifted_addr = (addr - 32'h80000000) >> 2;
-//     wire [9:0] rom_offset = shifted_addr[9:0];
-//     wire [31:10] unused_signal = shifted_addr[31:10];// 显性提示没有使用
-    
-//     // reg [31:0] rom_mem [80000000+1024-1:80000000] = '{default:0};
-//     // initial begin
-//     //     $readmemh("npc/rom.txt", rom_mem);
-//     // end
-    
-//     initial begin
-//         rom_mem[0] = 32'h00500093; // ADDI x1, x0, 5   # x1 = x0 + 5 = 0 + 5 = 5
-//         rom_mem[1] = 32'hffd08113; // ADDI x2, x1, -3  # x2 = x1 + (-3) = x1 - 3
-//         rom_mem[2] = 32'h00018193; // ADDI x3, x3, 0   # x3 = x3 + 0 = x3（无操作，可用于寄存器依赖同步）
-//         rom_mem[3] = 32'h7ff20213; // ADDI x4, x4, 2047  # x4 = x4 + 2047
-//         rom_mem[4] = 32'h80028293; // ADDI x5, x5, -2048  # x5 = x5 - 2048
-//         rom_mem[5] = 32'h00100073; // ebreak
-//     end
-//     // initial begin
-//     always @(*) begin
-//         data = rom_mem[rom_offset];
-//     end
-//     //assign data = rom_mem[rom_offset];
+import "DPI-C" function int pmem_read(input int raddr, input int len);
 
-    
+localparam IDLE = 0;
+localparam READ = 1;
+
+reg state;
+reg next_state;
+reg [7:0] count;
+reg [31:0] sram_data;
+assign o_sram_data = sram_data;
+assign o_sram_valid = (state == READ) && (count >= DELAY);
+
+always @(*) begin
+    if(!i_sys_rst_n) begin
+        next_state = IDLE;
+    end
+    else begin
+        case (state) 
+            IDLE: begin
+                if(i_read_signal) begin
+                    next_state = READ;
+                end
+                else begin
+                    next_state = IDLE;
+                end
+            end
+            READ: begin
+                if(count >= DELAY) begin
+                    next_state = IDLE;
+                end
+                else begin
+                    next_state = READ;
+                end
+            end
+        default: begin
+            next_state = IDLE;
+        end
+    endcase
+    end
+end
+
+always @(posedge i_sys_clk) begin
+    if(!i_sys_rst_n) begin
+        sram_data <= 0;
+        count <= 0;
+    end
+    else begin
+        case (state)
+            IDLE: begin
+                count <= 0;
+                // if (i_read_signal) begin
+                //     count <= count + 1;  
+                // end
+            end
+            READ: begin
+                if(count >= DELAY) begin
+                    count <= 0;
+                end
+                else begin
+                    count <= count + 1;
+                    if(count == DELAY - 1) begin
+                    sram_data <= pmem_read(i_addr, 4);
+                    end
+                end
+            end
+            default: begin
+                sram_data <= 0;
+                count <= 0;
+            end
+        endcase
+    end
+end
+
+always @(posedge i_sys_clk) begin
+    if(!i_sys_rst_n) begin
+        state <= IDLE;
+    end
+    else begin
+        state <= next_state;
+    end
+end 
 
 
 
-
-
-// endmodule
-// /* verilator lint_off DECLFILENAME */
+endmodule
