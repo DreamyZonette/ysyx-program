@@ -82,7 +82,7 @@ wire store_signal;
 assign load_signal = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign store_signal = i_sb_signal | i_sh_signal | i_sw_signal;
 assign o_load_signal = load_signal | store_signal;
-assign o_lsu_ready = (state == IDLE) && i_axi_arready;
+assign o_lsu_ready = (state == IDLE);
 assign o_lsu_valid = (state == LOAD_DONE) || (state == LOAD && i_axi_rvalid && i_wbu_ready) || (state == STORE && i_axi_bvalid);
 
 // assign o_axi_arvalid = (state == LOAD);
