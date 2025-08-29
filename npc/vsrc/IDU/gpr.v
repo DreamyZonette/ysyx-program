@@ -5,8 +5,6 @@ module gpr  (
     input  [4:0] i_rs2,
     input  [4:0] i_rd,
     input  [31:0] i_data,
-    input  i_idu_valid,
-    input  i_wbu_valid,
     output [31:0] o_src1,
     output [31:0] o_src2,
     output [31:0] o_reg_data [0:31]
@@ -16,26 +14,9 @@ module gpr  (
     wire [31:0] wen;
     /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] reg_file [0:31]; // 32 个寄存器
-    reg [4:0] rs1_reg;
-    reg [4:0] rs2_reg;
-    reg [4:0] rd_reg;
 
     assign o_reg_data = reg_file;
-    assign wen = (i_wbu_valid == 1'b1 && rd_reg != 5'b0)? (32'b1 << rd_reg) : 32'b0; // 写使能信号
-
-    // 锁存器
-    always @(posedge i_sys_clk) begin
-        if(!i_sys_rst_n) begin
-            rs1_reg <= 5'b0;
-            rs2_reg <= 5'b0;
-            rd_reg  <= 5'b0;
-        end
-        else if (i_idu_valid) begin
-            rs1_reg <= i_rs1;
-            rs2_reg <= i_rs2;
-            rd_reg  <= i_rd;
-        end
-    end 
+    assign wen = (i_rd != 5'b0)? (32'b1 << i_rd) : 32'b0; // 写使能信号
 
     // 生成 32 个寄存器
     Reg #(32, 32'b0) zero (i_sys_clk, i_sys_rst_n, i_data, reg_file[0],  wen[0]);
@@ -71,8 +52,8 @@ module gpr  (
     Reg #(32, 32'b0) t6   (i_sys_clk, i_sys_rst_n, i_data, reg_file[31], wen[31]);
 
 // 读取寄存器
-    assign o_src1 = (rs1_reg == 5'b0)? 32'b0 : reg_file[rs1_reg];
-    assign o_src2 = (rs2_reg == 5'b0)? 32'b0 : reg_file[rs2_reg];
+    assign o_src1 = (i_rs1 == 5'b0)? 32'b0 : reg_file[i_rs1];
+    assign o_src2 = (i_rs2 == 5'b0)? 32'b0 : reg_file[i_rs2];
 
 endmodule
 

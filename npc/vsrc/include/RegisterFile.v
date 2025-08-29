@@ -12,7 +12,7 @@
 //   end
 // endmodule
 
-module RegisterFile #( ADDR_WIDTH = 1, DATA_WIDTH = 1) (
+module RegisterFile #(ADDR_WIDTH = 1, DATA_WIDTH = 1) (
   input clk,
   input rst_n,
   input wen,

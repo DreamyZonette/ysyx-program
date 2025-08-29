@@ -7,15 +7,19 @@ NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
 TEST ?=
-TEST_OBJ = $(shell find $(VPATH) -name $(TEST).v)
+TEST_OBJ = $(wildcard $(VPATH)/**/$(TEST).v)
+TEST_OBJ += $(wildcard $(VPATH)/$(TEST)/*.v)
 VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 
-VSRCS := $(shell find $(VPATH) -name *.v)
+VSRCS := $(wildcard $(VPATH)/**/*.v)
+VSRCS += $(VPATH)/*.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
-CSRCS += $(shell find $(CPATH) -name *.c)
+CSRCS += $(wildcard $(CPATH)/**/*.c)
+CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.c)
+CSRCS += $(wildcard $(CPATH)/device/io/*.c)
 
 CFLAGS ?= -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 

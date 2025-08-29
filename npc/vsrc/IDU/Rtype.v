@@ -21,7 +21,7 @@ module Rtype (
     output reg o_sll_signal,
     output reg o_sra_signal,
     output reg o_srl_signal,
-    output o_unknown_inst
+    output o_halt_signal
 );
 
     wire [2:0] fun1;
@@ -35,7 +35,7 @@ module Rtype (
     assign o_rs1  = i_inst[19:15];
     assign o_rs2  = i_inst[24:20];
     assign fun2   = i_inst[31:25];
-    assign o_unknown_inst = unknown_intstruction;
+    assign o_halt_signal = unknown_intstruction;
 
     always @ (*) begin
         // 初始化
