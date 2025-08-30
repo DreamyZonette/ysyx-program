@@ -49,10 +49,13 @@ static void trace_and_difftest() {
 
   #if CONFIG_DIFFTEST
   //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
-  difftest_step(dut.pc, dut.next_pc);
+  if (dut.pc != dut.next_pc){
+    difftest_step(dut.pc, dut.next_pc);
+  } 
   #endif
 
   #if CONFIG_FTRACE
+  //if (dut.pc != dut.next_pc){
   int is_call = 0;
   int is_ret = 0;
 
@@ -70,7 +73,7 @@ static void trace_and_difftest() {
   }
   
   //int ret = decode_exec(s);
-  char blank [40];
+  char blank [100];
   int j = 0;
   if (is_call) {
     count += 2;
@@ -95,6 +98,7 @@ static void trace_and_difftest() {
     printf("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
     //log_write("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
   }
+// }
   
   //return ret;
 #endif
@@ -133,12 +137,23 @@ void assert_fail_msg() {
 static void execute(uint64_t n) {
     if(n <= MAX_INST_TO_PRINT) print_on = 1;
   for (;n > 0; n --) {
+    if(dut.pc < 0x80000000 || dut.pc >= 0x90000000){
+      dut.pc = top->de_pc;
+      dut.next_pc = top->de_next_pc;
+    }
+    else {
+      dut.pc = dut.next_pc;
+      dut.next_pc = top->de_pc;
+    }
+    if (dut.pc != dut.next_pc) g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
-    snprintf(p, sizeof(p), "pc:%08x => 0x%08x", top->de_pc, top->de_inst);
-    log_write("%s\n", p);
-    // printf("%s\n", p);
-    p[0] = '\0';
+    if (dut.pc != dut.next_pc){
+      snprintf(p, sizeof(p), "pc:%08x => 0x%08x", dut.pc, top->de_inst);
+      log_write("%s\n", p);
+      // printf("%s\n", p);
+      p[0] = '\0';
+    }
   }
   #else
   if(!sim_finish){
@@ -151,17 +166,20 @@ static void execute(uint64_t n) {
   #endif
 
   #if CONFIG_DIFFTEST
-    for(int i = 0; i < 32; i++){
-      dut.gpr[i] = top->reg_data[i];
-    }
-    dut.pc = top->de_pc;
-    dut.next_pc = top->de_next_pc;
     // dut.diff_mstatus = top->de_mstatus;
     // dut.diff_mcause = top->de_mcause;
     // dut.diff_mtvec = top->de_mtvec;
     // dut.diff_mepc = top->de_mepc;
+    if (dut.pc != dut.next_pc){
+      // printf("difftest:pc:%08x => 0x%08x\n", dut.pc, dut.next_pc);
+      for(int i = 0; i < 32; i++){
+      dut.gpr[i] = top->reg_data[i];
+    }
+  }
+  
+
   #endif
-    g_nr_guest_inst ++;
+    
     single_cycle();
     trace_and_difftest();
     #if CONFIG_DEVICE
@@ -173,11 +191,11 @@ static void execute(uint64_t n) {
       npc_state.halt_ret = top->reg_data[10]; // 寄存器返回值
       npc_state.state = NPC_END;
     }
-    if(top->halt == 1){
-      npc_state.halt_pc = top->de_pc;
-      npc_state.halt_ret = top->reg_data[10];
-      npc_state.state = NPC_ABORT;
-    }
+    // if(top->halt == 1){
+    //   npc_state.halt_pc = top->de_pc;
+    //   npc_state.halt_ret = top->reg_data[10];
+    //   npc_state.state = NPC_ABORT;
+    // }
 
     if (npc_state.state != NPC_RUNNING) break;
   }

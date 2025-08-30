@@ -21,7 +21,7 @@ module Rtype (
     output reg o_sll_signal,
     output reg o_sra_signal,
     output reg o_srl_signal,
-    output o_halt_signal
+    output o_unknown_inst
 );
 
     wire [2:0] fun1;
@@ -35,7 +35,7 @@ module Rtype (
     assign o_rs1  = i_inst[19:15];
     assign o_rs2  = i_inst[24:20];
     assign fun2   = i_inst[31:25];
-    assign o_halt_signal = unknown_intstruction;
+    assign o_unknown_inst = unknown_intstruction;
 
     always @ (*) begin
         // 初始化
@@ -76,7 +76,7 @@ module Rtype (
                     o_sub_signal  = (fun1 == 3'b000) ? 1'b1 : 1'b0;
                     o_sra_signal  = (fun1 == 3'b101) ? 1'b1 : 1'b0;
                 end
-                else if (fun2 == 7'b0000001) begin
+                // else if (fun2 == 7'b0000001) begin
                     // o_mul_signal   = (fun1 == 3'b000) ? 1'b1 : 1'b0;
                     // o_mulh_signal  = (fun1 == 3'b001) ? 1'b1 : 1'b0;
                     // o_mulhu_signal = (fun1 == 3'b010) ? 1'b1 : 1'b0;
@@ -85,7 +85,7 @@ module Rtype (
                     // o_divu_signal  = (fun1 == 3'b101) ? 1'b1 : 1'b0;
                     // o_rem_signal   = (fun1 == 3'b110) ? 1'b1 : 1'b0;
                     // o_remu_signal  = (fun1 == 3'b111) ? 1'b1 : 1'b0;
-                end
+                // end
                 else begin
                     unknown_intstruction = 1'b1;
                 end

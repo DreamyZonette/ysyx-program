@@ -25,7 +25,7 @@ module Itype (
     output reg o_csrrw_signal,
     output reg o_ecall_signal,
     output reg o_mret_signal,
-    output o_halt_signal
+    output o_unknown_inst
 );
 
     wire [11:0] imm;
@@ -49,7 +49,7 @@ module Itype (
     assign imm          = i_inst[31:20];
     assign shamt_detect = i_inst[31:25];
     assign o_rd         = (o_jalr_signal == 1'b1) ? jalr_rd : rd;
-    assign o_halt_signal =  unknown_intstruction | shamt_halt;
+    assign o_unknown_inst =  unknown_intstruction | shamt_halt;
     assign csr_addr     = i_inst[31:20];
     assign o_csr_addr   = (o_csrrs_signal == 1'b1 || o_csrrw_signal == 1'b1) ? csr_addr : 12'b0;
 
@@ -118,11 +118,12 @@ module Itype (
             
         end
         7'b1110011: begin  // ebreak
-            if(i_inst == 32'b 00000000000100000000000001110011) begin
+            if(i_inst == 32'h00100073) begin
                 o_ebreak_signal = 1'b1;
-            end else if(i_inst == 32'b00000000000000000000000001110011) begin
+            end else if(i_inst == 32'h00000073) begin
                 o_ecall_signal = 1'b1;
-            end else if(i_inst == 32'b00110000001000000000000001110011) begin
+                // $strobe("idu_ecall_on");
+            end else if(i_inst == 32'h30200073) begin
                 o_mret_signal = 1'b1;
             end else begin
                 o_csrrw_signal = (fun1 == 3'b001) ? 1'b1 : 1'b0;
