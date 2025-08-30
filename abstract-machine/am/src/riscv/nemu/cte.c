@@ -65,7 +65,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
 
 void yield() {
 
-  printf("Sizeof Context: %d bytes\n", sizeof(Context));
+  // printf("Sizeof Context: %d bytes\n", sizeof(Context));
 #ifdef __riscv_e
   asm volatile("li a5, -1; ecall");
 #else
