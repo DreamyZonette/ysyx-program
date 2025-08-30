@@ -21,7 +21,7 @@ CSRCS += $(shell find $(CPATH) -name *.c)
 
 CFLAGS ?= -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-CFLAGS += -CFLAGS -fpermissive -CFLAGS "-w"
+CFLAGS += -CFLAGS -fpermissive 
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
