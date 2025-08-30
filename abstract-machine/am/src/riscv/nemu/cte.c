@@ -17,7 +17,7 @@ Context* __am_irq_handle(Context *c) {
         ev.event=EVENT_YIELD;
         c->mepc += 4;
           #ifdef CONFIG_ETRACE
-          printf("Trap: EVENT_YIELD\n"); 
+          // printf("Trap: EVENT_YIELD\n"); 
           #endif
         break;
       default: ev.event = EVENT_ERROR; 
