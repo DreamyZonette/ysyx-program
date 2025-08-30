@@ -53,7 +53,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   uintptr_t stack_top = (uintptr_t)(kstack.end);
   stack_top = stack_top & ~0xF;
   Context *c = (Context*)(stack_top - sizeof(Context) + 4);
-  printf("Sizeof Context: %d bytes\n", sizeof(struct Context));
+  printf("Sizeof Context: %d bytes\n", sizeof(Context));
   memset(c, 0, sizeof(Context));
   c->mepc = (uintptr_t)entry;
   c->gpr[10] = (uintptr_t)arg;
