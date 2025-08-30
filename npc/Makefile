@@ -1,5 +1,5 @@
 TOP_NAME = top
-IMG ?= /home/long/ysyx-workbench/npc/add-minirv-npc.bin
+IMG ?= /home/long/ysyx-workbench/npc/demo/add-minirv-npc.bin
 #IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
@@ -16,10 +16,12 @@ INCLUDES = $(addprefix -I, $(INC_PATH))
 VSRCS := $(shell find $(VPATH) -name *.v)
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
+# NEMU中的反汇编
+# include $(NEMU_HOME)/src/utils/filelist.mk
 
 CFLAGS ?= -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-CFLAGS += -CFLAGS -fpermissive
+CFLAGS += -CFLAGS -fpermissive #-CFLAGS "-w"
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
