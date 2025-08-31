@@ -184,7 +184,7 @@ module WBU(
                         else if (i_ecall_signal == 1'b1) begin
                             // $strobe("wbu:ecall_start:next_pc = 0x%08x, mtvec = 0x%08x, mepc = 0x%08x, mcause = 0x%08x", next_pc, i_mtvec_rdata, i_cur_pc + 4, 32'd11);
                             next_pc <= i_mtvec_rdata;
-                            mepc_wdata <= i_cur_pc + 4;
+                            mepc_wdata <= i_cur_pc + 4;// 需要软硬协同，但是目前暂不支持
                             mcause_wdata <= 32'd11; // 没有实现特权级转换
                         end
                         else if (i_mret_signal) begin
