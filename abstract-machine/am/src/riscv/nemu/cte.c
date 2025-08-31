@@ -57,7 +57,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   c->mepc = (uintptr_t)entry;
   c->gpr[10] = (uintptr_t)arg;
   c->gpr[2] = stack_top;
-  c->mstatus = 0x1800;
+  //c->mstatus = 0x1800;
   // printf("创建上下文: %d -> 大小=%d, 栈顶=%d\n", 
   //      c, sizeof(Context), stack_top);
   return c;
