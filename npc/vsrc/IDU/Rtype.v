@@ -76,7 +76,7 @@ module Rtype (
                     o_sub_signal  = (fun1 == 3'b000) ? 1'b1 : 1'b0;
                     o_sra_signal  = (fun1 == 3'b101) ? 1'b1 : 1'b0;
                 end
-                else if (fun2 == 7'b0000001) begin
+                // else if (fun2 == 7'b0000001) begin
                     // o_mul_signal   = (fun1 == 3'b000) ? 1'b1 : 1'b0;
                     // o_mulh_signal  = (fun1 == 3'b001) ? 1'b1 : 1'b0;
                     // o_mulhu_signal = (fun1 == 3'b010) ? 1'b1 : 1'b0;
@@ -85,7 +85,7 @@ module Rtype (
                     // o_divu_signal  = (fun1 == 3'b101) ? 1'b1 : 1'b0;
                     // o_rem_signal   = (fun1 == 3'b110) ? 1'b1 : 1'b0;
                     // o_remu_signal  = (fun1 == 3'b111) ? 1'b1 : 1'b0;
-                end
+                // end
                 else begin
                     unknown_intstruction = 1'b1;
                 end

@@ -13,19 +13,19 @@ int functab_capacity = 0;
 // 读取ELF文件并提取函数名
 void extract_functions(const char* elf_path) {
   //初始化
-		functab_count = 0;
-    functab_capacity = 0;
-if (functab) {
+	functab_count = 0;
+  functab_capacity = 0;
+  if (functab) {
     free(functab);
     functab = NULL;
-}
+  }
 
-		printf("%s\n", elf_path);
-    FILE* fp = fopen(elf_path, "rb");
-    if (!fp) {
-        perror("Failed to open file");
-        return;
-    }
+	printf("%s\n", elf_path);
+  FILE* fp = fopen(elf_path, "rb");
+  if (!fp) {
+    perror("Failed to open file");
+    return;
+  }
 
     // 1. 读取ELF头部
     Elf32_Ehdr ehdr;
@@ -37,16 +37,16 @@ if (functab) {
 	}
   // 检查ELF魔数
     if (memcmp(ehdr.e_ident, ELFMAG, SELFMAG) != 0) {
-        fprintf(stderr, "Not an ELF file: %s\n", elf_path);
-        fclose(fp);
-        return;
+      fprintf(stderr, "Not an ELF file: %s\n", elf_path);
+      fclose(fp);
+      return;
     }
 
-    // 检查32/64位兼容性
+    // 检查32位ELF
     if (ehdr.e_ident[EI_CLASS] != ELFCLASS32) {
-        fprintf(stderr, "Only 32-bit ELF files supported: %s\n", elf_path);
-        fclose(fp);
-        return;
+      fprintf(stderr, "Only 32-bit ELF files supported: %s\n", elf_path);
+      fclose(fp);
+      return;
     }
 
     // 2. 定位节区头部表
@@ -117,34 +117,33 @@ if (functab) {
 
     //printf("Found functions:\n");
     for (int i = 0; i < sym_count; i++) {
-        unsigned char type = ELF32_ST_TYPE(symbols[i].st_info);
-        if (type == STT_FUNC) {  // 过滤函数符号
-          char* func_name = strtab + symbols[i].st_name;
-            
-          if (functab_count >= functab_capacity) {
-          // 计算新容量：首次分配32个，之后每次翻倍
-            int new_capacity = (functab_capacity == 0) ? 32 : functab_capacity * 2;
-            
+      unsigned char type = ELF32_ST_TYPE(symbols[i].st_info);
+      if (type == STT_FUNC) {  // 过滤函数符号
+        char* func_name = strtab + symbols[i].st_name;
+          
+        if (functab_count >= functab_capacity) {
+        // 计算新容量
+          int new_capacity = (functab_capacity == 0) ? 32 : functab_capacity * 2;
+          
             // 重新分配内存
-            Functab *new_tab = (Functab*)realloc(functab, new_capacity * sizeof(Functab));
-            
-            if (!new_tab) {
-                // 内存分配失败处理
-              fprintf(stderr, "Error: Memory allocation failed for %d functions\n", new_capacity);
-              fprintf(stderr, "Current function count: %d, aborting further processing\n", functab_count);
-              break;  // 中断循环
-            }
-            functab = new_tab;
-            functab_capacity = new_capacity;
-            //printf("Resized function table to %d entries\n", functab_capacity);
+          Functab *new_tab = (Functab*)realloc(functab, new_capacity * sizeof(Functab));
+          
+          if (!new_tab) {
+            fprintf(stderr, "Error: Memory allocation failed for %d functions\n", new_capacity);
+            fprintf(stderr, "Current function count: %d, aborting further processing\n", functab_count);
+            break; 
           }
-
-					strncpy(functab[functab_count].func_name, func_name, sizeof(functab[0].func_name) - 1);
-					functab[functab_count].func_name[sizeof(functab[0].func_name) - 1] = '\0';
-					functab[functab_count].value = symbols[i].st_value;
-					functab_count ++;
-					//printf("  [%s@%08x]\n", func_name, symbols[i].st_value);
+          functab = new_tab;
+          functab_capacity = new_capacity;
+          //printf("Resized function table to %d entries\n", functab_capacity);
         }
+
+				strncpy(functab[functab_count].func_name, func_name, sizeof(functab[0].func_name) - 1);
+				functab[functab_count].func_name[sizeof(functab[0].func_name) - 1] = '\0';
+				functab[functab_count].value = symbols[i].st_value;
+				functab_count ++;
+				//printf("  [%s@%08x]\n", func_name, symbols[i].st_value);
+      }
     }
 
 		//便历程序

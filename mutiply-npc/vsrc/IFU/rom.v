@@ -1,5 +1,5 @@
 
-module sram # (parameter DELAY = 1)(
+module rom # (parameter DELAY = 1)(
     input i_sys_clk,
     input i_sys_rst_n,
     input [31:0] i_addr, // address

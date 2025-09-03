@@ -15,9 +15,9 @@ Context* __am_irq_handle(Context *c) {
     switch (cause) {
       case 8: case 9: case 11:
         ev.event=EVENT_YIELD;
-        c->mepc += 4;
+          c->mepc += 4;
           #ifdef CONFIG_ETRACE
-          printf("Trap: EVENT_YIELD\n"); 
+          // printf("Trap: EVENT_YIELD\n"); 
           #endif
         break;
       default: ev.event = EVENT_ERROR; 
@@ -52,8 +52,7 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   uintptr_t stack_top = (uintptr_t)(kstack.end);
   stack_top = stack_top & ~0xF;
-  Context *c = (Context*)(stack_top - sizeof(Context) + 4);
-  
+  Context *c = (Context*)(stack_top - sizeof(Context));
   memset(c, 0, sizeof(Context));
   c->mepc = (uintptr_t)entry;
   c->gpr[10] = (uintptr_t)arg;
@@ -65,6 +64,8 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
 }
 
 void yield() {
+
+  // printf("Sizeof Context: %d bytes\n", sizeof(Context));
 #ifdef __riscv_e
   asm volatile("li a5, -1; ecall");
 #else

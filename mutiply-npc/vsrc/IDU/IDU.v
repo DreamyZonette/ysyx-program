@@ -4,7 +4,7 @@ module IDU (
     input wire [31:0]  i_inst,
     input wire i_ifu_valid,
     input wire i_exu_ready,
-    input wire i_lsu_ready,
+    //input wire i_lsu_ready,
     output wire o_idu_ready,
     output wire o_idu_valid,
     output wire [4:0] o_rs1,
@@ -92,6 +92,7 @@ module IDU (
     wire U_unknown_inst;
     wire B_unknown_inst;
     wire decode_valid;
+    wire LS_signal;
     reg Btype_signal;
     reg Itype_signal;
     reg Jtype_signal;
@@ -119,6 +120,8 @@ module IDU (
     assign o_rd = rd;
     assign o_csr_addr = csr_addr;
     assign decode_valid = 1'b1;// 暂时不考虑
+    assign LS_signal = o_lb_signal | o_lh_signal | o_lw_signal | o_lbu_signal | o_lhu_signal | 
+                    o_sw_signal | o_sh_signal | o_sb_signal;
 
     // 状态转移逻辑
     always @ (*) begin
@@ -136,8 +139,23 @@ module IDU (
                     end
                 end
                 DECODE: begin
-                    if(decode_valid && i_lsu_ready && i_exu_ready) begin
-                        next_state = IDLE;
+                    if(decode_valid) begin
+                        if (LS_signal) begin
+                            if (i_exu_ready) begin
+                                next_state = IDLE;
+                            end
+                            else begin
+                                next_state = DECODE;
+                            end
+                        end
+                        else begin
+                            if (i_exu_ready) begin
+                                next_state = IDLE;
+                            end
+                            else begin
+                                next_state = DECODE;
+                            end
+                        end
                     end
                     else begin
                         next_state = DECODE;

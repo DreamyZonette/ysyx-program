@@ -17,29 +17,7 @@ module LSU(
     output wire o_load_signal,
     output reg [31:0] o_rdata,
     output wire o_lsu_valid,
-    output wire o_lsu_ready,
-    // AXI接口
-    output wire [31:0] o_axi_araddr,
-    output wire o_axi_arvalid,
-    input wire i_axi_arready,
-
-    input wire [31:0] i_axi_rdata,
-    input wire [1:0] i_axi_rresp,
-    input wire i_axi_rvalid,
-    output wire o_axi_rready,
-
-    output wire [31:0] o_axi_awaddr,
-    output wire o_axi_awvalid,
-    input wire i_axi_awready,
-    
-    output wire [31:0] o_axi_wdata,
-    output wire [3:0] o_axi_wstrb,
-    output wire o_axi_wvalid,
-    input wire i_axi_wready,
-
-    input wire [1:0] i_axi_bresp,
-    input wire i_axi_bvalid,
-    output wire o_axi_bready
+    output wire o_lsu_ready
 );
 
 localparam IDLE = 2'b00;
@@ -59,42 +37,39 @@ reg write_wrong;
 reg read_wrong;
 /* verilator lint_on UNUSEDSIGNAL */
 
-
-
-// wire [31:0] i_axi_rdata;
+wire axi_arvalid;
+// wire wen;
+wire [31:0] axi_rdata;
 wire load_signal;
 wire store_signal;
+// wire ram_valid;
+wire axi_arready;
+wire axi_awready;
+wire axi_rvalid;
+wire axi_rready;
+wire axi_wvalid;
+wire axi_wready;
+wire axi_bvalid;
+wire axi_bready;
+wire axi_awvalid;
+wire [1:0] axi_bresp;
+wire [1:0] axi_rresp;
 
-// wire axi_arready;
-// wire axi_awready;
-// wire axi_rvalid;
-// wire axi_rready;
-// wire axi_wvalid;
-// wire axi_wready;
-// wire axi_bvalid;
-// wire axi_bready;
-// wire axi_awvalid;
-// wire axi_arvalid;
-// wire [1:0] axi_bresp;
-// wire [1:0] axi_rresp;
-
-
+// assign o_rdata = rdata;
 assign load_signal = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign store_signal = i_sb_signal | i_sh_signal | i_sw_signal;
 assign o_load_signal = load_signal | store_signal;
-assign o_lsu_ready = (state == IDLE) && i_axi_arready;
-assign o_lsu_valid = (state == LOAD_DONE) || (state == LOAD && i_axi_rvalid && i_wbu_ready) || (state == STORE && i_axi_bvalid);
+assign o_lsu_ready = (state == IDLE);
+assign o_lsu_valid = (state == LOAD_DONE) || (state == LOAD && axi_rvalid && i_wbu_ready) || (state == STORE && axi_bvalid);
 
-// assign o_axi_arvalid = (state == LOAD);
-assign o_axi_arvalid = (state == LOAD) && load_signal;
-assign o_axi_awvalid = (state == STORE) && store_signal;
-assign o_axi_wvalid = (state == STORE);
-assign o_axi_rready = (state == LOAD) || (state == LOAD_DONE);
-assign o_axi_bready = (state == STORE);
-assign o_axi_araddr = axi_araddr;
-assign o_axi_awaddr = axi_awaddr;
-assign o_axi_wdata = axi_wdata;
-assign o_axi_wstrb = axi_wstrb;
+assign axi_arvalid = (state == LOAD);
+assign axi_awvalid = (state == STORE);
+assign axi_wvalid = (state == STORE);
+// assign axi_arvalid = count >= delay_count ? (state == LOAD) : 0;
+// assign axi_awvalid = count >= delay_count ? (state == STORE) : 0;
+// assign axi_wvalid = count >= delay_count ? (state == STORE) : 0;
+assign axi_rready = (state == LOAD) || (state == LOAD_DONE);
+assign axi_bready = (state == STORE);
 
 // 状态转移逻辑
 always @(*) begin
@@ -104,10 +79,10 @@ always @(*) begin
     else begin
         case (state)
             IDLE: begin
-                if(i_exu_valid  && load_signal && i_axi_arready) begin
+                if(i_exu_valid  && load_signal && axi_arready) begin
                     next_state = LOAD;
                 end
-                else if(i_exu_valid  && store_signal && i_axi_awready && i_axi_wready) begin
+                else if(i_exu_valid  && store_signal && axi_awready && axi_wready) begin
                     next_state = STORE;
                 end
                 else begin
@@ -115,7 +90,7 @@ always @(*) begin
                 end
             end
             LOAD: begin
-                if (i_axi_rvalid) begin
+                if (axi_rvalid) begin
                     if (i_wbu_ready) begin
                         next_state = IDLE;
                     end
@@ -136,7 +111,7 @@ always @(*) begin
                 end
             end
             STORE: begin
-                if(i_axi_bvalid) begin
+                if(axi_bvalid) begin
                     next_state = IDLE;
                 end
                 else begin
@@ -179,11 +154,11 @@ always @(*) begin
     end
     else begin
         case (1'b1) 
-            mem_op_type[7]: o_rdata = {24'b0, i_axi_rdata[7:0]};  // lbu
-            mem_op_type[6]: o_rdata = {16'b0, i_axi_rdata[15:0]}; // lhu
-            mem_op_type[5]: o_rdata = {{24{i_axi_rdata[7]}}, i_axi_rdata[7:0]}; // lb
-            mem_op_type[4]: o_rdata = {{16{i_axi_rdata[15]}}, i_axi_rdata[15:0]}; // lh
-            mem_op_type[3]: o_rdata = i_axi_rdata; // lw
+            mem_op_type[7]: o_rdata = {24'b0, axi_rdata[7:0]};  // lbu
+            mem_op_type[6]: o_rdata = {16'b0, axi_rdata[15:0]}; // lhu
+            mem_op_type[5]: o_rdata = {{24{axi_rdata[7]}}, axi_rdata[7:0]}; // lb
+            mem_op_type[4]: o_rdata = {{16{axi_rdata[15]}}, axi_rdata[15:0]}; // lh
+            mem_op_type[3]: o_rdata = axi_rdata; // lw
             default: o_rdata = 32'b0;
         endcase
     end
@@ -221,43 +196,79 @@ always @(posedge i_sys_clk) begin
     else begin
         write_wrong <= 0;
         read_wrong <= 0;
-        if(i_axi_rvalid) begin
-            read_wrong <= i_axi_rresp != 2'b00;
+        if(axi_rvalid) begin
+            read_wrong <= axi_rresp != 2'b00;
         end
-        else if (i_axi_bvalid)begin
-            write_wrong <= i_axi_bresp != 2'b00;
+        else if (axi_bvalid)begin
+            write_wrong <= axi_bresp != 2'b00;
         end
     end
 end
 
+// reg [3:0] lsfr_data;
+// reg [11:0] delay_count;
+// reg [11:0] count;
+// always @(posedge i_sys_clk) begin
+//     if (!i_sys_rst_n) begin
+//         lsfr_data <= 4'b1111;
+//     end
+//     else begin
+//         if (lsfr_data == 4'b0000) begin
+//             lsfr_data <= 4'b1111;
+//         end
+//         lsfr_data <= {lsfr_data[2:0], lsfr_data[3] ^ lsfr_data[1]};
+//     end
+    
+// end
+
+// always @(posedge i_sys_clk) begin
+//     if(state == IDLE && 
+//     (i_exu_valid  && load_signal && axi_arready) || 
+//     (i_exu_valid  && store_signal && axi_awready && axi_wready)) begin
+//         /* verilator lint_off WIDTHEXPAND */
+//         delay_count <= lsfr_data;
+//         /* verilator lint_on WIDTHEXPAND */
+//     end                
+// end
+// always @(posedge i_sys_clk) begin
+//     if(state == LOAD || state == STORE) begin
+//         if (count < delay_count) begin
+//             count <= count + 1;
+//         end
+//     end 
+//     else begin
+//         count <= 0; 
+//     end
+                  
+// end
 
 
-// sram # (1)ram_u
-// (
-//     .i_sys_clk(i_sys_clk),
-//     .i_sys_rst_n(i_sys_rst_n),
-//     // AR
-//     .i_araddr(axi_araddr),
-//     .i_arvalid(axi_arvalid), // 看做读使能
-//     .o_arready(axi_arready),
-//     // R
-//     .o_rdata(axi_rdata),
-//     .o_rresp(axi_rresp),
-//     .o_rvalid(axi_rvalid),
-//     .i_rready(axi_rready),
-//     // AW
-//     .i_awaddr(axi_awaddr), 
-//     .i_awvalid(axi_awvalid), // 看做写使能
-//     .o_awready(axi_awready),
-//     // W
-//     .i_wvalid(axi_wvalid), 
-//     .i_wstrb(axi_wstrb), 
-//     .i_wdata(axi_wdata), 
-//     .o_wready(axi_wready),
-//     // B
-//     .o_bresp(axi_bresp),
-//     .o_bvalid(axi_bvalid),
-//     .i_bready(axi_bready)
-// );
+sram # (1)ram_u
+(
+    .i_sys_clk(i_sys_clk),
+    .i_sys_rst_n(i_sys_rst_n),
+    // AR
+    .i_araddr(axi_araddr),
+    .i_arvalid(axi_arvalid), // 看做读使能
+    .o_arready(axi_arready),
+    // R
+    .o_rdata(axi_rdata),
+    .o_rresp(axi_rresp),
+    .o_rvalid(axi_rvalid),
+    .i_rready(axi_rready),
+    // AW
+    .i_awaddr(axi_awaddr), 
+    .i_awvalid(axi_awvalid), // 看做写使能
+    .o_awready(axi_awready),
+    // W
+    .i_wvalid(axi_wvalid), 
+    .i_wstrb(axi_wstrb), 
+    .i_wdata(axi_wdata), 
+    .o_wready(axi_wready),
+    // B
+    .o_bresp(axi_bresp),
+    .o_bvalid(axi_bvalid),
+    .i_bready(axi_bready)
+);
 
 endmodule

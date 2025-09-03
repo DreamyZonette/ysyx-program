@@ -118,7 +118,7 @@ module Itype (
             
         end
         7'b1110011: begin  // ebreak
-            if(i_inst == 32'b 00000000000100000000000001110011) begin
+            if(i_inst == 32'h00100073) begin
                 o_ebreak_signal = 1'b1;
             end else if(i_inst == 32'h00000073) begin
                 o_ecall_signal = 1'b1;
