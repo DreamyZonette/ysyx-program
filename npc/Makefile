@@ -19,12 +19,13 @@ CSRCS += $(shell find $(CPATH) -name *.c)
 # NEMU中的反汇编
 # include $(NEMU_HOME)/src/utils/filelist.mk
 
-CFLAGS ?= -Wall 
+CFLAGS := -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
 CFLAGS += -CFLAGS -fpermissive 
-VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
+VFLAGS := --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
+VFLAGS += --timescale "1ns/1ns" --no-timing
 LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
 #LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
