@@ -126,7 +126,7 @@
     .reset_n(reset_n),
     .ifu_raddr(pc),
     .pc_valid(pc_valid),
-    .wbu_valid(wbu_valid),
+    // .wbu_valid(wbu_valid),
     .lsu_ready(lsu_ready),
     .wbu_ready(wbu_ready),
     .ifu_valid(ifu_valid),
