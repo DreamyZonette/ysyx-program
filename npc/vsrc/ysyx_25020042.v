@@ -21,7 +21,7 @@
             end
         end
 
-    assign halt = EXU_halt_signal;
+    assign halt = unknown_signal;
     assign de_pc = pc;
     assign de_next_pc = next_pc;
     assign de_inst = instruction;
@@ -81,7 +81,6 @@
     wire ecall_signal;
     wire mret_signal;
     wire unknown_signal;
-    wire EXU_halt_signal;
     wire [31:0] wdata;
     wire [31:0] imm;
     wire [31:0] src1;

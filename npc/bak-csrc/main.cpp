@@ -50,14 +50,6 @@ void npc_engine_start() {
     top->reset_n = 1;
     top->clock = 0;
     step_and_dump_wave();
-
-    // top->clock = 0;
-    // top->reset_n = 0;
-    // step_and_dump_wave();
-    // top->reset_n = 1;
-    // step_and_dump_wave();
-    // top->clock = 1;
-    // step_and_dump_wave();
 }
 
 int main(int argc, char *argv[]){
