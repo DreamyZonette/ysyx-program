@@ -113,6 +113,9 @@ always @(posedge clock) begin
                     wbu_valid <= 1'b1;
                 end
             end
+            default: begin
+                state <= IDLE;
+            end
         endcase
     end
 end
