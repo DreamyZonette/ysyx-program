@@ -2,8 +2,7 @@ module IFU(
     input clock,
     input reset_n,
     input [31:0] ifu_raddr,
-    input wbu_valid,
-    // input pc_valid,
+    input pc_valid,
     input lsu_ready,
     input wbu_ready,
     output reg ifu_valid,
@@ -27,7 +26,7 @@ always @(posedge clock) begin
     else begin
         case(state)
             IDLE: begin
-                if(wbu_valid) begin
+                if(pc_valid) begin
                     state <= WAIT;
                 end
                 else begin

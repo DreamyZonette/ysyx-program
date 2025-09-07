@@ -32,7 +32,7 @@
 
 
     wire wbu_valid;
-    // wire pc_valid;
+    wire pc_valid;
     wire lsu_ready;
     wire wbu_ready;
     wire ifu_valid;
@@ -117,7 +117,7 @@
     .reset_n(reset_n),
     .i_next_pc(next_pc),
     .wbu_valid(wbu_valid),
-    // .pc_valid(pc_valid),
+    .pc_valid(pc_valid),
     .o_pc(pc)
     );
     
@@ -125,7 +125,7 @@
     .clock(clock),
     .reset_n(reset_n),
     .ifu_raddr(pc),
-    // .pc_valid(pc_valid),
+    .pc_valid(pc_valid),
     .wbu_valid(wbu_valid),
     .lsu_ready(lsu_ready),
     .wbu_ready(wbu_ready),
