@@ -27,10 +27,10 @@ module WBU(
     output reg [31:0] reg_wdata,
     /* verilator lint_off UNDRIVEN */
     output reg [31:0] o_mstatus_wdata,
-    /* verilator lint_on UNDRIVEN */
     /* verilator lint_off UNUSEDSIGNAL */
     output reg [31:0] o_mtvec_wdata,
     /* verilator lint_on UNUSEDSIGNAL */
+    /* verilator lint_on UNDRIVEN */
     output reg [31:0] o_mepc_wdata,
     output reg [31:0] o_mcause_wdata,
     output reg [31:0] next_pc
