@@ -38,8 +38,10 @@ module gpr  (
     Reg #(32, 32'b0) a5   (clock, reset_n, i_data, reg_file[15], wen[15]);
 
 // 读取寄存器
+/* verilator lint_off WIDTHTRUNC */
     assign o_src1 = (i_rs1 == 5'b0)? 32'b0 : reg_file[i_rs1];
     assign o_src2 = (i_rs2 == 5'b0)? 32'b0 : reg_file[i_rs2];
+/* verilator lint_on WIDTHTRUNC */
 
 endmodule
 
