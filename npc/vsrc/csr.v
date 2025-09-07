@@ -1,5 +1,5 @@
 module csr (
-    input i_sys_clk,
+    input clock,
     input i_sys_rst_n,
     input i_ecall_signal,
     input [31:0] i_csr_wdata,
@@ -48,9 +48,9 @@ always @(*) begin
     end
 end
 
-Reg #(32, 32'h1800) mstatus (i_sys_clk, i_sys_rst_n, mstatus_wdata, o_mstatus ,  wen[0]);
-Reg #(32, 32'b0)    mtvec   (i_sys_clk, i_sys_rst_n, mtvec_wdata  , o_mtvec   ,  wen[1]);
-Reg #(32, 32'b0)    mepc    (i_sys_clk, i_sys_rst_n, mepc_wdata   , o_mepc    ,  wen[2]);
-Reg #(32, 32'b0)    mcause  (i_sys_clk, i_sys_rst_n, mcause_wdata , o_mcause  ,  wen[3]);
+Reg #(32, 32'h1800) mstatus (clock, i_sys_rst_n, mstatus_wdata, o_mstatus ,  wen[0]);
+Reg #(32, 32'b0)    mtvec   (clock, i_sys_rst_n, mtvec_wdata  , o_mtvec   ,  wen[1]);
+Reg #(32, 32'b0)    mepc    (clock, i_sys_rst_n, mepc_wdata   , o_mepc    ,  wen[2]);
+Reg #(32, 32'b0)    mcause  (clock, i_sys_rst_n, mcause_wdata , o_mcause  ,  wen[3]);
 
 endmodule

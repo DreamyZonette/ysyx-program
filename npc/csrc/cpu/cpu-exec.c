@@ -101,9 +101,9 @@ static void trace_and_difftest() {
 }
 
 void single_cycle() {
-  top->sys_clk ^= 1; top->eval();
+  top->clock ^= 1; top->eval();
   step_and_dump_wave();
-  top->sys_clk ^= 1; top->eval();
+  top->clock ^= 1; top->eval();
   step_and_dump_wave();
 }
 

@@ -1,5 +1,5 @@
 module LSU(
-    input i_sys_clk,
+    input clock,
     //input i_sys_rst_n,
     input i_lbu_signal,
     input i_lhu_signal,
@@ -28,7 +28,7 @@ wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign o_load_signal = ren;
 
-always @(negedge i_sys_clk) begin
+always @(negedge clock) begin
         //适配对齐访存
         if(i_lw_signal == 1'b1) begin
             rdata <= pmem_read(i_data, 4);

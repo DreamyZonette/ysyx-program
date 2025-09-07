@@ -1,5 +1,5 @@
 module IDU (
-    input i_sys_clk,
+    input clock,
     input i_sys_rst_n, 
     input   [31:0]  i_inst,
     input   [31:0]  i_wdata,
@@ -304,21 +304,13 @@ module IDU (
     .o_sub_signal(o_sub_signal),
     .o_slt_signal(o_slt_signal),
     .o_sltu_signal(o_sltu_signal),
-    // .o_mul_signal(o_mul_signal),
-    // .o_mulh_signal(o_mulh_signal),
-    // .o_mulhu_signal(o_mulhu_signal),
-    // .o_mulhsu_signal(o_mulhsu_signal),
-    // .o_div_signal(o_div_signal),
-    // .o_divu_signal(o_divu_signal), 
-    // .o_rem_signal(o_rem_signal),
-    // .o_remu_signal(o_remu_signal),
     .o_sll_signal(o_sll_signal),
     .o_sra_signal(o_sra_signal),
     .o_srl_signal(o_srl_signal),
     .o_halt_signal(R_halt_signal)
     );
     gpr gpr_u(
-    .i_sys_clk(i_sys_clk),
+    .clock(clock),
     .i_sys_rst_n(i_sys_rst_n), 
     .i_rs1(rs1),
     .i_rs2(rs2),
