@@ -16,7 +16,7 @@ VerilatedContext* contextp;
 #if CONFIG_WAVE
 VerilatedVcdC* tfp;
 #endif
-Vtop* top;
+Vysyx_25020042* top;
 
 
 void sim_init(){
@@ -24,7 +24,7 @@ void sim_init(){
     #if CONFIG_WAVE
     tfp = new VerilatedVcdC;
     #endif
-    top = new Vtop;
+    top = new Vysyx_25020042;
     #if CONFIG_WAVE
     contextp->traceEverOn(true);
     top->trace(tfp,0);
