@@ -86,11 +86,6 @@ module IDU (
     reg Stype_signal;
     reg Utype_signal;
     reg invalid_opcode_signal;
-    // reg [4:0] rs1;
-    // reg [4:0] rs2;
-    // reg [4:0] rd;
-    //reg [4:0] shamt;
-    reg [31:0] wdata;
 
     assign opcode = i_inst[6:0];
     assign o_halt_signal = (invalid_opcode_signal | 
