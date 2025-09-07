@@ -5,10 +5,10 @@ module IFU(
 );
 import "DPI-C" function int pmem_read(input int raddr, input int len);
 
-// assign o_instruction = $unsigned(pmem_read(i_pc, 4)); 
+assign o_instruction = $unsigned(pmem_read(ifu_raddr, 4)); 
 
-always @(posedge clock) begin
-  ifu_rdata <= pmem_read(pmem_read(ifu_raddr, 4));
-end
+// always @(posedge clock) begin
+//   ifu_rdata <= pmem_read(pmem_read(ifu_raddr, 4));
+// end
 
 endmodule
