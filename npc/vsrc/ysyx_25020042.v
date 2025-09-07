@@ -134,8 +134,8 @@
     );
 
     IDU IDU_u (
-    .clock(clock),
-    .reset_n(reset_n),
+    // .clock(clock),
+    // .reset_n(reset_n),
     .i_inst(instruction),
     .o_imm(imm),
     .o_offset(offset),
