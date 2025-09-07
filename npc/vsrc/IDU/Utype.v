@@ -4,7 +4,7 @@ module Utype (
     output reg [31:0] o_imm,
     output reg o_auipc_signal,
     output reg o_lui_signal,
-    output o_unknown_inst
+    output o_halt_signal
 );
 
     wire [6:0] opcode;
@@ -16,7 +16,7 @@ module Utype (
     assign opcode = i_inst[6:0];
     assign o_rd   = i_inst[11:7];
     assign imm    = i_inst[31:12];
-    assign o_unknown_inst = unknown_intstruction;
+    assign o_halt_signal = unknown_intstruction;
 
     always @ (*) begin
         // 初始化

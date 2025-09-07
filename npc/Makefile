@@ -7,25 +7,26 @@ NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
 TEST ?=
-TEST_OBJ = $(shell find $(VPATH) -name $(TEST).v)
+TEST_OBJ = $(wildcard $(VPATH)/**/$(TEST).v)
+TEST_OBJ += $(wildcard $(VPATH)/$(TEST)/*.v)
 VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 
-VSRCS := $(shell find $(VPATH) -name *.v)
+VSRCS := $(wildcard $(VPATH)/**/*.v)
+VSRCS += $(VPATH)/*.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
-CSRCS += $(shell find $(CPATH) -name *.c)
-# NEMU中的反汇编
-# include $(NEMU_HOME)/src/utils/filelist.mk
+CSRCS += $(wildcard $(CPATH)/**/*.c)
+CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.c)
+CSRCS += $(wildcard $(CPATH)/device/io/*.c)
 
-CFLAGS := -Wall 
+CFLAGS ?= -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-CFLAGS += -CFLAGS -fpermissive 
-VFLAGS := --cc --exe -I$(VPATH) --build -j 0 --trace
+CFLAGS += -CFLAGS -fpermissive
+VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
-VFLAGS += --timescale "1ns/1ns" --no-timing
 LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
 #LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
