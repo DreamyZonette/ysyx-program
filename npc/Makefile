@@ -1,4 +1,4 @@
-TOP_NAME = top
+TOP_NAME = ysyx_25020042
 IMG ?= /home/long/ysyx-workbench/npc/demo/add-minirv-npc.bin
 #IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
@@ -14,12 +14,9 @@ CPATH = $(WORK_DIR)/csrc
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 
-VSRCS := $(wildcard $(VPATH)/**/*.v)
-VSRCS += $(VPATH)/*.v
+VSRCS := $(shell find $(VPATH) -name *.v)
 CSRCS := $(wildcard $(CPATH)/*.cpp)
-CSRCS += $(wildcard $(CPATH)/**/*.c)
-CSRCS += $(wildcard $(CPATH)/monitor/sdb/*.c)
-CSRCS += $(wildcard $(CPATH)/device/io/*.c)
+CSRCS += $(shell find $(CPATH) -name *.c)
 
 CFLAGS ?= -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
