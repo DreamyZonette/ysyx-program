@@ -38,6 +38,6 @@ extern VerilatedContext* contextp;
 #if CONFIG_WAVE
 extern VerilatedVcdC* tfp;
 #endif
-extern Vtop* top;
+extern Vysyx_25020042* top;
 
 #endif
