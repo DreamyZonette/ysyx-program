@@ -1,12 +1,11 @@
    module ysyx_25020042 (
         input clock,
-        input sys_rst_n,
-        // input [31:0] inst,
+        input reset_n,
         output [31:0] de_pc,
         output [31:0] de_next_pc,
         output [31:0] de_inst,
         output halt,
-        output [31:0] reg_data [0:31],
+        output [31:0] reg_data [0:15],
         output [31:0] de_mstatus,
         output [31:0] de_mtvec,
         output [31:0] de_mepc,
@@ -20,9 +19,6 @@
             if (ebreak_signal == 1'b1) begin
                 dpi_ebreak();  // 调用 DPI-C 函数
             end
-            // else if (instruction == 32'h0000006F) begin
-            //     dpi_return();
-            // end
         end
 
     assign halt = EXU_halt_signal | IDU_halt_signal;
@@ -34,6 +30,13 @@
     assign de_mepc = mepc;
     assign de_mcause = mcause;
 
+
+    wire wbu_valid;
+    wire pc_valid;
+    wire lsu_ready;
+    wire wbu_ready;
+    wire ifu_valid;
+    wire lsu_valid;
 
     wire addi_signal;
     wire andi_signal;
@@ -64,14 +67,6 @@
     wire sub_signal;
     wire slt_signal;
     wire sltu_signal;
-    // wire mul_signal;
-    // wire mulh_signal;
-    // wire mulhu_signal;
-    // wire mulhsu_signal;
-    // wire div_signal;
-    // wire divu_signal;
-    // wire rem_signal;
-    // wire remu_signal;
     wire sra_signal;
     wire srl_signal;
     wire beq_signal;
@@ -100,7 +95,7 @@
     wire [31:0] exu_data;
     wire [31:0] rdata;
     wire o_B_jump_signal;
-    wire load_signal;
+    wire lsu_busy;
     wire [11:0] csr_addr;
     wire [31:0] csr_data;
     wire [31:0] mstatus;
@@ -112,29 +107,36 @@
     wire [31:0] mtvec_wdata;
     wire [31:0] mepc_wdata;
     wire [31:0] csr_wdata;
+    wire [4:0]  rs1;
+    wire [4:0]  rs2;
+    wire [4:0]  rd;
 
 
 
     PC PC_u(
     .clock(clock),
-    .i_sys_rst_n(sys_rst_n),
+    .reset_n(reset_n),
     .i_next_pc(next_pc),
+    .wbu_valid(wbu_valid),
+    .pc_valid(pc_valid),
     .o_pc(pc)
     );
     
     IFU IFU_u (
-    //.clock(clock),
+    .clock(clock),
+    .reset_n(reset_n),
     .ifu_raddr(pc),
-    .o_instruction(instruction)
+    .pc_valid(pc_valid),
+    .lsu_ready(lsu_ready),
+    .wbu_ready(wbu_ready),
+    .ifu_valid(ifu_valid),
+    .ifu_rdata(instruction)
     );
 
     IDU IDU_u (
     .clock(clock),
-    .i_sys_rst_n(sys_rst_n),
+    .reset_n(reset_n),
     .i_inst(instruction),
-    .i_wdata(wdata),
-    .o_src1(src1),
-    .o_src2(src2),
     .o_imm(imm),
     .o_offset(offset),
     .o_shamt(shamt),
@@ -183,7 +185,9 @@
     .o_ecall_signal(ecall_signal),
     .o_mret_signal(mret_signal),
     .o_halt_signal(IDU_halt_signal),
-    .o_reg_data(reg_data)
+    .rs1(rs1),
+    .rs2(rs2),
+    .rd(rd)
     );
 
     EXU EXU_u (
@@ -242,13 +246,14 @@
     );
 
     WBU WBU_u (
-    .i_sys_rst_n(sys_rst_n),
+    .clock(clock),
+    .reset_n(reset_n),
     .i_exu_data(exu_data),
     .i_cur_pc(pc),
     .i_B_jump_signal(o_B_jump_signal),
     .i_jal_signal(jal_signal),
     .i_jalr_signal(jalr_signal),
-    .i_load_signal(load_signal),
+    .i_lsu_busy(lsu_busy),
     .i_csrrw_signal(csrrw_signal),
     .i_csrrs_signal(csrrs_signal),
     .i_mret_signal(mret_signal),
@@ -259,8 +264,12 @@
     .i_mtvec_rdata(mtvec),
     .i_mepc_rdata(mepc),
     .i_mcause_rdata(mcause),
-    .o_csr_wdata(csr_wdata),
-    .o_reg_wdata(wdata),
+    .ifu_valid(ifu_valid),
+    .lsu_valid(lsu_valid),
+    .wbu_ready(wbu_ready),
+    .wbu_valid(wbu_valid),
+    .csr_wdata(csr_wdata),
+    .reg_wdata(wdata),
     .o_mstatus_wdata(mstatus_wdata),
     .o_mtvec_wdata(mtvec_wdata),
     .o_mepc_wdata(mepc_wdata),
@@ -270,7 +279,7 @@
 
     LSU LSU_u (
     .clock(clock),
-    //.i_sys_rst_n(sys_rst_n),
+    .reset_n(reset_n),
     .i_lbu_signal(lbu_signal),
     .i_lhu_signal(lhu_signal),
     .i_lb_signal(lb_signal),
@@ -282,12 +291,16 @@
     .i_src2(src2),
     .i_data(exu_data),
     .i_wmask(wmask),
-    .o_load_signal(load_signal),
+    .ifu_valid(ifu_valid),
+    .wbu_ready(wbu_ready),
+    .lsu_valid(lsu_valid),
+    .lsu_ready(lsu_ready),
+    .o_lsu_busy(lsu_busy),
     .o_rdata(rdata)
 );
     csr csr_u (
     .clock(clock),
-    .i_sys_rst_n(sys_rst_n),
+    .reset_n(reset_n),
     .i_ecall_signal(ecall_signal),
     .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),
@@ -295,11 +308,23 @@
     .i_mstatus_wdata(mstatus_wdata),
     .i_mtvec_wdata(mtvec_wdata),
     .i_mepc_wdata(mepc_wdata),
+    .wbu_valid(wbu_valid),
     .o_mstatus(mstatus),
     .o_mtvec(mtvec),
     .o_mepc(mepc),
     .o_mcause(mcause),
     .o_csr_rdata(csr_data)
 );
-   
+   gpr gpr_u(
+    .clock(clock),
+    .reset_n(reset_n), 
+    .i_rs1(rs1),
+    .i_rs2(rs2),
+    .i_rd(rd),
+    .i_data(wdata),
+    .wbu_valid(wbu_valid),
+    .o_src1(src1),
+    .o_src2(src2),
+    .o_reg_data(reg_data)
+);
     endmodule

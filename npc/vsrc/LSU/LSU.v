@@ -1,6 +1,6 @@
 module LSU(
     input clock,
-    //input i_sys_rst_n,
+    input reset_n,
     input i_lbu_signal,
     input i_lhu_signal,
     input i_lb_signal,
@@ -14,7 +14,11 @@ module LSU(
     /* verilator lint_off UNUSEDSIGNAL */
     input [3:0] i_wmask,//表示写哪些位
     /* verilator lint_on UNUSEDSIGNAL */
-    output            o_load_signal,
+    input ifu_valid,
+    input wbu_ready,
+    output reg lsu_valid,
+    output reg lsu_ready,
+    output            o_lsu_busy,
     output reg [31:0] o_rdata
 );
 
@@ -22,38 +26,70 @@ import "DPI-C" function int pmem_read(input int addr, input int len);
 import "DPI-C" function void pmem_write(
     input int addr, int len, input int data);
 
+localparam IDLE = 1'b0;
+localparam WAIT = 1'b1;
+
+reg state;
 reg [31:0] rdata;
 //wire valid = i_sys_clk;
 wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
-assign o_load_signal = ren;
+assign o_lsu_busy = ren | wen;
 
-always @(negedge clock) begin
-        //适配对齐访存
-        if(i_lw_signal == 1'b1) begin
-            rdata <= pmem_read(i_data, 4);
-            // rdata <= ram_rdata;
-        end else if(i_lhu_signal == 1'b1) begin
-            rdata <= pmem_read(i_data, 2);
-            // rdata <= ram_rdata;
-        end else if(i_lh_signal == 1'b1) begin
-            rdata <= pmem_read(i_data, 2);
-            // rdata <= ram_rdata;
-        end else if(i_lbu_signal == 1'b1) begin
-            rdata <= pmem_read(i_data, 1);
-            // rdata <= ram_rdata;
-        end else if(i_lb_signal == 1'b1) begin
-            rdata <= pmem_read(i_data, 1);
-            // rdata <= ram_rdata;
-        end
-        else if (wen) begin // 有写请求时
-            pmem_write(i_data, {28'b0, i_wmask} , i_src2);
-            // pmem_write(i_data, {28'b0, i_wmask} , i_src2);
-            rdata <= 0;
-        end
-        else begin
-            rdata <= 0;
-        end
+always @(posedge clock) begin
+    if(!reset_n) begin
+        state <= IDLE;
+        rdata <=32'b0;
+        lsu_ready <= 1'b0;
+        lsu_valid <= 1'b0;
+    end
+    else begin
+        case (state)
+            IDLE: begin
+                if(ifu_valid && (wen || ren)) begin
+                    state <= WAIT;
+                    lsu_ready <= 1'b1;
+                end
+                else begin
+                    state <= IDLE;
+                    if (lsu_valid && wbu_ready) begin
+                        lsu_valid <= 1'b0;
+                    end
+                end
+            end
+            WAIT: begin
+                if(lsu_ready) begin
+                    lsu_ready <= 1'b0;
+                end
+
+                if(i_lw_signal == 1'b1) begin
+                    rdata <= pmem_read(i_data, 4);
+                end else if(i_lhu_signal == 1'b1) begin
+                    rdata <= pmem_read(i_data, 2);
+                end else if(i_lh_signal == 1'b1) begin
+                    rdata <= pmem_read(i_data, 2);
+                end else if(i_lbu_signal == 1'b1) begin
+                    rdata <= pmem_read(i_data, 1);
+                end else if(i_lb_signal == 1'b1) begin
+                    rdata <= pmem_read(i_data, 1);
+                end
+                else if (wen) begin // 有写请求时
+                    /* verilator lint_off WIDTHEXPAND */
+                    pmem_write(i_data, i_wmask, i_src2);
+                    /* verilator lint_off WIDTHEXPAND */
+                    rdata <= 0;
+                end
+                else begin
+                    rdata <= 0;
+                end
+
+                lsu_valid <= 1'b1;
+                state <= IDLE;
+            end
+        endcase
+
+    end
+    
 end
 
 always @(*) begin
@@ -72,11 +108,4 @@ always @(*) begin
     end
 end
 
-// // 实例化测试用
-// wire [31:0] ram_rdata;
-// ram ram_u (
-//     .addr(i_data),
-//     .wdata(i_src2),
-//     .rdata(ram_rdata)
-// );
 endmodule

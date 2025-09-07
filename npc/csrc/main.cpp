@@ -43,11 +43,11 @@ void sim_exit(){
 
 void npc_engine_start() {
     top->clock = 0;
-    top->sys_rst_n = 0;
+    top->reset_n = 0;
     step_and_dump_wave();
     top->clock = 1;
     step_and_dump_wave();
-    top->sys_rst_n = 1;
+    top->reset_n = 1;
     top->clock = 0;
     step_and_dump_wave();
 }

@@ -1,10 +1,7 @@
 module IDU (
     input clock,
-    input i_sys_rst_n, 
+    input reset_n, 
     input   [31:0]  i_inst,
-    input   [31:0]  i_wdata,
-    output reg [31:0]  o_src1,
-    output reg [31:0]  o_src2,
     output reg [31:0]  o_imm,
     output reg [31:0]  o_offset,
     output reg [5:0]   o_shamt,
@@ -39,14 +36,6 @@ module IDU (
     output  o_sub_signal,
     output  o_slt_signal,
     output  o_sltu_signal,
-    // output  o_mul_signal,
-    // output  o_mulh_signal,
-    // output  o_mulhu_signal,
-    // output  o_mulhsu_signal,
-    // output  o_div_signal,
-    // output  o_divu_signal,
-    // output  o_rem_signal,
-    // output  o_remu_signal,
     output  o_sra_signal,
     output  o_srl_signal,
     output  o_beq_signal,
@@ -61,7 +50,9 @@ module IDU (
     output  o_ecall_signal,
     output  o_mret_signal,
     output  o_halt_signal,
-    output  [31:0] o_reg_data [0:31]
+    output reg [4:0] rd,
+    output reg [4:0] rs1,
+    output reg [4:0] rs2
     );
 
     wire [6:0]  opcode;
@@ -95,9 +86,9 @@ module IDU (
     reg Stype_signal;
     reg Utype_signal;
     reg invalid_opcode_signal;
-    reg [4:0] rs1;
-    reg [4:0] rs2;
-    reg [4:0] rd;
+    // reg [4:0] rs1;
+    // reg [4:0] rs2;
+    // reg [4:0] rd;
     //reg [4:0] shamt;
     reg [31:0] wdata;
 
@@ -308,17 +299,6 @@ module IDU (
     .o_sra_signal(o_sra_signal),
     .o_srl_signal(o_srl_signal),
     .o_halt_signal(R_halt_signal)
-    );
-    gpr gpr_u(
-    .clock(clock),
-    .i_sys_rst_n(i_sys_rst_n), 
-    .i_rs1(rs1),
-    .i_rs2(rs2),
-    .i_rd(rd),
-    .i_data(wdata),
-    .o_src1(o_src1),
-    .o_src2(o_src2),
-    .o_reg_data(o_reg_data)
     );
 
     endmodule

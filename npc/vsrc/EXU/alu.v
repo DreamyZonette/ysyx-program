@@ -37,14 +37,6 @@ module alu (
     input             i_xor_signal,
     input             i_srl_signal,
     input             i_sra_signal,
-    // input             i_mul_signal,
-    // input             i_mulh_signal,
-    // input             i_mulhu_signal,
-    // input             i_mulhsu_signal,
-    // input             i_div_signal,
-    // input             i_divu_signal,
-    // input             i_rem_signal,
-    // input             i_remu_signal,
     input             i_auipc_signal,
     input             i_lui_signal,
     input             i_add_signal,
@@ -135,22 +127,6 @@ module alu (
             o_data = i_src1 >> i_src2[4:0];
         end else if(i_sra_signal == 1'b1) begin
             o_data = $signed(i_src1) >>> i_src2[4:0];
-        // end else if(i_mul_signal == 1'b1) begin
-        //     o_data = i_src1 * i_src2;
-        // end else if(i_mulh_signal == 1'b1) begin
-        //     o_data = $signed(i_src1) * $signed(i_src2) >> 32;
-        // end else if(i_mulhu_signal == 1'b1) begin
-        //     o_data = i_src1 * i_src2 >> 32;
-        // end else if(i_mulhsu_signal == 1'b1) begin
-        //     o_data = $signed(i_src1) * i_src2 >> 32;
-        // end else if(i_div_signal == 1'b1) begin
-        //     o_data = $signed(i_src1) / $signed(i_src2);
-        // end else if(i_divu_signal == 1'b1) begin
-        //     o_data = i_src1 / i_src2;
-        // end else if(i_rem_signal == 1'b1) begin
-        //     o_data = $signed(i_src1) % $signed(i_src2);
-        // end else if(i_remu_signal == 1'b1) begin
-        //     o_data = i_src1 % i_src2;
         // B型
         end else if(i_beq_signal == 1'b1) begin
             o_B_jump_signal = (i_src1 == i_src2) ? 1'b1 : 1'b0;
