@@ -211,10 +211,6 @@ module IDU (
         end
     end
 
-    always @(*) begin
-        wdata = i_wdata;
-    end
-
     Itype Itype_u(
         .i_inst(i_inst),
         .o_imm(I_imm),

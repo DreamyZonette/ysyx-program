@@ -274,7 +274,7 @@
     .o_mtvec_wdata(mtvec_wdata),
     .o_mepc_wdata(mepc_wdata),
     .o_mcause_wdata(mcause_wdata),
-    .o_next_pc(next_pc)
+    .next_pc(next_pc)
     );
 
     LSU LSU_u (
