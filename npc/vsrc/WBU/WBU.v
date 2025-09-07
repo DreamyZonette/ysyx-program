@@ -35,8 +35,7 @@ module WBU(
     localparam LSU_WAIT = 2'b10;
     reg [1:0] state;
 
-    assign o_reg_wdata = reg_wdata;
-    assign o_csr_wdata = csr_wdata;
+
 
 always @(posedge clock) begin
     if(!reset_n) begin
