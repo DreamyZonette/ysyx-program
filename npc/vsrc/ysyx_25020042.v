@@ -123,7 +123,7 @@
     );
     
     IFU IFU_u (
-    .clock(clock),
+    //.clock(clock),
     .ifu_raddr(pc),
     .o_instruction(instruction)
     );
@@ -169,14 +169,6 @@
     .o_sub_signal(sub_signal),
     .o_slt_signal(slt_signal),
     .o_sltu_signal(sltu_signal),
-    // .o_mul_signal(mul_signal),
-    // .o_mulh_signal(mulh_signal),
-    // .o_mulhu_signal(mulhu_signal),
-    // .o_mulhsu_signal(mulhsu_signal),
-    // .o_div_signal(div_signal),
-    // .o_divu_signal(divu_signal),
-    // .o_rem_signal(rem_signal),
-    // .o_remu_signal(remu_signal),
     .o_sra_signal(sra_signal),
     .o_srl_signal(srl_signal),
     .o_beq_signal(beq_signal),
@@ -232,14 +224,6 @@
     .i_xor_signal(xor_signal),
     .i_srl_signal(srl_signal),
     .i_sra_signal(sra_signal),
-    // .i_mul_signal(mul_signal),
-    // .i_mulh_signal(mulh_signal),
-    // .i_mulhu_signal(mulhu_signal),
-    // .i_mulhsu_signal(mulhsu_signal),
-    // .i_div_signal(div_signal),
-    // .i_divu_signal(divu_signal),
-    // .i_rem_signal(rem_signal),
-    // .i_remu_signal(remu_signal),
     .i_auipc_signal(auipc_signal),
     .i_lui_signal(lui_signal),
     .i_add_signal(add_signal),

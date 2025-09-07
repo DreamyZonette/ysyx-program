@@ -1,5 +1,5 @@
 module IFU(
-    input clock,
+    //input clock,
     input [31:0] ifu_raddr,
     output [31:0] o_instruction
 );
