@@ -13,10 +13,12 @@ module WBU(
     input i_ecall_signal,
     input  [31:0] i_load_wdata,
     input  [31:0] i_csr_rdata,
+    /* verilator lint_off UNUSEDSIGNAL */
     input  [31:0] i_mstatus_rdata,
     input  [31:0] i_mtvec_rdata,
     input  [31:0] i_mepc_rdata,
     input  [31:0] i_mcause_rdata,
+    /* verilator lint_on UNUSEDSIGNAL */
     input  ifu_valid,
     input  lsu_valid,
     output reg wbu_ready,
