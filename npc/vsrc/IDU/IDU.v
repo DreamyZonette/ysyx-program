@@ -49,7 +49,7 @@ module IDU (
     output  o_csrrw_signal,
     output  o_ecall_signal,
     output  o_mret_signal,
-    output  o_halt_signal,
+    output  o_unknown_signal,
     output reg [4:0] rd,
     output reg [4:0] rs1,
     output reg [4:0] rs2
@@ -88,7 +88,7 @@ module IDU (
     reg invalid_opcode_signal;
 
     assign opcode = i_inst[6:0];
-    assign o_halt_signal = (invalid_opcode_signal | 
+    assign o_unknown_signal = (invalid_opcode_signal | 
         (J_halt_signal & Jtype_signal)| (S_halt_signal & Stype_signal) | 
         (R_halt_signal & Rtype_signal)| (I_halt_signal & Itype_signal) | 
         (U_halt_signal & Utype_signal)| (B_halt_signal & Btype_signal));

@@ -50,7 +50,6 @@ module alu (
     input             i_ecall_signal,
     input             i_mret_signal,
     output reg        o_B_jump_signal,
-    output reg        o_halt_signal,
     output reg [31:0] o_data
     );
 
@@ -59,7 +58,6 @@ module alu (
     always @ (*) begin
         o_data = 32'b0;
         o_B_jump_signal = 1'b0;
-        o_halt_signal = 1'b0;
         // I型
         if(i_addi_signal == 1'b1) begin
             o_data = i_src1 + i_imm;
@@ -159,10 +157,8 @@ module alu (
             o_data = i_src1 + i_imm;
         end 
         else begin
-            //o_halt_signal = 1'b1;
             o_data = 32'b0;         // 无操作
             o_B_jump_signal = 1'b0;
-            o_halt_signal = 1'b0;   // 不停止
         end
     end
     

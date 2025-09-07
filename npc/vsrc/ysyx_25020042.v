@@ -21,7 +21,7 @@
             end
         end
 
-    assign halt = EXU_halt_signal | IDU_halt_signal;
+    assign halt = EXU_halt_signal;
     assign de_pc = pc;
     assign de_next_pc = next_pc;
     assign de_inst = instruction;
@@ -80,7 +80,7 @@
     wire csrrw_signal;
     wire ecall_signal;
     wire mret_signal;
-    wire IDU_halt_signal;
+    wire unknown_signal;
     wire EXU_halt_signal;
     wire [31:0] wdata;
     wire [31:0] imm;
@@ -184,7 +184,7 @@
     .o_csrrw_signal(csrrw_signal),
     .o_ecall_signal(ecall_signal),
     .o_mret_signal(mret_signal),
-    .o_halt_signal(IDU_halt_signal),
+    .o_unknown_signal(unknown_signal),
     .rs1(rs1),
     .rs2(rs2),
     .rd(rd)
@@ -241,7 +241,6 @@
     .i_ecall_signal(ecall_signal),
     .i_mret_signal(mret_signal),
     .o_B_jump_signal(o_B_jump_signal),
-    .o_halt_signal(EXU_halt_signal),
     .o_data(exu_data)
     );
 

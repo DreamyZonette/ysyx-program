@@ -49,7 +49,6 @@ module EXU(
     input wire i_ecall_signal,
     input wire i_mret_signal,
     output wire o_B_jump_signal,
-    output wire o_halt_signal,
     output wire [31:0] o_data
 
 );
@@ -105,7 +104,6 @@ alu alu_u(
     .i_ecall_signal(i_ecall_signal),
     .i_mret_signal(i_mret_signal),
     .o_B_jump_signal(o_B_jump_signal),
-    .o_halt_signal(o_halt_signal),
     .o_data(o_data)
 );
 
