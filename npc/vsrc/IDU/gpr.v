@@ -17,7 +17,7 @@ module gpr  (
     wire [31:0] reg_file [0:15]; // 16 个寄存器
 
     assign o_reg_data = reg_file;
-    assign wen = (i_rd != 5'b0) && wbu_valid? (32'b1 << i_rd) : 32'b0; // 写使能信号
+    assign wen = (i_rd != 5'b0) && wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
 
     // 生成 16 个寄存器
     Reg #(32, 32'b0) zero (clock, reset_n, i_data, reg_file[0],  wen[0]);

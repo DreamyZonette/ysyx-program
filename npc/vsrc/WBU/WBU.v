@@ -81,8 +81,8 @@ always @(posedge clock) begin
                     next_pc <= i_mepc_rdata;
                 end else if (i_ecall_signal == 1'b1)begin
                     next_pc <= i_mtvec_rdata;
-                    o_mepc_wdata = i_cur_pc;
-                    o_mcause_wdata = 32'd11; // 没有实现特权级转换
+                    o_mepc_wdata <= i_cur_pc;
+                    o_mcause_wdata <= 32'd11; // 没有实现特权级转换
                 
                 end else if (i_csrrs_signal == 1'b1 || i_csrrw_signal == 1'b1) begin
                     csr_wdata <= i_exu_data;
@@ -91,7 +91,7 @@ always @(posedge clock) begin
                 end
                 else begin
                     next_pc <= i_cur_pc + 4;
-                    reg_wdata = i_exu_data;
+                    reg_wdata <= i_exu_data;
                 end
 
                 state <= IDLE;
