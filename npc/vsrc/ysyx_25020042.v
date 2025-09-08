@@ -124,14 +124,29 @@
     IFU IFU_u (
     .clock(clock),
     .reset_n(reset_n),
-    .ifu_raddr(pc),
+    .i_pc(pc),
     .pc_valid(pc_valid),
-    // .wbu_valid(wbu_valid),
     .lsu_ready(lsu_ready),
     .wbu_ready(wbu_ready),
     .ifu_valid(ifu_valid),
-    .ifu_rdata(instruction)
+    .o_instruction(instruction),
+    .ifu_addr(ifu_addr),
+    .ifu_ren(ifu_ren),
+    .ifu_rdata(ifu_rdata)
     );
+
+    wire [31:0] ifu_rdata;
+    wire [31:0] ifu_addr;
+    wire ifu_ren;
+    mem mem_u_2 (
+    .clock(clock),
+    .addr(ifu_addr),
+    .ren(ifu_ren),
+    .wdata(),
+    .wmask(),
+    .wen(),
+    .rdata(ifu_rdata)
+);
 
     IDU IDU_u (
     // .clock(clock),
@@ -310,7 +325,7 @@ wire lsu_ren;
 wire lsu_wen;
 wire [31:0] lsu_rdata;
 
-    mem mem_u (
+    mem mem_u_1 (
         .clock(clock),
         .addr(lsu_addr),
         .wdata(lsu_wdata),
@@ -318,7 +333,7 @@ wire [31:0] lsu_rdata;
         .ren(lsu_ren),
         .rdata(lsu_rdata),
         .wen(lsu_wen)
-    );
+);
 
     csr csr_u (
     .clock(clock),
