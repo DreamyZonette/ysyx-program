@@ -295,8 +295,31 @@
     .lsu_valid(lsu_valid),
     .lsu_ready(lsu_ready),
     .o_lsu_busy(lsu_busy),
-    .o_rdata(rdata)
+    .o_rdata(rdata),
+    .lsu_addr(lsu_addr),
+    .lsu_wen(lsu_wen),
+    .lsu_ren(lsu_ren),
+    .lsu_wdata(lsu_wdata),
+    .lsu_wmask(lsu_wmask),
+    .lsu_rdata(lsu_rdata)
 );
+wire [31:0] lsu_addr;
+wire [31:0] lsu_wdata;
+wire [3:0] lsu_wmask;
+wire lsu_ren;
+wire lsu_wen;
+wire [31:0] lsu_rdata;
+
+    mem mem_u (
+        .clock(clock),
+        .addr(lsu_addr),
+        .wdata(lsu_wdata),
+        .wmask(lsu_wmask),
+        .ren(lsu_ren),
+        .rdata(lsu_rdata),
+        .wen(lsu_wen)
+    );
+
     csr csr_u (
     .clock(clock),
     .reset_n(reset_n),
@@ -326,4 +349,5 @@
     .o_src2(src2),
     .o_reg_data(reg_data)
 );
+
     endmodule

@@ -19,7 +19,13 @@ module LSU(
     output reg lsu_valid,
     output reg lsu_ready,
     output            o_lsu_busy,
-    output reg [31:0] o_rdata
+    output reg [31:0] o_rdata,
+    output reg [31:0] lsu_addr,
+    output reg lsu_wen,
+    output reg lsu_ren,
+    output reg [31:0] lsu_wdata,
+    output reg [3:0] lsu_wmask,
+    input [31:0] lsu_rdata
 );
 
 import "DPI-C" function int pmem_read(input int addr, input int len);
@@ -30,8 +36,7 @@ localparam IDLE = 1'b0;
 localparam WAIT = 1'b1;
 
 reg state;
-reg [31:0] rdata;
-//wire valid = i_sys_clk;
+// reg [31:0] rdata;
 wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign o_lsu_busy = ren | wen;
@@ -39,7 +44,7 @@ assign o_lsu_busy = ren | wen;
 always @(posedge clock) begin
     if(!reset_n) begin
         state <= IDLE;
-        rdata <=32'b0;
+        // rdata <=32'b0;
         lsu_ready <= 1'b0;
         lsu_valid <= 1'b0;
     end
@@ -49,6 +54,11 @@ always @(posedge clock) begin
                 if(ifu_valid && (wen || ren)) begin
                     state <= WAIT;
                     lsu_ready <= 1'b1;
+                    lsu_wen <= wen;
+                    lsu_ren <= ren;
+                    lsu_addr <= i_data;
+                    lsu_wdata <= i_src2;
+                    lsu_wmask <= i_wmask;
                 end
                 else begin
                     state <= IDLE;
@@ -62,26 +72,18 @@ always @(posedge clock) begin
                     lsu_ready <= 1'b0;
                 end
 
-                if(i_lw_signal == 1'b1) begin
-                    rdata <= pmem_read(i_data, 4);
-                end else if(i_lhu_signal == 1'b1) begin
-                    rdata <= pmem_read(i_data, 2);
-                end else if(i_lh_signal == 1'b1) begin
-                    rdata <= pmem_read(i_data, 2);
-                end else if(i_lbu_signal == 1'b1) begin
-                    rdata <= pmem_read(i_data, 1);
-                end else if(i_lb_signal == 1'b1) begin
-                    rdata <= pmem_read(i_data, 1);
-                end
-                else if (wen) begin // 有写请求时
-                    /* verilator lint_off WIDTHEXPAND */
-                    pmem_write(i_data, i_wmask, i_src2);
-                    /* verilator lint_off WIDTHEXPAND */
-                    rdata <= 0;
-                end
-                else begin
-                    rdata <= 0;
-                end
+                // if(i_lw_signal | i_lhu_signal | i_lh_signal | i_lbu_signal | i_lb_signal) begin
+                //     rdata <= pmem_read(i_data, 4);
+                // end
+                // else if (wen) begin // 有写请求时
+                //     /* verilator lint_off WIDTHEXPAND */
+                //     pmem_write(i_data, i_wmask, i_src2);
+                //     /* verilator lint_off WIDTHEXPAND */
+                //     rdata <= 0;
+                // end
+                // else begin
+                //     rdata <= 0;
+                // end
 
                 lsu_valid <= 1'b1;
                 state <= IDLE;
@@ -94,15 +96,15 @@ end
 
 always @(*) begin
     if(i_lw_signal == 1'b1) begin
-        o_rdata = rdata[31:0];
+        o_rdata = lsu_rdata[31:0];
     end else if(i_lhu_signal == 1'b1) begin
-        o_rdata = {16'b0, rdata[15:0]};
+        o_rdata = {16'b0, lsu_rdata[15:0]};
     end else if(i_lh_signal == 1'b1) begin
-        o_rdata = {{16{rdata[15]}}, rdata[15:0]};
+        o_rdata = {{16{lsu_rdata[15]}}, lsu_rdata[15:0]};
     end else if(i_lbu_signal == 1'b1) begin
-        o_rdata = {24'b0, rdata[7:0]};
+        o_rdata = {24'b0, lsu_rdata[7:0]};
     end else if(i_lb_signal == 1'b1) begin
-        o_rdata = {{24{rdata[7]}}, rdata[7:0]};
+        o_rdata = {{24{lsu_rdata[7]}}, lsu_rdata[7:0]};
     end else begin
         o_rdata = 0;
     end
