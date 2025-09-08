@@ -71,11 +71,11 @@ always @(posedge clock) begin
                 if(lsu_ready) begin
                     lsu_ready <= 1'b0;
                 end
-                if(ren) begin
-                    ren = 1'b0;
+                if(lsu_ren) begin
+                    lsu_ren <= 1'b0;
                 end
-                if(wen) begin
-                    wen = 1'b0;
+                if(lsu_wen) begin
+                    lsu_wen <= 1'b0;
                 end
 
                 // if(i_lw_signal | i_lhu_signal | i_lh_signal | i_lbu_signal | i_lb_signal) begin
