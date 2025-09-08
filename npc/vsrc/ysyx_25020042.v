@@ -142,9 +142,11 @@
     .clock(clock),
     .addr(ifu_addr),
     .ren(ifu_ren),
+    /* verilator lint_off PINCONNECTEMPTY */
     .wdata(),
     .wmask(),
     .wen(),
+    /* verilator lint_on PINCONNECTEMPTY */
     .rdata(ifu_rdata)
 );
 
