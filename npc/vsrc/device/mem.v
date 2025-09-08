@@ -14,7 +14,7 @@ import "DPI-C" function void pmem_write(
 
 always @(posedge clock) begin
     if (ren) begin
-    rdata <= (!wen) ? pmem_read(addr, 4) : 32'b0;
+    rdata <= pmem_read(addr, 4);
     end
     else if (wen) begin
         /* verilator lint_off WIDTHEXPAND */
