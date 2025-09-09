@@ -1,8 +1,10 @@
-TOP_NAME = ysyx_25020042
+TOP_NAME = ysyxSoCFull
 IMG ?= /home/long/ysyx-workbench/npc/demo/add-minirv-npc.bin
 #IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+
+SOC_HOME := /home/long/ysyx-workbench/ysyxSoC/perip
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -14,28 +16,20 @@ INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 
 VSRCS := $(shell find $(VPATH) -name *.v)
+VSRCS += $(shell find $(SOC_HOME) -name *.v)
+VSRCS += /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/ysyxSoCFull.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
-CSRCS += $(shell find $(CPATH) -name *.c)
 
 CFLAGS ?= -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-CFLAGS += -CFLAGS -fpermissive
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
-LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
-LDFLAGS += -LDFLAGS -lSDL2
-#LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
-#LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
-#LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
+VFLAGS += --timescale "1ns/1ns" --no-timing 
+VFLAGS += -I$(SOC_HOME)/uart16550/rtl -I$(SOC_HOME)/spi/rtl
+# LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
 
 VERILATOR = verilator
-ARGS ?= 
-#ARGS += -d $(NEMU_SO) # 启用difftest
-ARGS += -i $(IMG)     # 启用镜像文件
-#ARGS += -e $(ELF)	  # 启用ftrace
-#ARGS += -b      	  # 启用批处理
-ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 
 $(shell mkdir -p $(BUILD_DIR))
 

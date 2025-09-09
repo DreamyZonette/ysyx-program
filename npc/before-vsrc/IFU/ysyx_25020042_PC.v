@@ -10,7 +10,7 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
     
     always @(posedge clock) begin
         if (reset)begin
-            o_pc <= 32'h3000_0000;
+            o_pc <= 32'h80000000;
             pc_valid <= 1'b1;
         end 
         else if (wbu_valid)begin

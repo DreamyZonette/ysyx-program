@@ -27,9 +27,12 @@ module ysyx_25020042_LSU(
     output reg [3:0] lsu_wmask,
     input [31:0] lsu_rdata,
     output reg lsu_reqValid,
-    input lsu_respValid,
-    output reg [1:0] lsu_size
+    input lsu_respValid
 );
+
+import "DPI-C" function int pmem_read(input int addr, input int len);
+import "DPI-C" function void pmem_write(
+    input int addr, int len, input int data);
 
 localparam IDLE = 1'b0;
 localparam WAIT = 1'b1;
@@ -47,7 +50,6 @@ always @(posedge clock) begin
         lsu_ready <= 1'b0;
         lsu_valid <= 1'b0;
         lsu_reqValid <= 1'b0;
-        lsu_size <= 2'b0;
     end
     else begin
         case (state)
@@ -60,15 +62,6 @@ always @(posedge clock) begin
                     lsu_wdata <= i_src2;
                     lsu_wmask <= i_wmask;
                     lsu_reqValid <= 1'b1;
-                    if (i_sb_signal || i_lb_signal ||i_lbu_signal) begin
-                        lsu_size <= 2'b00;
-                    end else if (i_sh_signal || i_lh_signal || i_lhu_signal) begin
-                        lsu_size <= 2'b01;
-                    end else if (i_sw_signal || i_lw_signal) begin
-                        lsu_size <= 2'b10;
-                    end else begin
-                        lsu_size <= 2'b00;
-                    end
                 end
                 else begin
                     state <= IDLE;
@@ -81,6 +74,9 @@ always @(posedge clock) begin
                 if(lsu_ready) begin
                     lsu_ready <= 1'b0;
                 end
+                // if(lsu_ren) begin
+                //     lsu_ren <= 1'b0;
+                // end
                 if(lsu_wen) begin
                     lsu_wen <= 1'b0;
                 end
@@ -88,6 +84,18 @@ always @(posedge clock) begin
                     lsu_reqValid <= 1'b0;
                 end
 
+                // if(i_lw_signal | i_lhu_signal | i_lh_signal | i_lbu_signal | i_lb_signal) begin
+                //     rdata <= pmem_read(i_data, 4);
+                // end
+                // else if (wen) begin // 有写请求时
+                //     /* verilator lint_off WIDTHEXPAND */
+                //     pmem_write(i_data, i_wmask, i_src2);
+                //     /* verilator lint_off WIDTHEXPAND */
+                //     rdata <= 0;
+                // end
+                // else begin
+                //     rdata <= 0;
+                // end
                 if (lsu_respValid) begin
                     lsu_valid <= 1'b1;
                     state <= IDLE;

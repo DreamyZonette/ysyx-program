@@ -1,37 +1,34 @@
    module ysyx_25020042 (
         input clock,
         input reset,
-        output io_ifu_pcValid,
-        output [31:0] io_ifu_pc,
-        input io_ifu_instValid,
-        input [31:0] io_ifu_inst,
-        output io_lsu_reqValid,
-        output [31:0] io_lsu_addr,
-        output [1:0] io_lsu_size,
-        output io_lsu_wen,
-        output [31:0] io_lsu_wdata,
-        output [3:0] io_lsu_wmask,
-        input io_lsu_respValid,
-        input [31:0] io_lsu_rdata
+        output [31:0] de_pc,
+        output [31:0] de_next_pc,
+        output [31:0] de_inst,
+        output halt,
+        output [31:0] reg_data [0:15],
+        output [31:0] de_mstatus,
+        output [31:0] de_mtvec,
+        output [31:0] de_mepc,
+        output [31:0] de_mcause
     );
 
-    // import "DPI-C" function void dpi_ebreak();
-    // // import "DPI-C" function void dpi_return();
+    import "DPI-C" function void dpi_ebreak();
+    // import "DPI-C" function void dpi_return();
 
-    // always @(posedge clock) begin
-    //         if (ebreak_signal == 1'b1) begin
-    //             dpi_ebreak();  // 调用 DPI-C 函数
-    //         end
-    //     end
+    always @(posedge clock) begin
+            if (ebreak_signal == 1'b1) begin
+                dpi_ebreak();  // 调用 DPI-C 函数
+            end
+        end
 
-    // assign halt = unknown_signal;
-    // assign de_pc = pc;
-    // assign de_next_pc = next_pc;
-    // assign de_inst = instruction;
-    // assign de_mstatus = mstatus;
-    // assign de_mtvec = mtvec;
-    // assign de_mepc = mepc;
-    // assign de_mcause = mcause;
+    assign halt = unknown_signal;
+    assign de_pc = pc;
+    assign de_next_pc = next_pc;
+    assign de_inst = instruction;
+    assign de_mstatus = mstatus;
+    assign de_mtvec = mtvec;
+    assign de_mepc = mepc;
+    assign de_mcause = mcause;
 
 
     wire wbu_valid;
@@ -320,13 +317,13 @@ ysyx_25020042_LSU LSU_u (
     .lsu_ready(lsu_ready),
     .o_lsu_busy(lsu_busy),
     .o_rdata(rdata),
-    .lsu_addr(io_lsu_addr),
-    .lsu_wen(io_lsu_wen),
-    .lsu_wdata(io_lsu_wdata),
-    .lsu_wmask(io_lsu_wmask),
-    .lsu_rdata(io_lsu_rdata),
-    .lsu_reqValid(io_lsu_reqValid),
-    .lsu_respValid(io_lsu_respValid)
+    .lsu_addr(lsu_addr),
+    .lsu_wen(lsu_wen),
+    .lsu_wdata(lsu_wdata),
+    .lsu_wmask(lsu_wmask),
+    .lsu_rdata(lsu_rdata),
+    .lsu_reqValid(lsu_reqValid),
+    .lsu_respValid(lsu_respValid)
 );
 wire [31:0] lsu_addr;
 wire [31:0] lsu_wdata;
