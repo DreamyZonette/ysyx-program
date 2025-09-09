@@ -80,7 +80,7 @@ always @(posedge clock) begin
                 if(lsu_wen) begin
                     lsu_wen <= 1'b0;
                 end
-                if(lsu_reqReady) begin
+                if(lsu_reqValid) begin
                     lsu_reqValid <= 1'b0;
                 end
 
