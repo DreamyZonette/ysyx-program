@@ -22,10 +22,12 @@ module LSU(
     output reg [31:0] o_rdata,
     output reg [31:0] lsu_addr,
     output reg lsu_wen,
-    output reg lsu_ren,
+    // output reg lsu_ren,
     output reg [31:0] lsu_wdata,
     output reg [3:0] lsu_wmask,
-    input [31:0] lsu_rdata
+    input [31:0] lsu_rdata,
+    output reg lsu_reqValid,
+    input lsu_respValid
 );
 
 import "DPI-C" function int pmem_read(input int addr, input int len);
@@ -47,6 +49,7 @@ always @(posedge clock) begin
         // rdata <=32'b0;
         lsu_ready <= 1'b0;
         lsu_valid <= 1'b0;
+        lsu_reqValid <= 1'b0;
     end
     else begin
         case (state)
@@ -55,10 +58,10 @@ always @(posedge clock) begin
                     state <= WAIT;
                     lsu_ready <= 1'b1;
                     lsu_wen <= wen;
-                    lsu_ren <= ren;
                     lsu_addr <= i_data;
                     lsu_wdata <= i_src2;
                     lsu_wmask <= i_wmask;
+                    lsu_reqValid <= 1'b1;
                 end
                 else begin
                     state <= IDLE;
@@ -77,6 +80,9 @@ always @(posedge clock) begin
                 if(lsu_wen) begin
                     lsu_wen <= 1'b0;
                 end
+                if(lsu_reqReady) begin
+                    lsu_reqValid <= 1'b0;
+                end
 
                 // if(i_lw_signal | i_lhu_signal | i_lh_signal | i_lbu_signal | i_lb_signal) begin
                 //     rdata <= pmem_read(i_data, 4);
@@ -90,9 +96,11 @@ always @(posedge clock) begin
                 // else begin
                 //     rdata <= 0;
                 // end
-
-                lsu_valid <= 1'b1;
-                state <= IDLE;
+                if (lsu_respValid) begin
+                    lsu_valid <= 1'b1;
+                    state <= IDLE;
+                end
+                
             end
         endcase
 

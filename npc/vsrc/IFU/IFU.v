@@ -9,7 +9,9 @@ module IFU(
     output wire [31:0] o_instruction,
     output reg [31:0] ifu_addr,
     output reg ifu_ren,
-    input [31:0] ifu_rdata
+    input [31:0] ifu_rdata,
+    output reg ifu_reqValid,
+    input ifu_respValid
 );
 import "DPI-C" function int pmem_read(input int raddr, input int len);
 
@@ -27,6 +29,7 @@ always @(posedge clock) begin
         ifu_valid <= 1'b0;
         ifu_ren <= 1'b0;
         ifu_addr <= 32'h80000000;
+        ifu_reqValid <= 1'b0;
     end
     else begin
         case(state)
@@ -35,6 +38,7 @@ always @(posedge clock) begin
                     state <= WAIT;
                     ifu_ren <= 1'b1;
                     ifu_addr <= i_pc;
+                    ifu_reqValid <= 1'b1;
                 end
                 else begin
                     state <= IDLE;
@@ -47,9 +51,14 @@ always @(posedge clock) begin
                 if (ifu_ren) begin
                     ifu_ren <= 1'b0;
                 end
+                if (ifu_reqValid) begin
+                    ifu_reqValid <= 1'b0;
+                end
                 // o_instruction <= pmem_read(i_pc, 4);
-                state <= IDLE;
-                ifu_valid <= 1'b1;
+                if (ifu_respValid) begin
+                    state <= IDLE;
+                    ifu_valid <= 1'b1;
+                end
             end
             default: begin
                 state <= IDLE;

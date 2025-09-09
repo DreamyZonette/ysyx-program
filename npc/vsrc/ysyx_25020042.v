@@ -112,16 +112,16 @@
 
 
 
-    PC PC_u(
+PC PC_u(
     .clock(clock),
     .reset_n(reset_n),
     .i_next_pc(next_pc),
     .wbu_valid(wbu_valid),
     .pc_valid(pc_valid),
     .o_pc(pc)
-    );
+);
     
-    IFU IFU_u (
+IFU IFU_u (
     .clock(clock),
     .reset_n(reset_n),
     .i_pc(pc),
@@ -132,13 +132,17 @@
     .o_instruction(instruction),
     .ifu_addr(ifu_addr),
     .ifu_ren(ifu_ren),
-    .ifu_rdata(ifu_rdata)
-    );
+    .ifu_rdata(ifu_rdata),
+    .ifu_reqValid(ifu_reqValid),
+    .ifu_respValid(ifu_respValid)
+);
 
     wire [31:0] ifu_rdata;
     wire [31:0] ifu_addr;
     wire ifu_ren;
-    mem mem_u_2 (
+    wire ifu_reqValid;
+    wire ifu_respValid;
+mem mem_u_2 (
     .clock(clock),
     .addr(ifu_addr),
     .ren(ifu_ren),
@@ -148,11 +152,11 @@
     .wen(),
     /* verilator lint_on PINCONNECTEMPTY */
     .rdata(ifu_rdata)
+    .reqValid(ifu_reqValid),
+    .respValid(ifu_respValid)
 );
 
     IDU IDU_u (
-    // .clock(clock),
-    // .reset_n(reset_n),
     .i_inst(instruction),
     .o_imm(imm),
     .o_offset(offset),
@@ -315,26 +319,32 @@
     .o_rdata(rdata),
     .lsu_addr(lsu_addr),
     .lsu_wen(lsu_wen),
-    .lsu_ren(lsu_ren),
+    // .lsu_ren(lsu_ren),
     .lsu_wdata(lsu_wdata),
     .lsu_wmask(lsu_wmask),
-    .lsu_rdata(lsu_rdata)
+    .lsu_rdata(lsu_rdata),
+    .lsu_reqValid(lsu_reqValid),
+    .lsu_respValid(lsu_respValid)
 );
 wire [31:0] lsu_addr;
 wire [31:0] lsu_wdata;
 wire [3:0] lsu_wmask;
-wire lsu_ren;
+// wire lsu_ren;
 wire lsu_wen;
 wire [31:0] lsu_rdata;
+wire lsu_reqValid;
+wire lsu_respValid;
 
     mem mem_u_1 (
         .clock(clock),
         .addr(lsu_addr),
         .wdata(lsu_wdata),
         .wmask(lsu_wmask),
-        .ren(lsu_ren),
+        // .ren(lsu_ren),
+        .reqValid(lsu_reqValid),
         .rdata(lsu_rdata),
-        .wen(lsu_wen)
+        .wen(lsu_wen),
+        .respValid(lsu_respValid)
 );
 
     csr csr_u (
