@@ -95,7 +95,7 @@ reg [31:0] lfsr;
 
 // LFSR初始化与更新
 always @(posedge clock) begin
-    if (!resetn) begin
+    if (lfsr == 0) begin
         lfsr <= 32'hABCDE123; // 初始化LFSR
     end else if (state == IDLE && reqValid) begin
         // 更新LFSR并生成新的随机延迟目标
