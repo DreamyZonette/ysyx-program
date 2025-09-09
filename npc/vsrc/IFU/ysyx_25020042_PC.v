@@ -1,7 +1,7 @@
 // Modified by Long for NPC project.
 module ysyx_25020042_PC #(PC_LEN = 32)(
     input clock,
-    input reset_n,
+    input reset,
     input [PC_LEN-1:0] i_next_pc,
     input wbu_valid,
     output reg pc_valid,
@@ -9,7 +9,7 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
     );
     
     always @(posedge clock) begin
-        if (!reset_n)begin
+        if (reset)begin
             o_pc <= 32'h80000000;
             pc_valid <= 1'b1;
         end 

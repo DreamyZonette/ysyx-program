@@ -1,6 +1,6 @@
 module ysyx_25020042_gpr  (
     input clock,
-    input reset_n,   
+    input reset,   
     input  [4:0] i_rs1,
     input  [4:0] i_rs2,
     input  [4:0] i_rd,
@@ -20,22 +20,22 @@ module ysyx_25020042_gpr  (
     assign wen = (i_rd != 5'b0) && wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
 
     // 生成 16 个寄存器
-    ysyx_25020042_Reg #(32, 32'b0) zero (clock, reset_n, i_data, reg_file[0],  wen[0]);
-    ysyx_25020042_Reg #(32, 32'b0) ra   (clock, reset_n, i_data, reg_file[1],  wen[1]);
-    ysyx_25020042_Reg #(32, 32'b0) sp   (clock, reset_n, i_data, reg_file[2],  wen[2]);
-    ysyx_25020042_Reg #(32, 32'b0) gp   (clock, reset_n, i_data, reg_file[3],  wen[3]);
-    ysyx_25020042_Reg #(32, 32'b0) tp   (clock, reset_n, i_data, reg_file[4],  wen[4]);
-    ysyx_25020042_Reg #(32, 32'b0) t0   (clock, reset_n, i_data, reg_file[5],  wen[5]);
-    ysyx_25020042_Reg #(32, 32'b0) t1   (clock, reset_n, i_data, reg_file[6],  wen[6]);
-    ysyx_25020042_Reg #(32, 32'b0) t2   (clock, reset_n, i_data, reg_file[7],  wen[7]);
-    ysyx_25020042_Reg #(32, 32'b0) s0   (clock, reset_n, i_data, reg_file[8],  wen[8]);
-    ysyx_25020042_Reg #(32, 32'b0) s1   (clock, reset_n, i_data, reg_file[9],  wen[9]);
-    ysyx_25020042_Reg #(32, 32'b0) a0   (clock, reset_n, i_data, reg_file[10], wen[10]);
-    ysyx_25020042_Reg #(32, 32'b0) a1   (clock, reset_n, i_data, reg_file[11], wen[11]);
-    ysyx_25020042_Reg #(32, 32'b0) a2   (clock, reset_n, i_data, reg_file[12], wen[12]);
-    ysyx_25020042_Reg #(32, 32'b0) a3   (clock, reset_n, i_data, reg_file[13], wen[13]);
-    ysyx_25020042_Reg #(32, 32'b0) a4   (clock, reset_n, i_data, reg_file[14], wen[14]);
-    ysyx_25020042_Reg #(32, 32'b0) a5   (clock, reset_n, i_data, reg_file[15], wen[15]);
+    ysyx_25020042_Reg #(32, 32'b0) zero (clock, reset, i_data, reg_file[0],  wen[0]);
+    ysyx_25020042_Reg #(32, 32'b0) ra   (clock, reset, i_data, reg_file[1],  wen[1]);
+    ysyx_25020042_Reg #(32, 32'b0) sp   (clock, reset, i_data, reg_file[2],  wen[2]);
+    ysyx_25020042_Reg #(32, 32'b0) gp   (clock, reset, i_data, reg_file[3],  wen[3]);
+    ysyx_25020042_Reg #(32, 32'b0) tp   (clock, reset, i_data, reg_file[4],  wen[4]);
+    ysyx_25020042_Reg #(32, 32'b0) t0   (clock, reset, i_data, reg_file[5],  wen[5]);
+    ysyx_25020042_Reg #(32, 32'b0) t1   (clock, reset, i_data, reg_file[6],  wen[6]);
+    ysyx_25020042_Reg #(32, 32'b0) t2   (clock, reset, i_data, reg_file[7],  wen[7]);
+    ysyx_25020042_Reg #(32, 32'b0) s0   (clock, reset, i_data, reg_file[8],  wen[8]);
+    ysyx_25020042_Reg #(32, 32'b0) s1   (clock, reset, i_data, reg_file[9],  wen[9]);
+    ysyx_25020042_Reg #(32, 32'b0) a0   (clock, reset, i_data, reg_file[10], wen[10]);
+    ysyx_25020042_Reg #(32, 32'b0) a1   (clock, reset, i_data, reg_file[11], wen[11]);
+    ysyx_25020042_Reg #(32, 32'b0) a2   (clock, reset, i_data, reg_file[12], wen[12]);
+    ysyx_25020042_Reg #(32, 32'b0) a3   (clock, reset, i_data, reg_file[13], wen[13]);
+    ysyx_25020042_Reg #(32, 32'b0) a4   (clock, reset, i_data, reg_file[14], wen[14]);
+    ysyx_25020042_Reg #(32, 32'b0) a5   (clock, reset, i_data, reg_file[15], wen[15]);
 
 // 读取寄存器
 /* verilator lint_off WIDTHTRUNC */

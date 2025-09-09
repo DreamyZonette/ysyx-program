@@ -1,6 +1,6 @@
 module ysyx_25020042_WBU(
     input clock,
-    input reset_n,
+    input reset,
     input [31:0] i_exu_data,
     input [31:0] i_cur_pc,
     input i_B_jump_signal,
@@ -44,7 +44,7 @@ module ysyx_25020042_WBU(
 
 
 always @(posedge clock) begin
-    if(!reset_n) begin
+    if(reset) begin
         state <= IDLE;
         next_pc <= 32'h8000_0004;
         reg_wdata <= 32'b0;

@@ -1,6 +1,6 @@
 module ysyx_25020042_IFU(
     input clock,
-    input reset_n,
+    input reset,
     input [31:0] i_pc,
     input pc_valid,
     input lsu_ready,
@@ -24,7 +24,7 @@ reg state;
 assign o_instruction = ifu_rdata;
 
 always @(posedge clock) begin
-    if(!reset_n) begin
+    if(reset) begin
         state <= IDLE;
         ifu_valid <= 1'b0;
         ifu_wen <= 1'b0;

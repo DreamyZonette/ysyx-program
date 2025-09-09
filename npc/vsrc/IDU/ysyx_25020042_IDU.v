@@ -1,6 +1,4 @@
 module ysyx_25020042_IDU (
-    // input clock,
-    // input reset_n, 
     input   [31:0]  i_inst,
     output reg [31:0]  o_imm,
     output reg [31:0]  o_offset,

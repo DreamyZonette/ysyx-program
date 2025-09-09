@@ -1,6 +1,6 @@
 module ysyx_25020042_LSU(
     input clock,
-    input reset_n,
+    input reset,
     input i_lbu_signal,
     input i_lhu_signal,
     input i_lb_signal,
@@ -44,7 +44,7 @@ wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal
 assign o_lsu_busy = ren | wen;
 
 always @(posedge clock) begin
-    if(!reset_n) begin
+    if(reset) begin
         state <= IDLE;
         // rdata <=32'b0;
         lsu_ready <= 1'b0;

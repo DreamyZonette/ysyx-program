@@ -1,6 +1,6 @@
    module ysyx_25020042 (
         input clock,
-        input reset_n,
+        input reset,
         output [31:0] de_pc,
         output [31:0] de_next_pc,
         output [31:0] de_inst,
@@ -114,7 +114,7 @@
 
 ysyx_25020042_PC PC_u(
     .clock(clock),
-    .reset_n(reset_n),
+    .reset(reset),
     .i_next_pc(next_pc),
     .wbu_valid(wbu_valid),
     .pc_valid(pc_valid),
@@ -123,7 +123,7 @@ ysyx_25020042_PC PC_u(
     
 ysyx_25020042_IFU IFU_u (
     .clock(clock),
-    .reset_n(reset_n),
+    .reset(reset),
     .i_pc(pc),
     .pc_valid(pc_valid),
     .lsu_ready(lsu_ready),
@@ -267,7 +267,7 @@ ysyx_25020042_EXU EXU_u (
 
 ysyx_25020042_WBU WBU_u (
     .clock(clock),
-    .reset_n(reset_n),
+    .reset(reset),
     .i_exu_data(exu_data),
     .i_cur_pc(pc),
     .i_B_jump_signal(o_B_jump_signal),
@@ -299,7 +299,7 @@ ysyx_25020042_WBU WBU_u (
 
 ysyx_25020042_LSU LSU_u (
     .clock(clock),
-    .reset_n(reset_n),
+    .reset(reset),
     .i_lbu_signal(lbu_signal),
     .i_lhu_signal(lhu_signal),
     .i_lb_signal(lb_signal),
@@ -347,7 +347,7 @@ ysyx_25020042_mem mem_u_1 (
 
 ysyx_25020042_csr csr_u (
     .clock(clock),
-    .reset_n(reset_n),
+    .reset(reset),
     .i_ecall_signal(ecall_signal),
     .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),
@@ -364,7 +364,7 @@ ysyx_25020042_csr csr_u (
 );
 ysyx_25020042_gpr gpr_u(
     .clock(clock),
-    .reset_n(reset_n), 
+    .reset(reset), 
     .i_rs1(rs1),
     .i_rs2(rs2),
     .i_rd(rd),
