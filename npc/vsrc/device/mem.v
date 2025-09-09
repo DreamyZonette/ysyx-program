@@ -7,7 +7,7 @@ module mem(
     input reqValid,
     input [3:0] wmask,
     output reg [31:0] rdata,
-    output reg respValid,
+    output reg respValid
 );
 
 import "DPI-C" function int pmem_read(input int addr, input int len);
