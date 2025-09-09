@@ -85,6 +85,8 @@ import "DPI-C" function void pmem_write(
 
 // 状态定义
 reg [1:0] state;
+reg reqValid_delay;
+reg wen_delay;
 parameter IDLE      = 2'b00;
 parameter DELAY     = 2'b01;
 parameter RESPOND   = 2'b10;
@@ -106,18 +108,15 @@ end
 
 // 主状态机
 always @(posedge clock) begin
-    // if (!resetn) begin
-    //     state <= IDLE;
-    //     delay_counter <= 0;
-    //     respValid <= 1'b0;
-    //     rdata <= 0;
-    // end else begin
+    
         case (state)
             IDLE: begin
                 respValid <= 1'b0;
                 delay_counter <= 0;
                 if (reqValid) begin
                     state <= DELAY;
+                    reqValid_delay <= reqValid;
+                    wen_delay <= wen;
                 end
             end
             
@@ -126,7 +125,7 @@ always @(posedge clock) begin
                     delay_counter <= delay_counter + 1;
                 end else begin
                     // 延迟完成，执行操作
-                    if (!wen) begin
+                    if (!wen_delay) begin
                         rdata <= pmem_read(addr, 4);
                     end else begin
                         /* verilator lint_off WIDTHEXPAND */
@@ -141,6 +140,8 @@ always @(posedge clock) begin
             RESPOND: begin
                 respValid <= 1'b0;
                 state <= IDLE; // 返回空闲状态
+                reqValid_delay <= 1'b0;
+                wen_delay <= 1'b0;
             end
             default: begin
                 state <= IDLE;
