@@ -8,7 +8,7 @@ module IFU(
     output reg ifu_valid,
     output wire [31:0] o_instruction,
     output reg [31:0] ifu_addr,
-    output reg ifu_ren,
+    output reg ifu_wen,
     input [31:0] ifu_rdata,
     output reg ifu_reqValid,
     input ifu_respValid
@@ -27,7 +27,7 @@ always @(posedge clock) begin
     if(!reset_n) begin
         state <= IDLE;
         ifu_valid <= 1'b0;
-        ifu_ren <= 1'b0;
+        ifu_wen <= 1'b0;
         ifu_addr <= 32'h80000000;
         ifu_reqValid <= 1'b0;
     end
@@ -36,7 +36,6 @@ always @(posedge clock) begin
             IDLE: begin
                 if(pc_valid) begin
                     state <= WAIT;
-                    ifu_ren <= 1'b1;
                     ifu_addr <= i_pc;
                     ifu_reqValid <= 1'b1;
                 end
@@ -48,9 +47,9 @@ always @(posedge clock) begin
                 end   
             end
             WAIT: begin
-                if (ifu_ren) begin
-                    ifu_ren <= 1'b0;
-                end
+                // if (ifu_ren) begin
+                //     ifu_ren <= 1'b0;
+                // end
                 if (ifu_reqValid) begin
                     ifu_reqValid <= 1'b0;
                 end

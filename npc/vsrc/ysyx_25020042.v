@@ -131,7 +131,7 @@ IFU IFU_u (
     .ifu_valid(ifu_valid),
     .o_instruction(instruction),
     .ifu_addr(ifu_addr),
-    .ifu_ren(ifu_ren),
+    .ifu_wen(ifu_wen),
     .ifu_rdata(ifu_rdata),
     .ifu_reqValid(ifu_reqValid),
     .ifu_respValid(ifu_respValid)
@@ -139,17 +139,17 @@ IFU IFU_u (
 
     wire [31:0] ifu_rdata;
     wire [31:0] ifu_addr;
-    wire ifu_ren;
+    wire ifu_wen;
     wire ifu_reqValid;
     wire ifu_respValid;
 mem mem_u_2 (
     .clock(clock),
     .addr(ifu_addr),
-    .ren(ifu_ren),
+    // .ren(ifu_ren),
+    .wen(ifu_wen),
     /* verilator lint_off PINCONNECTEMPTY */
     .wdata(),
     .wmask(),
-    .wen(),
     /* verilator lint_on PINCONNECTEMPTY */
     .rdata(ifu_rdata),
     .reqValid(ifu_reqValid),
