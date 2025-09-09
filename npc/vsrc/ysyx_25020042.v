@@ -1,4 +1,4 @@
-   module top (
+   module ysyx_25020042 (
         input sys_clk,
         input sys_rst_n,
         // input [31:0] inst,
