@@ -42,9 +42,9 @@ reg reqValid_delay;
 always @(posedge clock) begin
     if(reqValid) begin
         reqValid_delay <= reqValid;
-        wmask_delay <= wmask;
-        wdata_delay <= wdata;
-        wen_delay <= wen;
+        // wmask_delay <= wmask;
+        // wdata_delay <= wdata;
+        // wen_delay <= wen;
     end
     if ((reqValid && !wen) || (reqValid_delay && !wen_delay)) begin
         if (delay_counter == delay_target) begin
