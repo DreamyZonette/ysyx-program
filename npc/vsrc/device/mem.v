@@ -106,12 +106,12 @@ end
 
 // 主状态机
 always @(posedge clock) begin
-    if (!resetn) begin
-        state <= IDLE;
-        delay_counter <= 0;
-        respValid <= 1'b0;
-        rdata <= 0;
-    end else begin
+    // if (!resetn) begin
+    //     state <= IDLE;
+    //     delay_counter <= 0;
+    //     respValid <= 1'b0;
+    //     rdata <= 0;
+    // end else begin
         case (state)
             IDLE: begin
                 respValid <= 1'b0;
@@ -143,7 +143,7 @@ always @(posedge clock) begin
                 state <= IDLE; // 返回空闲状态
             end
         endcase
-    end
+    // end
 end
 
 
