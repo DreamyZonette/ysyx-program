@@ -1,5 +1,5 @@
 // Modified by Long for NPC project.
-module PC #(PC_LEN = 32)(
+module ysyx_25020042PC #(PC_LEN = 32)(
     input clock,
     input reset_n,
     input [PC_LEN-1:0] i_next_pc,

@@ -1,4 +1,4 @@
-module gpr  (
+module ysyx_25020042gpr  (
     input clock,
     input reset_n,   
     input  [4:0] i_rs1,

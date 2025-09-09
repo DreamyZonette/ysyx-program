@@ -1,4 +1,4 @@
-module LSU(
+module ysyx_25020042LSU(
     input clock,
     input reset_n,
     input i_lbu_signal,

@@ -112,7 +112,7 @@
 
 
 
-PC PC_u(
+ysyx_25020042PC PC_u(
     .clock(clock),
     .reset_n(reset_n),
     .i_next_pc(next_pc),
@@ -121,7 +121,7 @@ PC PC_u(
     .o_pc(pc)
 );
     
-IFU IFU_u (
+ysyx_25020042IFU IFU_u (
     .clock(clock),
     .reset_n(reset_n),
     .i_pc(pc),
@@ -142,7 +142,7 @@ IFU IFU_u (
     wire ifu_wen;
     wire ifu_reqValid;
     wire ifu_respValid;
-mem mem_u_2 (
+ysyx_25020042mem mem_u_2 (
     .clock(clock),
     .addr(ifu_addr),
     // .ren(ifu_ren),
@@ -156,7 +156,7 @@ mem mem_u_2 (
     .respValid(ifu_respValid)
 );
 
-    IDU IDU_u (
+ysyx_25020042IDU IDU_u (
     .i_inst(instruction),
     .o_imm(imm),
     .o_offset(offset),
@@ -211,7 +211,7 @@ mem mem_u_2 (
     .rd(rd)
     );
 
-    EXU EXU_u (
+ysyx_25020042EXU EXU_u (
     .i_src1(src1),
     .i_src2(src2),
     .i_imm(imm),
@@ -265,7 +265,7 @@ mem mem_u_2 (
     .o_data(exu_data)
     );
 
-    WBU WBU_u (
+ysyx_25020042WBU WBU_u (
     .clock(clock),
     .reset_n(reset_n),
     .i_exu_data(exu_data),
@@ -297,7 +297,7 @@ mem mem_u_2 (
     .next_pc(next_pc)
     );
 
-    LSU LSU_u (
+ysyx_25020042LSU LSU_u (
     .clock(clock),
     .reset_n(reset_n),
     .i_lbu_signal(lbu_signal),
@@ -335,19 +335,19 @@ wire [31:0] lsu_rdata;
 wire lsu_reqValid;
 wire lsu_respValid;
 
-    mem mem_u_1 (
-        .clock(clock),
-        .addr(lsu_addr),
-        .wdata(lsu_wdata),
-        .wmask(lsu_wmask),
-        // .ren(lsu_ren),
-        .reqValid(lsu_reqValid),
-        .rdata(lsu_rdata),
-        .wen(lsu_wen),
-        .respValid(lsu_respValid)
+ysyx_25020042mem mem_u_1 (
+    .clock(clock),
+    .addr(lsu_addr),
+    .wdata(lsu_wdata),
+    .wmask(lsu_wmask),
+    // .ren(lsu_ren),
+    .reqValid(lsu_reqValid),
+    .rdata(lsu_rdata),
+    .wen(lsu_wen),
+    .respValid(lsu_respValid)
 );
 
-    csr csr_u (
+ysyx_25020042csr csr_u (
     .clock(clock),
     .reset_n(reset_n),
     .i_ecall_signal(ecall_signal),
@@ -364,7 +364,7 @@ wire lsu_respValid;
     .o_mcause(mcause),
     .o_csr_rdata(csr_data)
 );
-   gpr gpr_u(
+ysyx_25020042gpr gpr_u(
     .clock(clock),
     .reset_n(reset_n), 
     .i_rs1(rs1),

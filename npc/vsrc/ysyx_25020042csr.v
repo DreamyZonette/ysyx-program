@@ -1,4 +1,4 @@
-module csr (
+module ysyx_25020042csr (
     input clock,
     input reset_n,
     input i_ecall_signal,

@@ -1,4 +1,4 @@
-module IDU (
+module ysyx_25020042IDU (
     // input clock,
     // input reset_n, 
     input   [31:0]  i_inst,

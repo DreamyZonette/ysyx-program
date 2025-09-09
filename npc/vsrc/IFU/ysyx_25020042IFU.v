@@ -1,4 +1,4 @@
-module IFU(
+module ysyx_25020042IFU(
     input clock,
     input reset_n,
     input [31:0] i_pc,
