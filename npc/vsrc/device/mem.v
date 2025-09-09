@@ -65,7 +65,7 @@ end
 
 reg [31:0] lfsr;
 always @(posedge clock) begin
-    if (!resetn) begin
+    if (lfsr == 0) begin
         lfsr <= 32'hABCDE123; // 任意非零种子值
     end else if (reqValid) begin
         // 在收到新请求时，用LFSR生成一个新的随机延迟目标
