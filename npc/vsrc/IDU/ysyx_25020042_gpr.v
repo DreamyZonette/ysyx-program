@@ -7,8 +7,7 @@ module ysyx_25020042_gpr  (
     input  [31:0] i_data,
     input  wbu_valid,
     output [31:0] o_src1,
-    output [31:0] o_src2,
-    output [31:0] o_reg_data [0:15]
+    output [31:0] o_src2
     );
     
     /* verilator lint_off UNUSEDSIGNAL */
@@ -16,7 +15,6 @@ module ysyx_25020042_gpr  (
     /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] reg_file [0:15]; // 16 个寄存器
 
-    assign o_reg_data = reg_file;
     assign wen = (i_rd != 5'b0) && wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
 
     // 生成 16 个寄存器

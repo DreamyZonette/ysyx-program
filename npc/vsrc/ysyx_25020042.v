@@ -374,8 +374,7 @@ ysyx_25020042_gpr gpr_u(
     .i_data(wdata),
     .wbu_valid(wbu_valid),
     .o_src1(src1),
-    .o_src2(src2),
-    .o_reg_data(reg_data)
+    .o_src2(src2)
 );
 
     endmodule
