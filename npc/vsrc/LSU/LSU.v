@@ -74,9 +74,9 @@ always @(posedge clock) begin
                 if(lsu_ready) begin
                     lsu_ready <= 1'b0;
                 end
-                if(lsu_ren) begin
-                    lsu_ren <= 1'b0;
-                end
+                // if(lsu_ren) begin
+                //     lsu_ren <= 1'b0;
+                // end
                 if(lsu_wen) begin
                     lsu_wen <= 1'b0;
                 end
