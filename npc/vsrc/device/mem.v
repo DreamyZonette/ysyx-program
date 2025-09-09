@@ -142,6 +142,9 @@ always @(posedge clock) begin
                 respValid <= 1'b0;
                 state <= IDLE; // 返回空闲状态
             end
+            default: begin
+                state <= IDLE;
+            end
         endcase
     // end
 end
