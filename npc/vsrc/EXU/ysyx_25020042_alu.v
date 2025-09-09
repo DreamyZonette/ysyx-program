@@ -1,5 +1,5 @@
 // Modified by Long for NPC
-module alu (
+module ysyx_25020042_alu (
     input [31:0] i_src1,
     input [31:0] i_src2,
     input [31:0] i_imm ,

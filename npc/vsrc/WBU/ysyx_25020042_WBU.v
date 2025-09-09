@@ -1,4 +1,4 @@
-module ysyx_25020042WBU(
+module ysyx_25020042_WBU(
     input clock,
     input reset_n,
     input [31:0] i_exu_data,

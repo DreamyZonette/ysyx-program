@@ -1,4 +1,4 @@
-module Btype (
+module ysyx_25020042_Btype (
     input [31:0] i_inst,
     output [4:0] o_rs1,
     output [4:0] o_rs2,

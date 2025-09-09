@@ -1,5 +1,5 @@
 /* 触发器模板 */
-module Reg #(WIDTH = 1, RESET_VAL = 0) (
+module ysyx_25020042_Reg #(WIDTH = 1, RESET_VAL = 0) (
   input clk,
   input sys_rst_n,
   input [WIDTH-1:0] i_data,

@@ -1,4 +1,4 @@
-module Itype (
+module ysyx_25020042_Itype (
     input [31:0] i_inst,
     output [4:0] o_rd,
     output [4:0] o_rs1,

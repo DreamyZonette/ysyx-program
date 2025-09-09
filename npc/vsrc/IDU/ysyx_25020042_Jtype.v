@@ -1,4 +1,4 @@
-module Jtype (
+module ysyx_25020042_Jtype (
     input [31:0] i_inst,
     output [4:0] o_rd,
     output reg [31:0] o_offset,

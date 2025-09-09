@@ -1,4 +1,4 @@
-module ysyx_25020042EXU(
+module ysyx_25020042_EXU(
     input wire [31:0] i_src1,
     input wire [31:0] i_src2,
     input wire [31:0] i_imm,

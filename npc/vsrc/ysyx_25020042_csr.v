@@ -1,4 +1,4 @@
-module ysyx_25020042csr (
+module ysyx_25020042_csr (
     input clock,
     input reset_n,
     input i_ecall_signal,
@@ -61,9 +61,9 @@ always @(*) begin
     
 end
 
-Reg #(32, 32'h1800) mstatus (clock, reset_n, mstatus_wdata, o_mstatus ,  wen[0]);
-Reg #(32, 32'b0)    mtvec   (clock, reset_n, mtvec_wdata  , o_mtvec   ,  wen[1]);
-Reg #(32, 32'b0)    mepc    (clock, reset_n, mepc_wdata   , o_mepc    ,  wen[2]);
-Reg #(32, 32'b0)    mcause  (clock, reset_n, mcause_wdata , o_mcause  ,  wen[3]);
+ysyx_25020042_Reg #(32, 32'h1800) mstatus (clock, reset_n, mstatus_wdata, o_mstatus ,  wen[0]);
+ysyx_25020042_Reg #(32, 32'b0)    mtvec   (clock, reset_n, mtvec_wdata  , o_mtvec   ,  wen[1]);
+ysyx_25020042_Reg #(32, 32'b0)    mepc    (clock, reset_n, mepc_wdata   , o_mepc    ,  wen[2]);
+ysyx_25020042_Reg #(32, 32'b0)    mcause  (clock, reset_n, mcause_wdata , o_mcause  ,  wen[3]);
 
 endmodule

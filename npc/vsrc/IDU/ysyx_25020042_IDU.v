@@ -1,4 +1,4 @@
-module ysyx_25020042IDU (
+module ysyx_25020042_IDU (
     // input clock,
     // input reset_n, 
     input   [31:0]  i_inst,
@@ -206,7 +206,7 @@ module ysyx_25020042IDU (
         end
     end
 
-    Itype Itype_u(
+    ysyx_25020042_Itype Itype_u(
         .i_inst(i_inst),
         .o_imm(I_imm),
         .o_rs1(I_rs1),
@@ -235,7 +235,7 @@ module ysyx_25020042IDU (
         .o_mret_signal(o_mret_signal), // 原本是Rtype_u的输出
         .o_halt_signal(I_halt_signal)
     );
-    Utype Utype_u(
+    ysyx_25020042_Utype Utype_u(
         .i_inst(i_inst),
         .o_rd(U_rd),
         .o_imm(U_imm),
@@ -243,7 +243,7 @@ module ysyx_25020042IDU (
         .o_lui_signal(o_lui_signal),
         .o_halt_signal(U_halt_signal)
     );
-    Btype Btype_u(
+    ysyx_25020042_Btype Btype_u(
         .i_inst(i_inst),
         .o_rs1(B_rs1),
         .o_rs2(B_rs2),
@@ -256,14 +256,14 @@ module ysyx_25020042IDU (
         .o_bltu_signal(o_bltu_signal),
         .o_halt_signal(B_halt_signal)
     );
-    Jtype Jtype_u(
+    ysyx_25020042_Jtype Jtype_u(
         .i_inst(i_inst),
         .o_offset(J_offset),
         .o_rd(J_rd),
         .o_jal_signal(o_jal_signal),
         .o_halt_signal(J_halt_signal)
     );
-    Stype Stype_u(
+    ysyx_25020042_Stype Stype_u(
     .i_inst(i_inst),
     .o_rs1(S_rs1),
     .o_rs2(S_rs2),
@@ -274,7 +274,7 @@ module ysyx_25020042IDU (
     .o_halt_signal(S_halt_signal),
     .o_wmask(o_wmask)
     );
-    Rtype Rtype_u(
+    ysyx_25020042_Rtype Rtype_u(
     .i_inst(i_inst),
     .o_rd(R_rd),
     .o_rs1(R_rs1),

@@ -1,4 +1,4 @@
-module ArithmeticRightShift(
+module ysyx_25020042_ArithmeticRightShift(
     input [31:0] i_src1,
     input [5:0] i_shamt,
     output reg [31:0] o_data
