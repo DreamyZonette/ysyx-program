@@ -7,10 +7,10 @@
 #include <string.h>
 
 #include "verilated.h"
-#include "Vtop.h"
+#include "Vysyx_25020042.h"
 #include "verilated_vcd_c.h"
 #include "svdpi.h"
-#include "Vtop__Dpi.h"
+#include "Vysyx_25020042__Dpi.h"
 
 
 typedef uint32_t word_t;
@@ -38,6 +38,6 @@ extern VerilatedContext* contextp;
 #if CONFIG_WAVE
 extern VerilatedVcdC* tfp;
 #endif
-extern Vtop* top;
+extern Vysyx_25020042* top;
 
 #endif

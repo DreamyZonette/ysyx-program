@@ -9,7 +9,7 @@ void sim_run();
 
 extern VerilatedContext* contextp;
 extern VerilatedVcdC* tfp;
-extern Vtop* top;
+extern Vysyx_25020042* top;
 
 
 #endif /* __CPU_H__ */

@@ -1,4 +1,4 @@
-TOP_NAME = top
+TOP_NAME = ysyx_25020042
 IMG ?= /home/long/ysyx-workbench/npc/demo/add-minirv-npc.bin
 #IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
@@ -16,12 +16,10 @@ INCLUDES = $(addprefix -I, $(INC_PATH))
 VSRCS := $(shell find $(VPATH) -name *.v)
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
-# NEMU中的反汇编
-# include $(NEMU_HOME)/src/utils/filelist.mk
 
 CFLAGS ?= -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-CFLAGS += -CFLAGS -fpermissive 
+CFLAGS += -CFLAGS -fpermissive
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
@@ -46,7 +44,7 @@ all:run wave
 run:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$(VERILATOR) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
-	$(BUILD_DIR)/obj_dir/Vtop $(ARGS)
+	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
 	
 	
 include ../Makefile

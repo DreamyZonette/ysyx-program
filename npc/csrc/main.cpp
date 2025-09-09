@@ -16,7 +16,7 @@ VerilatedContext* contextp;
 #if CONFIG_WAVE
 VerilatedVcdC* tfp;
 #endif
-Vtop* top;
+Vysyx_25020042* top;
 
 
 void sim_init(){
@@ -24,7 +24,7 @@ void sim_init(){
     #if CONFIG_WAVE
     tfp = new VerilatedVcdC;
     #endif
-    top = new Vtop;
+    top = new Vysyx_25020042;
     #if CONFIG_WAVE
     contextp->traceEverOn(true);
     top->trace(tfp,0);
@@ -42,22 +42,14 @@ void sim_exit(){
 
 
 void npc_engine_start() {
-    top->sys_clk = 0;
-    top->sys_rst_n = 0;
+    top->clock = 0;
+    top->reset_n = 0;
     step_and_dump_wave();
-    top->sys_clk = 1;
+    top->clock = 1;
     step_and_dump_wave();
-    top->sys_rst_n = 1;
-    top->sys_clk = 0;
+    top->reset_n = 1;
+    top->clock = 0;
     step_and_dump_wave();
-
-    // top->sys_clk = 0;
-    // top->sys_rst_n = 0;
-    // step_and_dump_wave();
-    // top->sys_rst_n = 1;
-    // step_and_dump_wave();
-    // top->sys_clk = 1;
-    // step_and_dump_wave();
 }
 
 int main(int argc, char *argv[]){

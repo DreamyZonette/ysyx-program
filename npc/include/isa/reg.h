@@ -5,7 +5,7 @@
 
 extern VerilatedContext* contextp;
 extern VerilatedVcdC* tfp;
-extern Vtop* top;
+extern Vysyx_25020042* top;
 
 static inline int check_reg_idx(int idx) {
   assert(idx >= 0 && idx < 32);
