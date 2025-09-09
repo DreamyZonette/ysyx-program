@@ -1,6 +1,6 @@
    module ysyx_25020042 (
-        input sys_clk,
-        input sys_rst_n,
+        input clock,
+        input reset_n,
         // input [31:0] inst,
         output [31:0] de_pc,
         output [31:0] de_next_pc,
@@ -16,7 +16,7 @@
     import "DPI-C" function void dpi_ebreak();
     // import "DPI-C" function void dpi_return();
 
-    always @(posedge sys_clk) begin
+    always @(posedge clock) begin
             if (ebreak_signal == 1'b1) begin
                 dpi_ebreak();  // 调用 DPI-C 函数
             end
@@ -116,21 +116,21 @@
 
 
     PC PC_u(
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n),
     .i_next_pc(next_pc),
     .o_pc(pc)
     );
     
     IFU IFU_u (
-    //.i_sys_clk(sys_clk),
+    //.i_sys_clk(clock),
     .i_pc(pc),
     .o_instruction(instruction)
     );
 
     IDU IDU_u (
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n),
     .i_inst(instruction),
     .i_wdata(wdata),
     .o_src1(src1),
@@ -258,7 +258,7 @@
     );
 
     WBU WBU_u (
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_rst_n(reset_n),
     .i_exu_data(exu_data),
     .i_cur_pc(pc),
     .i_B_jump_signal(o_B_jump_signal),
@@ -285,8 +285,8 @@
     );
 
     LSU LSU_u (
-    .i_sys_clk(sys_clk),
-    //.i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    //.i_sys_rst_n(reset_n),
     .i_lbu_signal(lbu_signal),
     .i_lhu_signal(lhu_signal),
     .i_lb_signal(lb_signal),
@@ -302,8 +302,8 @@
     .o_rdata(rdata)
 );
     csr csr_u (
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n),
     .i_ecall_signal(ecall_signal),
     .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),
