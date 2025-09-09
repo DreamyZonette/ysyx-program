@@ -16,8 +16,8 @@
 #include <common.h>
 #include <device/map.h>
 
-#define SCREEN_W 400//(MUXDEF(CONFIG_VGA_SIZE_800x600, 800, 400))
-#define SCREEN_H 300//(MUXDEF(CONFIG_VGA_SIZE_800x600, 600, 300))
+#define SCREEN_W (MUXDEF(CONFIG_VGA_SIZE_800x600, 800, 400))
+#define SCREEN_H (MUXDEF(CONFIG_VGA_SIZE_800x600, 600, 300))
 
 static uint32_t screen_width() {
   return MUXDEF(CONFIG_TARGET_AM, io_read(AM_GPU_CONFIG).width, SCREEN_W);
@@ -79,11 +79,9 @@ void vga_update_screen() {
     
     // 检查同步寄存器是否被设置
     if (vgactl_port_base[1] != 0) {
-      // 调用屏幕更新函数
       IFDEF(CONFIG_VGA_SHOW_SCREEN, update_screen());
       // printf("vga: update screen: %d\n", vgactl_port_base[1]);
         
-      // 重置同步寄存器
       vgactl_port_base[1] = 0;
     }
 }
