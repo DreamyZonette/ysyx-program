@@ -162,7 +162,7 @@ module ysyx_25020042_alu (
         end
     end
     
-ArithmeticRightShift ArithmeticRightShift_u(
+ysyx_25020042_ArithmeticRightShift ArithmeticRightShift_u(
     .i_src1(i_src1),
     .i_shamt(i_shamt),
     .o_data(srai_result)

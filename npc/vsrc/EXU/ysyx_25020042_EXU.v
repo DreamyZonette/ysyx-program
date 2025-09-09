@@ -53,7 +53,7 @@ module ysyx_25020042_EXU(
 
 );
 
-alu alu_u(
+ysyx_25020042_alu alu_u(
     .i_src1(i_src1),
     .i_src2(i_src2),
     .i_imm(i_imm),
