@@ -151,7 +151,7 @@ mem mem_u_2 (
     .wmask(),
     .wen(),
     /* verilator lint_on PINCONNECTEMPTY */
-    .rdata(ifu_rdata)
+    .rdata(ifu_rdata),
     .reqValid(ifu_reqValid),
     .respValid(ifu_respValid)
 );
