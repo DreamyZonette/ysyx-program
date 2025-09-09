@@ -84,7 +84,7 @@ always @(posedge clock) begin
     end else if (reqValid) begin
         // 在收到新请求时，用LFSR生成一个新的随机延迟目标
         lfsr <= {lfsr[30:0], lfsr[31] ^ lfsr[30] ^ lfsr[28] ^ lfsr[25]}; // 一个32位的多项式反馈
-        delay_target <= lfsr % 100; // 取模以限制最大延迟范围，例如0-99个周期
+        delay_target <= lfsr % 10; // 取模以限制最大延迟范围，例如0-99个周期
     end
 end
 
