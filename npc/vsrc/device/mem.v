@@ -35,15 +35,11 @@ import "DPI-C" function void pmem_write(
 reg [31:0] delay_counter;
 reg [31:0] delay_target;
 reg reqValid_delay;
-// reg [3:0] wmask_delay;
-// reg [31:0] wdata_delay;
 reg wen_delay;
 
 always @(posedge clock) begin
     if(reqValid) begin
         reqValid_delay <= reqValid;
-        // wmask_delay <= wmask;
-        // wdata_delay <= wdata;
         wen_delay <= wen;
     end
     if ((reqValid && !wen) || (reqValid_delay && !wen_delay)) begin
