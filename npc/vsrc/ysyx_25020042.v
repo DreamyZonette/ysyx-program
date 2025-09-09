@@ -112,7 +112,7 @@
 
 
 
-ysyx_25020042PC PC_u(
+ysyx_25020042_PC PC_u(
     .clock(clock),
     .reset_n(reset_n),
     .i_next_pc(next_pc),
@@ -121,7 +121,7 @@ ysyx_25020042PC PC_u(
     .o_pc(pc)
 );
     
-ysyx_25020042IFU IFU_u (
+ysyx_25020042_IFU IFU_u (
     .clock(clock),
     .reset_n(reset_n),
     .i_pc(pc),
@@ -142,7 +142,7 @@ ysyx_25020042IFU IFU_u (
     wire ifu_wen;
     wire ifu_reqValid;
     wire ifu_respValid;
-ysyx_25020042mem mem_u_2 (
+ysyx_25020042_mem mem_u_2 (
     .clock(clock),
     .addr(ifu_addr),
     // .ren(ifu_ren),
@@ -156,7 +156,7 @@ ysyx_25020042mem mem_u_2 (
     .respValid(ifu_respValid)
 );
 
-ysyx_25020042IDU IDU_u (
+ysyx_25020042_IDU IDU_u (
     .i_inst(instruction),
     .o_imm(imm),
     .o_offset(offset),
@@ -211,7 +211,7 @@ ysyx_25020042IDU IDU_u (
     .rd(rd)
     );
 
-ysyx_25020042EXU EXU_u (
+ysyx_25020042_EXU EXU_u (
     .i_src1(src1),
     .i_src2(src2),
     .i_imm(imm),
@@ -265,7 +265,7 @@ ysyx_25020042EXU EXU_u (
     .o_data(exu_data)
     );
 
-ysyx_25020042WBU WBU_u (
+ysyx_25020042_WBU WBU_u (
     .clock(clock),
     .reset_n(reset_n),
     .i_exu_data(exu_data),
@@ -297,7 +297,7 @@ ysyx_25020042WBU WBU_u (
     .next_pc(next_pc)
     );
 
-ysyx_25020042LSU LSU_u (
+ysyx_25020042_LSU LSU_u (
     .clock(clock),
     .reset_n(reset_n),
     .i_lbu_signal(lbu_signal),
@@ -333,7 +333,7 @@ wire [31:0] lsu_rdata;
 wire lsu_reqValid;
 wire lsu_respValid;
 
-ysyx_25020042mem mem_u_1 (
+ysyx_25020042_mem mem_u_1 (
     .clock(clock),
     .addr(lsu_addr),
     .wdata(lsu_wdata),
@@ -345,7 +345,7 @@ ysyx_25020042mem mem_u_1 (
     .respValid(lsu_respValid)
 );
 
-ysyx_25020042csr csr_u (
+ysyx_25020042_csr csr_u (
     .clock(clock),
     .reset_n(reset_n),
     .i_ecall_signal(ecall_signal),
@@ -362,7 +362,7 @@ ysyx_25020042csr csr_u (
     .o_mcause(mcause),
     .o_csr_rdata(csr_data)
 );
-ysyx_25020042gpr gpr_u(
+ysyx_25020042_gpr gpr_u(
     .clock(clock),
     .reset_n(reset_n), 
     .i_rs1(rs1),
