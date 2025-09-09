@@ -51,6 +51,8 @@ always @(posedge clock) begin
             rdata <= pmem_read(addr, 4);
             respValid <= 1'b1;
             delay_counter <= 0;
+            reqValid_delay <= 1'b0;
+            wen_delay <= 1'b0;
         end
         else begin
             delay_counter <= delay_counter + 1;
@@ -62,6 +64,8 @@ always @(posedge clock) begin
             pmem_write(addr, wmask, wdata);
             /* verilator lint_on WIDTHEXPAND */
             respValid <= 1'b1;
+            reqValid_delay <= 1'b0;
+            wen_delay <= 1'b0;
         end
         else begin
             delay_counter <= delay_counter + 1;
@@ -69,10 +73,6 @@ always @(posedge clock) begin
     end
     if (respValid) begin
         respValid <= 1'b0;
-        reqValid_delay <= 1'b0;
-        // wmask_delay <= 4'b0;
-        // wdata_delay <= 32'b0;
-        wen_delay <= 1'b0;
     end
 
 end
@@ -80,11 +80,10 @@ end
 reg [31:0] lfsr;
 always @(posedge clock) begin
     if (lfsr == 0) begin
-        lfsr <= 32'hABCDE123; // 任意非零种子值
+        lfsr <= 32'hABCDE123;
     end else if (reqValid) begin
-        // 在收到新请求时，用LFSR生成一个新的随机延迟目标
-        lfsr <= {lfsr[30:0], lfsr[31] ^ lfsr[30] ^ lfsr[28] ^ lfsr[25]}; // 一个32位的多项式反馈
-        delay_target <= lfsr % 10; // 取模以限制最大延迟范围，例如0-99个周期
+        lfsr <= {lfsr[30:0], lfsr[31] ^ lfsr[30] ^ lfsr[28] ^ lfsr[25]};
+        delay_target <= lfsr % 10; 
     end
 end
 
