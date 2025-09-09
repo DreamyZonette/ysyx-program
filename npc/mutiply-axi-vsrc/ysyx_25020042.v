@@ -1,6 +1,6 @@
-   module top (
-        input sys_clk,
-        input sys_rst_n,
+   module ysyx_25020042 (
+        input clock,
+        input reset_n,
         output [31:0] de_pc,
         output [31:0] de_next_pc,
         output [31:0] de_inst,
@@ -14,7 +14,7 @@
 
     import "DPI-C" function void dpi_ebreak();
 
-    always @(posedge sys_clk) begin
+    always @(posedge clock) begin
             if (ebreak_signal == 1'b1) begin
                 dpi_ebreak();  // 调用 DPI-C 函数
             end
@@ -163,8 +163,8 @@
     // PC模块
     //--------------------
     PC PC_u(
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n),
     .i_wbu_valid(wbu_valid),
     .i_ifu_ready(ifu_ready),
     .i_next_pc(next_pc),
@@ -176,8 +176,8 @@
     // IFU模块
     //--------------------
     IFU IFU_u (
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n),
     .i_pc(pc),
     .i_pc_valid(pc_valid),
     .i_idu_ready(idu_ready),
@@ -199,8 +199,8 @@
     // IDU模块
     //--------------------
     IDU IDU_u (
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n),
     .i_inst(instruction),
     .i_ifu_valid(ifu_valid),
     .i_exu_ready(exu_ready),
@@ -263,8 +263,8 @@
     // EXU模块
     //--------------------
     EXU EXU_u (
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n),
     .i_src1(src1),
     .i_src2(src2),
     .i_imm(imm),
@@ -327,8 +327,8 @@
     // WBU模块
     //--------------------
     WBU WBU_u (
-    .i_sys_rst_n(sys_rst_n),
-    .i_sys_clk(sys_clk),
+    .i_sys_rst_n(reset_n),
+    .i_sys_clk(clock),
     .i_exu_data(exu_data),
     .i_cur_pc(pc),
     .i_B_jump_signal(o_B_jump_signal),
@@ -365,8 +365,8 @@
     // LSU模块
     //--------------------
     LSU LSU_u (
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n),
     .i_lbu_signal(lbu_signal),
     .i_lhu_signal(lhu_signal),
     .i_lb_signal(lb_signal),
@@ -411,8 +411,8 @@
     // CSR模块
     //--------------------
     csr csr_u (
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n),
     .i_ecall_signal(ecall_signal),
     .i_idu_valid(idu_valid),
     .i_wbu_valid(wbu_valid),
@@ -435,8 +435,8 @@
     // gpr模块
     //--------------------
     gpr gpr_u(
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n), 
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n), 
     .i_rs1(rs1),
     .i_rs2(rs2),
     .i_rd(rd),
@@ -453,8 +453,8 @@
     //--------------------
     sram # (1)rom_u
 (
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n),
     // AR
     .i_araddr(axi_ifu_araddr),
     .i_arvalid(axi_ifu_arvalid), // 看做读使能
@@ -485,8 +485,8 @@
     // ram模块
     //--------------------
     sram # (1)ram_u(
-    .i_sys_clk(sys_clk),
-    .i_sys_rst_n(sys_rst_n),
+    .i_sys_clk(clock),
+    .i_sys_rst_n(reset_n),
     // AR
     .i_araddr(axi_sram_araddr),
     .i_arvalid(axi_sram_arvalid), // 看做读使能
