@@ -85,7 +85,7 @@ import "DPI-C" function void pmem_write(
 
 // 状态定义
 reg [1:0] state;
-reg reqValid_delay;
+// reg reqValid_delay;
 reg wen_delay;
 parameter IDLE      = 2'b00;
 parameter DELAY     = 2'b01;
@@ -115,7 +115,7 @@ always @(posedge clock) begin
                 delay_counter <= 0;
                 if (reqValid) begin
                     state <= DELAY;
-                    reqValid_delay <= reqValid;
+                    // reqValid_delay <= reqValid;
                     wen_delay <= wen;
                 end
             end
@@ -140,7 +140,7 @@ always @(posedge clock) begin
             RESPOND: begin
                 respValid <= 1'b0;
                 state <= IDLE; // 返回空闲状态
-                reqValid_delay <= 1'b0;
+                // reqValid_delay <= 1'b0;
                 wen_delay <= 1'b0;
             end
             default: begin
