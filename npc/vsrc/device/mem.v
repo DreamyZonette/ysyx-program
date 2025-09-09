@@ -34,9 +34,19 @@ import "DPI-C" function void pmem_write(
 //************************延时版本***********************//
 reg [31:0] delay_counter;
 reg [31:0] delay_target;
+reg reqValid_delay;
+// reg [3:0] wmask_delay;
+// reg [31:0] wdata_delay;
+// reg wen_delay;
 
 always @(posedge clock) begin
-    if (reqValid && !wen) begin
+    if(reqValid) begin
+        reqValid_delay <= reqValid;
+        wmask_delay <= wmask;
+        wdata_delay <= wdata;
+        wen_delay <= wen;
+    end
+    if ((reqValid && !wen) || (reqValid_delay && !wen_delay)) begin
         if (delay_counter == delay_target) begin
             rdata <= pmem_read(addr, 4);
             respValid <= 1'b1;
@@ -46,7 +56,7 @@ always @(posedge clock) begin
             delay_counter <= delay_counter + 1;
         end
     end   
-    else if (reqValid && wen) begin
+    else if ((reqValid && wen) || (reqValid_delay && wen_delay)) begin
         if (delay_counter == delay_target) begin
             /* verilator lint_off WIDTHEXPAND */
             pmem_write(addr, wmask, wdata);
@@ -59,6 +69,10 @@ always @(posedge clock) begin
     end
     if (respValid) begin
         respValid <= 1'b0;
+        reqValid_delay <= 1'b0;
+        wmask_delay <= 4'b0;
+        wdata_delay <= 32'b0;
+        wen_delay <= 1'b0;
     end
 
 end
