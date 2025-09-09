@@ -70,8 +70,8 @@ always @(posedge clock) begin
     if (respValid) begin
         respValid <= 1'b0;
         reqValid_delay <= 1'b0;
-        wmask_delay <= 4'b0;
-        wdata_delay <= 32'b0;
+        // wmask_delay <= 4'b0;
+        // wdata_delay <= 32'b0;
         wen_delay <= 1'b0;
     end
 
