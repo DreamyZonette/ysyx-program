@@ -100,7 +100,7 @@ always @(posedge clock) begin
     end else if (state == IDLE && reqValid) begin
         // 更新LFSR并生成新的随机延迟目标
         lfsr <= {lfsr[30:0], lfsr[31] ^ lfsr[30] ^ lfsr[28] ^ lfsr[25]};
-        delay_target <= lfsr[7:0] % 20 + 1; // 生成1-20周期的随机延迟
+        delay_target <= lfsr % 20 + 1; // 生成1-20周期的随机延迟
     end
 end
 
