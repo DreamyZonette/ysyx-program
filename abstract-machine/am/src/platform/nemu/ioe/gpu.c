@@ -16,10 +16,10 @@ static void am_get_gpu_config() {
 void __am_gpu_init() {
   am_get_gpu_config();
 
-  int i;
-  uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  for (i = 0; i < width * height; i ++) fb[i] = 0;
-  outl(SYNC_ADDR, 1);
+  // int i;
+  // uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+  // for (i = 0; i < width * height; i ++) fb[i] = 0;
+  // outl(SYNC_ADDR, 1);
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
