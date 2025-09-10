@@ -8,26 +8,26 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
-	int i;
-	int count = 0;
-	int len = sizeof(regs) / sizeof(regs[0]);
-	for(i = 0 ; i < len ; i++){
-		char name [5], value [10];
-		sprintf(name, "%s",reg_name(i)); 
-		sprintf(value, "%08x",gpr(i));
-		printf("\033[32m%s\033[0m: \033[33m%s\033[0m\t", name, value); 
+	// int i;
+	// int count = 0;
+	// int len = sizeof(regs) / sizeof(regs[0]);
+	// for(i = 0 ; i < len ; i++){
+	// 	char name [5], value [10];
+	// 	sprintf(name, "%s",reg_name(i)); 
+	// 	sprintf(value, "%08x",gpr(i));
+	// 	printf("\033[32m%s\033[0m: \033[33m%s\033[0m\t", name, value); 
 		
-		count ++;
-		if (count == 4) {
-			printf("\n");
-			count = 0;
-		}
-	}
-	printf("\033[32mmstatus\033[0m: \033[33m%08x\033[0m\t", top->de_mstatus);
-	printf("\033[32mmcause\033[0m: \033[33m%08x\033[0m\t", top->de_mcause);
-	printf("\033[32mmepc\033[0m: \033[33m%08x\033[0m\t", top->de_mepc);
-	printf("\033[32mmtvec\033[0m: \033[33m%08x\033[0m\t", top->de_mtvec);
-	printf("\n");
+	// 	count ++;
+	// 	if (count == 4) {
+	// 		printf("\n");
+	// 		count = 0;
+	// 	}
+	// }
+	// printf("\033[32mmstatus\033[0m: \033[33m%08x\033[0m\t", top->de_mstatus);
+	// printf("\033[32mmcause\033[0m: \033[33m%08x\033[0m\t", top->de_mcause);
+	// printf("\033[32mmepc\033[0m: \033[33m%08x\033[0m\t", top->de_mepc);
+	// printf("\033[32mmtvec\033[0m: \033[33m%08x\033[0m\t", top->de_mtvec);
+	// printf("\n");
 }
 
 word_t isa_reg_str2val(const char *s) {

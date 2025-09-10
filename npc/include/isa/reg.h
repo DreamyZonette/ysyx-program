@@ -12,7 +12,7 @@ static inline int check_reg_idx(int idx) {
   return idx;
 }
 
-#define gpr(idx) (top->reg_data[check_reg_idx(idx)])
+// #define gpr(idx) (top->reg_data[check_reg_idx(idx)])
 
 static inline const char* reg_name(int idx) {
   extern const char* regs[];
