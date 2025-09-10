@@ -65,6 +65,7 @@ void npc_engine_start() {
 }
 
 int main(int argc, char *argv[]){
+    npc_engine_start();
     sim_init();
     int n = 10000;
     while (n --){
