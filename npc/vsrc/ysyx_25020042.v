@@ -138,6 +138,7 @@ ysyx_25020042_IFU IFU_u (
     .ifu_rdata(io_ifu_inst),
     .ifu_reqValid(io_ifu_pcValid),
     .ifu_respValid(io_ifu_instValid)
+);
 
     // wire [31:0] ifu_rdata;
     // wire [31:0] ifu_addr;
