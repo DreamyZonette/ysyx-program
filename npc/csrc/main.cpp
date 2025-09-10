@@ -7,7 +7,7 @@
 
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
-
+#define CONFIG_WAVE 1
 VerilatedContext* contextp;
 #if CONFIG_WAVE
 VerilatedVcdC* tfp;
@@ -66,7 +66,8 @@ void npc_engine_start() {
 
 int main(int argc, char *argv[]){
     sim_init();
-    while (1){
+    int n = 10000
+    while (n --){
         single_cycle();
     }
 
