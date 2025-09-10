@@ -21,7 +21,7 @@ VSRCS += /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/ysyxSoCFull.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
 
-CFLAGS ?= #-Wall 
+CFLAGS ?= -CFLAGS -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
 VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
