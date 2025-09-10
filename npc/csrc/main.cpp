@@ -1,4 +1,9 @@
-#include <common.h>
+//#include <common.h>
+#include "verilated.h"
+#include "VysyxSoCFull.h"
+#include "verilated_vcd_c.h"
+#include "svdpi.h"
+#include "VysyxSoCFull__Dpi.h"
 
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
