@@ -14,6 +14,7 @@ paddr_t host_to_guest(uint8_t *haddr);
 extern "C" {
     int pmem_read(int addr, int len);
     void pmem_write(int addr, int len, int data);
+    void flash_read(int32_t addr, int32_t *data);
 }
 
 

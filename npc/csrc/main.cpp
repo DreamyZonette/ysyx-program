@@ -5,7 +5,7 @@
 //函数申明
 // extern word_t pmem_read(paddr_t addr, int len);
 // extern void pmem_write(paddr_t addr, int len, word_t data);
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+
 extern void init_isa();
 void init_monitor(int, char *[]);
 void step_and_dump_wave();
