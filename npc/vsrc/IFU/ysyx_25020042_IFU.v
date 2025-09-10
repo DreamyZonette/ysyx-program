@@ -28,7 +28,7 @@ always @(posedge clock) begin
         state <= IDLE;
         ifu_valid <= 1'b0;
         // ifu_wen <= 1'b0;
-        ifu_addr <= 32'h80000000;
+        ifu_addr <= 32'h30000000;
         ifu_reqValid <= 1'b0;
     end
     else begin
