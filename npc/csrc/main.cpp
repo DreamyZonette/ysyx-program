@@ -62,7 +62,7 @@ void npc_engine_start() {
 int main(int argc, char *argv[]){
     sim_init();
     while (1){
-        single_cycle()
+        single_cycle();
     }
 
     sim_exit();
