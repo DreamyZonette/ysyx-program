@@ -61,59 +61,60 @@ static void out_of_bound(paddr_t addr) {
 }
 
 extern "C" int pmem_read(int addr, int len) {
-  addr = paddr_t(addr);
-  uint32_t ret;
-  if (addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
-      addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
-      addr >= I8042_DATA_ADDR_LEFT && addr <= I8042_DATA_ADDR_RIGHT || \
-      addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
-      addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
-      addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
-      addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
-      addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT) { 
-    ret = mmio_read(addr, len);
-  }
-  else{
-    ret = internal_pmem_read(addr, len);
-    #if CONFIG_MTRACE
-      if (addr != top->de_pc){
-        char s[128];
-        sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
-        log_write("%s\n", s);
-      }
-      //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+  // addr = paddr_t(addr);
+  // uint32_t ret;
+  // if (addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
+  //     addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
+  //     addr >= I8042_DATA_ADDR_LEFT && addr <= I8042_DATA_ADDR_RIGHT || \
+  //     addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
+  //     addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
+  //     addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
+  //     addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
+  //     addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT) { 
+  //   ret = mmio_read(addr, len);
+  // }
+  // else{
+  //   ret = internal_pmem_read(addr, len);
+  //   #if CONFIG_MTRACE
+  //     if (addr != top->de_pc){
+  //       char s[128];
+  //       sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+  //       log_write("%s\n", s);
+  //     }
+  //     //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
 
-    #endif
-  }
-  return ret;
+  //   #endif
+  // }
+  // return ret;
+  return 1;
 }
 extern uint64_t g_nr_guest_inst;
 extern "C" void pmem_write(int addr, int len, int data) {
-  addr = paddr_t(addr);
-  data = word_t(data);
+  // addr = paddr_t(addr);
+  // data = word_t(data);
   
-  if(addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
-      addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
-      addr >= I8042_DATA_ADDR_LEFT && addr <= I8042_DATA_ADDR_RIGHT || \
-      addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
-      addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
-      addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
-      addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
-      addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT){
-    // putchar(char(data));
-    mmio_write(addr, len, data);
-    // printf("串口传出数据%08x\n", data);
-  }
-  else{
-    #if CONFIG_MTRACE
-    char s[128];
-    sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
-    log_write("%s\n", s);
-    //printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+  // if(addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
+  //     addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
+  //     addr >= I8042_DATA_ADDR_LEFT && addr <= I8042_DATA_ADDR_RIGHT || \
+  //     addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
+  //     addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
+  //     addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
+  //     addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
+  //     addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT){
+  //   // putchar(char(data));
+  //   mmio_write(addr, len, data);
+  //   // printf("串口传出数据%08x\n", data);
+  // }
+  // else{
+  //   #if CONFIG_MTRACE
+  //   char s[128];
+  //   sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+  //   log_write("%s\n", s);
+  //   //printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
 
-  #endif
-    internal_pmem_write(addr, len, data);
-  }
+  // #endif
+  //   internal_pmem_write(addr, len, data);
+  // }
 }
 
 word_t paddr_read(paddr_t addr, int len) {
