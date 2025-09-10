@@ -86,4 +86,6 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   out_of_bound(addr);
 }
 
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+extern "C" void flash_read(int32_t addr, int32_t *data) { 
+  *data = internal_pmem_read(addr, 4);
+}
