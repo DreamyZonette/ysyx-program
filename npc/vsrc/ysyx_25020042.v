@@ -133,31 +133,31 @@ ysyx_25020042_IFU IFU_u (
     .wbu_ready(wbu_ready),
     .ifu_valid(ifu_valid),
     .o_instruction(instruction),
-    .ifu_addr(ifu_addr),
-    .ifu_wen(ifu_wen),
-    .ifu_rdata(ifu_rdata),
-    .ifu_reqValid(ifu_reqValid),
-    .ifu_respValid(ifu_respValid)
+    .ifu_addr(io_ifu_pc),
+    // .ifu_wen(ifu_wen),
+    .ifu_rdata(io_ifu_inst),
+    .ifu_reqValid(io_ifu_pcValid),
+    .ifu_respValid(io_ifu_instValid)
 );
 
-    wire [31:0] ifu_rdata;
-    wire [31:0] ifu_addr;
-    wire ifu_wen;
-    wire ifu_reqValid;
-    wire ifu_respValid;
-ysyx_25020042_mem mem_u_2 (
-    .clock(clock),
-    .addr(ifu_addr),
-    // .ren(ifu_ren),
-    .wen(ifu_wen),
-    /* verilator lint_off PINCONNECTEMPTY */
-    .wdata(),
-    .wmask(),
-    /* verilator lint_on PINCONNECTEMPTY */
-    .rdata(ifu_rdata),
-    .reqValid(ifu_reqValid),
-    .respValid(ifu_respValid)
-);
+    // wire [31:0] ifu_rdata;
+    // wire [31:0] ifu_addr;
+    // wire ifu_wen;
+    // wire ifu_reqValid;
+    // wire ifu_respValid;
+// ysyx_25020042_mem mem_u_2 (
+//     .clock(clock),
+//     .addr(ifu_addr),
+//     // .ren(ifu_ren),
+//     .wen(ifu_wen),
+//     /* verilator lint_off PINCONNECTEMPTY */
+//     .wdata(),
+//     .wmask(),
+//     /* verilator lint_on PINCONNECTEMPTY */
+//     .rdata(ifu_rdata),
+//     .reqValid(ifu_reqValid),
+//     .respValid(ifu_respValid)
+// );
 
 ysyx_25020042_IDU IDU_u (
     .i_inst(instruction),
@@ -328,25 +328,25 @@ ysyx_25020042_LSU LSU_u (
     .lsu_reqValid(io_lsu_reqValid),
     .lsu_respValid(io_lsu_respValid)
 );
-wire [31:0] lsu_addr;
-wire [31:0] lsu_wdata;
-wire [3:0] lsu_wmask;
-wire lsu_wen;
-wire [31:0] lsu_rdata;
-wire lsu_reqValid;
-wire lsu_respValid;
+// wire [31:0] lsu_addr;
+// wire [31:0] lsu_wdata;
+// wire [3:0] lsu_wmask;
+// wire lsu_wen;
+// wire [31:0] lsu_rdata;
+// wire lsu_reqValid;
+// wire lsu_respValid;
 
-ysyx_25020042_mem mem_u_1 (
-    .clock(clock),
-    .addr(lsu_addr),
-    .wdata(lsu_wdata),
-    .wmask(lsu_wmask),
-    // .ren(lsu_ren),
-    .reqValid(lsu_reqValid),
-    .rdata(lsu_rdata),
-    .wen(lsu_wen),
-    .respValid(lsu_respValid)
-);
+// ysyx_25020042_mem mem_u_1 (
+//     .clock(clock),
+//     .addr(lsu_addr),
+//     .wdata(lsu_wdata),
+//     .wmask(lsu_wmask),
+//     // .ren(lsu_ren),
+//     .reqValid(lsu_reqValid),
+//     .rdata(lsu_rdata),
+//     .wen(lsu_wen),
+//     .respValid(lsu_respValid)
+// );
 
 ysyx_25020042_csr csr_u (
     .clock(clock),

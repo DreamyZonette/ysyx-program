@@ -8,7 +8,7 @@ module ysyx_25020042_IFU(
     output reg ifu_valid,
     output wire [31:0] o_instruction,
     output reg [31:0] ifu_addr,
-    output reg ifu_wen,
+    // output reg ifu_wen,
     input [31:0] ifu_rdata,
     output reg ifu_reqValid,
     input ifu_respValid
@@ -27,7 +27,7 @@ always @(posedge clock) begin
     if(reset) begin
         state <= IDLE;
         ifu_valid <= 1'b0;
-        ifu_wen <= 1'b0;
+        // ifu_wen <= 1'b0;
         ifu_addr <= 32'h80000000;
         ifu_reqValid <= 1'b0;
     end
