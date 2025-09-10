@@ -87,5 +87,6 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 }
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { 
+  printf("read:0x%08x", addr);
   *data = internal_pmem_read(addr, 4);
 }
