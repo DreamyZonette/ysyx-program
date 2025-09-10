@@ -42,14 +42,21 @@ ARGS += -i $(IMG)     # 启用镜像文件
 #ARGS += -b      	  # 启用批处理
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 
+ifeq ($(MAKECMDGOALS),gdb)
+  CFLAGS += -CFLAGS -g
+endif
 
 $(shell mkdir -p $(BUILD_DIR))
 
-all:run wave
 
-run:
+
+sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	$(VERILATOR) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
+	
+all:run wave
+
+run:sim
 	@echo "Start running"
 	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
 	
@@ -61,6 +68,10 @@ wave:
 
 
 PHONY: clean test
+
+gdb:sim
+	@echo "Start gdb"
+	gdb --args $(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
 
 test:
 	$(VERILATOR) --lint-only -Wall $(TEST_OBJ)

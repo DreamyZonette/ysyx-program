@@ -50,7 +50,7 @@ always @(posedge clock) begin
                 // if (ifu_ren) begin
                 //     ifu_ren <= 1'b0;
                 // end
-                if (ifu_respValid) begin
+                if (ifu_reqValid) begin
                     ifu_reqValid <= 1'b0;
                 end
                 // o_instruction <= pmem_read(i_pc, 4);
