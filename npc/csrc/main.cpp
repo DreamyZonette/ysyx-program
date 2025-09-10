@@ -42,7 +42,8 @@ void sim_exit(){
 
 
 
-void npc_engine_start() {
+void npc_engine_start() 
+printf("Start npc engine\n");
     top->clock = 0;
     top->reset = 1;
     step_and_dump_wave();
