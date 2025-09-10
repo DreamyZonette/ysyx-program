@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
     
     init_monitor(argc, argv);
 
-    npc_engine_start();
+    //npc_engine_start();
     
     sdb_mainloop();
 
