@@ -1,7 +1,7 @@
 #include <common.h>
 
 
-
+extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
 
 VerilatedContext* contextp;
 #if CONFIG_WAVE
