@@ -13,7 +13,7 @@ module ysyx_25020042_IFU(
     output reg ifu_reqValid,
     input ifu_respValid
 );
-import "DPI-C" function int pmem_read(input int raddr, input int len);
+// import "DPI-C" function int pmem_read(input int raddr, input int len);
 
 // assign o_instruction = $unsigned(pmem_read(i_pc, 4)); 
 
