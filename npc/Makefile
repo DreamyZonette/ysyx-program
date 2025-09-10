@@ -19,6 +19,7 @@ VSRCS := $(shell find $(VPATH) -name *.v)
 VSRCS += $(shell find $(SOC_HOME) -name *.v)
 VSRCS += /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/ysyxSoCFull.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
+CSRCS += $(shell find $(CPATH) -name *.c)
 
 CFLAGS ?= #-Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
@@ -27,9 +28,20 @@ VFLAGS += --top-module $(TOP_NAME)
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 VFLAGS += --timescale "1ns/1ns" --no-timing 
 VFLAGS += -I$(SOC_HOME)/uart16550/rtl -I$(SOC_HOME)/spi/rtl
-# LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
+LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
+LDFLAGS += -LDFLAGS -lSDL2
+#LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
+#LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
+#LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
 
 VERILATOR = verilator
+ARGS ?= 
+#ARGS += -d $(NEMU_SO) # 启用difftest
+ARGS += -i $(IMG)     # 启用镜像文件
+#ARGS += -e $(ELF)	  # 启用ftrace
+#ARGS += -b      	  # 启用批处理
+ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
+
 
 $(shell mkdir -p $(BUILD_DIR))
 

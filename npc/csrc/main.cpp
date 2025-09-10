@@ -1,34 +1,22 @@
-//#include <common.h>
-#include "verilated.h"
-#include "VysyxSoCFull.h"
-#include "verilated_vcd_c.h"
-#include "svdpi.h"
-#include "VysyxSoCFull__Dpi.h"
+#include <common.h>
+#include <memory/paddr.h>
+#include <cpu/cpu.h>
 
+//函数申明
+// extern word_t pmem_read(paddr_t addr, int len);
+// extern void pmem_write(paddr_t addr, int len, word_t data);
+extern void init_isa();
+void init_monitor(int, char *[]);
+void step_and_dump_wave();
+void sdb_mainloop();
+// void sim_run();
+// void engine_start();
 
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
-#define CONFIG_WAVE 1
 VerilatedContext* contextp;
 #if CONFIG_WAVE
 VerilatedVcdC* tfp;
 #endif
 VysyxSoCFull* top;
-
-
-void step_and_dump_wave(){
-    top->eval();
-    #if CONFIG_WAVE
-    contextp->timeInc(1);   
-    tfp->dump(contextp->time());
-    #endif
-}
-
-void single_cycle() {
-  top->clock ^= 1; top->eval();
-  step_and_dump_wave();
-  top->clock ^= 1; top->eval();
-  step_and_dump_wave();
-}
 
 
 void sim_init(){
@@ -65,12 +53,13 @@ void npc_engine_start() {
 }
 
 int main(int argc, char *argv[]){
-    npc_engine_start();
     sim_init();
-    int n = 10000;
-    while (n --){
-        single_cycle();
-    }
+    
+    init_monitor(argc, argv);
+
+    npc_engine_start();
+    
+    sdb_mainloop();
 
     sim_exit();
     return 0;
