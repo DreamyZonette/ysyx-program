@@ -48,10 +48,15 @@ void npc_engine_start(){
     top->clock = 0;
     top->reset = 1;
     step_and_dump_wave();
-    top->clock = 1;
-    step_and_dump_wave();
+    int n = 10;
+    while (n--) {
+        top->clock = 1;
+        step_and_dump_wave();
+        top->clock = 0;
+        step_and_dump_wave();
+    }
     top->reset = 0;
-    top->clock = 0;
+    // top->clock = 0;
     step_and_dump_wave();
 }
 
