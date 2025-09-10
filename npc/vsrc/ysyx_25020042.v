@@ -326,7 +326,8 @@ ysyx_25020042_LSU LSU_u (
     .lsu_wmask(io_lsu_wmask),
     .lsu_rdata(io_lsu_rdata),
     .lsu_reqValid(io_lsu_reqValid),
-    .lsu_respValid(io_lsu_respValid)
+    .lsu_respValid(io_lsu_respValid),
+    .lsu_size(io_lsu_size)
 );
 // wire [31:0] lsu_addr;
 // wire [31:0] lsu_wdata;
