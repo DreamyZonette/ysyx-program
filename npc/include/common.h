@@ -21,9 +21,9 @@ typedef word_t vaddr_t;
 
 #define FMT_WORD "0x%08" PRIx32
 
-#include <generated/autoconf.h>
-#include <macro.h>
-#include <utils.h>
+// #include <generated/autoconf.h>
+// #include <macro.h>
+// #include <utils.h>
 
 #include <assert.h>
 #include <stdlib.h>
