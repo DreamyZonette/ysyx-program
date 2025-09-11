@@ -62,13 +62,9 @@ void vga_update_screen() {
   // then zero out the sync register
   if (vgactl_port_base == NULL) return;
     
-    // 检查同步寄存器是否被设置
     if (vgactl_port_base[1] != 0) {
-      // 调用屏幕更新函数
       IFDEF(CONFIG_VGA_SHOW_SCREEN, update_screen());
-      //printf("vga: update screen: %d\n", vgactl_port_base[1]);
         
-      // 重置同步寄存器
       vgactl_port_base[1] = 0;
     }
 }
