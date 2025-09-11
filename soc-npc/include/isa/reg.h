@@ -3,16 +3,16 @@
 
 #include <common.h>
 
-extern VerilatedContext* contextp;
-extern VerilatedVcdC* tfp;
-extern Vysyx_25020042* top;
+// extern VerilatedContext* contextp;
+// extern VerilatedVcdC* tfp;
+// extern Vysyx_25020042* top;
 
 static inline int check_reg_idx(int idx) {
   assert(idx >= 0 && idx < 32);
   return idx;
 }
 
-#define gpr(idx) (top->reg_data[check_reg_idx(idx)])
+// #define gpr(idx) (top->reg_data[check_reg_idx(idx)])
 
 static inline const char* reg_name(int idx) {
   extern const char* regs[];

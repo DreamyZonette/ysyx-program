@@ -5,6 +5,7 @@
 //函数申明
 // extern word_t pmem_read(paddr_t addr, int len);
 // extern void pmem_write(paddr_t addr, int len, word_t data);
+
 extern void init_isa();
 void init_monitor(int, char *[]);
 void step_and_dump_wave();
@@ -16,7 +17,7 @@ VerilatedContext* contextp;
 #if CONFIG_WAVE
 VerilatedVcdC* tfp;
 #endif
-Vysyx_25020042* top;
+VysyxSoCFull* top;
 
 
 void sim_init(){
@@ -24,7 +25,7 @@ void sim_init(){
     #if CONFIG_WAVE
     tfp = new VerilatedVcdC;
     #endif
-    top = new Vysyx_25020042;
+    top = new VysyxSoCFull;
     #if CONFIG_WAVE
     contextp->traceEverOn(true);
     top->trace(tfp,0);
@@ -41,13 +42,22 @@ void sim_exit(){
 
 
 
-void npc_engine_start() {
+void npc_engine_start(){
+     
+    printf("Start npc engine\n");
     top->clock = 0;
-    top->reset_n = 0;
+    top->reset = 1;
     step_and_dump_wave();
+    int n = 9;
+    while (n--) {
+        top->clock = 1;
+        step_and_dump_wave();
+        top->clock = 0;
+        step_and_dump_wave();
+    }
     top->clock = 1;
     step_and_dump_wave();
-    top->reset_n = 1;
+    top->reset = 0;
     top->clock = 0;
     step_and_dump_wave();
 }

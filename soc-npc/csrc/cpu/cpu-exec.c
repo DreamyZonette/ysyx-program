@@ -137,14 +137,14 @@ void assert_fail_msg() {
 static void execute(uint64_t n) {
     if(n <= MAX_INST_TO_PRINT) print_on = 1;
   for (;n > 0; n --) {
-    if(dut.pc < 0x80000000 || dut.pc >= 0x90000000){
-      dut.pc = top->de_pc;
-      dut.next_pc = top->de_next_pc;
-    }
-    else {
-      dut.pc = dut.next_pc;
-      dut.next_pc = top->de_pc;
-    }
+    // if(dut.pc < 0x80000000 || dut.pc >= 0x90000000){
+    //   dut.pc = top->de_pc;
+    //   dut.next_pc = top->de_next_pc;
+    // }
+    // else {
+    //   dut.pc = dut.next_pc;
+    //   dut.next_pc = top->de_pc;
+    // }
     if (dut.pc != dut.next_pc) g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
@@ -159,8 +159,8 @@ static void execute(uint64_t n) {
   if(!sim_finish){
     if(print_on){
       print_on = 0;
-      printf("pc:0x%08x    inst:0x%08x\n", 
-        top->de_pc, top->de_inst);
+      // printf("pc:0x%08x    inst:0x%08x\n", 
+      //   top->de_pc, top->de_inst);
     }
   }
   #endif
@@ -187,8 +187,8 @@ static void execute(uint64_t n) {
     #endif
 
     if(sim_finish) {
-      npc_state.halt_pc = top->de_pc;
-      npc_state.halt_ret = top->reg_data[10]; // 寄存器返回值
+      // npc_state.halt_pc = top->de_pc;
+      // npc_state.halt_ret = top->reg_data[10]; // 寄存器返回值
       npc_state.state = NPC_END;
     }
     // if(top->halt == 1){
