@@ -28,7 +28,9 @@ wire [31:0] marchid_val;
 wire [31:0] mcycle_wdata;
 wire [31:0] mcycleh_wdata;
 
-
+always @(posedge clock ) begin
+         $display("当前模块的完整路径: %m");
+    end
 assign mstatus_wdata = (i_ecall_signal == 1'b1) ? i_mstatus_wdata : i_csr_wdata;
 assign mtvec_wdata   = (i_ecall_signal == 1'b1) ? i_mtvec_wdata   : i_csr_wdata;
 assign mepc_wdata    = (i_ecall_signal == 1'b1) ? i_mepc_wdata    : i_csr_wdata;
