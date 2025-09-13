@@ -16,7 +16,7 @@ static inline int check_reg_idx(int idx) {
 extern "C" {
 
 // DPI 函数声明
-extern "C" unsigned int get_register_value(int idx);
+unsigned int get_register_value(int idx);
 
 }
 
