@@ -29,7 +29,7 @@ void sim_init(){
     #if CONFIG_WAVE
     contextp->traceEverOn(true);
     top->trace(tfp,0);
-    tfp->open("/home/long/ysyx-workbench/npc/build/wave.vcd");
+    tfp->open("/home/long/ysyx-workbench/soc-npc/build/wave.vcd");
     #endif
 }
 
