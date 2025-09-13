@@ -8,11 +8,22 @@
 // extern Vysyx_25020042* top;
 
 static inline int check_reg_idx(int idx) {
-  assert(idx >= 0 && idx < 32);
+  assert(idx >= 0 && idx < 16);
   return idx;
 }
 
-#define gpr(idx) (top->ysyxSoCFull->asic->cpu->cpu->gpr_u->reg_data[check_reg_idx(idx)])
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// DPI 函数声明
+extern "C" unsigned int get_register_value(int idx);
+
+#ifdef __cplusplus
+}
+#endif
+
+#define gpr(idx) (get_register_value(check_reg_idx(idx)))
 
 static inline const char* reg_name(int idx) {
   extern const char* regs[];

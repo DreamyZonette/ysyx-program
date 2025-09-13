@@ -15,6 +15,15 @@ module ysyx_25020042_gpr  (
     /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] reg_file [0:15]/* verilator public */;
 
+    export "DPI-C" function get_register_value;
+    function int unsigned get_register_value(input int idx);
+        if (idx >= 0 && idx <= 15) begin
+            return reg_file[idx];
+        end else begin
+            return 32'h0;
+        end
+    endfunction
+
     assign wen = (i_rd != 5'b0) && wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
 
     // 生成 16 个寄存器
