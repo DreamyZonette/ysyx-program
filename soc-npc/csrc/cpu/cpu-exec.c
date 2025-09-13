@@ -159,7 +159,7 @@ static void execute(uint64_t n) {
   if(!sim_finish){
     if(print_on){
       print_on = 0;
-      printf("pc:0x%08x    inst:0x%08x\n", 
+      printf("0x%08x: %08x\n", 
         get_pc(), get_instruction());
     }
   }
