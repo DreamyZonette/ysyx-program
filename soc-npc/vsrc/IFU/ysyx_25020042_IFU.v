@@ -13,15 +13,20 @@ module ysyx_25020042_IFU(
     output reg ifu_reqValid,
     input ifu_respValid
 );
-// import "DPI-C" function int pmem_read(input int raddr, input int len);
+export "DPI-C" function get_pc;
+export "DPI-C" function get_instruction;
 
-// assign o_instruction = $unsigned(pmem_read(i_pc, 4)); 
+    function int unsigned get_pc();   
+        return i_pc;
+    endfunction
+    function int unsigned get_instruction();   
+        return o_instruction;
+    endfunction
 
 localparam IDLE = 1'b0;
 localparam WAIT = 1'b1;
 
 reg state;
-//assign o_instruction = ifu_rdata;
 
 always @(posedge clock) begin
     if(reset) begin
