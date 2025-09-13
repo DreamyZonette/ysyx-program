@@ -13,7 +13,7 @@ module ysyx_25020042_gpr  (
     /* verilator lint_off UNUSEDSIGNAL */
     wire [15:0] wen;
     /* verilator lint_on UNUSEDSIGNAL */
-    wire [31:0] reg_file [0:15]; // 16 个寄存器
+    wire [31:0] reg_file [0:15];/* verilator public */
 
     assign wen = (i_rd != 5'b0) && wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
 
