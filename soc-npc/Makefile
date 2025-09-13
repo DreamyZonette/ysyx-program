@@ -23,7 +23,7 @@ CSRCS += $(shell find $(CPATH) -name *.c)
 
 CFLAGS ?= -CFLAGS -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-VFLAGS ?= -Wall  --cc --exe -I$(VPATH) --build -j 0 --trace
+VFLAGS ?=   --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --timescale "1ns/1ns" --no-timing  
 VFLAGS += -Wno-ASSIGNDLY -Wno-UNUSEDSIGNAL -Wno-DECLFILENAME -Wno-PINCONNECTEMPTY # 忽略警告
 VFLAGS += --top-module $(TOP_NAME) 
