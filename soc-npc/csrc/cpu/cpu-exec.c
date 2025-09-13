@@ -34,9 +34,6 @@ CPU_state dut = {
 extern "C" void dpi_ebreak() {
     sim_finish = true;  // 触发仿真结束
 }
-extern "C" void dpi_return() {
-    sim_finish = true;  // 触发仿真结束
-}
 
 void step_and_dump_wave(){
     top->eval();
@@ -187,7 +184,7 @@ static void execute(uint64_t n) {
     device_update();
     #endif
 
-    if(sim_finish) {
+    if(1) {
       npc_state.halt_pc = get_pc();
       npc_state.halt_ret = _gpr(10); // 寄存器返回值
       npc_state.state = NPC_END;
