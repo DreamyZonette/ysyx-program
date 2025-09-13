@@ -15,24 +15,13 @@
         input [31:0]  io_lsu_rdata
     );
 
-    // import "DPI-C" function void dpi_ebreak();
-    // // import "DPI-C" function void dpi_return();
+    import "DPI-C" function void dpi_ebreak();
 
     always @(posedge clock) begin
             if (ebreak_signal == 1'b1) begin
                 dpi_ebreak();
             end
     end
-
-    // assign halt = unknown_signal;
-    // assign de_pc = pc;
-    // assign de_next_pc = next_pc;
-    // assign de_inst = instruction;
-    // assign de_mstatus = mstatus;
-    // assign de_mtvec = mtvec;
-    // assign de_mepc = mepc;
-    // assign de_mcause = mcause;
-
 
     wire wbu_valid;
     wire pc_valid;
