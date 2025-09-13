@@ -51,7 +51,7 @@ word_t isa_reg_str2val(const char *s) {
 		}
 		if (index == -1) return 0;
 		else {
-			return gpr(index);// 返回寄存器中的值
+			return _gpr(index);// 返回寄存器中的值
 		}
 	}
 return 0;

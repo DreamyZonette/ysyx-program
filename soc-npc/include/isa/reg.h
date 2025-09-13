@@ -27,6 +27,15 @@ unsigned int get_mcause_value();
 // #define gpr(idx) (TOP->ysyxSoCFull->asic->cpu->cpu->gpr_u->reg_file[check_reg_idx(idx)])
 #define gpr(idx) (get_register_value(check_reg_idx(idx)))
 
+#define _gpr(idx) ({ \
+    svScope prev_scope = svGetScope(); \
+    svScope gpr_scope = svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"); \
+    svSetScope(gpr_scope); \
+    uint32_t value = get_register_value(check_reg_idx(idx)); \
+    svSetScope(prev_scope); \
+    value; \
+})
+
 static inline const char* reg_name(int idx) {
   extern const char* regs[];
   return regs[check_reg_idx(idx)];

@@ -187,7 +187,7 @@ static void execute(uint64_t n) {
     #endif
 
     if(sim_finish) {
-      // npc_state.halt_pc = top->de_pc;
+      npc_state.halt_pc = get_pc();
       // npc_state.halt_ret = top->reg_data[10]; // 寄存器返回值
       npc_state.state = NPC_END;
     }
