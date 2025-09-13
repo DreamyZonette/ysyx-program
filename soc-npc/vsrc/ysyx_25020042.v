@@ -20,7 +20,7 @@
 
     always @(posedge clock) begin
             if (ebreak_signal == 1'b1) begin
-                $finish;
+                dpi_ebreak();
             end
     end
 

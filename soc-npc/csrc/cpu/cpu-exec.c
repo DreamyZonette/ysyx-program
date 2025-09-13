@@ -184,7 +184,7 @@ static void execute(uint64_t n) {
     device_update();
     #endif
 
-    if(1) {
+    if(sim_finish) {
       npc_state.halt_pc = get_pc();
       npc_state.halt_ret = _gpr(10); // 寄存器返回值
       npc_state.state = NPC_END;
