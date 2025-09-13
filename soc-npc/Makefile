@@ -21,19 +21,17 @@ VSRCS += /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/ysyxSoCFull.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
 
-CFLAGS ?= #-CFLAGS -Wall 
+CFLAGS := 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-VFLAGS ?=   --cc --exe -I$(VPATH) --build -j 0 --trace 
+VFLAGS :=   --cc --exe -I$(VPATH) --build -j 0 --trace 
 VFLAGS += --timescale "1ns/1ns" --no-timing  
 VFLAGS += -Wno-ASSIGNDLY -Wno-UNUSEDSIGNAL -Wno-DECLFILENAME -Wno-PINCONNECTEMPTY # 忽略警告
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 VFLAGS += -I$(SOC_HOME)/uart16550/rtl/ -I$(SOC_HOME)/spi/rtl/
-LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
+LDFLAGS := -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
-#LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
-#LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
-#LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
+
 
 VERILATOR = verilator
 ARGS ?= 
@@ -53,6 +51,9 @@ ifeq ($(CONFIG_FTRACE),1)
 endif
 
 ifeq ($(CONFIG_DIFFTEST),1)
+	LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
+	LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
+	LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
 	ARGS += -d $(NEMU_SO)
 endif
 
