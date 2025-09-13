@@ -17,7 +17,7 @@ module ysyx_25020042_gpr  (
 
     export "DPI-C" function get_register_value;
     function int unsigned get_register_value(input int idx);
-    $display("当前模块的完整路径: %m");
+    // $display("当前模块的完整路径: %m");
         if (idx >= 0 && idx <= 15) begin
             return reg_file[idx];
         end else begin
