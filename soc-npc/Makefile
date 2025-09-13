@@ -24,13 +24,13 @@ CSRCS += $(shell find $(CPATH) -name *.c)
 CFLAGS ?= -CFLAGS -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
 VFLAGS ?= -Wall  --cc --exe -I$(VPATH) --build -j 0 --trace
+VFLAGS += --timescale "1ns/1ns" --no-timing 
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
-VFLAGS += --timescale "1ns/1ns" --no-timing 
 # VFLAGS += --trace -cc --exe \
 # 				   -MMD --build -cc  \
 # 					-O3 --x-assign fast --x-initial fast --noassert
-VFLAGS += -I$(SOC_HOME)/uart16550/rtl -I$(SOC_HOME)/spi/rtl
+VFLAGS += -I$(SOC_HOME)/uart16550/rtl/ -I$(SOC_HOME)/spi/rtl/
 LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
 #LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
