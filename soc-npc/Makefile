@@ -28,9 +28,6 @@ VFLAGS += --timescale "1ns/1ns" --no-timing
 VFLAGS += -Wno-ASSIGNDLY -Wno-UNUSEDSIGNAL -Wno-DECLFILENAME -Wno-PINCONNECTEMPTY # 忽略警告
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
-# VFLAGS += --trace -cc --exe \
-# 				   -MMD --build -cc  \
-# 					-O3 --x-assign fast --x-initial fast --noassert
 VFLAGS += -I$(SOC_HOME)/uart16550/rtl/ -I$(SOC_HOME)/spi/rtl/
 LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
@@ -40,14 +37,27 @@ LDFLAGS += -LDFLAGS -lSDL2
 
 VERILATOR = verilator
 ARGS ?= 
-#ARGS += -d $(NEMU_SO) # 启用difftest
 ARGS += -i $(IMG)     # 启用镜像文件
-#ARGS += -e $(ELF)	  # 启用ftrace
-#ARGS += -b      	  # 启用批处理
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
+
+
+CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/generated/autoconf.h | awk '{print $$3}')
+CONFIG_DIFFTEST      := $(shell grep -m1 '^#define CONFIG_DIFFTEST' include/generated/autoconf.h | awk '{print $$3}')
 
 ifeq ($(MAKECMDGOALS),gdb)
   CFLAGS += -CFLAGS -g
+endif
+
+ifeq ($(CONFIG_FTRACE),1)
+	ARGS += -e $(ELF)
+endif
+
+ifeq ($(CONFIG_DIFFTEST),1)
+	ARGS += -d $(NEMU_SO)
+endif
+
+ifeq ($(BATCH),1)
+	ARGS += -b 
 endif
 
 $(shell mkdir -p $(BUILD_DIR))
@@ -56,13 +66,13 @@ $(shell mkdir -p $(BUILD_DIR))
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
+	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
 all:run wave
 
 run:sim
-	@echo "Start running"
-	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
+	@echo "Start simulation"
+	@$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
 	
 	
 include ../Makefile
