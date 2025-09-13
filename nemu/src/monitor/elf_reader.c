@@ -124,14 +124,12 @@ if (functab) {
             char* func_name = strtab + symbols[i].st_name;
             
         if (functab_count >= functab_capacity) {
-        // 计算新容量：首次分配32个，之后每次翻倍
         int new_capacity = (functab_capacity == 0) ? 32 : functab_capacity * 2;
         
         // 重新分配内存
         Functab *new_tab = realloc(functab, new_capacity * sizeof(Functab));
         
         if (!new_tab) {
-            // 内存分配失败处理
             fprintf(stderr, "Error: Memory allocation failed for %d functions\n", new_capacity);
             fprintf(stderr, "Current function count: %d, aborting further processing\n", functab_count);
             break;  // 中断循环
