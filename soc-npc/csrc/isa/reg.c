@@ -23,10 +23,10 @@ void isa_reg_display() {
 		}
 	}
 	svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.csr_u"));
-	printf("\033[32mmstatus\033[0m: \033[33m%08x\033[0m\n", get_mstatus_value());
-	printf("\033[32mmcause\033[0m: \033[33m%08x\033[0m\n", get_mcause_value());
-	printf("\033[32mmepc\033[0m: \033[33m%08x\033[0m\n", get_mepc_value());
-	printf("\033[32mmtvec\033[0m: \033[33m%08x\033[0m\n", get_mtvec_value());
+	printf("\033[32mmstatus\033[0m: \033[33m%08x\033[0m ", get_mstatus_value());
+	printf("\033[32mmcause\033[0m: \033[33m%08x\033[0m ", get_mcause_value());
+	printf("\033[32mmepc\033[0m: \033[33m%08x\033[0m ", get_mepc_value());
+	printf("\033[32mmtvec\033[0m: \033[33m%08x\033[0m ", get_mtvec_value());
 	printf("\n");
 }
 
