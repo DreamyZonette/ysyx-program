@@ -32,6 +32,7 @@ void sim_init(){
     tfp->open("/home/long/ysyx-workbench/soc-npc/build/wave.vcd");
     #endif
     svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"));
+    svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.csr_u"));
 }
 
 void sim_exit(){
@@ -45,7 +46,6 @@ void sim_exit(){
 
 void npc_engine_start(){
      
-    printf("Start npc engine\n");
     top->clock = 0;
     top->reset = 1;
     step_and_dump_wave();

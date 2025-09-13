@@ -21,10 +21,10 @@ void isa_reg_display() {
 			count = 0;
 		}
 	}
-	// printf("\033[32mmstatus\033[0m: \033[33m%08x\033[0m\t", top->de_mstatus);
-	// printf("\033[32mmcause\033[0m: \033[33m%08x\033[0m\t", top->de_mcause);
-	// printf("\033[32mmepc\033[0m: \033[33m%08x\033[0m\t", top->de_mepc);
-	// printf("\033[32mmtvec\033[0m: \033[33m%08x\033[0m\t", top->de_mtvec);
+	printf("\033[32mmstatus\033[0m: \033[33m%08x\033[0m\t", get_mstatus_value());
+	printf("\033[32mmcause\033[0m: \033[33m%08x\033[0m\t", get_mcause_value());
+	printf("\033[32mmepc\033[0m: \033[33m%08x\033[0m\t", get_mepc_value());
+	printf("\033[32mmtvec\033[0m: \033[33m%08x\033[0m\t", get_mtvec_value());
 	printf("\n");
 }
 

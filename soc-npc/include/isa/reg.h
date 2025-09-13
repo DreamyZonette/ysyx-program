@@ -17,6 +17,10 @@ extern "C" {
 
 // DPI 函数声明
 unsigned int get_register_value(int idx);
+unsigned int get_mstatus_value();
+unsigned int get_mtvec_value();
+unsigned int get_mepc_value();
+unsigned int get_mcause_value();
 
 }
 
