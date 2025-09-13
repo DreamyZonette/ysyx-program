@@ -55,7 +55,7 @@ static void welcome() {
         "If it is not necessary, you can disable it in generated/autoconf.h");
     }
   Log("Build time: %s, %s", __TIME__, __DATE__);
-  printf("Welcome to %s-NPC!\n", ANSI_FMT("riscv32e", ANSI_FG_YELLOW ANSI_BG_RED));
+  printf("Welcome to %s-NPC!\n", ANSI_FMT("SOC", ANSI_FG_YELLOW ANSI_BG_RED));
   printf("For help, type \"help\"\n");
   printf("\33[1;33m%s\33[0m\n\n",npc_logo);
 }
