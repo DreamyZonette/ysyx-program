@@ -23,7 +23,7 @@ CSRCS += $(shell find $(CPATH) -name *.c)
 
 CFLAGS ?= -CFLAGS -Wall 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
+VFLAGS ?= -Wall  --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 VFLAGS += --timescale "1ns/1ns" --no-timing 
