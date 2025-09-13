@@ -12,16 +12,13 @@ static inline int check_reg_idx(int idx) {
   return idx;
 }
 
-#ifdef __cplusplus
+
 extern "C" {
-#endif
 
 // DPI 函数声明
 extern "C" unsigned int get_register_value(int idx);
 
-#ifdef __cplusplus
 }
-#endif
 
 #define gpr(idx) (get_register_value(check_reg_idx(idx)))
 
