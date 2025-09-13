@@ -1,6 +1,7 @@
 #include <common.h>
 #include <cpu/cpu.h>
 #include <isa/isa_def.h>
+#include <isa/reg.h>
 #include <cpu/difftest.h>
 
 
