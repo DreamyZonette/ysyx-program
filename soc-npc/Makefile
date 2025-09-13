@@ -27,6 +27,9 @@ VFLAGS ?= -Wall  --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 VFLAGS += --timescale "1ns/1ns" --no-timing 
+VFLAGS += --trace -cc --exe \
+				   -MMD --build -cc  \
+					-O3 --x-assign fast --x-initial fast --noassert
 VFLAGS += -I$(SOC_HOME)/uart16550/rtl -I$(SOC_HOME)/spi/rtl
 LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
@@ -52,7 +55,7 @@ $(shell mkdir -p $(BUILD_DIR))
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(VERILATOR) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
+	$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
 all:run wave
 
