@@ -1,28 +1,28 @@
    module ysyx_25020042 (
-        input clock,
-        input reset,
-        output io_ifu_pcValid,
-        output [31:0] io_ifu_pc,
-        input io_ifu_instValid,
-        input [31:0] io_ifu_inst,
-        output io_lsu_reqValid,
+        input         clock,
+        input         reset,
+        output        io_ifu_reqValid,
+        output [31:0] io_ifu_addr,
+        input         io_ifu_respValid,
+        input [31:0]  io_ifu_rdata,
+        output        io_lsu_reqValid,
         output [31:0] io_lsu_addr,
-        output [1:0] io_lsu_size,
-        output io_lsu_wen,
+        output [1:0]  io_lsu_size,
+        output        io_lsu_wen,
         output [31:0] io_lsu_wdata,
-        output [3:0] io_lsu_wmask,
-        input io_lsu_respValid,
-        input [31:0] io_lsu_rdata
+        output [3:0]  io_lsu_wmask,
+        input         io_lsu_respValid,
+        input [31:0]  io_lsu_rdata
     );
 
     // import "DPI-C" function void dpi_ebreak();
     // // import "DPI-C" function void dpi_return();
 
-    // always @(posedge clock) begin
-    //         if (ebreak_signal == 1'b1) begin
-    //             dpi_ebreak();  // 调用 DPI-C 函数
-    //         end
-    //     end
+    always @(posedge clock) begin
+            if (ebreak_signal == 1'b1) begin
+                $finish;
+            end
+    end
 
     // assign halt = unknown_signal;
     // assign de_pc = pc;
@@ -133,11 +133,11 @@ ysyx_25020042_IFU IFU_u (
     .wbu_ready(wbu_ready),
     .ifu_valid(ifu_valid),
     .o_instruction(instruction),
-    .ifu_addr(io_ifu_pc),
+    .ifu_addr(io_ifu_addr),
     // .ifu_wen(ifu_wen),
-    .ifu_rdata(io_ifu_inst),
-    .ifu_reqValid(io_ifu_pcValid),
-    .ifu_respValid(io_ifu_instValid)
+    .ifu_rdata(io_ifu_rdata),
+    .ifu_reqValid(io_ifu_reqValid),
+    .ifu_respValid(io_ifu_respValid)
 );
 
     // wire [31:0] ifu_rdata;
