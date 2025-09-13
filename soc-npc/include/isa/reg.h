@@ -20,7 +20,8 @@ unsigned int get_register_value(int idx);
 
 }
 
-#define gpr(idx) (get_register_value(check_reg_idx(idx)))
+#define gpr(idx) (TOP->ysyxSoCFull->asic->cpu->cpu->gpr_u->reg_file[check_reg_idx(idx)])
+// #define gpr(idx) (get_register_value(check_reg_idx(idx)))
 
 static inline const char* reg_name(int idx) {
   extern const char* regs[];
