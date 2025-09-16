@@ -35,7 +35,7 @@ LDFLAGS += -LDFLAGS -lSDL2
 
 VERILATOR = verilator
 ARGS ?= 
-ARGS += -i $(IMG)     # 启用镜像文件
+# ARGS += -i $(IMG)     # 启用镜像文件
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 
 
