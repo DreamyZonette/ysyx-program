@@ -56,14 +56,14 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 
 extern "C" void flash_read(int32_t addr, int32_t *data) {
   uint32_t raddr = FLASH_BASE + addr;
+  *data = internal_pmem_read(raddr, 4);
   #if CONFIG_MTRACE
       // if (addr != get_pc()){
         char s[128];
-        sprintf(s, "DPI-RET: flash_read(0x%08x, %d)\n", raddr, 4);
+        sprintf(s, "DPI-RET: flash_read(0x%08x, %d) = 0x%08x\n", raddr, 4, *data);
         printf("%s\n", s);
         log_write("%s\n", s);
       // }
 
     #endif
-  *data = internal_pmem_read(raddr, 4);
 }
