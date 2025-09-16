@@ -90,7 +90,7 @@ extern "C" void flash_read(int32_t addr, int32_t *data) {
   #if CONFIG_MTRACE
       if (addr != get_pc()){
         char s[128];
-        sprintf(s, "DPI-RET: flash_read(0x%08x, %d) = 0x%08x\n", addr, 4, ret);
+        sprintf(s, "DPI-RET: flash_read(0x%08x, %d)\n", addr, 4);
         printf("%s\n", s);
         log_write("%s\n", s);
       }
