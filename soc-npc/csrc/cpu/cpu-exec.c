@@ -179,6 +179,7 @@ static void execute(uint64_t n) {
   #endif
     
     single_cycle();
+    device_update();
     trace_and_difftest();
     #if CONFIG_DEVICE
     device_update();
