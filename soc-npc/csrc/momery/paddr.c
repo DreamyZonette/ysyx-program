@@ -88,9 +88,9 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { 
   #if CONFIG_MTRACE
-      if (addr != top->de_pc){
+      if (addr != get_pc()){
         char s[128];
-        sprintf(s, "DPI-RET: flash_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+        sprintf(s, "DPI-RET: flash_read(0x%08x, %d) = 0x%08x\n", addr, 4, ret);
         printf("%s\n", s);
         log_write("%s\n", s);
       }
