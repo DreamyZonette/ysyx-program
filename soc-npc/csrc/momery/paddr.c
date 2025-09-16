@@ -91,6 +91,7 @@ extern "C" void flash_read(int32_t addr, int32_t *data) {
       if (addr != top->de_pc){
         char s[128];
         sprintf(s, "DPI-RET: flash_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+        printf("%s\n", s);
         log_write("%s\n", s);
       }
       //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
