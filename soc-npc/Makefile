@@ -1,6 +1,6 @@
 TOP_NAME = ysyxSoCFull
-# IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/hello-minirv-ysyxsoc.bin
-IMG ?= 
+IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/hello-minirv-ysyxsoc.bin
+# IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
@@ -35,7 +35,7 @@ LDFLAGS += -LDFLAGS -lSDL2
 
 VERILATOR = verilator
 ARGS ?= 
-# ARGS += -i $(IMG)     # 启用镜像文件
+ARGS += -i $(IMG)     # 启用镜像文件
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 
 
