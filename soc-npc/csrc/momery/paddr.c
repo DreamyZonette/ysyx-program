@@ -5,8 +5,8 @@
 
 static uint8_t flash_mem[CONFIG_FLASH_SIZE] PG_ALIGN = {};
 
-uint8_t* guest_to_host(paddr_t paddr) { return flash_mem + paddr; }
-paddr_t host_to_guest(uint8_t *haddr) { return haddr - flash_mem; }
+uint8_t* guest_to_host(paddr_t paddr) { return flash_mem + paddr - CONFIG_FLASH_BASE; }
+paddr_t host_to_guest(uint8_t *haddr) { return haddr - flash_mem + CONFIG_FLASH_BASE; }
 
 void init_mem() {
   memset(flash_mem, rand(), CONFIG_FLASH_SIZE);
