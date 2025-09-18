@@ -4,12 +4,14 @@
 
 
 static uint8_t flash_mem[CONFIG_FLASH_SIZE] PG_ALIGN = {};
+static uint8_t sdram_mem[CONFIG_SDRAM_SIZE] PG_ALIGN = {};
 
 uint8_t* guest_to_host(paddr_t paddr) { return flash_mem + paddr - CONFIG_FLASH_BASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - flash_mem + CONFIG_FLASH_BASE; }
 
 void init_mem() {
   memset(flash_mem, rand(), CONFIG_FLASH_SIZE);
+  memset(sdram_mem, rand(), CONFIG_SDRAM_SIZE);
   Log("physical memory area [%08x, %08x]", PMEM_LEFT, PMEM_RIGHT);
 }
 
