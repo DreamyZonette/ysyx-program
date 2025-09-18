@@ -2,24 +2,23 @@
 #include <memory/host.h> 
 #include <device/mmio.h>
 
-#define FLASH_BASE 0x30000000
 
-static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+static uint8_t flash_mem[CONFIG_FLASH_SIZE] PG_ALIGN = {};
 
-uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
-paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
+uint8_t* guest_to_host(paddr_t paddr) { return flash_mem + paddr - CONFIG_MBASE; }
+paddr_t host_to_guest(uint8_t *haddr) { return haddr - flash_mem + CONFIG_MBASE; }
 
 void init_mem() {
-  memset(pmem, rand(), CONFIG_MSIZE);
+  memset(flash_mem, rand(), CONFIG_FLASH_SIZE);
   Log("physical memory area [%08x, %08x]", PMEM_LEFT, PMEM_RIGHT);
 }
 
-static word_t internal_pmem_read(paddr_t addr, int len) {
+static word_t internal_flash_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
   return ret;
 }
 
-static void internal_pmem_write(paddr_t addr, int len, word_t data) {
+static void internal_flash_write(paddr_t addr, int len, word_t data) {
   host_write(guest_to_host(addr), len, data);
 }
 
@@ -55,9 +54,9 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 }
 
 extern "C" void flash_read(int32_t addr, int32_t *data) {
-  uint32_t raddr = FLASH_BASE + addr;
-  *data = internal_pmem_read(raddr, 4);
-  #if CONFIG_MTRACE
+  uint32_t raddr = CONFIG_FLASH_BASE + (uint32_t)addr;
+  *data = internal_flash_read(raddr, 4);
+  #if CONFIG_DTRACE
       // if (addr != get_pc()){
         char s[128];
         sprintf(s, "DPI-RET: flash_read(0x%08x, %d) = 0x%08x\n", raddr, 4, *data);

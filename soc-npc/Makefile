@@ -35,12 +35,15 @@ LDFLAGS += -LDFLAGS -lSDL2
 
 VERILATOR = verilator
 ARGS ?= 
-ARGS += -i $(IMG)     # 启用镜像文件
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 
 
 CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/generated/autoconf.h | awk '{print $$3}')
 CONFIG_DIFFTEST      := $(shell grep -m1 '^#define CONFIG_DIFFTEST' include/generated/autoconf.h | awk '{print $$3}')
+
+ifneq ($(IMG),)
+	ARGS += -i $(IMG)
+endif
 
 ifeq ($(MAKECMDGOALS),gdb)
   CFLAGS += -CFLAGS -g
