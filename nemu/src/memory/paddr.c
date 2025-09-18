@@ -19,19 +19,19 @@
 #include <isa.h>
 
 // 用于给npc difftest使用
-#define CONFIG_SDRAM_SIZE 0x2000000
-#define CONFIG_SDRAM_BASE 0x80000000
+// #define CONFIG_SDRAM_SIZE 0x2000000
+// #define CONFIG_SDRAM_BASE 0x80000000
 
 #if   defined(CONFIG_PMEM_MALLOC)
 static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
-static uint8_t sdram_mem[CONFIG_SDRAM_SIZE] PG_ALIGN = {};
+// static uint8_t sdram_mem[CONFIG_SDRAM_SIZE] PG_ALIGN = {};
 #endif
 
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
-uint8_t* sdram_guest_to_host(paddr_t paddr) { return sdram_mem + paddr - CONFIG_SDRAM_BASE; } // 用于给npc difftest使用
+// uint8_t* sdram_guest_to_host(paddr_t paddr) { return sdram_mem + paddr - CONFIG_SDRAM_BASE; } // 用于给npc difftest使用
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t pmem_read(paddr_t addr, int len) {
@@ -47,21 +47,21 @@ static void out_of_bound(paddr_t addr) {
   panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT, cpu.pc);
 }
-// 用于给npc difftest使用
-#define SDRAM_LEFT  ((paddr_t)CONFIG_SDRAM_BASE)
-#define SDRAM_RIGHT ((paddr_t)CONFIG_SDRAM_BASE + CONFIG_SDRAM_SIZE - 1)
-static word_t sdram_read(paddr_t addr, int len) {
-  word_t ret = host_read(sdram_guest_to_host(addr), len);
-  return ret;
-}
+// // 用于给npc difftest使用
+// #define SDRAM_LEFT  ((paddr_t)CONFIG_SDRAM_BASE)
+// #define SDRAM_RIGHT ((paddr_t)CONFIG_SDRAM_BASE + CONFIG_SDRAM_SIZE - 1)
+// static word_t sdram_read(paddr_t addr, int len) {
+//   word_t ret = host_read(sdram_guest_to_host(addr), len);
+//   return ret;
+// }
 
-static void sdram_write(paddr_t addr, int len, word_t data) {
-  host_write(sdram_guest_to_host(addr), len, data);
-}
-static inline bool in_sdram(paddr_t addr) {
-  return addr - CONFIG_SDRAM_BASE < CONFIG_SDRAM_SIZE;
-}
-/**************/
+// static void sdram_write(paddr_t addr, int len, word_t data) {
+//   host_write(sdram_guest_to_host(addr), len, data);
+// }
+// static inline bool in_sdram(paddr_t addr) {
+//   return addr - CONFIG_SDRAM_BASE < CONFIG_SDRAM_SIZE;
+// }
+// /**************/
 
 void init_mem() {
 #if   defined(CONFIG_PMEM_MALLOC)
@@ -70,8 +70,8 @@ void init_mem() {
 #endif
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
-  IFDEF(CONFIG_MEM_RANDOM, memset(sdram_mem, rand(), CONFIG_SDRAM_SIZE));
-  Log("sdram memory area [" FMT_PADDR ", " FMT_PADDR "]", SDRAM_LEFT, SDRAM_RIGHT);
+  // IFDEF(CONFIG_MEM_RANDOM, memset(sdram_mem, rand(), CONFIG_SDRAM_SIZE));
+  // Log("sdram memory area [" FMT_PADDR ", " FMT_PADDR "]", SDRAM_LEFT, SDRAM_RIGHT);
 }
 
 word_t paddr_read(paddr_t addr, int len) {
@@ -81,7 +81,7 @@ word_t paddr_read(paddr_t addr, int len) {
     p[127] = '\0';
     log_write("%s\n", p);
   #endif
-  if (likely(in_sdram(addr))) return sdram_read(addr, len);
+  // if (likely(in_sdram(addr))) return sdram_read(addr, len);
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
@@ -95,7 +95,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     p[127] = '\0';
     log_write("%s\n", p);
   #endif
-  if (likely(in_sdram(addr))) { sdram_write(addr, len, data); return; }
+  // if (likely(in_sdram(addr))) { sdram_write(addr, len, data); return; }
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);
