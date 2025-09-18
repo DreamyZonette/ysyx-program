@@ -60,6 +60,8 @@ always @(posedge clock) begin
                     lsu_wdata <= i_src2;
                     lsu_wmask <= i_wmask;
                     lsu_reqValid <= 1'b1;
+                    $strobe("lsu:lsu_addr=%08x, lsu_wdata=%08x, lsu_wmask=%08x, lsu_wen=%0d, lsu_reqValid=%0d, lsu_size=%0d",
+                            lsu_addr, lsu_wdata, lsu_wmask, lsu_wen, lsu_reqValid, lsu_size);
                     if (i_sb_signal || i_lb_signal ||i_lbu_signal) begin
                         lsu_size <= 2'b00;
                     end else if (i_sh_signal || i_lh_signal || i_lhu_signal) begin
