@@ -163,7 +163,7 @@ static void execute(uint64_t n) {
     // dut.diff_mtvec = top->de_mtvec;
     // dut.diff_mepc = top->de_mepc;
     if (dut.pc != dut.next_pc){
-      // printf("difftest:pc:%08x => 0x%08x\n", dut.pc, dut.next_pc);
+      printf("difftest:pc:%08x => 0x%08x\n", dut.pc, dut.next_pc);
       // svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"));
       for(int i = 0; i < 16; i++){
       dut.gpr[i] = _gpr(i);
