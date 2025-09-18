@@ -22,7 +22,7 @@ char p[128];
 int print_on = 0;
 CPU_state dut = {
   .gpr = {0},            // 所有寄存器初始化为0
-  .pc = 0x80000000,       // PC初始化为0x80000000
+  .pc = 0x30000000,       // PC初始化为0x30000000
   .next_pc = 0x80000000,
   // .diff_mstatus = 0,
   // .diff_mepc = 0x80000000,
@@ -135,14 +135,8 @@ void assert_fail_msg() {
 static void execute(uint64_t n) {
     if(n <= MAX_INST_TO_PRINT) print_on = 1;
   for (;n > 0; n --) {
-    // if(dut.pc < 0x80000000 || dut.pc >= 0x90000000){
-    //   dut.pc = top->de_pc;
-    //   dut.next_pc = top->de_next_pc;
-    // }
-    // else {
-    //   dut.pc = dut.next_pc;
-    //   dut.next_pc = top->de_pc;
-    // }
+      dut.pc = dut.next_pc;
+      dut.next_pc = get_pc();
     if (dut.pc != dut.next_pc) g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
@@ -170,9 +164,11 @@ static void execute(uint64_t n) {
     // dut.diff_mepc = top->de_mepc;
     if (dut.pc != dut.next_pc){
       // printf("difftest:pc:%08x => 0x%08x\n", dut.pc, dut.next_pc);
-      for(int i = 0; i < 32; i++){
-      dut.gpr[i] = top->reg_data[i];
+      svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"));
+      for(int i = 0; i < 16; i++){
+      dut.gpr[i] = gpr(i);
     }
+    svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
   }
   
 
