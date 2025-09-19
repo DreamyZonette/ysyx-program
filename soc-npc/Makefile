@@ -82,7 +82,8 @@ run:sim
 include ../Makefile
 
 wave:
-	gtkwave $(BUILD_DIR)/wave.vcd
+	vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+	gtkwave $(BUILD_DIR)/wave.fst
 
 
 PHONY: clean test
