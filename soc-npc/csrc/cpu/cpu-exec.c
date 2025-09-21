@@ -184,12 +184,12 @@ static void execute(uint64_t n) {
   
 
   #endif
-    uint32_t prev_pc = dut.next_pc;
-    while(!sim_finish){
+    // uint32_t prev_pc = dut.next_pc;
+    // while(!sim_finish){
       single_cycle();
       
-      if(prev_pc != get_pc()) break;
-    }
+    //   if(prev_pc != get_pc()) break;
+    // }
     
     device_update();
     trace_and_difftest();
