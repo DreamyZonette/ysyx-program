@@ -42,7 +42,7 @@ CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/genera
 CONFIG_DIFFTEST      := $(shell grep -m1 '^#define CONFIG_DIFFTEST' include/generated/autoconf.h | awk '{print $$3}')
 CONFIG_WAVE          := $(shell grep -m1 '^#define CONFIG_WAVE' include/generated/autoconf.h | awk '{print $$3}')
 CONFIG_ITRACE         := $(shell grep -m1 '^#define CONFIG_ITRACE' include/generated/autoconf.h | awk '{print $$3}')
-LIBCAPSTONE         :=
+
 
 ifneq ($(IMG),)
 	ARGS += -i $(IMG)
