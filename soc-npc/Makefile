@@ -71,9 +71,9 @@ $(shell mkdir -p $(BUILD_DIR))
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
-	ifneq ($(IMG),)
-	vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
-	endif
+	# ifneq ($(IMG),)
+	-vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+	# endif
 	
 all:run wave
 
