@@ -41,6 +41,9 @@ ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/generated/autoconf.h | awk '{print $$3}')
 CONFIG_DIFFTEST      := $(shell grep -m1 '^#define CONFIG_DIFFTEST' include/generated/autoconf.h | awk '{print $$3}')
 CONFIG_WAVE          := $(shell grep -m1 '^#define CONFIG_WAVE' include/generated/autoconf.h | awk '{print $$3}')
+CONFIG_ITRACE         := $(shell grep -m1 '^#define CONFIG_ITRACE' include/generated/autoconf.h | awk '{print $$3}')
+LIBCAPSTONE         :=
+
 ifneq ($(IMG),)
 	ARGS += -i $(IMG)
 endif
@@ -66,11 +69,11 @@ endif
 
 ifeq ($(CONFIG_ITRACE),1)
 	CSRCS += $(WORK_DIR)/tools/disasm.c
-	LIBCAPSTONE = $(NEMU_HOME)tools/capstone/repo/libcapstone.so.5
-	CFLAGS += -I $(NEMU_HOME)tools/capstone/repo/include
-	src/utils/disasm.c: $(LIBCAPSTONE)
-	$(LIBCAPSTONE):
-		$(MAKE) -C $(NEMU_HOME)tools/capstone
+	LIBCAPSTONE = $(NEMU_HOME)/tools/capstone/repo/libcapstone.so.5
+	CFLAGS += -I $(NEMU_HOME)/tools/capstone/repo/include
+src/utils/disasm.c: $(LIBCAPSTONE)
+$(LIBCAPSTONE):
+	$(MAKE) -C $(NEMU_HOME)/tools/capstone
 endif
 
 $(shell mkdir -p $(BUILD_DIR))
