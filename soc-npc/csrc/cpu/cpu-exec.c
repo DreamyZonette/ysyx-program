@@ -185,7 +185,7 @@ static void execute(uint64_t n) {
 
   #endif
     uint32_t prev_pc = dut.next_pc;
-    printf("0x%08x\n", prev_pc);
+    printf("now:0x%08x\n", prev_pc);
     while(!sim_finish){
       single_cycle();
       
