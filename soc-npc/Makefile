@@ -70,7 +70,7 @@ endif
 ifeq ($(CONFIG_ITRACE),1)
 	CSRCS += $(WORK_DIR)/tools/disasm.c
 	LIBCAPSTONE = $(NEMU_HOME)/tools/capstone/repo/libcapstone.so.5
-	CFLAGS += -I $(NEMU_HOME)/tools/capstone/repo/include
+	CFLAGS += -CFLAGS -I$(NEMU_HOME)/tools/capstone/repo/include
 src/utils/disasm.c: $(LIBCAPSTONE)
 $(LIBCAPSTONE):
 	$(MAKE) -C $(NEMU_HOME)/tools/capstone
