@@ -40,7 +40,7 @@ ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 
 CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/generated/autoconf.h | awk '{print $$3}')
 CONFIG_DIFFTEST      := $(shell grep -m1 '^#define CONFIG_DIFFTEST' include/generated/autoconf.h | awk '{print $$3}')
-
+CONFIG_WAVE          := $(shell grep -m1 '^#define CONFIG_WAVE' include/generated/autoconf.h | awk '{print $$3}')
 ifneq ($(IMG),)
 	ARGS += -i $(IMG)
 endif
@@ -71,6 +71,9 @@ $(shell mkdir -p $(BUILD_DIR))
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
+	ifneq ($(IMG),)
+	vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+	endif
 	
 all:run wave
 
@@ -82,7 +85,7 @@ run:sim
 include ../Makefile
 
 wave:
-	vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+	
 	gtkwave $(BUILD_DIR)/wave.fst
 
 
