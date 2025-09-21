@@ -136,7 +136,6 @@ static void execute(uint64_t n) {
     if(n <= MAX_INST_TO_PRINT) print_on = 1;
   for (;n > 0; n --) {
     uint32_t prev_pc = dut.next_pc;
-    printf("now:0x%08x\n", prev_pc);
     while(!sim_finish){
       single_cycle();
       if(prev_pc != get_pc()) break;
