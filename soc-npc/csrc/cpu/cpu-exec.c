@@ -135,8 +135,6 @@ void assert_fail_msg() {
 static void execute(uint64_t n) {
     if(n <= MAX_INST_TO_PRINT) print_on = 1;
   for (;n > 0; n --) {
-      dut.pc = dut.next_pc;
-      dut.next_pc = get_pc();
     if (dut.pc != dut.next_pc) g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
@@ -184,8 +182,16 @@ static void execute(uint64_t n) {
   
 
   #endif
-    
+    while(!sim_finish){
     single_cycle();
+    if (dut.pc != dut.next_pc){
+      dut.pc = dut.next_pc;
+      dut.next_pc = get_pc();
+    }
+    else {
+      break;
+    }
+    }
     device_update();
     trace_and_difftest();
     #if CONFIG_DEVICE
