@@ -144,15 +144,15 @@ static void execute(uint64_t n) {
       uint32_t ilen = 4;
       uint32_t cur_pc = dut.pc;
       uint32_t cur_inst = get_instruction();
-
-      p += snprintf(p, sizeof(p), "%08x:", cur_pc);
+      char* s = p;
+      s += snprintf(s, sizeof(p), "%08x:", cur_pc);
       int space_len = 2;
       void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-      disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
-      dut.next_pc, (uint8_t *)&s->isa.inst, ilen);
+      disassemble(s, s + sizeof(p) - s,
+      dut.next_pc, (uint8_t *)&cur_inst, ilen);
       // snprintf(p, sizeof(p), "pc:%08x => 0x%08x", dut.pc, get_instruction());
-      printf("%s\n", p);
-      log_write("%s\n", p);
+      printf("%s\n", s);
+      log_write("%s\n", s);
       p[0] = '\0';
     }
   }
