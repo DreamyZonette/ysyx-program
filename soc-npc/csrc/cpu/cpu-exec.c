@@ -153,7 +153,7 @@ static void execute(uint64_t n) {
 
       char str[256];
       snprintf(str, sizeof(str), "pc:0x%08x:    %08x   %s", cur_pc, cur_inst, s);
-      // printf("%s\n", str);
+      printf("%s\n", str);
       log_write("%s\n", str);
       p[0] = '\0';
     }
@@ -184,12 +184,12 @@ static void execute(uint64_t n) {
   
 
   #endif
-    // uint32_t prev_pc = dut.next_pc;
-    // while(!sim_finish){
+    uint32_t prev_pc = dut.next_pc;
+    while(!sim_finish){
       single_cycle();
       
-    //   if(prev_pc != get_pc()) break;
-    // }
+      if(prev_pc != get_pc()) break;
+    }
     
     device_update();
     trace_and_difftest();
