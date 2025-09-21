@@ -73,6 +73,7 @@ sim:
 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	# ifneq ($(IMG),)
 	-vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+	rm -f $(BUILD_DIR)/wave.vcd
 	# endif
 	
 all:run wave
