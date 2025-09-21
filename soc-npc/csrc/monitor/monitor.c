@@ -178,6 +178,7 @@ void init_monitor(int argc, char *argv[]) {
   #endif
 
   #if CONFIG_ITRACE
+  void init_disasm(void);
   init_disasm();
   #endif
 

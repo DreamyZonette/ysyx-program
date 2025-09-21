@@ -15,17 +15,17 @@ void init_disasm() {
   assert(dl_handle);
 
   cs_err (*cs_open_dl)(cs_arch arch, cs_mode mode, csh *handle) = NULL;
-  cs_open_dl = dlsym(dl_handle, "cs_open");
+  cs_open_dl = (cs_err (*)(cs_arch, cs_mode, csh*))dlsym(dl_handle, "cs_open");
   assert(cs_open_dl);
 
-  cs_disasm_dl = dlsym(dl_handle, "cs_disasm");
+  cs_disasm_dl = (size_t (*)(csh, const uint8_t*, size_t, uint64_t, size_t, cs_insn**))dlsym(dl_handle, "cs_disasm");
   assert(cs_disasm_dl);
 
-  cs_free_dl = dlsym(dl_handle, "cs_free");
+  cs_free_dl = (void (*)(cs_insn*, size_t))dlsym(dl_handle, "cs_free");
   assert(cs_free_dl);
 
-  cs_arch arch = CS_ARCH_RISCV
-  cs_mode mode = CS_MODE_RISCV32
+  cs_arch arch = CS_ARCH_RISCV;
+  cs_mode mode = CS_MODE_RISCV32;
 	int ret = cs_open_dl(arch, mode, &handle);
   assert(ret == CS_ERR_OK);
 
