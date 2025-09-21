@@ -71,16 +71,14 @@ $(shell mkdir -p $(BUILD_DIR))
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
-	# ifneq ($(IMG),)
-	-vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
-	rm -f $(BUILD_DIR)/wave.vcd
-	# endif
 	
 all:run wave
 
 run:sim
 	@echo "Start simulation"
 	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
+	-vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+	-rm -f $(BUILD_DIR)/wave.vcd
 	
 	
 include ../Makefile
@@ -95,6 +93,8 @@ PHONY: clean test
 gdb:sim
 	@echo "Start gdb"
 	gdb --args $(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
+	-vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+	-rm -f $(BUILD_DIR)/wave.vcd
 
 test:
 	$(VERILATOR) --lint-only -Wall $(TEST_OBJ)
