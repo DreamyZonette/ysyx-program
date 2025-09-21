@@ -63,7 +63,7 @@ module ysyx_25020042_Stype (
             o_wmask = 4'b1111;
         end else if (o_sb_signal == 1'b1) begin
             o_wmask = 4'b0001;
-    end else if (o_sh_signal == 1'b1) begin
+        end else if (o_sh_signal == 1'b1) begin
             o_wmask = 4'b0011;
         end else begin
             o_wmask = 4'b0000;
