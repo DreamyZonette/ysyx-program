@@ -142,7 +142,7 @@ static void execute(uint64_t n) {
   if(!sim_finish){
     if (dut.pc != dut.next_pc){
       snprintf(p, sizeof(p), "pc:%08x => 0x%08x", dut.pc, get_pc());
-      printf("%s\n", p);
+      // printf("%s\n", p);
       log_write("%s\n", p);
       p[0] = '\0';
     }
