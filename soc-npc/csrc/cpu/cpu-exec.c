@@ -150,9 +150,11 @@ static void execute(uint64_t n) {
       void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
       disassemble(s, s + sizeof(p) - s,
       dut.next_pc, (uint8_t *)&cur_inst, ilen);
-      // snprintf(p, sizeof(p), "pc:%08x => 0x%08x", dut.pc, get_instruction());
-      printf("%s\n", s);
-      log_write("%s\n", s);
+
+      char str[256];
+      snprintf(str, sizeof(str), "%08x: 0x%08x  %s", cur_pc, cur_inst, s);
+      printf("%s\n", str);
+      log_write("%s\n", str);
       p[0] = '\0';
     }
   }
