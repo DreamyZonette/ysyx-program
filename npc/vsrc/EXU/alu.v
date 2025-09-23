@@ -85,6 +85,7 @@ module alu (
             o_data = i_src1 >> i_shamt;
         end else if(i_srai_signal == 1'b1) begin
             o_data = srai_result;
+            $strobe("alu: srai %08x\n", srai_result);
         end else if(i_slti_signal == 1'b1) begin
             o_data = $signed(i_src1) < $signed(i_imm) ? 32'h1 : 32'h0;
         end else if(i_sltiu_signal == 1'b1) begin
