@@ -41,7 +41,7 @@ module ArithmeticRightShift(
     //         default: o_data = {32{i_src1[31]}}; // 31位及以上
     //     endcase
     // end
-    MuxKeyWithDefault #(32, 6, 32) i0 (o_data, i_src1, 32'b0, {
+    MuxKeyWithDefault #(32, 6, 32) i0 (o_data, i_shamt, 32'b0, {
     6'b000000, i_src1,
     6'b000001, {i_src1[31], i_src1[31:1]},
     6'b000010, {{2{i_src1[31]}}, i_src1[31:2]},
