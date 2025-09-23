@@ -160,7 +160,7 @@ static void execute(uint64_t n) {
 
       char str[256];
       snprintf(str, sizeof(str), "pc:0x%08x:    %08x   %s", cur_pc, cur_inst, s);
-      printf("%s\n", str);
+      // printf("%s\n", str);
       log_write("%s\n", str);
       p[0] = '\0';
     }
