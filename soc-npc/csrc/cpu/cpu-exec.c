@@ -135,7 +135,11 @@ void assert_fail_msg() {
 static void execute(uint64_t n) {
     if(n <= MAX_INST_TO_PRINT) print_on = 1;
   for (;n > 0; n --) {
-    
+    uint32_t prev_pc = dut.next_pc;
+    while(!sim_finish){
+      single_cycle();
+      if(prev_pc != get_pc()) break;
+    }
 
       dut.pc = dut.next_pc;
       dut.next_pc = get_pc();
@@ -170,11 +174,7 @@ static void execute(uint64_t n) {
     }
   }
   #endif
-    uint32_t prev_pc = dut.next_pc;
-    while(!sim_finish){
-      single_cycle();
-      if(prev_pc != get_pc()) break;
-    }
+
   #if CONFIG_DIFFTEST
     // dut.diff_mstatus = top->de_mstatus;
     // dut.diff_mcause = top->de_mcause;
