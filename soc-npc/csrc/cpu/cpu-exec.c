@@ -47,9 +47,9 @@ static void trace_and_difftest() {
 
   #if CONFIG_DIFFTEST
   //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
-  // if (dut.pc != dut.next_pc){
+  if (dut.pc != dut.next_pc){
     difftest_step(dut.pc, dut.next_pc);
-  // } 
+  } 
   #endif
 
   #if CONFIG_FTRACE
@@ -135,31 +135,12 @@ void assert_fail_msg() {
 static void execute(uint64_t n) {
     if(n <= MAX_INST_TO_PRINT) print_on = 1;
   for (;n > 0; n --) {
-    uint32_t prev_pc = dut.next_pc;
-    #if CONFIG_DIFFTEST
-    // dut.diff_mstatus = top->de_mstatus;
-    // dut.diff_mcause = top->de_mcause;
-    // dut.diff_mtvec = top->de_mtvec;
-    // dut.diff_mepc = top->de_mepc;
-    // if (dut.pc != dut.next_pc){
-      printf("difftest:pc:%08x => 0x%08x\n", dut.pc, dut.next_pc);
-      // svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"));
-      for(int i = 0; i < 16; i++){
-      dut.gpr[i] = _gpr(i);
-    // }
-    // svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
-  }
-  
-
-  #endif
-    while(!sim_finish){
-      single_cycle();
-      if(prev_pc != get_pc()) break;
-    }
+    
 
       dut.pc = dut.next_pc;
       dut.next_pc = get_pc();
-    if (dut.pc != dut.next_pc) g_nr_guest_inst ++;
+    // if (dut.pc != dut.next_pc) g_nr_guest_inst ++;
+    g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
     if (dut.pc != dut.next_pc){
@@ -189,8 +170,27 @@ static void execute(uint64_t n) {
     }
   }
   #endif
-
+    uint32_t prev_pc = dut.next_pc;
+    while(!sim_finish){
+      single_cycle();
+      if(prev_pc != get_pc()) break;
+    }
+  #if CONFIG_DIFFTEST
+    // dut.diff_mstatus = top->de_mstatus;
+    // dut.diff_mcause = top->de_mcause;
+    // dut.diff_mtvec = top->de_mtvec;
+    // dut.diff_mepc = top->de_mepc;
+    if (dut.pc != dut.next_pc){
+      printf("difftest:pc:%08x => 0x%08x\n", dut.pc, dut.next_pc);
+      // svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"));
+      for(int i = 0; i < 16; i++){
+      dut.gpr[i] = _gpr(i);
+    }
+    // svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
+  }
   
+
+  #endif
     
     
     device_update();
