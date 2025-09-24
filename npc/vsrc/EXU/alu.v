@@ -323,49 +323,6 @@ assign B_signed_greater_than = ~B_signed_less_than & ~B_signed_equal;
 
 endmodule
 
-// module ArithmeticRightShift(
-//     input [31:0] i_src1,
-//     input [5:0] i_shamt,
-//     output  [31:0] o_data
-// );
-//     wire [4:0] shamt;
-//     assign shamt = i_shamt[4:0];
-//     MuxKeyWithDefault #(32, 5, 32) i0 (o_data, shamt, 32'b0, {
-//     5'b00000, i_src1,
-//     5'b00001, {i_src1[31], i_src1[31:1]},
-//     5'b00010, {{2{i_src1[31]}}, i_src1[31:2]},
-//     5'b00011, {{3{i_src1[31]}}, i_src1[31:3]},
-//     5'b00100, {{4{i_src1[31]}}, i_src1[31:4]},
-//     5'b00101, {{5{i_src1[31]}}, i_src1[31:5]},
-//     5'b00110, {{6{i_src1[31]}}, i_src1[31:6]},
-//     5'b00111, {{7{i_src1[31]}}, i_src1[31:7]},
-//     5'b01000, {{8{i_src1[31]}}, i_src1[31:8]},
-//     5'b01001, {{9{i_src1[31]}}, i_src1[31:9]},
-//     5'b01010, {{10{i_src1[31]}}, i_src1[31:10]},
-//     5'b01011, {{11{i_src1[31]}}, i_src1[31:11]},
-//     5'b01100, {{12{i_src1[31]}}, i_src1[31:12]},
-//     5'b01101, {{13{i_src1[31]}}, i_src1[31:13]},
-//     5'b01110, {{14{i_src1[31]}}, i_src1[31:14]},
-//     5'b01111, {{15{i_src1[31]}}, i_src1[31:15]},
-//     5'b10000, {{16{i_src1[31]}}, i_src1[31:16]},
-//     5'b10001, {{17{i_src1[31]}}, i_src1[31:17]},
-//     5'b10010, {{18{i_src1[31]}}, i_src1[31:18]},
-//     5'b10011, {{19{i_src1[31]}}, i_src1[31:19]},
-//     5'b10100, {{20{i_src1[31]}}, i_src1[31:20]},
-//     5'b10101, {{21{i_src1[31]}}, i_src1[31:21]},
-//     5'b10110, {{22{i_src1[31]}}, i_src1[31:22]},
-//     5'b10111, {{23{i_src1[31]}}, i_src1[31:23]},
-//     5'b11000, {{24{i_src1[31]}}, i_src1[31:24]},
-//     5'b11001, {{25{i_src1[31]}}, i_src1[31:25]},
-//     5'b11010, {{26{i_src1[31]}}, i_src1[31:26]},
-//     5'b11011, {{27{i_src1[31]}}, i_src1[31:27]},
-//     5'b11100, {{28{i_src1[31]}}, i_src1[31:28]},
-//     5'b11101, {{29{i_src1[31]}}, i_src1[31:29]},
-//     5'b11110, {{30{i_src1[31]}}, i_src1[31:30]},
-//     5'b11111, {{31{i_src1[31]}}, i_src1[31]}
-//   });
-
-// endmodule
 
 module full_1_adder (
     input x,
@@ -428,66 +385,66 @@ adder_32 adder_32_u (
 
 endmodule
 
-module comparer_32_unsigned (
-    input [31:0] x,
-    input [31:0] y,
-    output equal,
-    output less_than,
-    output greater_than
-);
+// module comparer_32_unsigned (
+//     input [31:0] x,
+//     input [31:0] y,
+//     output equal,
+//     output less_than,
+//     output greater_than
+// );
 
-wire [32:0] sub_result;
-wire [31:0] processed_y;
-assign processed_y = ~y;
-assign less_than = ~sub_result[32];
-assign equal = ~(|sub_result[31:0]);
-assign greater_than = sub_result[32] & (|sub_result);
+// wire [32:0] sub_result;
+// wire [31:0] processed_y;
+// assign processed_y = ~y;
+// assign less_than = ~sub_result[32];
+// assign equal = ~(|sub_result[31:0]);
+// assign greater_than = sub_result[32] & (|sub_result);
 
-adder_32 adder_sub (
-   .x(x),
-   .y(processed_y),
-   .cin(1'b1),
-   .sum(sub_result[31:0]),
-   .cout_carry(sub_result[32])
-);
+// adder_32 adder_sub (
+//    .x(x),
+//    .y(processed_y),
+//    .cin(1'b1),
+//    .sum(sub_result[31:0]),
+//    .cout_carry(sub_result[32])
+// );
 
-endmodule
+// endmodule
 
-module comparer_32_signed (
-    input [31:0] x,
-    input [31:0] y,
-    output equal,
-    output less_than,
-    output greater_than
-);
+// module comparer_32_signed (
+//     input [31:0] x,
+//     input [31:0] y,
+//     output equal,
+//     output less_than,
+//     output greater_than
+// );
 
-wire [32:0] sub_result;
-wire [31:0] processed_y;
-wire sign_x, sign_y, result_sign, overflow;
-wire signs_different, sign_x_result_sign_diff;
-wire not_equal;
-assign processed_y = ~y;
-assign sign_x = x[31];
-assign sign_y = y[31];
-assign result_sign = sub_result[31];
+// wire [32:0] sub_result;
+// wire [31:0] processed_y;
+// wire sign_x, sign_y, result_sign, overflow;
+// wire signs_different, sign_x_result_sign_diff;
+// wire not_equal;
+// assign processed_y = ~y;
+// assign sign_x = x[31];
+// assign sign_y = y[31];
+// assign result_sign = sub_result[31];
 
-adder_32 adder_sub (
-   .x(x),
-   .y(processed_y),
-   .cin(1'b1),
-   .sum(sub_result[31:0]),
-   .cout_carry(sub_result[32])
-);
+// adder_32 adder_sub (
+//    .x(x),
+//    .y(processed_y),
+//    .cin(1'b1),
+//    .sum(sub_result[31:0]),
+//    .cout_carry(sub_result[32])
+// );
 
-assign signs_different = sign_x ^ sign_y;
-assign sign_x_result_sign_diff = sign_x ^ result_sign;
-assign overflow = signs_different & sign_x_result_sign_diff;
+// assign signs_different = sign_x ^ sign_y;
+// assign sign_x_result_sign_diff = sign_x ^ result_sign;
+// assign overflow = signs_different & sign_x_result_sign_diff;
 
-assign equal = ~(|sub_result[31:0]);
-assign less_than = result_sign ^ overflow;
-assign greater_than = ~less_than & ~equal;
+// assign equal = ~(|sub_result[31:0]);
+// assign less_than = result_sign ^ overflow;
+// assign greater_than = ~less_than & ~equal;
 
-endmodule
+// endmodule
 
 module barrel_shifter_param (
     input  Logic,
