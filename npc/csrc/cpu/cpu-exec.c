@@ -49,9 +49,9 @@ static void trace_and_difftest() {
 
   #if CONFIG_DIFFTEST
   //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
-  if (dut.pc != dut.next_pc){
+  //if (dut.pc != dut.next_pc){
     difftest_step(dut.pc, dut.next_pc);
-  } 
+  //} 
   #endif
 
   #if CONFIG_FTRACE
