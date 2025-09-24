@@ -141,7 +141,7 @@ static void execute(uint64_t n) {
     uint32_t prev_pc = top->de_next_pc;
     while(!sim_finish){
       single_cycle();
-      if(prev_pc != get_pc()) break;
+      if(prev_pc != top->de_pc) break;
     }
     if(dut.pc < 0x80000000 || dut.pc >= 0x90000000){
       dut.pc = top->de_pc;
