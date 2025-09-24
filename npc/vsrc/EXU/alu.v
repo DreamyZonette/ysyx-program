@@ -66,12 +66,14 @@ module alu (
     wire Add;
     wire Logic;
     wire Right;
+    /* verilator lint_off UNUSEDSIGNAL */
     wire unsigned_less_than;
     wire signed_less_than;
     wire unsigned_greater_than;
     wire signed_greater_than;
     wire signed_equal;
     wire unsigned_equal;
+    /* verilator lint_on UNUSEDSIGNAL */
 
 
     assign ALUctrl = (i_addi_signal | i_jalr_signal | i_lb_signal | i_lh_signal |
