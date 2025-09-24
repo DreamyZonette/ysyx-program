@@ -140,7 +140,7 @@ module alu (
     .x(data1),
     .y(data2),
     .sum(adder_out),
-    .cout(overflow)
+    .cout_carry(overflow)
   );
 
 assign unsigned_shift_out = signed_shift_out;
