@@ -190,7 +190,7 @@ assign B_unsigned_less_than = ~B_overflow;
 assign B_unsigned_equal = ~(|cp_result[31:0]);
 assign B_unsigned_greater_than = overflow & (|cp_result);
 
-wire   B_signs_different, B_sign_x_result_B_sign_diff;
+wire   B_signs_different, B_sign_x_result_sign_diff;
 wire   B_sign_x, B_sign_y, B_result_sign, B_signed_overflow;
 assign B_sign_x = i_src1[31];
 assign B_sign_y = i_src2[31];
