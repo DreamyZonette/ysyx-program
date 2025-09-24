@@ -88,7 +88,7 @@ run:sim
 	
 include ../Makefile
 
-wave:
+wave:$(BUILD_DIR)/wave.fst
 	gtkwave $(BUILD_DIR)/wave.fst
 
 
