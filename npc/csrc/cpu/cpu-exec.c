@@ -143,14 +143,14 @@ static void execute(uint64_t n) {
       single_cycle();
       if(prev_pc != top->de_pc) break;
     }
-    if(dut.pc < 0x80000000 || dut.pc >= 0x90000000){
-      dut.pc = top->de_pc;
-      dut.next_pc = top->de_next_pc;
-    }
-    else {
+    // if(dut.pc < 0x80000000 || dut.pc >= 0x90000000){
+    //   dut.pc = top->de_pc;
+    //   dut.next_pc = top->de_next_pc;
+    // }
+    // else {
       dut.pc = dut.next_pc;
-      dut.next_pc = top->de_pc;
-    }
+      dut.next_pc = top->de_next_pc;
+    // }
     if (dut.pc != dut.next_pc) g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
