@@ -480,13 +480,13 @@ assign stage4 = shift_amt[4] ? {{16{sign}}, stage3[31:16]} : stage3;
 // 左
 assign Lstage0 = shift_amt[0] ? {data_i[30:0], 1'b0} : data_i;
 
-assign Lstage1 = shift_amt[1] ? {Lstage0[29:0], 2'b0} : stage0;
+assign Lstage1 = shift_amt[1] ? {Lstage0[29:0], 2'b0} : Lstage0;
 
-assign Lstage2 = shift_amt[2] ? {Lstage1[27:0], 4'b0}: stage1;
+assign Lstage2 = shift_amt[2] ? {Lstage1[27:0], 4'b0}: Lstage1;
 
-assign Lstage3 = shift_amt[3] ? {Lstage2[23:0], 8'b0}: stage2;
+assign Lstage3 = shift_amt[3] ? {Lstage2[23:0], 8'b0}: Lstage2;
 
-assign Lstage4 = shift_amt[4] ? {Lstage3[15:0], 16'b0} : stage3;
+assign Lstage4 = shift_amt[4] ? {Lstage3[15:0], 16'b0} : Lstage3;
 
 assign data_o = Right ? stage4 : Lstage4; 
 /* verilator lint_on UNUSEDSIGNAL */
