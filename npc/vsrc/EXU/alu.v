@@ -167,7 +167,7 @@ assign signed_overflow = signs_different & sign_x_result_sign_diff;
 
 assign signed_equal = ~(|sub_result[31:0]);
 assign signed_less_than = result_sign ^ signed_overflow;
-assign signed_greater_than = ~sign_less_than & ~sign_equal;
+assign signed_greater_than = ~signed_less_than & ~signed_equal;
 
     // /*---old code---*/
     // wire [31:0] srai_result;
