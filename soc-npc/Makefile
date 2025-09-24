@@ -7,6 +7,7 @@ OBJ ?=
 
 SOC_HOME := /home/long/ysyx-workbench/ysyxSoC/perip
 CPU_TEST_HOME := /home/long/ysyx-workbench/am-kernels/tests/cpu-tests
+NEW_OBJ_DIR := /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -48,6 +49,12 @@ CONFIG_ITRACE         := $(shell grep -m1 '^#define CONFIG_ITRACE' include/gener
 
 ifneq ($(IMG),)
 	ARGS += -i $(IMG)
+endif
+
+ifeq ($(IMG),)
+	ifneq ($(OBJ),)
+		ARGS += -i $(NEW_OBJ_DIR)/new.bin
+	endif
 endif
 
 ifeq ($(MAKECMDGOALS),gdb)
