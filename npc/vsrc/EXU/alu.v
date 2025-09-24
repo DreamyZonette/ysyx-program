@@ -134,7 +134,7 @@ module alu (
                           (i_bltu_signal & unsigned_less_than) |
                           (i_bgeu_signal & (unsigned_greater_than | unsigned_equal));
 
-  wire cin, overflow;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+  wire overflow;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
   adder adder_u (
     .Add(Add),
     .x(data1),
