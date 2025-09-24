@@ -78,6 +78,9 @@ endif
 
 $(shell mkdir -p $(BUILD_DIR))
 
+
+all:run wave
+
 $(BUILD_DIR)/wave.fst:
 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
 	-@rm -f $(BUILD_DIR)/wave.vcd
@@ -86,8 +89,6 @@ sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
-all:run wave
-
 run:sim
 	@echo "Start simulation"
 	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)

@@ -17,43 +17,88 @@ VSRCS := $(shell find $(VPATH) -name *.v)
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
 
-CFLAGS ?= -Wall 
+CFLAGS ?= 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
 CFLAGS += -CFLAGS -fpermissive
-VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
+VFLAGS ?= -Wall  --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) -Wno-DECLFILENAME
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
-LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
-LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
-LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
 
 VERILATOR = verilator
 ARGS ?= 
-ARGS += -d $(NEMU_SO) # 启用difftest
-ARGS += -i $(IMG)     # 启用镜像文件
-#ARGS += -e $(ELF)	  # 启用ftrace
-#ARGS += -b      	  # 启用批处理
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
+
+CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/generated/autoconf.h | awk '{print $$3}')
+CONFIG_DIFFTEST      := $(shell grep -m1 '^#define CONFIG_DIFFTEST' include/generated/autoconf.h | awk '{print $$3}')
+CONFIG_WAVE          := $(shell grep -m1 '^#define CONFIG_WAVE' include/generated/autoconf.h | awk '{print $$3}')
+CONFIG_ITRACE         := $(shell grep -m1 '^#define CONFIG_ITRACE' include/generated/autoconf.h | awk '{print $$3}')
+
+
+ifneq ($(IMG),)
+	ARGS += -i $(IMG)
+endif
+
+ifeq ($(MAKECMDGOALS),gdb)
+  CFLAGS += -CFLAGS -g
+endif
+
+ifeq ($(CONFIG_FTRACE),1)
+	ARGS += -e $(ELF)
+endif
+
+ifeq ($(CONFIG_DIFFTEST),1)
+	LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
+	LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
+	LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
+	ARGS += -d $(NEMU_SO)
+endif
+
+ifeq ($(BATCH),1)
+	ARGS += -b 
+endif
+
+ifeq ($(CONFIG_ITRACE),1)
+	CSRCS += $(WORK_DIR)/tools/disasm.c
+	LIBCAPSTONE = $(NEMU_HOME)/tools/capstone/repo/libcapstone.so.5
+	CFLAGS += -CFLAGS -I$(NEMU_HOME)/tools/capstone/repo/include
+src/utils/disasm.c: $(LIBCAPSTONE)
+$(LIBCAPSTONE):
+	$(MAKE) -C $(NEMU_HOME)/tools/capstone
+endif
 
 $(shell mkdir -p $(BUILD_DIR))
 
 all:run wave
 
-run:
+$(BUILD_DIR)/wave.fst:
+	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+	-@rm -f $(BUILD_DIR)/wave.vcd
+
+
+sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@$(VERILATOR) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
+	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
+	
+run:sim
+	@echo "Start simulation"
 	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
 	
 	
 include ../Makefile
 
 wave:
-	gtkwave $(BUILD_DIR)/wave.vcd
+	gtkwave $(BUILD_DIR)/wave.fst
 
 
 PHONY: clean test
+
+gdb:sim
+	@echo "Start gdb"
+	gdb --args $(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
+	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+	-@rm -f $(BUILD_DIR)/wave.vcd
 
 test:
 	$(VERILATOR) --lint-only -Wall $(TEST_OBJ)

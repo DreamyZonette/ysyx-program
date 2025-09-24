@@ -149,9 +149,20 @@ static void execute(uint64_t n) {
     #if CONFIG_ITRACE
   if(!sim_finish){
     if (dut.pc != dut.next_pc){
-      snprintf(p, sizeof(p), "pc:%08x => 0x%08x", dut.pc, top->de_inst);
-      log_write("%s\n", p);
-      // printf("%s\n", p);
+      uint32_t ilen = 4;
+      uint32_t cur_pc = dut.pc;
+      uint32_t cur_inst = dut.next_pc;
+      char* s = p;
+      s += snprintf(s, sizeof(p), "%08x:", cur_pc);
+      int space_len = 2;
+      void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+      disassemble(s, s + sizeof(p) - s,
+      dut.next_pc, (uint8_t *)&cur_inst, ilen);
+
+      char str[256];
+      snprintf(str, sizeof(str), "pc:0x%08x:    %08x   %s", cur_pc, cur_inst, s);
+      printf("%s\n", str);
+      log_write("%s\n", str);
       p[0] = '\0';
     }
   }
@@ -183,7 +194,7 @@ static void execute(uint64_t n) {
     single_cycle();
     trace_and_difftest();
     #if CONFIG_DEVICE
-    device_update();
+    if (dut.pc != dut.next_pc) device_update();
     #endif
 
     if(sim_finish) {
