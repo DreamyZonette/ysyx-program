@@ -25,13 +25,13 @@ VFLAGS += --top-module $(TOP_NAME) -Wno-DECLFILENAME
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
-#LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
-#LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
-#LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
+LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
+LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
+LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
 
 VERILATOR = verilator
 ARGS ?= 
-#ARGS += -d $(NEMU_SO) # 启用difftest
+ARGS += -d $(NEMU_SO) # 启用difftest
 ARGS += -i $(IMG)     # 启用镜像文件
 #ARGS += -e $(ELF)	  # 启用ftrace
 ARGS += -b      	  # 启用批处理
