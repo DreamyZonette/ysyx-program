@@ -165,7 +165,7 @@ assign signs_different = sign_x ^ sign_y;
 assign sign_x_result_sign_diff = sign_x ^ result_sign;
 assign signed_overflow = signs_different & sign_x_result_sign_diff;
 
-assign signed_equal = ~(|sub_result[31:0]);
+assign signed_equal = ~(|adder_out[31:0]);
 assign signed_less_than = result_sign ^ signed_overflow;
 assign signed_greater_than = ~signed_less_than & ~signed_equal;
 
