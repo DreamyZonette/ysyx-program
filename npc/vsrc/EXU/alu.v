@@ -103,8 +103,7 @@ module alu (
   });
   // adder 控制信号
   assign Add = (i_slt_signal | i_sltu_signal | i_slti_signal | i_sltiu_signal |
-               i_beq_signal | i_bne_signal | i_blt_signal | i_bge_signal |
-               i_bltu_signal | i_bgeu_signal | i_sub_signal) ? 1'b0 : 1'b1;
+              i_sub_signal) ? 1'b0 : 1'b1;
 
   assign data1 = (i_auipc_signal | i_jal_signal | i_beq_signal |i_bne_signal |
                  i_blt_signal | i_bge_signal | i_bltu_signal | i_bgeu_signal) ? i_pc_data : 
