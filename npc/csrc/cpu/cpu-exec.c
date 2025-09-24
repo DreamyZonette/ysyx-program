@@ -137,6 +137,12 @@ void assert_fail_msg() {
 static void execute(uint64_t n) {
     if(n <= MAX_INST_TO_PRINT) print_on = 1;
   for (;n > 0; n --) {
+
+    uint32_t prev_pc = dut.next_pc;
+    while(!sim_finish){
+      single_cycle();
+      if(prev_pc != get_pc()) break;
+    }
     if(dut.pc < 0x80000000 || dut.pc >= 0x90000000){
       dut.pc = top->de_pc;
       dut.next_pc = top->de_next_pc;
@@ -191,8 +197,8 @@ static void execute(uint64_t n) {
 
   #endif
     
+    // single_cycle();
     trace_and_difftest();
-    single_cycle();
     #if CONFIG_DEVICE
     if (dut.pc != dut.next_pc) device_update();
     #endif
