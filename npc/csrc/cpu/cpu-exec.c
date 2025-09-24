@@ -191,8 +191,8 @@ static void execute(uint64_t n) {
 
   #endif
     
-    single_cycle();
     trace_and_difftest();
+    single_cycle();
     #if CONFIG_DEVICE
     if (dut.pc != dut.next_pc) device_update();
     #endif
