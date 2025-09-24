@@ -27,7 +27,7 @@ LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
 
 VERILATOR = verilator
-ARGS ?= 
+ARGS ?= -b
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 
 CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/generated/autoconf.h | awk '{print $$3}')
