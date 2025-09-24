@@ -464,7 +464,7 @@ module barrel_shifter_param (
 
 wire sign = Logic ? 1'b0 : data_i[31];
 
-
+/* verilator lint_off UNUSEDSIGNAL */
 wire [31:0] stage0, stage1, stage2, stage3, stage4;
 wire [31:0] Lstage0, Lstage1, Lstage2, Lstage3, Lstage4;
 // 右
@@ -489,5 +489,5 @@ assign Lstage3 = shift_amt[3] ? {Lstage2[23:0], 8'b0}: stage2;
 assign Lstage4 = shift_amt[4] ? {Lstage3[15:0], 16'b0} : stage3;
 
 assign data_o = Right ? stage4 : Lstage4; 
-
+/* verilator lint_on UNUSEDSIGNAL */
 endmodule
