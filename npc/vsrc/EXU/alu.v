@@ -127,12 +127,12 @@ module alu (
   assign slt_out[31:1] = 31'b0;
   assign B_out = (i_beq_signal | i_bne_signal | i_blt_signal | i_bge_signal |
                  i_bltu_signal | i_bgeu_signal) ? adder_out : 32'b0;
-  assign o_B_jump_signal = (i_beq_signal & unsigned_equal) |
-                          (i_bne_signal & ~unsigned_equal) |
-                          (i_blt_signal & signed_less_than) |
-                          (i_bge_signal & (signed_greater_than | signed_equal)) |
-                          (i_bltu_signal & unsigned_less_than) |
-                          (i_bgeu_signal & (unsigned_greater_than | unsigned_equal));
+  assign o_B_jump_signal = (i_beq_signal & B_unsigned_equal) |
+                          (i_bne_signal & ~B_unsigned_equal) |
+                          (i_blt_signal & B_signed_less_than) |
+                          (i_bge_signal & (B_signed_greater_than | B_signed_equal)) |
+                          (i_bltu_signal & B_unsigned_less_than) |
+                          (i_bgeu_signal & (B_unsigned_greater_than | B_unsigned_equal));
 
   wire overflow;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
   adder adder_u (
@@ -168,6 +168,40 @@ assign signed_overflow = signs_different & sign_x_result_sign_diff;
 assign signed_equal = ~(|adder_out[31:0]);
 assign signed_less_than = result_sign ^ signed_overflow;
 assign signed_greater_than = ~signed_less_than & ~signed_equal;
+
+// 实例化第二个加法器，用于计算B指令
+    wire [31:0] cp_result;
+    wire B_overflow;
+    wire B_unsigned_less_than;
+    wire B_signed_less_than;
+    wire B_unsigned_greater_than;
+    wire B_signed_greater_than;
+    wire B_signed_equal;
+    wire B_unsigned_equal;
+  adder adder_u_2 (
+    .Add(1'b0),
+    .x(i_src1),
+    .y(i_src2),
+    .sum(cp_result),
+    .cout_carry(B_overflow)
+  );
+
+assign B_unsigned_less_than = ~B_overflow;
+assign B_unsigned_equal = ~(|cp_result[31:0]);
+assign B_unsigned_greater_than = overflow & (|cp_result);
+
+wire   B_signs_different, B_sign_x_result_B_sign_diff;
+wire   B_sign_x, B_sign_y, B_result_sign, B_signed_overflow;
+assign B_sign_x = i_src1[31];
+assign B_sign_y = i_src2[31];
+assign B_result_sign = cp_result[31];
+assign B_signs_different = B_sign_x ^ B_sign_y;
+assign B_sign_x_result_sign_diff = B_sign_x ^ B_result_sign;
+assign B_signed_overflow = B_signs_different & B_sign_x_result_sign_diff;
+
+assign B_signed_equal = ~(|cp_result[31:0]);
+assign B_signed_less_than = B_result_sign ^ B_signed_overflow;
+assign B_signed_greater_than = ~B_signed_less_than & ~B_signed_equal;
 
     // /*---old code---*/
     // wire [31:0] srai_result;
@@ -393,66 +427,66 @@ adder_32 adder_32_u (
 
 endmodule
 
-// module comparer_32_unsigned (
-//     input [31:0] x,
-//     input [31:0] y,
-//     output equal,
-//     output less_than,
-//     output greater_than
-// );
+module comparer_32_unsigned (
+    input [31:0] x,
+    input [31:0] y,
+    output equal,
+    output less_than,
+    output greater_than
+);
 
-// wire [32:0] sub_result;
-// wire [31:0] processed_y;
-// assign processed_y = ~y;
-// assign less_than = ~sub_result[32];
-// assign equal = ~(|sub_result[31:0]);
-// assign greater_than = sub_result[32] & (|sub_result);
+wire [32:0] sub_result;
+wire [31:0] processed_y;
+assign processed_y = ~y;
+assign less_than = ~sub_result[32];
+assign equal = ~(|sub_result[31:0]);
+assign greater_than = sub_result[32] & (|sub_result);
 
-// adder_32 adder_sub (
-//    .x(x),
-//    .y(processed_y),
-//    .cin(1'b1),
-//    .sum(sub_result[31:0]),
-//    .cout_carry(sub_result[32])
-// );
+adder_32 adder_sub (
+   .x(x),
+   .y(processed_y),
+   .cin(1'b1),
+   .sum(sub_result[31:0]),
+   .cout_carry(sub_result[32])
+);
 
-// endmodule
+endmodule
 
-// module comparer_32_signed (
-//     input [31:0] x,
-//     input [31:0] y,
-//     output equal,
-//     output less_than,
-//     output greater_than
-// );
+module comparer_32_signed (
+    input [31:0] x,
+    input [31:0] y,
+    output equal,
+    output less_than,
+    output greater_than
+);
 
-// wire [32:0] sub_result;
-// wire [31:0] processed_y;
-// wire sign_x, sign_y, result_sign, overflow;
-// wire signs_different, sign_x_result_sign_diff;
-// wire not_equal;
-// assign processed_y = ~y;
-// assign sign_x = x[31];
-// assign sign_y = y[31];
-// assign result_sign = sub_result[31];
+wire [32:0] sub_result;
+wire [31:0] processed_y;
+wire sign_x, sign_y, result_sign, overflow;
+wire signs_different, sign_x_result_sign_diff;
+wire not_equal;
+assign processed_y = ~y;
+assign sign_x = x[31];
+assign sign_y = y[31];
+assign result_sign = sub_result[31];
 
-// adder_32 adder_sub (
-//    .x(x),
-//    .y(processed_y),
-//    .cin(1'b1),
-//    .sum(sub_result[31:0]),
-//    .cout_carry(sub_result[32])
-// );
+adder_32 adder_sub (
+   .x(x),
+   .y(processed_y),
+   .cin(1'b1),
+   .sum(sub_result[31:0]),
+   .cout_carry(sub_result[32])
+);
 
-// assign signs_different = sign_x ^ sign_y;
-// assign sign_x_result_sign_diff = sign_x ^ result_sign;
-// assign overflow = signs_different & sign_x_result_sign_diff;
+assign signs_different = sign_x ^ sign_y;
+assign sign_x_result_sign_diff = sign_x ^ result_sign;
+assign overflow = signs_different & sign_x_result_sign_diff;
 
-// assign equal = ~(|sub_result[31:0]);
-// assign less_than = result_sign ^ overflow;
-// assign greater_than = ~less_than & ~equal;
+assign equal = ~(|sub_result[31:0]);
+assign less_than = result_sign ^ overflow;
+assign greater_than = ~less_than & ~equal;
 
-// endmodule
+endmodule
 
 module barrel_shifter_param (
     input  Logic,
