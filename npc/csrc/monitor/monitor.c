@@ -177,6 +177,11 @@ void init_monitor(int argc, char *argv[]) {
   init_difftest(diff_so_file, img_size, difftest_port);
   #endif
 
+  #if CONFIG_ITRACE
+  void init_disasm(void);
+  init_disasm();
+  #endif
+  
   init_device();
   
   welcome();
