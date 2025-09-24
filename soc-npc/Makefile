@@ -3,8 +3,10 @@ TOP_NAME = ysyxSoCFull
 IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+OBJ ?=
 
 SOC_HOME := /home/long/ysyx-workbench/ysyxSoC/perip
+CPU_TEST_HOME := /home/long/ysyx-workbench/am-kernels/tests/cpu-tests
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -32,7 +34,7 @@ VFLAGS += -I$(SOC_HOME)/uart16550/rtl/ -I$(SOC_HOME)/spi/rtl/
 LDFLAGS := -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
 
-
+GEN := /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/gen.sh
 VERILATOR = verilator
 ARGS ?= 
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
@@ -101,7 +103,11 @@ wave: $(BUILD_DIR)/wave.fst
 	gtkwave $(BUILD_DIR)/wave.fst
 
 
-PHONY: clean test
+PHONY: clean test adapt
+
+adapt: sim
+	$(MAKE) -C $(CPU_TEST_HOME) ARCH=minirv-npc ALL=$(OBJ)
+	bash $(GEN) $(CPU_TEST_HOME)/$(OBJ)-minirv-npc.elf
 
 gdb:sim
 	@echo "Start gdb"
