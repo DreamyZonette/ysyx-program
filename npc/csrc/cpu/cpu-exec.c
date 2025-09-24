@@ -138,10 +138,10 @@ static void execute(uint64_t n) {
     if(n <= MAX_INST_TO_PRINT) print_on = 1;
   for (;n > 0; n --) {
 
-    uint32_t prev_pc = top->de_next_pc;
+    uint32_t prev_pc = top->de_pc;
     while(!sim_finish){
       single_cycle();
-      if(prev_pc != top->de_pc) break;
+      if(prev_pc != top->de_next_pc) break;
     }
     if(dut.pc < 0x80000000 || dut.pc >= 0x90000000){
       dut.pc = top->de_pc;
