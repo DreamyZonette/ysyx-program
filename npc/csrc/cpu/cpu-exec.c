@@ -151,7 +151,7 @@ static void execute(uint64_t n) {
     if (dut.pc != dut.next_pc){
       uint32_t ilen = 4;
       uint32_t cur_pc = dut.pc;
-      uint32_t cur_inst = dut.next_pc;
+      uint32_t cur_inst = top->de_inst;
       char* s = p;
       s += snprintf(s, sizeof(p), "%08x:", cur_pc);
       int space_len = 2;
