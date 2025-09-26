@@ -57,7 +57,7 @@ always @(posedge clock) begin
                 if(ifu_valid && (wen || ren)) begin
                     state <= WAIT;
                     lsu_ready <= 1'b1;
-                    lsu_wen <= !ren;
+                    lsu_wen <= wen;
                     lsu_addr <= i_data;
                     lsu_wdata <= i_src2;
                     lsu_wmask <= i_wmask;
@@ -85,9 +85,7 @@ always @(posedge clock) begin
                 if(lsu_ready) begin
                     lsu_ready <= 1'b0;
                 end
-                if(!lsu_wen) begin
-                    lsu_wen <= 1'b1;
-                end
+                
                 if(lsu_reqValid) begin
                     lsu_reqValid <= 1'b0;
                 end
@@ -95,6 +93,9 @@ always @(posedge clock) begin
                 if (lsu_respValid) begin
                     lsu_valid <= 1'b1;
                     state <= IDLE;
+                    if(lsu_wen) begin
+                        lsu_wen <= 1'b0;
+                    end
                     if(i_lw_signal == 1'b1) begin
                         o_rdata <= lsu_rdata[31:0];
                     end else if(i_lhu_signal == 1'b1) begin

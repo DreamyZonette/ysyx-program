@@ -108,6 +108,7 @@ include ../Makefile
 wave: $(BUILD_DIR)/wave.fst
 	
 	gtkwave $(BUILD_DIR)/wave.fst
+	rm $(BUILD_DIR)/wave.fst
 
 
 PHONY: clean test adapt
