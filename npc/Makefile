@@ -4,7 +4,6 @@ IMG ?= /home/long/ysyx-workbench/npc/demo/add-minirv-npc.bin
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
-SOC_HOME := /home/long/ysyx-workbench/ysyxSoC/perip
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
 TEST ?=
@@ -15,7 +14,6 @@ INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 
 VSRCS := $(shell find $(VPATH) -name *.v)
-VSRCS := $(shell find $(SOC_HOME) -name *.v)
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
 
@@ -81,7 +79,7 @@ $(BUILD_DIR)/wave.fst:
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
+	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
 run:sim
 	@echo "Start simulation"
