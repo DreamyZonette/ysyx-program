@@ -58,7 +58,12 @@ always @(posedge clock) begin
                     state <= WAIT;
                     lsu_ready <= 1'b1;
                     lsu_wen <= wen;
-                    lsu_addr <= {i_data[31:2], 2'b0};
+                    if (i_data >= 32'h3000_0000 && i_data < 32'h4000_0000) begin
+                        lsu_addr <= {i_data[31:2], 2'b0};
+                    end
+                    else begin
+                        lsu_addr <= i_data;
+                    end
                     lsu_wdata <= i_src2 << (i_data[1:0] * 8);
                     lsu_wmask <= i_wmask << i_data[1:0];
                     lsu_reqValid <= 1'b1;
