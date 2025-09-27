@@ -60,7 +60,7 @@ always @(posedge clock) begin
                     lsu_wen <= wen;
                     lsu_addr <= i_data;
                     lsu_wdata <= i_src2;
-                    lsu_wmask <= i_wmask;
+                    lsu_wmask <= i_wmask << i_data[1:0];
                     lsu_reqValid <= 1'b1;
                     // $strobe("lsu:lsu_addr=%08x, lsu_wdata=%08x, lsu_wmask=%08x, lsu_wen=%0d, lsu_reqValid=%0d, lsu_size=%0d",
                     //         lsu_addr, lsu_wdata, lsu_wmask, lsu_wen, lsu_reqValid, lsu_size);
