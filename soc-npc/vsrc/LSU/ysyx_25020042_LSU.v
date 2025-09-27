@@ -58,7 +58,7 @@ always @(posedge clock) begin
                     state <= WAIT;
                     lsu_ready <= 1'b1;
                     lsu_wen <= wen;
-                    lsu_addr <= i_data;
+                    lsu_addr <= {i_data[31:2], 2'b0};
                     lsu_wdata <= i_src2 << (i_data[1:0] * 8);
                     lsu_wmask <= i_wmask << i_data[1:0];
                     lsu_reqValid <= 1'b1;
