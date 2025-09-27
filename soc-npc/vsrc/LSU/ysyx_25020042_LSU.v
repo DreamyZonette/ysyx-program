@@ -49,7 +49,7 @@ always @(posedge clock) begin
         lsu_reqValid <= 1'b0;
         lsu_size <= 2'b0;
         o_rdata <= 32'b0;
-        lsu_wen <= 1'b1;
+        lsu_wen <= 1'b0;
     end
     else begin
         case (state)
@@ -117,21 +117,5 @@ always @(posedge clock) begin
     end
     
 end
-
-// always @(*) begin
-//     if(i_lw_signal == 1'b1) begin
-//         o_rdata = lsu_rdata_reg[31:0];
-//     end else if(i_lhu_signal == 1'b1) begin
-//         o_rdata = {16'b0, lsu_rdata_reg[15:0]};
-//     end else if(i_lh_signal == 1'b1) begin
-//         o_rdata = {{16{lsu_rdata_reg[15]}}, lsu_rdata_reg[15:0]};
-//     end else if(i_lbu_signal == 1'b1) begin
-//         o_rdata = {24'b0, lsu_rdata_reg[7:0]};
-//     end else if(i_lb_signal == 1'b1) begin
-//         o_rdata = {{24{lsu_rdata_reg[7]}}, lsu_rdata_reg[7:0]};
-//     end else begin
-//         o_rdata = 0;
-//     end
-// end
 
 endmodule
