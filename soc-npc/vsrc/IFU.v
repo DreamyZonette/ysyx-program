@@ -6,11 +6,11 @@ export "DPI-C" function get_instruction;
 
     function int unsigned get_pc();   
         // return i_pc;
-        return 32'h3000_0000;
+        return pc;
     endfunction
     function int unsigned get_instruction();   
         // return o_instruction;
-        return 32'h0000_0000;
+        return instr;
     endfunction
 module ysyx_25020039_IFU (
     input         clk,
