@@ -1,17 +1,7 @@
 `include "include/defs.vh"
 
 
-export "DPI-C" function get_pc;
-export "DPI-C" function get_instruction;
 
-    function int unsigned get_pc();   
-        // return i_pc;
-        return pc;
-    endfunction
-    function int unsigned get_instruction();   
-        // return o_instruction;
-        return instr;
-    endfunction
 module ysyx_25020039_IFU (
     input         clk,
     input         reset,
@@ -32,6 +22,19 @@ module ysyx_25020039_IFU (
     // output reg        ifu_respReady,
     input wire [31:0] ifu_rdata
 );
+
+export "DPI-C" function get_pc;
+export "DPI-C" function get_instruction;
+
+    function int unsigned get_pc();   
+        // return i_pc;
+        return pc;
+    endfunction
+    function int unsigned get_instruction();   
+        // return o_instruction;
+        return instr;
+    endfunction
+    
     typedef enum {IDLE, REQ_WAIT, RESP_WAIT, STALL} state_t;
     state_t state, next_state;
 
