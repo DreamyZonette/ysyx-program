@@ -66,7 +66,8 @@ always @(posedge clock) begin
                     // end
                     lsu_addr <= i_data;
                     lsu_wdata <= i_src2 << (i_data[1:0] * 8);
-                    lsu_wmask <= i_wmask << i_data[1:0];
+                    lsu_wmask <= i_wmask;
+                    // lsu_wmask <= i_wmask << i_data[1:0];
                     lsu_reqValid <= 1'b1;
                     if (i_sb_signal || i_lb_signal ||i_lbu_signal) begin
                         lsu_size <= 2'b00;
