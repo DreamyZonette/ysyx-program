@@ -1,5 +1,15 @@
 `include "include/defs.vh"
 
+export "DPI-C" function get_register_value;
+    function int unsigned get_register_value(input int idx);
+    // $display("当前模块的完整路径: %m");
+        if (idx >= 0 && idx <= 15) begin
+            return 0;
+        end else begin
+            return 32'h0;
+        end
+    endfunction
+
 module ysyx_25020039_WBU (
     input              clk,
     input              reset,
