@@ -58,17 +58,16 @@ always @(posedge clock) begin
                     state <= WAIT;
                     lsu_ready <= 1'b1;
                     lsu_wen <= wen;
-                    if (i_data >= 32'h3000_0000 && i_data < 32'h4000_0000) begin
-                        lsu_addr <= {i_data[31:2], 2'b0};
-                    end
-                    else begin
-                        lsu_addr <= i_data;
-                    end
+                    // if (i_data >= 32'h3000_0000 && i_data < 32'h4000_0000) begin
+                    //     lsu_addr <= {i_data[31:2], 2'b0};
+                    // end
+                    // else begin
+                    //     lsu_addr <= i_data;
+                    // end
+                    lsu_addr <= i_data;
                     lsu_wdata <= i_src2 << (i_data[1:0] * 8);
                     lsu_wmask <= i_wmask << i_data[1:0];
                     lsu_reqValid <= 1'b1;
-                    // $strobe("lsu:lsu_addr=%08x, lsu_wdata=%08x, lsu_wmask=%08x, lsu_wen=%0d, lsu_reqValid=%0d, lsu_size=%0d",
-                    //         lsu_addr, lsu_wdata, lsu_wmask, lsu_wen, lsu_reqValid, lsu_size);
                     if (i_sb_signal || i_lb_signal ||i_lbu_signal) begin
                         lsu_size <= 2'b00;
                     end else if (i_sh_signal || i_lh_signal || i_lhu_signal) begin
