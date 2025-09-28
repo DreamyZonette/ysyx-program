@@ -1,5 +1,23 @@
 `include "include/defs.vh"
 
+export "DPI-C" function get_mstatus_value;
+export "DPI-C" function get_mtvec_value;
+export "DPI-C" function get_mepc_value;
+export "DPI-C" function get_mcause_value;
+
+    function int unsigned get_mstatus_value();   
+        return 0;
+    endfunction
+    function int unsigned get_mtvec_value();   
+        return 0;
+    endfunction
+    function int unsigned get_mepc_value();    
+        return 0;
+    endfunction
+    function int unsigned get_mcause_value();   
+        return 0;
+    endfunction
+
 module CSR(
     input clk,
     input rst,
