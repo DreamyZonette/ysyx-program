@@ -36,7 +36,7 @@ localparam WAIT = 1'b1;
 
 reg state;
 // reg [31:0] rdata;
-wire [31:0] shifted_rdata = lsu_rdata >> (lsu_addr[1:0] * 8);
+// wire [31:0] shifted_rdata = lsu_rdata >> (lsu_addr[1:0] * 8);
 wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign o_lsu_busy = ren | wen;
@@ -101,32 +101,32 @@ always @(posedge clock) begin
                     if(lsu_wen) begin
                         lsu_wen <= 1'b0;
                     end
-                    // if(i_lw_signal == 1'b1) begin
-                    //     o_rdata <= lsu_rdata[31:0];
-                    // end else if(i_lhu_signal == 1'b1) begin
-                    //     o_rdata <= {16'b0, lsu_rdata[15:0]};
-                    // end else if(i_lh_signal == 1'b1) begin
-                    //     o_rdata <= {{16{lsu_rdata[15]}}, lsu_rdata[15:0]};
-                    // end else if(i_lbu_signal == 1'b1) begin
-                    //     o_rdata <= {24'b0, lsu_rdata[7:0]};
-                    // end else if(i_lb_signal == 1'b1) begin
-                    //     o_rdata <= {{24{lsu_rdata[7]}}, lsu_rdata[7:0]};
-                    // end else begin
-                    //     o_rdata <= 0;
-                    // end
                     if(i_lw_signal == 1'b1) begin
-                        o_rdata <= shifted_rdata[31:0];
+                        o_rdata <= lsu_rdata[31:0];
                     end else if(i_lhu_signal == 1'b1) begin
-                        o_rdata <= {16'b0, shifted_rdata[15:0]};
+                        o_rdata <= {16'b0, lsu_rdata[15:0]};
                     end else if(i_lh_signal == 1'b1) begin
-                        o_rdata <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
+                        o_rdata <= {{16{lsu_rdata[15]}}, lsu_rdata[15:0]};
                     end else if(i_lbu_signal == 1'b1) begin
-                        o_rdata <= {24'b0, shifted_rdata[7:0]};
+                        o_rdata <= {24'b0, lsu_rdata[7:0]};
                     end else if(i_lb_signal == 1'b1) begin
-                        o_rdata <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
+                        o_rdata <= {{24{lsu_rdata[7]}}, lsu_rdata[7:0]};
                     end else begin
                         o_rdata <= 0;
                     end
+                    // if(i_lw_signal == 1'b1) begin
+                    //     o_rdata <= shifted_rdata[31:0];
+                    // end else if(i_lhu_signal == 1'b1) begin
+                    //     o_rdata <= {16'b0, shifted_rdata[15:0]};
+                    // end else if(i_lh_signal == 1'b1) begin
+                    //     o_rdata <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
+                    // end else if(i_lbu_signal == 1'b1) begin
+                    //     o_rdata <= {24'b0, shifted_rdata[7:0]};
+                    // end else if(i_lb_signal == 1'b1) begin
+                    //     o_rdata <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
+                    // end else begin
+                    //     o_rdata <= 0;
+                    // end
                 end
                 
             end
