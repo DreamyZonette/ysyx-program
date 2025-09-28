@@ -59,7 +59,7 @@ always @(posedge clock) begin
                     lsu_ready <= 1'b1;
                     lsu_wen <= wen;
                     if (i_data >= 32'h1000_0000 && i_data <= 32'h1000_0fff) begin
-                        lsu_wdata <= i_src2 << i_data;
+                        lsu_wdata <= i_src2;
                     end
                     else begin
                         lsu_wdata <= i_src2 << (i_data[1:0] * 8);
