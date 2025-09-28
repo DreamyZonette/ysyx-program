@@ -25,8 +25,8 @@ module ysyx_25020039_IDU (
     // input      [31:0] branch_total,
     // input      [31:0] branch_correct
 );
-    import "DPI-C" function void sim_exit();
-
+    // import "DPI-C" function void sim_exit();
+    import "DPI-C" function void dpi_ebreak();
     // 状态机定义
     typedef enum {
         IDLE, //空闲等待指令
@@ -161,7 +161,7 @@ module ysyx_25020039_IDU (
 
                             `INST_TYPE_E: begin
                                 if (instr == `INST_EBREAK) begin
-                                    sim_exit();
+                                    dpi_ebreak();
                                     $display("EBREAK: Simulation exiting...");
                                 end
                             end
