@@ -48,7 +48,12 @@ extern char _pmem_start;
 Area heap = RANGE(&_heap_start, PMEM_END);
 static const char mainargs[MAINARGS_MAX_LEN] = TOSTRING(MAINARGS_PLACEHOLDER); // defined in CFLAGS
 
+#define UART_BASE 0x10000000
+
 void putch(char ch) {
+  while ((inb(UART_BASE + 0x3) & 0x20) == 0) {
+        // 空循环，等待LSR[5] (THRE) 位为1
+    }
   outb(SERIAL_PORT, ch);
 }
 
@@ -58,11 +63,15 @@ void halt(int code) {
   while (1);
 }
 
-#define UART_BASE 0x10000000
 
 void _trm_init() {
-  outb(UART_BASE +0x00, 0x00);
-  outb(UART_BASE +0x01, 0x80);
+  outb(UART_BASE + 0x3, 0x83); // LSR
+  outb(UART_BASE +0x00, 0x36); // LSB
+  outb(UART_BASE +0x01, 0x00); // MSB
+  outb(UART_BASE + 0x3, 0x03); // LCR
+  outb(UART_BASE + 0x1, 0x00); // IER
+  outb(UART_BASE + 0x2, 0xC7); // FCR
+  outb(UART_BASE + 0x4, 0x03); // MCR
   int ret = main(mainargs);
   halt(ret);
 }
