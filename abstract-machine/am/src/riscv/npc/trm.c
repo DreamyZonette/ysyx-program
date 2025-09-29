@@ -51,9 +51,9 @@ static const char mainargs[MAINARGS_MAX_LEN] = TOSTRING(MAINARGS_PLACEHOLDER); /
 #define UART_BASE 0x10000000
 
 void putch(char ch) {
-  while ((inb(UART_BASE + 0x3) & 0x20) == 0) {
-        // 空循环，等待LSR[5] (THRE) 位为1
-    }
+  // while ((inb(UART_BASE + 0x3) & 0x20) == 0) {
+  //       // 空循环，等待LSR[5] (THRE) 位为1
+  //   }
   outb(SERIAL_PORT, ch);
 }
 
