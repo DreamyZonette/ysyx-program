@@ -65,13 +65,13 @@ void halt(int code) {
 
 
 void _trm_init() {
-  outb(UART_BASE + 0x3, 0x83); // LSR
-  outb(UART_BASE +0x00, 0x36); // LSB
-  outb(UART_BASE +0x01, 0x00); // MSB
+  outb(UART_BASE + 0x3, 0x83); // LCR
+  outb(UART_BASE + 0x0, 0x36); // LSB
+  outb(UART_BASE + 0x1, 0x00); // MSB
   outb(UART_BASE + 0x3, 0x03); // LCR
   outb(UART_BASE + 0x1, 0x00); // IER
-  outb(UART_BASE + 0x2, 0xC7); // FCR
-  outb(UART_BASE + 0x4, 0x03); // MCR
+  outb(UART_BASE + 0x2, 0x07); // FCR
+  outb(UART_BASE + 0x4, 0x00); // MCR
   int ret = main(mainargs);
   halt(ret);
 }
