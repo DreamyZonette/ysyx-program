@@ -29,6 +29,7 @@ static uint64_t am_get_time() {
     } while (hi1 != hi2);
 
     cycles = ((uint64_t)hi1 << 32) | lo;
+    //printf("cycles: %ld\n", cycles);
     return cycles * scale_factor;
 }
 
