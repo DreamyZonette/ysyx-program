@@ -3,8 +3,6 @@ AM_SRCS := riscv/npc/start.S \
            riscv/npc/ioe.c \
            riscv/npc/timer.c \
            riscv/npc/input.c \
-           riscv/npc/audio.c \
-           riscv/npc/gpu.c \
            riscv/npc/cte.c \
            riscv/npc/trap.S \
            platform/dummy/vme.c \
@@ -28,9 +26,6 @@ image: image-dep
 	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
 
 run: insert-arg
-	$(MAKE) -C $(NPC_HOME) ISA=$(ISA) run  IMG=$(IMAGE).bin
+	echo "TODO: add command here to run simulation"
 
-gdb: insert-arg
-	$(MAKE) -C $(NPC_HOME) ISA=$(ISA) gdb  IMG=$(IMAGE).bin
-    
 .PHONY: insert-arg
