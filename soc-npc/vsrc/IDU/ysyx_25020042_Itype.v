@@ -3,7 +3,7 @@ module ysyx_25020042_Itype (
     output [4:0] o_rd,
     output [4:0] o_rs1,
     output [5:0] o_shamt,
-    output reg [31:0] o_imm,
+    output wire [31:0] o_imm,
     output     [11:0] o_csr_addr,
     output reg o_jalr_signal,
     output reg o_addi_signal,
@@ -39,7 +39,7 @@ module ysyx_25020042_Itype (
     reg [4:0] jalr_rd;
     reg shamt_signal;
     reg unknown_intstruction;
-    reg shamt_halt;
+    wire shamt_halt;
 
     assign opcode       = i_inst[6:0];
     assign rd           = i_inst[11:7];
@@ -52,6 +52,8 @@ module ysyx_25020042_Itype (
     assign o_halt_signal =  unknown_intstruction | shamt_halt;
     assign csr_addr     = i_inst[31:20];
     assign o_csr_addr   = (o_csrrs_signal == 1'b1 || o_csrrw_signal == 1'b1) ? csr_addr : 12'b0;
+    assign o_imm = { {20{imm[11]}}, imm};
+    assign shamt_halt = shamt_signal ? o_shamt[5] : 1'b0;
 
     always @ (*) begin
         // 初始化
@@ -71,8 +73,8 @@ module ysyx_25020042_Itype (
         o_ori_signal    = 1'b0;
         o_sltiu_signal  = 1'b0;
         o_slti_signal   = 1'b0;
-        sign_extended   = 1'b0;
-        zero_extended   = 1'b0;
+        // sign_extended   = 1'b0;
+        // zero_extended   = 1'b0;
         shamt_signal    = 1'b0;
         o_csrrs_signal  = 1'b0;
         o_csrrw_signal  = 1'b0;
@@ -86,7 +88,7 @@ module ysyx_25020042_Itype (
         7'b1100111: begin // jalr
             if (fun1 == 3'b000) begin
                 o_jalr_signal   = 1'b1;
-                sign_extended = 1'b1;
+                // sign_extended = 1'b1;
                 // if(rd == 5'b0) begin
                 //     jalr_rd = 5'b1;
                 // end
@@ -114,11 +116,11 @@ module ysyx_25020042_Itype (
             shamt_signal = o_slli_signal | o_srli_signal | o_srai_signal;
            
             // 根据指令类型选择扩展方式
-            sign_extended = (fun1 == 3'b000 || fun1 == 3'b111 || fun1 == 3'b100 || fun1 == 3'b010 || fun1 == 3'b110 || fun1 == 3'b011) ? 1'b1 : 1'b0; // addi/andi/xori/slti/ori
+            // sign_extended = (fun1 == 3'b000 || fun1 == 3'b111 || fun1 == 3'b100 || fun1 == 3'b010 || fun1 == 3'b110 || fun1 == 3'b011) ? 1'b1 : 1'b0; // addi/andi/xori/slti/ori
             
         end
         7'b1110011: begin  // ebreak
-            if(i_inst == 32'b 00000000000100000000000001110011) begin
+            if(i_inst == 32'b00000000000100000000000001110011) begin
                 o_ebreak_signal = 1'b1;
             end else if(i_inst == 32'b00000000000000000000000001110011) begin
                 o_ecall_signal = 1'b1;
@@ -135,7 +137,7 @@ module ysyx_25020042_Itype (
             o_lh_signal   = (fun1 == 3'b001) ? 1'b1 : 1'b0;
             o_lbu_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
             o_lhu_signal  = (fun1 == 3'b101) ? 1'b1 : 1'b0;
-            sign_extended = (fun1 == 3'b010 || fun1 == 3'b000 || fun1 == 3'b001 || fun1 == 3'b100 || fun1 == 3'b101) ? 1'b1 : 1'b0; // lw/lb/lh/ lbu/lhu
+            // sign_extended = (fun1 == 3'b010 || fun1 == 3'b000 || fun1 == 3'b001 || fun1 == 3'b100 || fun1 == 3'b101) ? 1'b1 : 1'b0; // lw/lb/lh/ lbu/lhu
             //zero_extended = () ? 1'b1 : 1'b0; 
         end
         default: begin
@@ -144,26 +146,26 @@ module ysyx_25020042_Itype (
     endcase
 
 
-        //imm扩展
-        if(sign_extended == 1'b1)begin
-            o_imm =  { {20{imm[11]}}, imm};
-        end
-        else if(zero_extended == 1'b1) begin
-            o_imm =  { {20{1'b0}}, imm};
-        end
-        else begin
-            o_imm = 32'b0;
-        end
+        // //imm扩展
+        // if(sign_extended == 1'b1)begin
+        //     o_imm =  { {20{imm[11]}}, imm};
+        // end
+        // else if(zero_extended == 1'b1) begin
+        //     o_imm =  { {20{1'b0}}, imm};
+        // end
+        // else begin
+        //     o_imm = 32'b0;
+        // end
     end
 
-    always @(*) begin
-        if(shamt_signal == 1'b1) begin
-            shamt_halt = o_shamt[5];
-        end
-        else begin
-            shamt_halt = 1'b0;
-        end
-    end
+    // always @(*) begin
+    //     if(shamt_signal == 1'b1) begin
+    //         shamt_halt = o_shamt[5];
+    //     end
+    //     else begin
+    //         shamt_halt = 1'b0;
+    //     end
+    // end
 
 
 endmodule
