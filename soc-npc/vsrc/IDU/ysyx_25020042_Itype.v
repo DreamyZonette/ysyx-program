@@ -73,8 +73,6 @@ module ysyx_25020042_Itype (
         o_ori_signal    = 1'b0;
         o_sltiu_signal  = 1'b0;
         o_slti_signal   = 1'b0;
-        // sign_extended   = 1'b0;
-        // zero_extended   = 1'b0;
         shamt_signal    = 1'b0;
         o_csrrs_signal  = 1'b0;
         o_csrrw_signal  = 1'b0;
@@ -88,13 +86,7 @@ module ysyx_25020042_Itype (
         7'b1100111: begin // jalr
             if (fun1 == 3'b000) begin
                 o_jalr_signal   = 1'b1;
-                // sign_extended = 1'b1;
-                // if(rd == 5'b0) begin
-                //     jalr_rd = 5'b1;
-                // end
-                // else begin
                     jalr_rd = rd;
-                // end
             end
         end
         7'b0010011: begin // I-type ALU
@@ -137,35 +129,12 @@ module ysyx_25020042_Itype (
             o_lh_signal   = (fun1 == 3'b001) ? 1'b1 : 1'b0;
             o_lbu_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
             o_lhu_signal  = (fun1 == 3'b101) ? 1'b1 : 1'b0;
-            // sign_extended = (fun1 == 3'b010 || fun1 == 3'b000 || fun1 == 3'b001 || fun1 == 3'b100 || fun1 == 3'b101) ? 1'b1 : 1'b0; // lw/lb/lh/ lbu/lhu
-            //zero_extended = () ? 1'b1 : 1'b0; 
         end
         default: begin
             unknown_intstruction = 1'b1;
         end
     endcase
-
-
-        // //imm扩展
-        // if(sign_extended == 1'b1)begin
-        //     o_imm =  { {20{imm[11]}}, imm};
-        // end
-        // else if(zero_extended == 1'b1) begin
-        //     o_imm =  { {20{1'b0}}, imm};
-        // end
-        // else begin
-        //     o_imm = 32'b0;
-        // end
     end
-
-    // always @(*) begin
-    //     if(shamt_signal == 1'b1) begin
-    //         shamt_halt = o_shamt[5];
-    //     end
-    //     else begin
-    //         shamt_halt = 1'b0;
-    //     end
-    // end
 
 
 endmodule

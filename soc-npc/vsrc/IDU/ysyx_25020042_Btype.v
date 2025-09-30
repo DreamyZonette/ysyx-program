@@ -46,26 +46,11 @@ module ysyx_25020042_Btype (
                 o_bgeu_signal = (fun1 == 3'b111) ? 1'b1 : 1'b0;
                 o_blt_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
                 o_bltu_signal = (fun1 == 3'b110) ? 1'b1 : 1'b0;
-                // if(fun1 == 3'b000 || fun1 == 3'b101 || fun1 == 3'b001 || fun1 == 3'b100 || fun1 == 3'b110 || fun1 == 3'b111) begin
-                //     sign_extended = 1'b1;
-                // end else begin
-                //     zero_extended = 1'b1;
-                // end
             end
             default begin
                 unknown_intstruction = 1'b1;
             end
         endcase
     end
-
-    // always @(*) begin
-    //     if(sign_extended == 1'b1) begin
-    //         o_offset = {{20{offset[11]}}, offset} << 1;
-    //     end else if(zero_extended == 1'b1) begin
-    //         o_offset = {20'b0, offset} << 1;
-    //     end else begin
-    //         o_offset = {20'b0, offset} << 1;
-    //     end
-    // end
 
 endmodule

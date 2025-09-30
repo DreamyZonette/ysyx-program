@@ -30,8 +30,6 @@ module ysyx_25020042_Stype (
         o_sw_signal     = 1'b0;
         o_sb_signal     = 1'b0;
         o_sh_signal     = 1'b0;
-        // sign_extended   = 1'b0;
-        // zero_extended   = 1'b0;
         unknown_intstruction = 1'b0;
         o_wmask = 4'b0;
 
@@ -41,24 +39,11 @@ module ysyx_25020042_Stype (
             o_sw_signal = (fun == 3'b010) ? 1'b1 : 1'b0;
             o_sb_signal = (fun == 3'b000) ? 1'b1 : 1'b0;
             o_sh_signal = (fun == 3'b001) ? 1'b1 : 1'b0;
-            // sign_extended = (fun == 3'b010 || fun == 3'b000 || fun == 3'b001) ? 1'b1 : 1'b0;
         end
         default: begin
             unknown_intstruction = 1'b1;
         end
     endcase
-
-
-        //imm扩展
-        // if(sign_extended == 1'b1)begin
-        //     o_imm =  { {20{imm[11]}}, imm};
-        // end
-        // else if(zero_extended == 1'b1) begin
-        //     o_imm =  { {20{1'b0}}, imm};
-        // end
-        // else begin
-        //     o_imm = 32'b0;
-        // end
 
         if (o_sw_signal == 1'b1) begin
             o_wmask = 4'b1111;

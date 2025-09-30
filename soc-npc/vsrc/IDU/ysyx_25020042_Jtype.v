@@ -8,8 +8,6 @@ module ysyx_25020042_Jtype (
 
     wire [6:0] opcode;
     wire [19:0] offset;
-    // reg sign_extended;
-    // reg zero_extended;
     reg unknown_intstruction;
 
     assign opcode   = i_inst[6:0];
@@ -21,8 +19,6 @@ module ysyx_25020042_Jtype (
     always @ (*) begin
         // 初始化
         o_jal_signal    = 1'b0;
-        // sign_extended   = 1'b0;
-        // zero_extended   = 1'b0;
         unknown_intstruction   = 1'b0;
 
         // 指令识别
@@ -35,22 +31,6 @@ module ysyx_25020042_Jtype (
                 unknown_intstruction   = 1'b1;
             end
         endcase
-
-        // offset扩展
-        // if(sign_extended == 1'b1)begin
-        //     if(offset[1] == 1'b1) begin
-        //         o_offset =  {{ {12{offset[19]}}, offset}} << 1;
-        //     end
-        //     else begin
-        //         o_offset =  {{{12{offset[19]}}, offset}} << 1;
-        //     end
-        // end
-        // else if(zero_extended == 1'b1) begin
-        //     o_offset =  { {12{1'b0}}, offset};
-        // end
-        // else begin
-        //     o_offset = 32'b0;
-        // end
     end
 
 
