@@ -7,12 +7,29 @@
 static uint64_t base_time = 0;
 static uint64_t base_rtc = 0;
 
+// static uint64_t am_get_time() {
+//   inl(RTC_ADDR + 4); // clear pending interrupts
+//   uint32_t hi, lo;
+//   lo = inl(RTC_ADDR);
+//   hi = inl(RTC_ADDR + 4);
+//   return ((uint64_t)hi << 32) | lo;
+// }
+#define CSR_MCYCLE   0xB00
+#define CSR_MCYCLEH  0xB80
+
 static uint64_t am_get_time() {
-  inl(RTC_ADDR + 4); // clear pending interrupts
-  uint32_t hi, lo;
-  lo = inl(RTC_ADDR);
-  hi = inl(RTC_ADDR + 4);
-  return ((uint64_t)hi << 32) | lo;
+  uint32_t lo, hi1, hi2;
+    uint64_t cycles;
+    uint64_t scale_factor = 1000;
+
+    do {
+        __asm__ __volatile__ ("csrr %0, %1" : "=r"(hi1) : "i"(CSR_MCYCLEH));
+        __asm__ __volatile__ ("csrr %0, %1" : "=r"(lo) : "i"(CSR_MCYCLE));
+        __asm__ __volatile__ ("csrr %0, %1" : "=r"(hi2) : "i"(CSR_MCYCLEH));
+    } while (hi1 != hi2);
+
+    cycles = ((uint64_t)hi1 << 32) | lo;
+    return cycles * scale_factor;
 }
 
 void __am_timer_init() {
