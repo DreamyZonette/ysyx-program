@@ -1,5 +1,5 @@
 TOP_NAME = ysyxSoCFull
-IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/new.bin
+IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/new1.bin
 # IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/hello-minirv-ysyxsoc.bin
 # IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
