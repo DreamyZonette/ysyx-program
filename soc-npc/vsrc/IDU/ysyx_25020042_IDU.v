@@ -177,7 +177,7 @@ module ysyx_25020042_IDU (
     4'b0010, J_rd,
     4'b0001, R_rd
   });
-    MuxKeyWithDefault #(2, 2, 32) offset_out (o_offset, {Btype_signal, Jtype_signalnal}, 32'b0, {
+    MuxKeyWithDefault #(2, 2, 32) offset_out (o_offset, {Btype_signal, Jtype_signal}, 32'b0, {
     2'b10, B_offset,
     2'b01, J_offset
   });
