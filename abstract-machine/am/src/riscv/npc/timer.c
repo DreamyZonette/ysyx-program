@@ -20,7 +20,6 @@ static uint64_t base_rtc = 0;
 static uint64_t am_get_time() {
   uint32_t lo, hi1, hi2;
     uint64_t cycles;
-    uint64_t scale_factor = 1000000;
 
     do {
         __asm__ __volatile__ ("csrr %0, %1" : "=r"(hi1) : "i"(CSR_MCYCLEH));
@@ -30,7 +29,7 @@ static uint64_t am_get_time() {
 
     cycles = ((uint64_t)hi1 << 32) | lo;
     //printf("cycles: %ld\n", cycles);
-    return cycles * scale_factor;
+    return cycles;
 }
 
 void __am_timer_init() {
@@ -39,7 +38,8 @@ void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-  uint64_t now = am_get_time();
+  uint32_t F = 1000000;
+  uint64_t now = am_get_time() * F;
   uptime->us = now - base_time;// (μs)
 }
 
