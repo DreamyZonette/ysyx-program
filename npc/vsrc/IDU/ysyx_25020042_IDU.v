@@ -145,7 +145,7 @@ module ysyx_25020042_IDU (
             end
         endcase
     end
-//     MuxKeyWithDefault #(8, 3, 32) ALU_out (o_data, ALUctrl, 32'b0, {
+//     ysyx_25020042_MuxKeyWithDefault #(8, 3, 32) ALU_out (o_data, ALUctrl, 32'b0, {
 //     3'b000, adder_out,
 //     3'b001, signed_shift_out,
 //     3'b010, unsigned_shift_out,
@@ -155,29 +155,29 @@ module ysyx_25020042_IDU (
 //     3'b110, AND_out,
 //     3'b111, OR_out
 //   });
-    MuxKeyWithDefault #(3, 3, 32) imm_out (o_imm, {Itype_signal, Utype_signal, Stype_signal}, 32'b0, {
+    ysyx_25020042_MuxKeyWithDefault #(3, 3, 32) imm_out (o_imm, {Itype_signal, Utype_signal, Stype_signal}, 32'b0, {
     3'b100, I_imm,
     3'b010, U_imm,
     3'b001, S_imm
   });
-    MuxKeyWithDefault #(4, 4, 5) rs1_out (rs1, {Itype_signal, Btype_signal, Stype_signal, Rtype_signal}, 5'b0, {
+    ysyx_25020042_MuxKeyWithDefault #(4, 4, 5) rs1_out (rs1, {Itype_signal, Btype_signal, Stype_signal, Rtype_signal}, 5'b0, {
     4'b1000, I_rs1,
     4'b0100, B_rs1,
     4'b0010, S_rs1,
     4'b0001, R_rs1
   });
-    MuxKeyWithDefault #(3, 3, 5) rs2_out (rs2, {Btype_signal, Stype_signal, Rtype_signal}, 5'b0, {
+    ysyx_25020042_MuxKeyWithDefault #(3, 3, 5) rs2_out (rs2, {Btype_signal, Stype_signal, Rtype_signal}, 5'b0, {
     3'b100, B_rs2,
     3'b010, S_rs2,
     3'b001, R_rs2
   });
-    MuxKeyWithDefault #(4, 4, 5) rd_out (rd, {Itype_signal, Utype_signal, Jtype_signal, Rtype_signal}, 5'b0, {
+    ysyx_25020042_MuxKeyWithDefault #(4, 4, 5) rd_out (rd, {Itype_signal, Utype_signal, Jtype_signal, Rtype_signal}, 5'b0, {
     4'b1000, I_rd,
     4'b0100, U_rd,
     4'b0010, J_rd,
     4'b0001, R_rd
   });
-    MuxKeyWithDefault #(2, 2, 32) offset_out (o_offset, {Btype_signal, Jtype_signal}, 32'b0, {
+    ysyx_25020042_MuxKeyWithDefault #(2, 2, 32) offset_out (o_offset, {Btype_signal, Jtype_signal}, 32'b0, {
     2'b10, B_offset,
     2'b01, J_offset
   });
