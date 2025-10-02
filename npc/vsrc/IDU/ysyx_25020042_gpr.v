@@ -15,15 +15,15 @@ module ysyx_25020042_gpr  (
     /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] reg_file [0:15]/* verilator public */;
 
-    export "DPI-C" function get_register_value;
-    function int unsigned get_register_value(input int idx);
-    // $display("当前模块的完整路径: %m");
-        if (idx >= 0 && idx <= 15) begin
-            return reg_file[idx];
-        end else begin
-            return 32'h0;
-        end
-    endfunction
+    // export "DPI-C" function get_register_value;
+    // function int unsigned get_register_value(input int idx);
+    // // $display("当前模块的完整路径: %m");
+    //     if (idx >= 0 && idx <= 15) begin
+    //         return reg_file[idx];
+    //     end else begin
+    //         return 32'h0;
+    //     end
+    // endfunction
     // always @(posedge clock ) begin
     //      $display("当前模块的完整路径: %m");
     // end
