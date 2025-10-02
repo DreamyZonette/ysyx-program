@@ -24,9 +24,9 @@ module ysyx_25020042_gpr  (
             return 32'h0;
         end
     endfunction
-    always @(posedge clock ) begin
-         $display("当前模块的完整路径: %m");
-    end
+    // always @(posedge clock ) begin
+    //      $display("当前模块的完整路径: %m");
+    // end
 
     assign wen = (i_rd != 5'b0) && wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
 
