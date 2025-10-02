@@ -3,13 +3,8 @@
 
 #include <common.h>
 
-<<<<<<< HEAD
 #define PMEM_LEFT  ((paddr_t)CONFIG_FLASH_BASE)
 #define PMEM_RIGHT ((paddr_t)CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE - 1)
-=======
-#define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
-#define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
->>>>>>> ysyx-d-stage-chip
 #define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
 
 uint8_t* guest_to_host(paddr_t paddr);
@@ -19,7 +14,6 @@ paddr_t host_to_guest(uint8_t *haddr);
 extern "C" {
     int pmem_read(int addr, int len);
     void pmem_write(int addr, int len, int data);
-<<<<<<< HEAD
     void flash_read(int32_t addr, int32_t *data);
 }
 
@@ -27,12 +21,6 @@ extern "C" {
 
 static inline bool in_pmem(paddr_t addr) {
   return addr - CONFIG_FLASH_BASE < CONFIG_FLASH_SIZE;
-=======
-}
-
-static inline bool in_pmem(paddr_t addr) {
-  return addr - CONFIG_MBASE < CONFIG_MSIZE;
->>>>>>> ysyx-d-stage-chip
 }
 
 word_t paddr_read(paddr_t addr, int len);

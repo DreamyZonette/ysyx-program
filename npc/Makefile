@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 TOP_NAME = ysyxSoCFull
 IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/new1.bin
 # IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/hello-minirv-ysyxsoc.bin
@@ -96,67 +95,18 @@ all:run wave
 $(BUILD_DIR)/wave.fst:
 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
 	-@rm -f $(BUILD_DIR)/wave.vcd
-=======
-TOP_NAME = ysyx_25020042
-IMG ?= /home/long/ysyx-workbench/npc/demo/add-minirv-npc.bin
-#IMG ?= 
-ELF ?= $(IMG:.bin=.elf)
-NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
->>>>>>> ysyx-d-stage-chip
 
-WORK_DIR = $(shell pwd)
-BUILD_DIR = $(WORK_DIR)/build
-TEST ?=
-TEST_OBJ = $(shell find $(VPATH) -name $(TEST).v)
-VPATH = $(WORK_DIR)/vsrc
-CPATH = $(WORK_DIR)/csrc
-INC_PATH := $(WORK_DIR)/include $(INC_PATH)
-INCLUDES = $(addprefix -I, $(INC_PATH))
-
-VSRCS := $(shell find $(VPATH) -name *.v)
-CSRCS := $(wildcard $(CPATH)/*.cpp)
-CSRCS += $(shell find $(CPATH) -name *.c)
-
-CFLAGS ?= -Wall 
-CFLAGS += -CFLAGS "$(INCLUDES)" 
-CFLAGS += -CFLAGS -fpermissive
-VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
-VFLAGS += --top-module $(TOP_NAME) 
-VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
-LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
-LDFLAGS += -LDFLAGS -lSDL2
-#LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
-#LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
-#LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
-
-VERILATOR = verilator
-ARGS ?= 
-#ARGS += -d $(NEMU_SO) # 启用difftest
-ARGS += -i $(IMG)     # 启用镜像文件
-#ARGS += -e $(ELF)	  # 启用ftrace
-#ARGS += -b      	  # 启用批处理
-ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
-
-$(shell mkdir -p $(BUILD_DIR))
-
-all:run wave
-
-run:
+sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-<<<<<<< HEAD
 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
 run:sim
 	@echo "Start simulation"
-=======
-	@$(VERILATOR) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
->>>>>>> ysyx-d-stage-chip
 	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
 	
 	
 include ../Makefile
 
-<<<<<<< HEAD
 wave: $(BUILD_DIR)/wave.fst
 	
 	gtkwave $(BUILD_DIR)/wave.fst
@@ -174,13 +124,6 @@ gdb:sim
 	gdb --args $(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
 	-@rm -f $(BUILD_DIR)/wave.vcd
-=======
-wave:
-	gtkwave $(BUILD_DIR)/wave.vcd
-
-
-PHONY: clean test
->>>>>>> ysyx-d-stage-chip
 
 test:
 	$(VERILATOR) --lint-only -Wall $(TEST_OBJ)

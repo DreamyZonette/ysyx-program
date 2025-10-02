@@ -20,15 +20,9 @@ extern CPU_state dut;
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   
-<<<<<<< HEAD
   for(int i = 0; i < 16; i ++){
     uint32_t ref_value = ref_r->gpr[i];
     uint32_t value = _gpr(i);
-=======
-  for(int i = 0; i < 32; i ++){
-    uint32_t ref_value = ref_r->gpr[i];
-    uint32_t value = gpr(i);
->>>>>>> ysyx-d-stage-chip
     if(value != ref_value) {
     printf("gpr[%d] \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", i, value, ref_value);
     return false;

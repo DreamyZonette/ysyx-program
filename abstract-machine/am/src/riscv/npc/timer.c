@@ -7,7 +7,6 @@
 static uint64_t base_time = 0;
 static uint64_t base_rtc = 0;
 
-<<<<<<< HEAD
 // static uint64_t am_get_time() {
 //   inl(RTC_ADDR + 4); // clear pending interrupts
 //   uint32_t hi, lo;
@@ -31,14 +30,6 @@ static uint64_t am_get_time() {
     cycles = ((uint64_t)hi1 << 32) | lo;
     //printf("cycles: %ld\n", cycles);
     return cycles;
-=======
-static uint64_t am_get_time() {
-  inl(RTC_ADDR + 4); // clear pending interrupts
-  uint32_t hi, lo;
-  lo = inl(RTC_ADDR);
-  hi = inl(RTC_ADDR + 4);
-  return ((uint64_t)hi << 32) | lo;
->>>>>>> ysyx-d-stage-chip
 }
 
 void __am_timer_init() {
@@ -47,12 +38,8 @@ void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-<<<<<<< HEAD
   uint32_t F = 1000000;
   uint64_t now = am_get_time() * F;
-=======
-  uint64_t now = am_get_time();
->>>>>>> ysyx-d-stage-chip
   uptime->us = now - base_time;// (μs)
 }
 

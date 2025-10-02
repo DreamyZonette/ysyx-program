@@ -2,7 +2,6 @@
 #include <memory/host.h> 
 #include <device/mmio.h>
 
-<<<<<<< HEAD
 
 static uint8_t flash_mem[CONFIG_FLASH_SIZE] PG_ALIGN = {};
 static uint8_t sdram_mem[CONFIG_SDRAM_SIZE] PG_ALIGN = {};
@@ -17,67 +16,15 @@ void init_mem() {
 }
 
 static word_t internal_flash_read(paddr_t addr, int len) {
-=======
-// #define CONFIG_SERIAL_MMIO 0xa00003f8
-// #define CONFIG_RTC_MMIO 0xa0000048
-// #define CONFIG_I8042_DATA_MMIO 0xa0000060
-// #define CONFIG_VGA_CTL_MMIO 0xa0000100
-// #define CONFIG_AUDIO_CTL_MMIO 0xa0000200
-// #define CONFIG_SDCARD_CTL_MMIO 0xa3000000
-// #define CONFIG_SB_ADDR 0xa1200000
-// #define CONFIG_FB_ADDR 0xa1000000
-// 串口
-#define SERIAL_PORT_LEFT      CONFIG_SERIAL_MMIO
-#define SERIAL_PORT_RIGHT    (CONFIG_SERIAL_MMIO + 7)
-// 时钟
-#define RTC_ADDR_LEFT  CONFIG_RTC_MMIO
-#define RTC_ADDR_RIGHT  (CONFIG_RTC_MMIO + 7)
-// 键盘
-#define I8042_DATA_ADDR_LEFT (CONFIG_I8042_DATA_MMIO)
-#define I8042_DATA_ADDR_RIGHT (CONFIG_I8042_DATA_MMIO + 3)
-// 屏幕
-#define VGA_CTL_ADDR_LEFT (CONFIG_VGA_CTL_MMIO)
-#define VGA_CTL_ADDR_RIGHT (CONFIG_VGA_CTL_MMIO + 7)
-// 声卡
-#define AUDIO_CTL_ADDR_LEFT (CONFIG_AUDIO_CTL_MMIO)
-#define AUDIO_CTL_ADDR_RIGHT (CONFIG_AUDIO_CTL_MMIO + 0x20 - 1)
-// 存储卡
-#define SDCARD_CTL_ADDR_LEFT (CONFIG_SDCARD_CTL_MMIO)
-#define SDCARD_CTL_ADDR_RIGHT (CONFIG_SDCARD_CTL_MMIO + 7)
-// 声卡缓存区
-#define SB_ADDR_LEFT (CONFIG_SB_ADDR)
-#define SB_ADDR_RIGHT (CONFIG_SB_ADDR + 0x10000 - 1)
-// 帧缓存区
-#define FB_ADDR_LEFT (CONFIG_FB_ADDR)
-#define FB_ADDR_RIGHT (CONFIG_FB_ADDR + 0x75300 - 1)
-
-
-static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
-
-uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
-paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
-
-void init_mem() {
-  memset(pmem, rand(), CONFIG_MSIZE);
-  Log("physical memory area [%08x, %08x]", PMEM_LEFT, PMEM_RIGHT);
-}
-
-static word_t internal_pmem_read(paddr_t addr, int len) {
->>>>>>> ysyx-d-stage-chip
   word_t ret = host_read(guest_to_host(addr), len);
   return ret;
 }
 
-<<<<<<< HEAD
 static void internal_flash_write(paddr_t addr, int len, word_t data) {
-=======
-static void internal_pmem_write(paddr_t addr, int len, word_t data) {
->>>>>>> ysyx-d-stage-chip
   host_write(guest_to_host(addr), len, data);
 }
 
 static void out_of_bound(paddr_t addr) {
-<<<<<<< HEAD
  
 }
 
@@ -88,66 +35,6 @@ extern "C" int pmem_read(int addr, int len) {
 extern uint64_t g_nr_guest_inst;
 extern "C" void pmem_write(int addr, int len, int data) {
  
-=======
-  panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-      addr, PMEM_LEFT, PMEM_RIGHT, top->de_pc);
-}
-
-extern "C" int pmem_read(int addr, int len) {
-  addr = paddr_t(addr);
-  uint32_t ret;
-  if (addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
-      addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
-      addr >= I8042_DATA_ADDR_LEFT && addr <= I8042_DATA_ADDR_RIGHT || \
-      addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
-      addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
-      addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
-      addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
-      addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT) { 
-    ret = mmio_read(addr, len);
-  }
-  else{
-    ret = internal_pmem_read(addr, len);
-    #if CONFIG_MTRACE
-      if (addr != top->de_pc){
-        char s[128];
-        sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
-        log_write("%s\n", s);
-      }
-      //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
-
-    #endif
-  }
-  return ret;
-}
-extern uint64_t g_nr_guest_inst;
-extern "C" void pmem_write(int addr, int len, int data) {
-  addr = paddr_t(addr);
-  data = word_t(data);
-  
-  if(addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
-      addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
-      addr >= I8042_DATA_ADDR_LEFT && addr <= I8042_DATA_ADDR_RIGHT || \
-      addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
-      addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
-      addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
-      addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
-      addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT){
-    // putchar(char(data));
-    mmio_write(addr, len, data);
-    // printf("串口传出数据%08x\n", data);
-  }
-  else{
-    #if CONFIG_MTRACE
-    char s[128];
-    sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
-    log_write("%s\n", s);
-    //printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
-
-  #endif
-    internal_pmem_write(addr, len, data);
-  }
->>>>>>> ysyx-d-stage-chip
 }
 
 word_t paddr_read(paddr_t addr, int len) {
@@ -166,7 +53,6 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   return;
   #endif
   out_of_bound(addr);
-<<<<<<< HEAD
 }
 
 extern "C" void flash_read(int32_t addr, int32_t *data) {
@@ -182,6 +68,3 @@ extern "C" void flash_read(int32_t addr, int32_t *data) {
 
     #endif
 }
-=======
-}
->>>>>>> ysyx-d-stage-chip

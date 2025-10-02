@@ -3,7 +3,6 @@
 
 #include <common.h>
 
-<<<<<<< HEAD
 // extern VerilatedContext* contextp;
 // extern VerilatedVcdC* tfp;
 // extern Vysyx_25020042* top;
@@ -36,18 +35,6 @@ unsigned int get_mcause_value();
     svSetScope(prev_scope); \
     value; \
 })
-=======
-extern VerilatedContext* contextp;
-extern VerilatedVcdC* tfp;
-extern Vysyx_25020042* top;
-
-static inline int check_reg_idx(int idx) {
-  assert(idx >= 0 && idx < 32);
-  return idx;
-}
-
-#define gpr(idx) (top->reg_data[check_reg_idx(idx)])
->>>>>>> ysyx-d-stage-chip
 
 static inline const char* reg_name(int idx) {
   extern const char* regs[];
