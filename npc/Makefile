@@ -1,6 +1,6 @@
 TOP_NAME = ysyxSoCFull
-IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/new1.bin
-# IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/hello-minirv-ysyxsoc.bin
+# IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/new1.bin
+IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/hello-minirv-ysyxsoc.bin
 # IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
@@ -33,7 +33,7 @@ VFLAGS += -Wno-ASSIGNDLY -Wno-UNUSEDSIGNAL -Wno-DECLFILENAME -Wno-PINCONNECTEMPT
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 VFLAGS += -I$(SOC_HOME)/uart16550/rtl/ -I$(SOC_HOME)/spi/rtl/
-VFLAGS += -I/home/long/ysyx-workbench/soc_npc/include/
+VFLAGS += -I/home/long/ysyx-workbench/npc/include/
 LDFLAGS := -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
 
