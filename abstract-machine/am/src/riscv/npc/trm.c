@@ -47,6 +47,7 @@ extern char _pmem_start;
 
 Area heap = RANGE(&_heap_start, PMEM_END);
 static const char mainargs[MAINARGS_MAX_LEN] = TOSTRING(MAINARGS_PLACEHOLDER); // defined in CFLAGS
+<<<<<<< HEAD
 
 #define UART_BASE 0x10000000
 #define THR_ADDR (UART_BASE + 0x0)
@@ -69,6 +70,11 @@ void putch(char ch) {
         // 空循环，等待LSR[5] (THRE) 位为1
     }
   outb(THR_ADDR, ch);
+=======
+
+void putch(char ch) {
+  outb(SERIAL_PORT, ch);
+>>>>>>> ysyx-d-stage-chip
 }
 
 void halt(int code) {

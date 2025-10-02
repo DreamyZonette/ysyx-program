@@ -86,7 +86,11 @@ _logic_shift_table:
 
 .section .data
 .align 8
+<<<<<<< HEAD
 .weak _check_same_array  # unnecessary to initialize
+=======
+.weak _check_same_array
+>>>>>>> ysyx-d-stage-chip
 _check_same_array: .fill 256, 1, 0
 
 .macro call_template r, addr

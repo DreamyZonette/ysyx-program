@@ -1,4 +1,5 @@
    module ysyx_25020042 (
+<<<<<<< HEAD
         input         clock,
         input         reset,
         output        io_ifu_reqValid,
@@ -22,6 +23,39 @@
     //             dpi_ebreak();
     //         end
     // end
+=======
+        input clock,
+        input reset_n,
+        output [31:0] de_pc,
+        output [31:0] de_next_pc,
+        output [31:0] de_inst,
+        output halt,
+        output [31:0] reg_data [0:15],
+        output [31:0] de_mstatus,
+        output [31:0] de_mtvec,
+        output [31:0] de_mepc,
+        output [31:0] de_mcause
+    );
+
+    import "DPI-C" function void dpi_ebreak();
+    // import "DPI-C" function void dpi_return();
+
+    always @(posedge clock) begin
+            if (ebreak_signal == 1'b1) begin
+                dpi_ebreak();  // 调用 DPI-C 函数
+            end
+        end
+
+    assign halt = unknown_signal;
+    assign de_pc = pc;
+    assign de_next_pc = next_pc;
+    assign de_inst = instruction;
+    assign de_mstatus = mstatus;
+    assign de_mtvec = mtvec;
+    assign de_mepc = mepc;
+    assign de_mcause = mcause;
+
+>>>>>>> ysyx-d-stage-chip
 
     wire wbu_valid;
     wire pc_valid;
@@ -104,24 +138,37 @@
 
 
 
+<<<<<<< HEAD
 ysyx_25020042_PC PC_u(
     .clock(clock),
     .reset(reset),
+=======
+ysyx_25020042PC PC_u(
+    .clock(clock),
+    .reset_n(reset_n),
+>>>>>>> ysyx-d-stage-chip
     .i_next_pc(next_pc),
     .wbu_valid(wbu_valid),
     .pc_valid(pc_valid),
     .o_pc(pc)
 );
     
+<<<<<<< HEAD
 ysyx_25020042_IFU IFU_u (
     .clock(clock),
     .reset(reset),
+=======
+ysyx_25020042IFU IFU_u (
+    .clock(clock),
+    .reset_n(reset_n),
+>>>>>>> ysyx-d-stage-chip
     .i_pc(pc),
     .pc_valid(pc_valid),
     .lsu_ready(lsu_ready),
     .wbu_ready(wbu_ready),
     .ifu_valid(ifu_valid),
     .o_instruction(instruction),
+<<<<<<< HEAD
     .ifu_addr(io_ifu_addr),
     .ifu_rdata(io_ifu_rdata),
     .ifu_reqValid(io_ifu_reqValid),
@@ -131,6 +178,35 @@ ysyx_25020042_IFU IFU_u (
 
 
 ysyx_25020042_IDU IDU_u (
+=======
+    .ifu_addr(ifu_addr),
+    .ifu_wen(ifu_wen),
+    .ifu_rdata(ifu_rdata),
+    .ifu_reqValid(ifu_reqValid),
+    .ifu_respValid(ifu_respValid)
+);
+
+    wire [31:0] ifu_rdata;
+    wire [31:0] ifu_addr;
+    wire ifu_wen;
+    wire ifu_reqValid;
+    wire ifu_respValid;
+ysyx_25020042mem mem_u_2 (
+    .clock(clock),
+    .addr(ifu_addr),
+    // .ren(ifu_ren),
+    .wen(ifu_wen),
+    /* verilator lint_off PINCONNECTEMPTY */
+    .wdata(),
+    .wmask(),
+    /* verilator lint_on PINCONNECTEMPTY */
+    .rdata(ifu_rdata),
+    .reqValid(ifu_reqValid),
+    .respValid(ifu_respValid)
+);
+
+ysyx_25020042IDU IDU_u (
+>>>>>>> ysyx-d-stage-chip
     .i_inst(instruction),
     .o_imm(imm),
     .o_offset(offset),
@@ -185,7 +261,11 @@ ysyx_25020042_IDU IDU_u (
     .rd(rd)
     );
 
+<<<<<<< HEAD
 ysyx_25020042_EXU EXU_u (
+=======
+ysyx_25020042EXU EXU_u (
+>>>>>>> ysyx-d-stage-chip
     .i_src1(src1),
     .i_src2(src2),
     .i_imm(imm),
@@ -239,9 +319,15 @@ ysyx_25020042_EXU EXU_u (
     .o_data(exu_data)
     );
 
+<<<<<<< HEAD
 ysyx_25020042_WBU WBU_u (
     .clock(clock),
     .reset(reset),
+=======
+ysyx_25020042WBU WBU_u (
+    .clock(clock),
+    .reset_n(reset_n),
+>>>>>>> ysyx-d-stage-chip
     .i_exu_data(exu_data),
     .i_cur_pc(pc),
     .i_B_jump_signal(o_B_jump_signal),
@@ -271,9 +357,15 @@ ysyx_25020042_WBU WBU_u (
     .next_pc(next_pc)
     );
 
+<<<<<<< HEAD
 ysyx_25020042_LSU LSU_u (
     .clock(clock),
     .reset(reset),
+=======
+ysyx_25020042LSU LSU_u (
+    .clock(clock),
+    .reset_n(reset_n),
+>>>>>>> ysyx-d-stage-chip
     .i_lbu_signal(lbu_signal),
     .i_lhu_signal(lhu_signal),
     .i_lb_signal(lb_signal),
@@ -291,6 +383,7 @@ ysyx_25020042_LSU LSU_u (
     .lsu_ready(lsu_ready),
     .o_lsu_busy(lsu_busy),
     .o_rdata(rdata),
+<<<<<<< HEAD
     .lsu_addr(io_lsu_addr),
     .lsu_wen(io_lsu_wen),
     .lsu_wdata(io_lsu_wdata),
@@ -305,6 +398,39 @@ ysyx_25020042_LSU LSU_u (
 ysyx_25020042_csr csr_u (
     .clock(clock),
     .reset(reset),
+=======
+    .lsu_addr(lsu_addr),
+    .lsu_wen(lsu_wen),
+    .lsu_wdata(lsu_wdata),
+    .lsu_wmask(lsu_wmask),
+    .lsu_rdata(lsu_rdata),
+    .lsu_reqValid(lsu_reqValid),
+    .lsu_respValid(lsu_respValid)
+);
+wire [31:0] lsu_addr;
+wire [31:0] lsu_wdata;
+wire [3:0] lsu_wmask;
+wire lsu_wen;
+wire [31:0] lsu_rdata;
+wire lsu_reqValid;
+wire lsu_respValid;
+
+ysyx_25020042mem mem_u_1 (
+    .clock(clock),
+    .addr(lsu_addr),
+    .wdata(lsu_wdata),
+    .wmask(lsu_wmask),
+    // .ren(lsu_ren),
+    .reqValid(lsu_reqValid),
+    .rdata(lsu_rdata),
+    .wen(lsu_wen),
+    .respValid(lsu_respValid)
+);
+
+ysyx_25020042csr csr_u (
+    .clock(clock),
+    .reset_n(reset_n),
+>>>>>>> ysyx-d-stage-chip
     .i_ecall_signal(ecall_signal),
     .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),
@@ -319,16 +445,27 @@ ysyx_25020042_csr csr_u (
     .o_mcause(mcause),
     .o_csr_rdata(csr_data)
 );
+<<<<<<< HEAD
 ysyx_25020042_gpr gpr_u(
     .clock(clock),
     .reset(reset), 
+=======
+ysyx_25020042gpr gpr_u(
+    .clock(clock),
+    .reset_n(reset_n), 
+>>>>>>> ysyx-d-stage-chip
     .i_rs1(rs1),
     .i_rs2(rs2),
     .i_rd(rd),
     .i_data(wdata),
     .wbu_valid(wbu_valid),
     .o_src1(src1),
+<<<<<<< HEAD
     .o_src2(src2)
+=======
+    .o_src2(src2),
+    .o_reg_data(reg_data)
+>>>>>>> ysyx-d-stage-chip
 );
 
     endmodule

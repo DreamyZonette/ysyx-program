@@ -7,10 +7,17 @@
 #include <string.h>
 
 #include "verilated.h"
+<<<<<<< HEAD
 #include "VysyxSoCFull.h"
 #include "verilated_vcd_c.h"
 #include "svdpi.h"
 #include "VysyxSoCFull__Dpi.h"
+=======
+#include "Vysyx_25020042.h"
+#include "verilated_vcd_c.h"
+#include "svdpi.h"
+#include "Vysyx_25020042__Dpi.h"
+>>>>>>> ysyx-d-stage-chip
 
 
 typedef uint32_t word_t;
@@ -38,6 +45,10 @@ extern VerilatedContext* contextp;
 #if CONFIG_WAVE
 extern VerilatedVcdC* tfp;
 #endif
+<<<<<<< HEAD
 extern VysyxSoCFull* top;
+=======
+extern Vysyx_25020042* top;
+>>>>>>> ysyx-d-stage-chip
 
 #endif

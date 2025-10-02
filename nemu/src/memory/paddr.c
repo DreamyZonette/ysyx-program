@@ -81,7 +81,10 @@ word_t paddr_read(paddr_t addr, int len) {
     p[127] = '\0';
     log_write("%s\n", p);
   #endif
+<<<<<<< HEAD
   // if (likely(in_sdram(addr))) return sdram_read(addr, len);
+=======
+>>>>>>> ysyx-d-stage-chip
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
@@ -95,7 +98,10 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     p[127] = '\0';
     log_write("%s\n", p);
   #endif
+<<<<<<< HEAD
   // if (likely(in_sdram(addr))) { sdram_write(addr, len, data); return; }
+=======
+>>>>>>> ysyx-d-stage-chip
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);
