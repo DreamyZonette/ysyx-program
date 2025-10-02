@@ -2,12 +2,11 @@
 
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
-  "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
-  "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
-  "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
+  "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5"
 };
 
 void isa_reg_display() {
+	svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"));
 	int i;
 	int count = 0;
 	int len = sizeof(regs) / sizeof(regs[0]);
@@ -23,11 +22,13 @@ void isa_reg_display() {
 			count = 0;
 		}
 	}
-	printf("\033[32mmstatus\033[0m: \033[33m%08x\033[0m\t", top->de_mstatus);
-	printf("\033[32mmcause\033[0m: \033[33m%08x\033[0m\t", top->de_mcause);
-	printf("\033[32mmepc\033[0m: \033[33m%08x\033[0m\t", top->de_mepc);
-	printf("\033[32mmtvec\033[0m: \033[33m%08x\033[0m\t", top->de_mtvec);
+	svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.csr_u"));
+	printf("\033[32mmstatus\033[0m:\033[33m%08x\033[0m ", get_mstatus_value());
+	printf("\033[32mmcause\033[0m:\033[33m%08x\033[0m ", get_mcause_value());
+	printf("\033[32mmepc\033[0m:\033[33m%08x\033[0m ", get_mepc_value());
+	printf("\033[32mmtvec\033[0m:\033[33m%08x\033[0m ", get_mtvec_value());
 	printf("\n");
+	svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
 }
 
 word_t isa_reg_str2val(const char *s) {
@@ -50,7 +51,8 @@ word_t isa_reg_str2val(const char *s) {
 		}
 		if (index == -1) return 0;
 		else {
-			return gpr(index);// 返回寄存器中的值
+			return _gpr(index);// 返回寄存器中的值
 		}
 	}
+return 0;
 }
