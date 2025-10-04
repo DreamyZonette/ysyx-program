@@ -137,7 +137,9 @@ always @(posedge clock) begin
                         o_rdata <= 0;
                     end
                 end
-                
+            end
+            default: begin
+                state <= IDLE;
             end
         endcase
 
