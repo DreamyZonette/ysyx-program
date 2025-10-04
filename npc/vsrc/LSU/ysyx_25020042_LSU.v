@@ -36,7 +36,7 @@ localparam WAIT = 1'b1;
 
 reg state;
 // reg [31:0] rdata;
-wire [31:0] shifted_rdata = lsu_rdata >> (lsu_addr[1:0] * 8);
+wire [31:0] shifted_rdata = (i_data >= 32'h8000_0000 && i_data <= 32'h8FFF_FFFF) ? lsu_rdata : lsu_rdata >> (lsu_addr[1:0] * 8);
 wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign o_lsu_busy = ren | wen;
