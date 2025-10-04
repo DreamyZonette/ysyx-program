@@ -1,8 +1,14 @@
-TOP_NAME = ysyx_25020042
-IMG ?= /home/long/ysyx-workbench/npc/demo/add-minirv-npc.bin
-#IMG ?= 
+TOP_NAME = ysyxSoCFull
+# IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/new1.bin
+IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/hello-minirv-ysyxsoc.bin
+# IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+OBJ ?=
+
+SOC_HOME := /home/long/ysyx-workbench/ysyxSoC/perip
+CPU_TEST_HOME := /home/long/ysyx-workbench/am-kernels/tests/cpu-tests
+NEW_OBJ_DIR := /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -14,18 +20,24 @@ INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 
 VSRCS := $(shell find $(VPATH) -name *.v)
+VSRCS += $(shell find $(SOC_HOME) -name *.v)
+VSRCS += /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/ysyxSoCFull.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
 
-CFLAGS :=  
+CFLAGS := 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-CFLAGS += -CFLAGS -fpermissive
-VFLAGS := -Wall --cc --exe -I$(VPATH) --build -j 0 --trace
+VFLAGS :=   --cc --exe -I$(VPATH) --build -j 0 --trace 
+VFLAGS += --timescale "1ns/1ns" --no-timing  
+VFLAGS += -Wno-ASSIGNDLY -Wno-UNUSEDSIGNAL -Wno-DECLFILENAME -Wno-PINCONNECTEMPTY # 忽略警告
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
+VFLAGS += -I$(SOC_HOME)/uart16550/rtl/ -I$(SOC_HOME)/spi/rtl/
+VFLAGS += -I/home/long/ysyx-workbench/npc/include/
 LDFLAGS := -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
 
+GEN := /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/gen.sh
 VERILATOR = verilator
 ARGS ?= 
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
