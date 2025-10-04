@@ -1,3 +1,4 @@
+/* verilator lint_off DECLFILENAME */
 module ysyx_25020042_IDU (
     input   [31:0]  i_inst,
     output wire [31:0]  o_imm,
@@ -271,3 +272,4 @@ module ysyx_25020042_IDU (
 
     endmodule
 
+/* verilator lint_on DECLFILENAME */

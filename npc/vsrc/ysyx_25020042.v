@@ -345,7 +345,7 @@ ysyx_25020042mem mem_u_1 (
     .respValid(lsu_respValid)
 );
 
-ysyx_25020042csr csr_u (
+ysyx_25020042_csr csr_u (
     .clock(clock),
     .reset_n(reset_n),
     .i_ecall_signal(ecall_signal),
