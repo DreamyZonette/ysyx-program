@@ -52,7 +52,7 @@ unsigned int get_mcause_value();
 
 #define _gpr(idx) ({ \
     svScope prev_scope = svGetScope(); \
-    svScope gpr_scope = svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"); \
+    svScope gpr_scope = svGetScopeFromName("OP.ysyx_25020042.gpr_u"); \
     svSetScope(gpr_scope); \
     uint32_t value = get_register_value(check_reg_idx(idx)); \
     svSetScope(prev_scope); \

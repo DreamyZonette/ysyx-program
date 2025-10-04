@@ -28,9 +28,9 @@ wire [31:0] marchid_val;
 wire [31:0] mcycle_wdata;
 wire [31:0] mcycleh_wdata;
 
-always @(posedge clock ) begin
-         $display("当前模块的完整路径: %m");
-    end
+// always @(posedge clock ) begin
+//          $display("当前模块的完整路径: %m");
+//     end
 export "DPI-C" function get_mstatus_value;
 export "DPI-C" function get_mtvec_value;
 export "DPI-C" function get_mepc_value;
