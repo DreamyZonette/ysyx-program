@@ -1,4 +1,4 @@
-module ysyx_25020042mem(
+module ysyx_25020042_mem(
     input clock,
     input [31:0] addr,
     input wen,
