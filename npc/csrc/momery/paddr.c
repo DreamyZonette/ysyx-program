@@ -102,6 +102,7 @@ extern "C" void pmem_write(int addr, int len, int data) {
       len = 1;
       break;
   }
+  printf("len = %d\n", len);
   
   if(addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
       addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
