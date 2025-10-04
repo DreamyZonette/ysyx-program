@@ -449,7 +449,9 @@
     wire csrrw_signal;
     wire ecall_signal;
     wire mret_signal;
+    /* verilator lint_off UNUSEDSIGNAL */
     wire unknown_signal;
+    /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] wdata;
     wire [31:0] imm;
     wire [31:0] src1;
@@ -486,7 +488,9 @@
     wire [31:0] io_ifu_rdata;
     wire        io_lsu_reqValid;
     wire [31:0] io_lsu_addr;
+    /* verilator lint_off UNUSEDSIGNAL */
     wire [1:0]  io_lsu_size;
+    /* verilator lint_on UNUSEDSIGNAL */
     wire        io_lsu_wen;
     wire [31:0] io_lsu_wdata;
     wire [3:0]  io_lsu_wmask;
