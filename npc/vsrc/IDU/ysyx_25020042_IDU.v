@@ -145,16 +145,6 @@ module ysyx_25020042_IDU (
             end
         endcase
     end
-//     ysyx_25020042_MuxKeyWithDefault #(8, 3, 32) ALU_out (o_data, ALUctrl, 32'b0, {
-//     3'b000, adder_out,
-//     3'b001, signed_shift_out,
-//     3'b010, unsigned_shift_out,
-//     3'b011, slt_out,
-//     3'b100, B_out,
-//     3'b101, XOR_out,
-//     3'b110, AND_out,
-//     3'b111, OR_out
-//   });
     ysyx_25020042_MuxKeyWithDefault #(3, 3, 32) imm_out (o_imm, {Itype_signal, Utype_signal, Stype_signal}, 32'b0, {
     3'b100, I_imm,
     3'b010, U_imm,
