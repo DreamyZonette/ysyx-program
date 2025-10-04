@@ -1,3 +1,5 @@
+
+/* verilator lint_off DECLFILENAME */
 // Modified by Long for NPC
 module ysyx_25020042_alu (
     input [31:0] i_src1,
@@ -308,3 +310,4 @@ assign Lstage4 = shift_amt[4] ? {Lstage3[15:0], 16'b0} : Lstage3;
 assign data_o = Right ? stage4 : Lstage4; 
 /* verilator lint_on UNUSEDSIGNAL */
 endmodule
+/* verilator lint_on DECLFILENAME */

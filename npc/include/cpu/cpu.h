@@ -7,12 +7,9 @@
 void cpu_exec(uint64_t n);
 void sim_run();
 
-extern "C" {
-
-// DPI 函数声明
-unsigned int get_pc();
-unsigned int get_instruction();
-}
+extern VerilatedContext* contextp;
+extern VerilatedVcdC* tfp;
+extern Vysyx_25020042* top;
 
 
 #endif /* __CPU_H__ */
