@@ -33,10 +33,11 @@ module ysyx_25020042_LSU(
     output reg lsu_respReady
 );
 
-localparam IDLE = 1'b0;
-localparam WAIT = 1'b1;
+localparam IDLE = 2'b00;
+localparam WAIT = 2'b01;
+localparam WAIT_READY = 2'b10;
 
-reg state;
+reg [1:0] state;
 // reg [31:0] rdata;
 // 记得修改回来
 wire [31:0] shifted_rdata = (i_data >= 32'h8000_0000 && i_data <= 32'h8FFF_FFFF) ? lsu_rdata : lsu_rdata >> (lsu_addr[1:0] * 8);
@@ -63,7 +64,7 @@ always @(posedge clock) begin
                     lsu_respReady <= 1'b0;
                 end
                 if(ifu_valid && (wen || ren)) begin
-                    state <= WAIT;
+                    state <= WAIT_READY;
                     lsu_ready <= 1'b1;
                     lsu_wen <= wen;
                     // 当前仿真环境不需要移位
@@ -94,6 +95,15 @@ always @(posedge clock) begin
                     if (lsu_valid && wbu_ready) begin
                         lsu_valid <= 1'b0;
                     end
+                end
+            end
+            WAIT_READY: begin
+                if(lsu_reqReady) begin
+                    lsu_reqValid <= 1'b0;
+                    state <= WAIT;
+                end
+                else begin 
+                    state <= WAIT_READY;
                 end
             end
             WAIT: begin

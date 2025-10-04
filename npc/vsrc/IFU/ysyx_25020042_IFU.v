@@ -25,10 +25,11 @@ export "DPI-C" function get_instruction;
         return o_instruction;
     endfunction
 
-localparam IDLE = 1'b0;
-localparam WAIT = 1'b1;
+localparam IDLE = 2'b00;
+localparam WAIT = 2'b01;
+localparam WAIT_READY = 2'b10;
 
-reg state;
+reg [1:0] state;
 
 always @(posedge clock) begin
     if(reset) begin
@@ -48,9 +49,9 @@ always @(posedge clock) begin
                     ifu_respReady <= 1'b0;
                 end
                 if(pc_valid) begin
-                    state <= WAIT;
                     ifu_addr <= i_pc;
                     ifu_reqValid <= 1'b1;
+                    state <= WAIT_READY;
                 end
                 else begin
                     state <= IDLE;
@@ -59,10 +60,16 @@ always @(posedge clock) begin
                     end
                 end   
             end
-            WAIT: begin
+            WAIT_READY: begin
                 if (ifu_reqReady) begin
                     ifu_reqValid <= 1'b0;
+                    state <= WAIT;
                 end
+                else begin
+                    state <= WAIT_READY;
+                end
+            end
+            WAIT: begin
                 if (ifu_respValid) begin
                     ifu_respReady <= 1'b1;
                     state <= IDLE;
