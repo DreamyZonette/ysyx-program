@@ -30,6 +30,7 @@ void sim_init(){
     top->trace(tfp,0);
     tfp->open("/home/long/ysyx-workbench/npc/build/wave.vcd");
     #endif
+    // svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
 }
 
 void sim_exit(){
