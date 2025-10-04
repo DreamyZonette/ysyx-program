@@ -28,19 +28,15 @@ module ysyx_25020042_LSU(
     input [31:0] lsu_rdata,
     output reg lsu_reqValid,
     input lsu_respValid,
-    output reg [1:0] lsu_size,
-    input lsu_reqReady,
-    output reg lsu_respReady
+    output reg [1:0] lsu_size
 );
 
-localparam IDLE = 2'b00;
-localparam WAIT = 2'b01;
-localparam WAIT_READY = 2'b10;
+localparam IDLE = 1'b0;
+localparam WAIT = 1'b1;
 
-reg [1:0] state;
+reg state;
 // reg [31:0] rdata;
-// 记得修改回来
-wire [31:0] shifted_rdata = (i_data >= 32'h8000_0000 && i_data <= 32'h8FFF_FFFF) ? lsu_rdata : lsu_rdata >> (lsu_addr[1:0] * 8);
+wire [31:0] shifted_rdata = lsu_rdata >> (lsu_addr[1:0] * 8);
 wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign o_lsu_busy = ren | wen;
@@ -55,30 +51,24 @@ always @(posedge clock) begin
         lsu_size <= 2'b0;
         o_rdata <= 32'b0;
         lsu_wen <= 1'b0;
-        lsu_respReady <= 1'b0;
     end
     else begin
         case (state)
             IDLE: begin
-                if (lsu_respReady) begin
-                    lsu_respReady <= 1'b0;
-                end
                 if(ifu_valid && (wen || ren)) begin
-                    state <= WAIT_READY;
+                    state <= WAIT;
                     lsu_ready <= 1'b1;
                     lsu_wen <= wen;
-                    // 当前仿真环境不需要移位
-                    if (i_data >= 32'h8000_0000 && i_data <= 32'h8FFF_FFFF) begin
-                        lsu_wdata <= i_src2;
-                        lsu_wmask <= i_wmask;
-                    end
-                    else begin
-                        lsu_wdata <= i_src2 << (i_data[1:0] * 8);
-                        lsu_wmask <= i_wmask << i_data[1:0];
-                    end
-                    // lsu_wdata <= i_src2 << (i_data[1:0] * 8);
-                    // lsu_wmask <= i_wmask << i_data[1:0];
+                    // if (i_data >= 32'h1000_0000 && i_data <= 32'h1000_0fff) begin
+                    //     lsu_wdata <= i_src2;
+                    // end
+                    // else begin
+                    //     lsu_wdata <= i_src2 << (i_data[1:0] * 8);
+                    // end
+                    lsu_wdata <= i_src2 << (i_data[1:0] * 8);
                     lsu_addr <= i_data;
+                    // lsu_wdata <= i_src2 << (i_data[1:0] * 8);
+                    lsu_wmask <= i_wmask << i_data[1:0];
                     lsu_reqValid <= 1'b1;
                     if (i_sb_signal || i_lb_signal ||i_lbu_signal) begin
                         lsu_size <= 2'b00;
@@ -97,32 +87,34 @@ always @(posedge clock) begin
                     end
                 end
             end
-            WAIT_READY: begin
-                if(lsu_reqReady) begin
-                    lsu_reqValid <= 1'b0;
-                    state <= WAIT;
-                end
-                else begin 
-                    state <= WAIT_READY;
-                end
-            end
             WAIT: begin
-                
                 if(lsu_ready) begin
                     lsu_ready <= 1'b0;
                 end
                 
-                if(lsu_reqReady) begin
+                if(lsu_reqValid) begin
                     lsu_reqValid <= 1'b0;
                 end
 
                 if (lsu_respValid) begin
-                    lsu_respReady <= 1'b1;
                     lsu_valid <= 1'b1;
                     state <= IDLE;
                     if(lsu_wen) begin
                         lsu_wen <= 1'b0;
                     end
+                    // if(i_lw_signal == 1'b1) begin
+                    //     o_rdata <= lsu_rdata[31:0];
+                    // end else if(i_lhu_signal == 1'b1) begin
+                    //     o_rdata <= {16'b0, lsu_rdata[15:0]};
+                    // end else if(i_lh_signal == 1'b1) begin
+                    //     o_rdata <= {{16{lsu_rdata[15]}}, lsu_rdata[15:0]};
+                    // end else if(i_lbu_signal == 1'b1) begin
+                    //     o_rdata <= {24'b0, lsu_rdata[7:0]};
+                    // end else if(i_lb_signal == 1'b1) begin
+                    //     o_rdata <= {{24{lsu_rdata[7]}}, lsu_rdata[7:0]};
+                    // end else begin
+                    //     o_rdata <= 0;
+                    // end
                     if(i_lw_signal == 1'b1) begin
                         o_rdata <= shifted_rdata[31:0];
                     end else if(i_lhu_signal == 1'b1) begin
@@ -137,9 +129,7 @@ always @(posedge clock) begin
                         o_rdata <= 0;
                     end
                 end
-            end
-            default: begin
-                state <= IDLE;
+                
             end
         endcase
 

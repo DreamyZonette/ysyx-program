@@ -13,8 +13,8 @@ module ysyx_25020042_Stype (
     wire [11:0] imm;
     wire [2:0] fun;
     wire [6:0] opcode;
-    // reg sign_extended;
-    // reg zero_extended;
+    reg sign_extended;
+    reg zero_extended;
     reg unknown_intstruction;
 
     assign o_imm = { {20{imm[11]}}, imm};
