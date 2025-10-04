@@ -13,15 +13,15 @@ module ysyx_25020042_IFU(
     output reg ifu_reqValid,
     input ifu_respValid
 );
-// export "DPI-C" function get_pc;
-// export "DPI-C" function get_instruction;
+export "DPI-C" function get_pc;
+export "DPI-C" function get_instruction;
 
-//     function int unsigned get_pc();   
-//         return i_pc;
-//     endfunction
-//     function int unsigned get_instruction();   
-//         return o_instruction;
-//     endfunction
+    function int unsigned get_pc();   
+        return i_pc;
+    endfunction
+    function int unsigned get_instruction();   
+        return o_instruction;
+    endfunction
 
 localparam IDLE = 1'b0;
 localparam WAIT = 1'b1;
