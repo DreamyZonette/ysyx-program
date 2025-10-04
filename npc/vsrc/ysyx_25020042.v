@@ -211,7 +211,7 @@ ysyx_25020042IDU IDU_u (
     .rd(rd)
     );
 
-ysyx_25020042EXU EXU_u (
+ysyx_25020042_EXU EXU_u (
     .i_src1(src1),
     .i_src2(src2),
     .i_imm(imm),

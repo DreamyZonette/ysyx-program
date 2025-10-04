@@ -1,4 +1,4 @@
-module ysyx_25020042EXU(
+module ysyx_25020042_EXU(
     input wire [31:0] i_src1,
     input wire [31:0] i_src2,
     input wire [31:0] i_imm,
@@ -53,7 +53,7 @@ module ysyx_25020042EXU(
 
 );
 
-alu alu_u(
+ysyx_25020042_alu alu_u(
     .i_src1(i_src1),
     .i_src2(i_src2),
     .i_imm(i_imm),
