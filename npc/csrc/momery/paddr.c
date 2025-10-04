@@ -92,13 +92,13 @@ extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
   data = word_t(data);
   switch (len) {
-    case 15:
+    case 0b1111:
       len = 4;
       break;
-    case 3:
+    case 0b11:
       len = 2;
       break;
-    case 1:
+    case 0b1:
       len = 1;
       break;
   }
