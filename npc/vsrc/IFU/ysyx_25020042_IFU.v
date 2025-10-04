@@ -11,7 +11,9 @@ module ysyx_25020042_IFU(
     // output reg ifu_wen,
     input [31:0] ifu_rdata,
     output reg ifu_reqValid,
-    input ifu_respValid
+    input ifu_respValid,
+    output reg ifu_respReady,
+    input ifu_reqReady
 );
 export "DPI-C" function get_pc;
 export "DPI-C" function get_instruction;
@@ -37,10 +39,14 @@ always @(posedge clock) begin
         ifu_addr <= 32'h0;
         ifu_reqValid <= 1'b0;
         o_instruction <= 32'h0;
+        ifu_respReady <= 1'b0;
     end
     else begin
         case(state)
             IDLE: begin
+                if (ifu_respReady) begin
+                    ifu_respReady <= 1'b0;
+                end
                 if(pc_valid) begin
                     state <= WAIT;
                     ifu_addr <= i_pc;
@@ -54,14 +60,11 @@ always @(posedge clock) begin
                 end   
             end
             WAIT: begin
-                // if (ifu_ren) begin
-                //     ifu_ren <= 1'b0;
-                // end
-                if (ifu_reqValid) begin
+                if (ifu_reqReady) begin
                     ifu_reqValid <= 1'b0;
                 end
-                // o_instruction <= pmem_read(i_pc, 4);
                 if (ifu_respValid) begin
+                    ifu_respReady <= 1'b1;
                     state <= IDLE;
                     ifu_valid <= 1'b1;
                     o_instruction <= ifu_rdata;

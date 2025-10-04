@@ -28,7 +28,9 @@ module ysyx_25020042_LSU(
     input [31:0] lsu_rdata,
     output reg lsu_reqValid,
     input lsu_respValid,
-    output reg [1:0] lsu_size
+    output reg [1:0] lsu_size,
+    input lsu_reqReady,
+    output reg lsu_respReady
 );
 
 localparam IDLE = 1'b0;
@@ -52,10 +54,14 @@ always @(posedge clock) begin
         lsu_size <= 2'b0;
         o_rdata <= 32'b0;
         lsu_wen <= 1'b0;
+        lsu_respReady <= 1'b0;
     end
     else begin
         case (state)
             IDLE: begin
+                if (lsu_respReady) begin
+                    lsu_respReady <= 1'b0;
+                end
                 if(ifu_valid && (wen || ren)) begin
                     state <= WAIT;
                     lsu_ready <= 1'b1;
@@ -91,33 +97,22 @@ always @(posedge clock) begin
                 end
             end
             WAIT: begin
+                
                 if(lsu_ready) begin
                     lsu_ready <= 1'b0;
                 end
                 
-                if(lsu_reqValid) begin
+                if(lsu_reqReady) begin
                     lsu_reqValid <= 1'b0;
                 end
 
                 if (lsu_respValid) begin
+                    lsu_respReady <= 1'b1;
                     lsu_valid <= 1'b1;
                     state <= IDLE;
                     if(lsu_wen) begin
                         lsu_wen <= 1'b0;
                     end
-                    // if(i_lw_signal == 1'b1) begin
-                    //     o_rdata <= lsu_rdata[31:0];
-                    // end else if(i_lhu_signal == 1'b1) begin
-                    //     o_rdata <= {16'b0, lsu_rdata[15:0]};
-                    // end else if(i_lh_signal == 1'b1) begin
-                    //     o_rdata <= {{16{lsu_rdata[15]}}, lsu_rdata[15:0]};
-                    // end else if(i_lbu_signal == 1'b1) begin
-                    //     o_rdata <= {24'b0, lsu_rdata[7:0]};
-                    // end else if(i_lb_signal == 1'b1) begin
-                    //     o_rdata <= {{24{lsu_rdata[7]}}, lsu_rdata[7:0]};
-                    // end else begin
-                    //     o_rdata <= 0;
-                    // end
                     if(i_lw_signal == 1'b1) begin
                         o_rdata <= shifted_rdata[31:0];
                     end else if(i_lhu_signal == 1'b1) begin
