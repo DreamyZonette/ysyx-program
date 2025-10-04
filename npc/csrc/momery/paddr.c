@@ -91,6 +91,17 @@ extern uint64_t g_nr_guest_inst;
 extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
   data = word_t(data);
+  switch (len) {
+    case 15:
+      len = 4;
+      break;
+    case 3:
+      len = 2;
+      break;
+    case 1:
+      len = 1;
+      break;
+  }
   
   if(addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
       addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
