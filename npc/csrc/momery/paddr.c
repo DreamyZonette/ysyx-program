@@ -57,7 +57,7 @@ static void internal_pmem_write(paddr_t addr, int len, word_t data) {
 
 static void out_of_bound(paddr_t addr) {
   panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-      addr, PMEM_LEFT, PMEM_RIGHT, top->de_pc);
+      addr, PMEM_LEFT, PMEM_RIGHT, get_pc());
 }
 
 extern "C" int pmem_read(int addr, int len) {
@@ -91,6 +91,18 @@ extern uint64_t g_nr_guest_inst;
 extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
   data = word_t(data);
+  switch (len) {
+    case 0b1111:
+      len = 4;
+      break;
+    case 0b11:
+      len = 2;
+      break;
+    case 0b1:
+      len = 1;
+      break;
+  }
+  // printf("len = %d\n", len);
   
   if(addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
       addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \

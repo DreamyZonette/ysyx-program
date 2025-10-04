@@ -7,27 +7,51 @@ module ysyx_25020042_mem(
     input reqValid,
     input [3:0] wmask,
     output reg [31:0] rdata,
-    output reg respValid
+    output reg respValid,
+    output reg reqReady,
+    input respReady
 );
 
 import "DPI-C" function int pmem_read(input int addr, input int len);
 import "DPI-C" function void pmem_write(
     input int addr, int len, input int data);
+reg state;
+localparam IDLE = 1'b0;
+localparam READ = 1'b1;
 
 always @(posedge clock) begin
-    if (reqValid && !wen) begin
-    rdata <= pmem_read(addr, 4);
-    respValid <= 1'b1;
-    end   
-    else if (reqValid && wen) begin
-        /* verilator lint_off WIDTHEXPAND */
-        pmem_write(addr, wmask, wdata);
-        /* verilator lint_on WIDTHEXPAND */
-        respValid <= 1'b1;
-    end
-    if (respValid) begin
-        respValid <= 1'b0;
-    end
+    case (state)
+        IDLE: begin
+            if (reqValid) begin
+                respValid <= 1'b1;
+                reqReady <= 1'b1;
+                state <= READ;
+                if (!wen) begin
+                    rdata <= pmem_read(addr, 4);
+                end   
+                else begin
+                    /* verilator lint_off WIDTHEXPAND */
+                    pmem_write(addr, wmask, wdata);
+                    /* verilator lint_on WIDTHEXPAND */
+                end
+                
+            end
+            else begin
+                state <= IDLE;
+            end
+        end
+        READ: begin
+            if (reqReady) begin
+                reqReady <= 1'b0;
+            end
+            if (respReady) begin
+                respValid <= 1'b0;
+                state <= IDLE;
+            end
+        end
+    endcase
+    
+    
 
 end
 

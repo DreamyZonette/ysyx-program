@@ -43,7 +43,7 @@ endif
 
 ifeq ($(IMG),)
 	ifneq ($(OBJ),)
-		ARGS += -i $(NEW_OBJ_DIR)/new.bin
+		# ARGS += -i $(NEW_OBJ_DIR)/new.bin
 	endif
 endif
 

@@ -29,8 +29,10 @@ void sim_init(){
     #if CONFIG_WAVE
     contextp->traceEverOn(true);
     top->trace(tfp,0);
-    tfp->open("/home/long/ysyx-workbench/npc/build/wave.vcd");
+    tfp->open("/home/long/ysyx-workbench/soc-npc/build/wave.vcd");
     #endif
+    svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
+    
 }
 
 void sim_exit(){
@@ -44,11 +46,10 @@ void sim_exit(){
 
 void npc_engine_start(){
      
-    printf("Start npc engine\n");
     top->clock = 0;
     top->reset = 1;
     step_and_dump_wave();
-    int n = 9;
+    int n = 100;
     while (n--) {
         top->clock = 1;
         step_and_dump_wave();

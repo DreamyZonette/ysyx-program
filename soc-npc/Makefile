@@ -1,10 +1,14 @@
 TOP_NAME = ysyxSoCFull
+# IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/new1.bin
 IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/hello-minirv-ysyxsoc.bin
-#IMG ?= 
+# IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+OBJ ?=
 
 SOC_HOME := /home/long/ysyx-workbench/ysyxSoC/perip
+CPU_TEST_HOME := /home/long/ysyx-workbench/am-kernels/tests/cpu-tests
+NEW_OBJ_DIR := /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -21,57 +25,105 @@ VSRCS += /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/ysyxSoCFull.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
 
-CFLAGS ?= -CFLAGS -Wall 
+CFLAGS := 
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-VFLAGS ?= --cc --exe -I$(VPATH) --build -j 0 --trace
+VFLAGS :=   --cc --exe -I$(VPATH) --build -j 0 --trace 
+VFLAGS += --timescale "1ns/1ns" --no-timing  
+VFLAGS += -Wno-ASSIGNDLY -Wno-UNUSEDSIGNAL -Wno-DECLFILENAME -Wno-PINCONNECTEMPTY # 忽略警告
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
-VFLAGS += --timescale "1ns/1ns" --no-timing 
-VFLAGS += -I$(SOC_HOME)/uart16550/rtl -I$(SOC_HOME)/spi/rtl
-LDFLAGS += -LDFLAGS -lreadline -LDFLAGS -ltinfo
+VFLAGS += -I$(SOC_HOME)/uart16550/rtl/ -I$(SOC_HOME)/spi/rtl/
+VFLAGS += -I/home/long/ysyx-workbench/npc/include/
+LDFLAGS := -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
-#LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
-#LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
-#LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
 
+GEN := /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/gen.sh
 VERILATOR = verilator
 ARGS ?= 
-#ARGS += -d $(NEMU_SO) # 启用difftest
-ARGS += -i $(IMG)     # 启用镜像文件
-#ARGS += -e $(ELF)	  # 启用ftrace
-#ARGS += -b      	  # 启用批处理
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
+
+
+CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/generated/autoconf.h | awk '{print $$3}')
+CONFIG_DIFFTEST      := $(shell grep -m1 '^#define CONFIG_DIFFTEST' include/generated/autoconf.h | awk '{print $$3}')
+CONFIG_WAVE          := $(shell grep -m1 '^#define CONFIG_WAVE' include/generated/autoconf.h | awk '{print $$3}')
+CONFIG_ITRACE         := $(shell grep -m1 '^#define CONFIG_ITRACE' include/generated/autoconf.h | awk '{print $$3}')
+
+
+ifneq ($(IMG),)
+	ARGS += -i $(IMG)
+endif
+
+ifeq ($(IMG),)
+	ifneq ($(OBJ),)
+		ARGS += -i $(NEW_OBJ_DIR)/new.bin
+	endif
+endif
 
 ifeq ($(MAKECMDGOALS),gdb)
   CFLAGS += -CFLAGS -g
 endif
 
+ifeq ($(CONFIG_FTRACE),1)
+	ARGS += -e $(ELF)
+endif
+
+ifeq ($(CONFIG_DIFFTEST),1)
+	LDFLAGS += -LDFLAGS -L$(dir $(NEMU_SO))
+	LDFLAGS += -LDFLAGS -l:$(notdir $(NEMU_SO))
+	LDFLAGS += -LDFLAGS "-Wl,-rpath,$(dir $(NEMU_SO))"
+	ARGS += -d $(NEMU_SO)
+endif
+
+ifeq ($(BATCH),1)
+	ARGS += -b 
+endif
+
+ifeq ($(CONFIG_ITRACE),1)
+	CSRCS += $(WORK_DIR)/tools/disasm.c
+	LIBCAPSTONE = $(NEMU_HOME)/tools/capstone/repo/libcapstone.so.5
+	CFLAGS += -CFLAGS -I$(NEMU_HOME)/tools/capstone/repo/include
+src/utils/disasm.c: $(LIBCAPSTONE)
+$(LIBCAPSTONE):
+	$(MAKE) -C $(NEMU_HOME)/tools/capstone
+endif
+
 $(shell mkdir -p $(BUILD_DIR))
 
 
+all:run wave
+
+$(BUILD_DIR)/wave.fst:
+	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+	-@rm -f $(BUILD_DIR)/wave.vcd
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(VERILATOR) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) $(VFLAGS)
+	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
-all:run wave
-
 run:sim
-	@echo "Start running"
+	@echo "Start simulation"
 	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
 	
 	
 include ../Makefile
 
-wave:
-	gtkwave $(BUILD_DIR)/wave.vcd
+wave: $(BUILD_DIR)/wave.fst
+	
+	gtkwave $(BUILD_DIR)/wave.fst
+	rm $(BUILD_DIR)/wave.fst
 
 
-PHONY: clean test
+PHONY: clean test adapt
+
+adapt: sim
+	$(MAKE) -C $(CPU_TEST_HOME) ARCH=minirv-npc ALL=$(OBJ)
+	bash $(GEN) $(CPU_TEST_HOME)/$(OBJ)-minirv-npc.elf
 
 gdb:sim
 	@echo "Start gdb"
 	gdb --args $(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
+	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+	-@rm -f $(BUILD_DIR)/wave.vcd
 
 test:
 	$(VERILATOR) --lint-only -Wall $(TEST_OBJ)

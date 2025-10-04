@@ -1,8 +1,8 @@
 module ysyx_25020042_IDU (
     input   [31:0]  i_inst,
-    output reg [31:0]  o_imm,
-    output reg [31:0]  o_offset,
-    output reg [5:0]   o_shamt,
+    output wire [31:0]  o_imm,
+    output wire [31:0]  o_offset,
+    output wire [5:0]   o_shamt,
     output     [3:0]  o_wmask,
     output     [11:0]  o_csr_addr,
     output  o_addi_signal,
@@ -48,9 +48,9 @@ module ysyx_25020042_IDU (
     output  o_ecall_signal,
     output  o_mret_signal,
     output  o_unknown_signal,
-    output reg [4:0] rd,
-    output reg [4:0] rs1,
-    output reg [4:0] rs2
+    output wire [4:0] rd,
+    output wire [4:0] rs1,
+    output wire [4:0] rs2
     );
 
     wire [6:0]  opcode;
@@ -145,64 +145,33 @@ module ysyx_25020042_IDU (
             end
         endcase
     end
-
-
-    always @(*) begin
-        o_imm = 32'b0;
-        o_offset = 32'b0;
-        rs1 = 5'b0;
-        rs2 = 5'b0;
-        rd  = 5'b0;
-        o_shamt  = 6'b0;
-        if(Itype_signal == 1'b1) begin
-            rs1 = I_rs1;
-            rs2 = 5'b0;
-            rd  = I_rd;
-            o_imm = I_imm;
-            o_shamt = I_shamt;
-            o_offset = 32'b0;
-        end
-        else if(Utype_signal == 1'b1) begin
-            rs1 = 5'b0;
-            rs2 = 5'b0;
-            rd  = U_rd;
-            o_imm = U_imm;
-            o_offset = 32'b0;
-            o_shamt  = 6'b0;
-        end
-        else if(Btype_signal == 1'b1) begin
-            o_offset = B_offset;
-            rs1 = B_rs1;
-            rs2 = B_rs2;
-            rd  = 5'b0;
-            o_shamt  = 6'b0;
-            o_imm = 32'b0;
-        end
-        else if(Jtype_signal == 1'b1) begin
-            o_offset  = J_offset;
-            rs1 = 5'b0;
-            rs2 = 5'b0;
-            rd  = J_rd;
-            o_shamt  = 6'b0;
-            o_imm = 32'b0;
-        end
-        else if(Stype_signal == 1'b1) begin
-            o_imm  = S_imm;
-            rs1  = S_rs1;
-            rs2  = S_rs2;
-            rd   = 5'b0;
-            o_shamt  = 6'b0;
-            o_offset = 32'b0;
-        end
-        else if(Rtype_signal == 1'b1) begin
-            o_imm = 32'b0;
-            rs1  = R_rs1;
-            rs2  = R_rs2;
-            rd   = R_rd;
-            o_shamt  = 6'b0;
-            o_offset = 32'b0;
-        end
-    end
+    ysyx_25020042_MuxKeyWithDefault #(3, 3, 32) imm_out (o_imm, {Itype_signal, Utype_signal, Stype_signal}, 32'b0, {
+    3'b100, I_imm,
+    3'b010, U_imm,
+    3'b001, S_imm
+  });
+    ysyx_25020042_MuxKeyWithDefault #(4, 4, 5) rs1_out (rs1, {Itype_signal, Btype_signal, Stype_signal, Rtype_signal}, 5'b0, {
+    4'b1000, I_rs1,
+    4'b0100, B_rs1,
+    4'b0010, S_rs1,
+    4'b0001, R_rs1
+  });
+    ysyx_25020042_MuxKeyWithDefault #(3, 3, 5) rs2_out (rs2, {Btype_signal, Stype_signal, Rtype_signal}, 5'b0, {
+    3'b100, B_rs2,
+    3'b010, S_rs2,
+    3'b001, R_rs2
+  });
+    ysyx_25020042_MuxKeyWithDefault #(4, 4, 5) rd_out (rd, {Itype_signal, Utype_signal, Jtype_signal, Rtype_signal}, 5'b0, {
+    4'b1000, I_rd,
+    4'b0100, U_rd,
+    4'b0010, J_rd,
+    4'b0001, R_rd
+  });
+    ysyx_25020042_MuxKeyWithDefault #(2, 2, 32) offset_out (o_offset, {Btype_signal, Jtype_signal}, 32'b0, {
+    2'b10, B_offset,
+    2'b01, J_offset
+  });
+  assign o_shamt = Itype_signal ? I_shamt : 6'b0;
 
     ysyx_25020042_Itype Itype_u(
         .i_inst(i_inst),
