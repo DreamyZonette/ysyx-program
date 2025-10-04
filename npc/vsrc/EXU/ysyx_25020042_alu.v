@@ -93,7 +93,7 @@ module ysyx_25020042_alu (
                     (i_ori_signal | i_or_signal) ? 3'b111 : 
                          3'b000;
 
-    MuxKeyWithDefault #(8, 3, 32) ALU_out (o_data, ALUctrl, 32'b0, {
+    ysyx_25020042_MuxKeyWithDefault #(8, 3, 32) ALU_out (o_data, ALUctrl, 32'b0, {
     3'b000, adder_out,
     3'b001, signed_shift_out,
     3'b010, unsigned_shift_out,
