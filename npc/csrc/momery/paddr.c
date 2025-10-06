@@ -20,10 +20,6 @@ static word_t internal_flash_read(paddr_t addr, int len) {
   return ret;
 }
 
-static void internal_flash_write(paddr_t addr, int len, word_t data) {
-  host_write(guest_to_host(addr), len, data);
-}
-
 static void out_of_bound(paddr_t addr) {
  
 }

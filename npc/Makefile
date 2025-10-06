@@ -26,9 +26,9 @@ VSRCS += $(PATH_TO_SOC)/ready-to-run/D-stage/ysyxSoCFull.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
 
-CFLAGS := 
+CFLAGS := -CFLAGS -Wno-error=type-limits -CFLAGS -Wno-error=missing-field-initializers
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-VFLAGS :=   --cc --exe -I$(VPATH) --build -j 0 --trace 
+VFLAGS :=   --cc --exe -I$(VPATH) --build -j 0 --trace -Wno-fatal
 VFLAGS += --timescale "1ns/1ns" --no-timing  
 VFLAGS += -Wno-ASSIGNDLY -Wno-UNUSEDSIGNAL -Wno-DECLFILENAME -Wno-PINCONNECTEMPTY # 忽略警告
 VFLAGS += --top-module $(TOP_NAME) 
