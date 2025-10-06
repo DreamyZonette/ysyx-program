@@ -1,14 +1,15 @@
 TOP_NAME = ysyxSoCFull
-# IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/new1.bin
-IMG ?= /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/hello-minirv-ysyxsoc.bin
+IMG ?= $(PATH_TO_SOC)/ready-to-run/D-stage/new1.bin
+#IMG ?= $(PATH_TO_SOC)/ready-to-run/D-stage/hello-minirv-ysyxsoc.bin
 # IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 OBJ ?=
 
-SOC_HOME := /home/long/ysyx-workbench/ysyxSoC/perip
+PATH_TO_SOC := /home/long/ysyx-workbench/ysyxSoC
+SOC_HOME := $(PATH_TO_SOC)/perip
 CPU_TEST_HOME := /home/long/ysyx-workbench/am-kernels/tests/cpu-tests
-NEW_OBJ_DIR := /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage
+NEW_OBJ_DIR := $(PATH_TO_SOC)/ready-to-run/D-stage
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -21,7 +22,7 @@ INCLUDES = $(addprefix -I, $(INC_PATH))
 
 VSRCS := $(shell find $(VPATH) -name *.v)
 VSRCS += $(shell find $(SOC_HOME) -name *.v)
-VSRCS += /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/ysyxSoCFull.v
+VSRCS += $(PATH_TO_SOC)/ready-to-run/D-stage/ysyxSoCFull.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
 
@@ -37,7 +38,7 @@ VFLAGS += -I/home/long/ysyx-workbench/npc/include/
 LDFLAGS := -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
 
-GEN := /home/long/ysyx-workbench/ysyxSoC/ready-to-run/D-stage/gen.sh
+
 VERILATOR = verilator
 ARGS ?= 
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
@@ -46,7 +47,7 @@ ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/generated/autoconf.h | awk '{print $$3}')
 CONFIG_DIFFTEST      := $(shell grep -m1 '^#define CONFIG_DIFFTEST' include/generated/autoconf.h | awk '{print $$3}')
 CONFIG_WAVE          := $(shell grep -m1 '^#define CONFIG_WAVE' include/generated/autoconf.h | awk '{print $$3}')
-CONFIG_ITRACE         := $(shell grep -m1 '^#define CONFIG_ITRACE' include/generated/autoconf.h | awk '{print $$3}')
+CONFIG_ITRACE        := $(shell grep -m1 '^#define CONFIG_ITRACE' include/generated/autoconf.h | awk '{print $$3}')
 
 
 ifneq ($(IMG),)
@@ -115,9 +116,7 @@ wave: $(BUILD_DIR)/wave.fst
 
 PHONY: clean test adapt
 
-adapt: sim
-	$(MAKE) -C $(CPU_TEST_HOME) ARCH=minirv-npc ALL=$(OBJ)
-	bash $(GEN) $(CPU_TEST_HOME)/$(OBJ)-minirv-npc.elf
+
 
 gdb:sim
 	@echo "Start gdb"
