@@ -51,8 +51,10 @@ localparam WAIT_READY = 2'b10;
 
 
 reg [1:0] state;
+/* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
 reg [1:0] bresp;
+/* verilator lint_on UNUSEDSIGNAL */
 
 
 
