@@ -27,7 +27,7 @@ export "DPI-C" function get_instruction;
     endfunction
 
 localparam RIDLE = 1'b0;
-localparam RWAIT = 1'b1;
+localparam RWAIT_READY = 1'b1;
 localparam ARIDLE = 1'b0;
 localparam ARWAIT_READY = 1'b1;
 
