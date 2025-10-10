@@ -33,7 +33,9 @@ localparam ARWAIT_READY = 1'b1;
 
 reg Rstate;
 reg ARstate;
+/* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
+/* verilator lint_on UNUSEDSIGNAL */
 
 always @(posedge clock) begin
     if(reset) begin
