@@ -185,6 +185,7 @@ always @(posedge clock) begin
                 end
                 else if (lsu_bvalid) begin
                     lsu_bready <= 1'b1;
+                    lsu_valid <= 1'b1;
                     bresp <= lsu_bresp;
                     state <= IDLE;
                 end
