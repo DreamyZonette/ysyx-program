@@ -1,18 +1,19 @@
+
    module ysyx_25020042 (
         input         clock,
-        input         reset,
-        output        io_ifu_reqValid,
-        output [31:0] io_ifu_addr,
-        input         io_ifu_respValid,
-        input [31:0]  io_ifu_rdata,
-        output        io_lsu_reqValid,
-        output [31:0] io_lsu_addr,
-        output [1:0]  io_lsu_size,
-        output        io_lsu_wen,
-        output [31:0] io_lsu_wdata,
-        output [3:0]  io_lsu_wmask,
-        input         io_lsu_respValid,
-        input [31:0]  io_lsu_rdata
+        input         reset//,
+        // output        io_ifu_reqValid,
+        // output [31:0] io_ifu_addr,
+        // input         io_ifu_respValid,
+        // input [31:0]  io_ifu_rdata,
+        // output        io_lsu_reqValid,
+        // output [31:0] io_lsu_addr,
+        // output [1:0]  io_lsu_size,
+        // output        io_lsu_wen,
+        // output [31:0] io_lsu_wdata,
+        // output [3:0]  io_lsu_wmask,
+        // input         io_lsu_respValid,
+        // input [31:0]  io_lsu_rdata
     );
 
     import "DPI-C" function void dpi_ebreak();
@@ -22,14 +23,18 @@
                 dpi_ebreak();
             end
     end
-
+//------------------------------------------
+// 模块间握手信号
+//------------------------------------------
     wire wbu_valid;
     wire pc_valid;
     wire lsu_ready;
     wire wbu_ready;
     wire ifu_valid;
     wire lsu_valid;
-
+//------------------------------------------
+// 指令信号
+//------------------------------------------
     wire addi_signal;
     wire andi_signal;
     wire slti_signal;
@@ -72,7 +77,12 @@
     wire csrrw_signal;
     wire ecall_signal;
     wire mret_signal;
+    /* verilator lint_off UNUSEDSIGNAL */
     wire unknown_signal;
+    /* verilator lint_on UNUSEDSIGNAL */
+//------------------------------------------
+// 数据通路信号
+//------------------------------------------
     wire [31:0] wdata;
     wire [31:0] imm;
     wire [31:0] src1;
@@ -101,9 +111,58 @@
     wire [4:0]  rs1;
     wire [4:0]  rs2;
     wire [4:0]  rd;
+//------------------------------------------
+// AXI 总线
+//------------------------------------------
+    
+    wire [31:0] io_ifu_araddr;
+    wire        io_ifu_arvalid;
+    wire        io_ifu_arready;
+    wire        io_ifu_rready;
+    wire        io_ifu_rvalid;
+    wire [31:0] io_ifu_rdata;
+    wire [1:0]  io_ifu_rresp;
 
+    // wire        io_lsu_reqValid;
+    // wire [31:0] io_lsu_addr;
+    // /* verilator lint_off UNUSEDSIGNAL */
+    // wire [1:0]  io_lsu_size;
+    // /* verilator lint_on UNUSEDSIGNAL */
+    // wire        io_lsu_wen;
+    // wire [31:0] io_lsu_wdata;
+    // wire [3:0]  io_lsu_wmask;
+    // wire        io_lsu_respValid;
+    // wire [31:0] io_lsu_rdata;
+    // wire        io_ifu_reqReady;
+    // wire        io_ifu_respReady;
+    // wire        io_lsu_reqReady;
+    // wire        io_lsu_respReady;
+    // axi 握手信号
+    wire [31:0] io_lsu_araddr;
+    wire        io_lsu_arvalid;
+    wire        io_lsu_arready;
 
+    wire [31:0] io_lsu_rdata;
+    wire        io_lsu_rvalid;
+    wire [1:0]  io_lsu_rresp;
+    wire        io_lsu_rready;
 
+    wire [31:0] io_lsu_awaddr;
+    wire        io_lsu_awvalid;
+    wire        io_lsu_awready;
+
+    wire [31:0] io_lsu_wdata;
+    wire [3:0]  io_lsu_wstrb;
+    wire        io_lsu_wvalid;
+    wire        io_lsu_wready;
+
+    wire        io_lsu_bvalid;
+    wire        io_lsu_bready;
+    wire [1:0]  io_lsu_bresp;
+
+//------------------------------------------
+// PC实例化
+//------------------------------------------
 ysyx_25020042_PC PC_u(
     .clock(clock),
     .reset(reset),
@@ -112,7 +171,9 @@ ysyx_25020042_PC PC_u(
     .pc_valid(pc_valid),
     .o_pc(pc)
 );
-    
+//------------------------------------------
+// IFU实例化
+//------------------------------------------
 ysyx_25020042_IFU IFU_u (
     .clock(clock),
     .reset(reset),
@@ -122,14 +183,53 @@ ysyx_25020042_IFU IFU_u (
     .wbu_ready(wbu_ready),
     .ifu_valid(ifu_valid),
     .o_instruction(instruction),
-    .ifu_addr(io_ifu_addr),
+
+    .ifu_araddr(io_ifu_addr),
+    .ifu_arvalid(io_ifu_arvalid),
+    .ifu_arready(io_ifu_arready),
     .ifu_rdata(io_ifu_rdata),
-    .ifu_reqValid(io_ifu_reqValid),
-    .ifu_respValid(io_ifu_respValid)
+    .ifu_rvalid(io_ifu_rvalid),
+    .ifu_rready(io_ifu_rready),
+    .ifu_rresp(io_ifu_rresp)
+
+    // .ifu_addr(io_ifu_addr),
+    // .ifu_rdata(io_ifu_rdata),
+    // .ifu_reqValid(io_ifu_reqValid),
+    // .ifu_respValid(io_ifu_respValid),
+    // .ifu_respReady(io_ifu_respReady),
+    // .ifu_reqReady(io_ifu_reqReady)
 );
+//------------------------------------------
+// IFU访存设备实例化
+//------------------------------------------
+ysyx_25020042_mem mem_u_2 (
+    .clock(clock),
+    // axi 握手信号
+    .slave_araddr(io_ifu_addr),
+    .slave_arvalid(io_ifu_arvalid),
+    .slave_arready(io_ifu_arready),
 
+    .slave_rdata(io_ifu_rdata),
+    .slave_rvalid(io_ifu_rvalid),
+    .slave_rresp(io_ifu_rresp),
+    .slave_rready(io_ifu_rready),
 
+    .slave_awaddr(),
+    .slave_awvalid(),
+    .slave_awready(),
 
+    .slave_wdata(),
+    .slave_wstrb(),
+    .slave_wvalid(),
+    .slave_wready(),
+
+    .slave_bvalid(),
+    .slave_bready(),
+    .slave_bresp()
+);
+//------------------------------------------
+// IDU实例化
+//------------------------------------------
 ysyx_25020042_IDU IDU_u (
     .i_inst(instruction),
     .o_imm(imm),
@@ -184,7 +284,9 @@ ysyx_25020042_IDU IDU_u (
     .rs2(rs2),
     .rd(rd)
     );
-
+//------------------------------------------
+// EXU实例化
+//------------------------------------------
 ysyx_25020042_EXU EXU_u (
     .i_src1(src1),
     .i_src2(src2),
@@ -238,7 +340,9 @@ ysyx_25020042_EXU EXU_u (
     .o_B_jump_signal(o_B_jump_signal),
     .o_data(exu_data)
     );
-
+//------------------------------------------
+// WBU实例化
+//------------------------------------------
 ysyx_25020042_WBU WBU_u (
     .clock(clock),
     .reset(reset),
@@ -270,7 +374,9 @@ ysyx_25020042_WBU WBU_u (
     .o_mcause_wdata(mcause_wdata),
     .next_pc(next_pc)
     );
-
+//------------------------------------------
+// LSU实例化
+//------------------------------------------
 ysyx_25020042_LSU LSU_u (
     .clock(clock),
     .reset(reset),
@@ -291,17 +397,60 @@ ysyx_25020042_LSU LSU_u (
     .lsu_ready(lsu_ready),
     .o_lsu_busy(lsu_busy),
     .o_rdata(rdata),
-    .lsu_addr(io_lsu_addr),
-    .lsu_wen(io_lsu_wen),
-    .lsu_wdata(io_lsu_wdata),
-    .lsu_wmask(io_lsu_wmask),
+    // axi 握手信号
+    .lsu_araddr(io_lsu_araddr),
+    .lsu_arvalid(io_lsu_arvalid),
+    .lsu_arready(io_lsu_arready),
+
     .lsu_rdata(io_lsu_rdata),
-    .lsu_reqValid(io_lsu_reqValid),
-    .lsu_respValid(io_lsu_respValid),
-    .lsu_size(io_lsu_size)
+    .lsu_rvalid(io_lsu_rvalid),
+    .lsu_rresp(io_lsu_rresp),
+    .lsu_rready(io_lsu_rready),
+
+    .lsu_awaddr(io_lsu_awaddr),
+    .lsu_awvalid(io_lsu_awvalid),
+    .lsu_awready(io_lsu_awready),
+
+    .lsu_wdata(io_lsu_wdata),
+    .lsu_wstrb(io_lsu_wstrb),
+    .lsu_wvalid(io_lsu_wvalid),
+    .lsu_wready(io_lsu_wready),
+
+    .lsu_bvalid(io_lsu_bvalid),
+    .lsu_bready(io_lsu_bready),
+    .lsu_bresp(io_lsu_bresp)
 );
+//------------------------------------------
+// LSU访存模块实例化
+//------------------------------------------
+ysyx_25020042_mem mem_u_1 (
+    .clock(clock),
+    // axi 握手信号
+    .slave_araddr(io_lsu_araddr),
+    .slave_arvalid(io_lsu_arvalid),
+    .slave_arready(io_lsu_arready),
 
+    .slave_rdata(io_lsu_rdata),
+    .slave_rvalid(io_lsu_rvalid),
+    .slave_rresp(io_lsu_rresp),
+    .slave_rready(io_lsu_rready),
 
+    .slave_awaddr(io_lsu_awaddr),
+    .slave_awvalid(io_lsu_awvalid),
+    .slave_awready(io_lsu_awready),
+
+    .slave_wdata(io_lsu_wdata),
+    .slave_wstrb(io_lsu_wstrb),
+    .slave_wvalid(io_lsu_wvalid),
+    .slave_wready(io_lsu_wready),
+
+    .slave_bvalid(io_lsu_bvalid),
+    .slave_bready(io_lsu_bready),
+    .slave_bresp(io_lsu_bresp)
+);
+//------------------------------------------
+// CSR实例化
+//------------------------------------------
 ysyx_25020042_csr csr_u (
     .clock(clock),
     .reset(reset),
@@ -319,6 +468,9 @@ ysyx_25020042_csr csr_u (
     .o_mcause(mcause),
     .o_csr_rdata(csr_data)
 );
+//------------------------------------------
+// GPR实例化
+//------------------------------------------
 ysyx_25020042_gpr gpr_u(
     .clock(clock),
     .reset(reset), 

@@ -15,8 +15,8 @@ module ysyx_25020042_Btype (
     wire [11:0] offset;
     wire [6:0] opcode;
     wire [2:0] fun1;
-    reg sign_extended;
-    reg zero_extended;
+    // reg sign_extended;
+    // reg zero_extended;
     reg unknown_intstruction;
 
     assign opcode  = i_inst[6:0];

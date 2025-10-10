@@ -7,11 +7,14 @@ module ysyx_25020042_IFU(
     input wbu_ready,
     output reg ifu_valid,
     output reg [31:0] o_instruction,
-    output reg [31:0] ifu_addr,
-    // output reg ifu_wen,
+
+    output reg [31:0] ifu_araddr,
+    output reg ifu_arvalid,
+    input ifu_arready,
     input [31:0] ifu_rdata,
-    output reg ifu_reqValid,
-    input ifu_respValid
+    input ifu_rvalid,
+    output reg ifu_rready,
+    input [1:0] ifu_rresp
 );
 export "DPI-C" function get_pc;
 export "DPI-C" function get_instruction;
@@ -23,54 +26,81 @@ export "DPI-C" function get_instruction;
         return o_instruction;
     endfunction
 
-localparam IDLE = 1'b0;
-localparam WAIT = 1'b1;
+localparam RIDLE = 1'b0;
+localparam RWAIT = 1'b1;
+localparam ARIDLE = 1'b0;
+localparam ARWAIT_READY = 1'b1;
 
-reg state;
+reg Rstate;
+reg ARstate;
+reg [1:0] rresp;
 
 always @(posedge clock) begin
     if(reset) begin
-        state <= IDLE;
+        Rstate <= RIDLE;
+        ARstate <= ARIDLE;
         ifu_valid <= 1'b0;
-        // ifu_wen <= 1'b0;
-        // ifu_addr <= 32'h30000000;
-        ifu_addr <= 32'h0;
-        ifu_reqValid <= 1'b0;
+        ifu_araddr <= 32'h0;
+        ifu_arvalid <= 1'b0;
         o_instruction <= 32'h0;
+        ifu_rready <= 1'b0;
+        rresp <= 2'b00;
     end
     else begin
-        case(state)
-            IDLE: begin
+        // 地址通道
+        case (ARstate)
+            ARIDLE: begin
                 if(pc_valid) begin
-                    state <= WAIT;
-                    ifu_addr <= i_pc;
-                    ifu_reqValid <= 1'b1;
+                    ifu_araddr <= i_pc;
+                    ifu_arvalid <= 1'b1;
+                    ARstate <= ARWAIT_READY;
                 end
                 else begin
-                    state <= IDLE;
-                    if(wbu_ready || lsu_ready && ifu_valid) begin
-                        ifu_valid <= 1'b0;
-                    end
-                end   
-            end
-            WAIT: begin
-                // if (ifu_ren) begin
-                //     ifu_ren <= 1'b0;
-                // end
-                if (ifu_reqValid) begin
-                    ifu_reqValid <= 1'b0;
+                    ARstate <= ARIDLE;
                 end
-                // o_instruction <= pmem_read(i_pc, 4);
-                if (ifu_respValid) begin
-                    state <= IDLE;
+            end
+            ARWAIT_READY: begin
+                if(ifu_arready) begin
+                    ifu_arvalid <= 1'b0;
+                    ARstate <= ARIDLE;
+                end
+                else begin 
+                    ARstate <= ARWAIT_READY;
+                end
+            end
+
+        endcase
+
+        case(Rstate)
+            RIDLE: begin
+                if(ifu_arready && ifu_arvalid) begin
+                    Rstate <= RWAIT;
+                end
+                else begin
+                    Rstate <= RIDLE;
+                end  
+                
+                if (ifu_rready) begin
+                    ifu_rready <= 1'b0;
+                end
+                if((wbu_ready || lsu_ready) && ifu_valid) begin
+                    ifu_valid <= 1'b0;
+                end 
+            end
+            RWAIT_READY: begin
+                if (ifu_rvalid) begin
+                    ifu_rready <= 1'b1;
+                    Rstate <= RIDLE;
                     ifu_valid <= 1'b1;
                     o_instruction <= ifu_rdata;
+                    rresp <= ifu_rresp;
+                end
+                else begin
+                    Rstate <= RWAIT_READY;
                 end
             end
-            default: begin
-                state <= IDLE;
-            end
         endcase
+        
     end
 end
 
