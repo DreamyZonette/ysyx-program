@@ -74,7 +74,7 @@ always @(posedge clock) begin
         case(Rstate)
             RIDLE: begin
                 if(ifu_arready && ifu_arvalid) begin
-                    Rstate <= RWAIT;
+                    Rstate <= RWAIT_READY;
                 end
                 else begin
                     Rstate <= RIDLE;
