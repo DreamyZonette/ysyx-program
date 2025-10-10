@@ -184,7 +184,7 @@ ysyx_25020042_IFU IFU_u (
     .ifu_valid(ifu_valid),
     .o_instruction(instruction),
 
-    .ifu_araddr(io_ifu_addr),
+    .ifu_araddr(io_ifu_araddr),
     .ifu_arvalid(io_ifu_arvalid),
     .ifu_arready(io_ifu_arready),
     .ifu_rdata(io_ifu_rdata),
@@ -205,7 +205,7 @@ ysyx_25020042_IFU IFU_u (
 ysyx_25020042_mem mem_u_2 (
     .clock(clock),
     // axi 握手信号
-    .slave_araddr(io_ifu_addr),
+    .slave_araddr(io_ifu_araddr),
     .slave_arvalid(io_ifu_arvalid),
     .slave_arready(io_ifu_arready),
 
@@ -213,7 +213,7 @@ ysyx_25020042_mem mem_u_2 (
     .slave_rvalid(io_ifu_rvalid),
     .slave_rresp(io_ifu_rresp),
     .slave_rready(io_ifu_rready),
-
+/* verilator lint_off PINCONNECTEMPTY */
     .slave_awaddr(),
     .slave_awvalid(),
     .slave_awready(),
@@ -226,6 +226,7 @@ ysyx_25020042_mem mem_u_2 (
     .slave_bvalid(),
     .slave_bready(),
     .slave_bresp()
+    /* verilator lint_on PINCONNECTEMPTY */
 );
 //------------------------------------------
 // IDU实例化
