@@ -26,63 +26,81 @@ export "DPI-C" function get_instruction;
         return o_instruction;
     endfunction
 
-localparam RIDLE = 2'b00;
-localparam RWAIT = 2'b01;
-localparam RWAIT_READY = 2'b10;
-localparam ARIDLE = 2'b00;
-localparam ARWAIT = 2'b01;
-localparam ARWAIT_READY = 2'b10;
+localparam RIDLE = 1'b0;
+localparam RWAIT = 1'b1;
+localparam ARIDLE = 1'b0;
+localparam ARWAIT_READY = 1'b1;
 
-reg [1:0] Rstate;
+reg Rstate;
+reg ARstate;
+reg [1:0] rresp;
 
 always @(posedge clock) begin
     if(reset) begin
         Rstate <= RIDLE;
+        ARstate <= ARIDLE;
         ifu_valid <= 1'b0;
         ifu_araddr <= 32'h0;
         ifu_arvalid <= 1'b0;
         o_instruction <= 32'h0;
         ifu_rready <= 1'b0;
+        rresp <= 2'b00;
     end
     else begin
-        case(Rstate)
-            RIDLE: begin
-                if (ifu_rready) begin
-                    ifu_rready <= 1'b0;
-                end
+        // 地址通道
+        case (ARstate)
+            ARIDLE: begin
                 if(pc_valid) begin
                     ifu_araddr <= i_pc;
                     ifu_arvalid <= 1'b1;
-                    Rstate <= RWAIT_READY;
+                    ARstate <= ARWAIT_READY;
                 end
                 else begin
-                    Rstate <= RIDLE;
-                    if(wbu_ready || lsu_ready && ifu_valid) begin
-                        ifu_valid <= 1'b0;
-                    end
-                end   
+                    ARstate <= ARIDLE;
+                end
             end
-            RWAIT_READY: begin
-                if (ifu_arready) begin
+            ARWAIT_READY: begin
+                if(ifu_arready) begin
                     ifu_arvalid <= 1'b0;
+                    ARstate <= ARIDLE;
+                end
+                else begin 
+                    ARstate <= ARWAIT_READY;
+                end
+            end
+
+        endcase
+
+        case(Rstate)
+            RIDLE: begin
+                if(ifu_arready && ifu_arvalid) begin
                     Rstate <= RWAIT;
                 end
                 else begin
-                    Rstate <= RWAIT_READY;
+                    Rstate <= RIDLE;
+                end  
+                
+                if (ifu_rready) begin
+                    ifu_rready <= 1'b0;
                 end
+                if((wbu_ready || lsu_ready) && ifu_valid) begin
+                    ifu_valid <= 1'b0;
+                end 
             end
-            RWAIT: begin
+            RWAIT_READY: begin
                 if (ifu_rvalid) begin
                     ifu_rready <= 1'b1;
                     Rstate <= RIDLE;
                     ifu_valid <= 1'b1;
                     o_instruction <= ifu_rdata;
+                    rresp <= ifu_rresp;
+                end
+                else begin
+                    Rstate <= RWAIT_READY;
                 end
             end
-            default: begin
-                Rstate <= RIDLE;
-            end
         endcase
+        
     end
 end
 
