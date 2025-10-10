@@ -108,13 +108,13 @@ always @(posedge clock) begin
                     // lsu_wstrb <= i_wmask << i_data[1:0];
                     lsu_araddr <= i_data;
                     lsu_awaddr <= i_data;
-                    // if (wen) begin
-                    //     lsu_awvalid <= 1'b1;
-                    //     lsu_wvalid <= 1'b1;
-                    // end
-                    // else begin
-                    //     lsu_arvalid <= 1'b1;
-                    // end
+                    if (wen) begin
+                        lsu_awvalid <= 1'b1;
+                        lsu_wvalid <= 1'b1;
+                    end
+                    else begin
+                        lsu_arvalid <= 1'b1;
+                    end
                     // if (i_sb_signal || i_lb_signal ||i_lbu_signal) begin
                     //     lsu_size <= 2'b00;
                     // end else if (i_sh_signal || i_lh_signal || i_lhu_signal) begin
