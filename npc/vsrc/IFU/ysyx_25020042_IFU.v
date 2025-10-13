@@ -27,13 +27,15 @@ export "DPI-C" function get_instruction;
     endfunction
 
 localparam RIDLE = 1'b0;
-localparam RWAIT = 1'b1;
+localparam RWAIT_READY = 1'b1;
 localparam ARIDLE = 1'b0;
 localparam ARWAIT_READY = 1'b1;
 
 reg Rstate;
 reg ARstate;
+/* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
+/* verilator lint_on UNUSEDSIGNAL */
 
 always @(posedge clock) begin
     if(reset) begin
@@ -74,7 +76,7 @@ always @(posedge clock) begin
         case(Rstate)
             RIDLE: begin
                 if(ifu_arready && ifu_arvalid) begin
-                    Rstate <= RWAIT;
+                    Rstate <= RWAIT_READY;
                 end
                 else begin
                     Rstate <= RIDLE;

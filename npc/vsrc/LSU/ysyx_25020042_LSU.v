@@ -28,7 +28,7 @@ module ysyx_25020042_LSU(
 
     input [31:0] lsu_rdata,
     input lsu_rvalid,
-    input [1:0] rresp,
+    input [1:0] lsu_rresp,
     output reg lsu_rready,
 
     output reg [31:0] lsu_awaddr,
@@ -51,8 +51,10 @@ localparam WAIT_READY = 2'b10;
 
 
 reg [1:0] state;
+/* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
 reg [1:0] bresp;
+/* verilator lint_on UNUSEDSIGNAL */
 
 
 
@@ -69,12 +71,12 @@ always @(posedge clock) begin
         lsu_valid <= 1'b0;
         lsu_arvalid <= 1'b0;
         lsu_awvalid <= 1'b0;
-        lsu_size <= 2'b0;
+        // lsu_size <= 2'b0;
         o_rdata <= 32'b0;
-        lsu_wen <= 1'b0;
+        // lsu_wen <= 1'b0;
         lsu_araddr <= 32'b0;
         lsu_awaddr <= 32'b0;
-        lsu_respReady <= 1'b0;
+        // lsu_respReady <= 1'b0;
         lsu_rready <= 1'b0;
         lsu_wdata <= 32'b0;
         lsu_wstrb <= 4'b0;
@@ -93,7 +95,6 @@ always @(posedge clock) begin
                 if(ifu_valid && (wen || ren)) begin
                     state <= WAIT_READY;
                     lsu_ready <= 1'b1;
-                    lsu_wen <= wen;
                     // 当前仿真环境不需要移位
                     if (i_data >= 32'h8000_0000 && i_data <= 32'h8FFF_FFFF) begin
                         lsu_wdata <= i_src2;
@@ -184,6 +185,7 @@ always @(posedge clock) begin
                 end
                 else if (lsu_bvalid) begin
                     lsu_bready <= 1'b1;
+                    lsu_valid <= 1'b1;
                     bresp <= lsu_bresp;
                     state <= IDLE;
                 end
