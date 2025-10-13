@@ -50,7 +50,7 @@ always @(posedge clock) begin
                 end
                 else begin
                     state <= IDLE;
-                    if(wbu_ready || lsu_ready && ifu_valid) begin
+                    if((wbu_ready || lsu_ready) && ifu_valid) begin
                         ifu_valid <= 1'b0;
                     end
                 end   
