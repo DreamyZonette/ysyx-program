@@ -333,7 +333,7 @@ ysyx_25020042_gpr gpr_u(
 );
 
 endmodule
-
+/* verilator lint_off DECLFILENAME */
 module ysyx_25020042_IFU(
     input clock,
     input reset,
@@ -2275,4 +2275,4 @@ always @(posedge clock) begin
 end
 
 endmodule
-
+/* verilator lint_on DECLFILENAME */
