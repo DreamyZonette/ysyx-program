@@ -964,8 +964,8 @@ endmodule
 
 module ysyx_25020042_IDU (
     input   [31:0]  i_inst,
-    output wire [31:0]  o_imm,
-    output wire [31:0]  o_offset,
+    output reg [31:0]  o_imm,
+    output reg [31:0]  o_offset,
     output wire [5:0]   o_shamt,
     output     [3:0]  o_wmask,
     output     [11:0]  o_csr_addr,
