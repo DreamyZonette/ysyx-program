@@ -668,7 +668,7 @@ end
                           (i_bltu_signal & B_unsigned_less_than) |
                           (i_bgeu_signal & (B_unsigned_greater_than | B_unsigned_equal));
 
-  wire overflow;    
+//   wire overflow;    
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
   //adder adder_u (
@@ -1317,8 +1317,8 @@ module ysyx_25020042_Btype (
     wire [11:0] offset;
     wire [6:0] opcode;
     wire [2:0] fun1;
-    reg sign_extended;
-    reg zero_extended;
+    // reg sign_extended;
+    // reg zero_extended;
     reg unknown_intstruction;
 
     assign opcode  = i_inst[6:0];
@@ -1393,8 +1393,8 @@ module ysyx_25020042_Itype (
     wire [4:0] rd;
     wire [6:0] shamt_detect;
     wire [11:0] csr_addr;
-    reg sign_extended;
-    reg zero_extended;
+    // reg sign_extended;
+    // reg zero_extended;
     reg [4:0] jalr_rd;
     reg shamt_signal;
     reg unknown_intstruction;
@@ -1627,8 +1627,8 @@ module ysyx_25020042_Stype (
     wire [11:0] imm;
     wire [2:0] fun;
     wire [6:0] opcode;
-    reg sign_extended;
-    reg zero_extended;
+    // reg sign_extended;
+    // reg zero_extended;
     reg unknown_intstruction;
 
     assign o_imm = { {20{imm[11]}}, imm};
