@@ -712,12 +712,12 @@ assign signed_greater_than = $signed(data1) > $signed(data2);
 // // 实例化第二个加法器，用于计算B指令
 //     wire [31:0] cp_result;
 //     wire B_overflow;
-//     wire B_unsigned_less_than;
-//     wire B_signed_less_than;
-//     wire B_unsigned_greater_than;
-//     wire B_signed_greater_than;
-//     wire B_signed_equal;
-//     wire B_unsigned_equal;
+    wire B_unsigned_less_than;
+    wire B_signed_less_than;
+    wire B_unsigned_greater_than;
+    wire B_signed_greater_than;
+    wire B_signed_equal;
+    wire B_unsigned_equal;
 //   adder adder_u_2 (
 //     .Add(1'b0),
 //     .x(i_src1),
