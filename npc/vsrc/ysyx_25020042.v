@@ -73,7 +73,9 @@
     wire csrrw_signal;
     wire ecall_signal;
     wire mret_signal;
+    /* verilator lint_off UNUSEDSIGNAL */
     wire unknown_signal;
+    /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] wdata;
     wire [31:0] imm;
     wire [31:0] src1;
