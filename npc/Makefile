@@ -27,7 +27,7 @@ LDFLAGS := -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
 
 VERILATOR = verilator
-ARGS ?= -b
+ARGS ?=  
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
 
 
