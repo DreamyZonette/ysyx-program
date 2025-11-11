@@ -551,7 +551,7 @@ module ysyx_25020042_alu (
     input             i_ecall_signal,
     input             i_mret_signal,
     output wire       o_B_jump_signal,
-    output wire [31:0] o_data
+    output reg [31:0] o_data
     );
 
     wire [2:0] ALUctrl;
