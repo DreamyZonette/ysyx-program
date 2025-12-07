@@ -2,6 +2,7 @@ module clint(
     input clock,
     input reset,
     // axi 握手信号
+    /* verilator lint_off UNUSEDSIGNAL */
     input [31:0] slave_araddr,
     input slave_arvalid,
     output reg slave_arready,
@@ -23,6 +24,7 @@ module clint(
     output reg slave_bvalid,
     input slave_bready,
     output reg [1:0] slave_bresp
+    /* verilator lint_on UNUSEDSIGNAL */
 );
 
 
