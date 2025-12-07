@@ -122,6 +122,15 @@ module axi_arbiter (
             io_ifu_rdata = io_rdata;
             io_ifu_rvalid = io_rvalid;
             io_ifu_rresp = io_rresp;
+
+            io_lsu_arready = 0;
+            io_lsu_rdata = 0;
+            io_lsu_rvalid = 0;
+            io_lsu_rresp = 0;
+            io_lsu_awready = 0;
+            io_lsu_wready = 0;
+            io_lsu_bvalid = 0;
+            io_lsu_bresp = 0;
             
         end
         else if (state == ARB_LSU) begin
@@ -143,6 +152,11 @@ module axi_arbiter (
             io_lsu_wready = io_wready;
             io_lsu_bvalid = io_bvalid;
             io_lsu_bresp = io_bresp;
+
+            io_ifu_arready = 0;
+            io_ifu_rdata = 0;
+            io_ifu_rvalid = 0;
+            io_ifu_rresp = 0;
         end
         else begin
             io_araddr = 0;
