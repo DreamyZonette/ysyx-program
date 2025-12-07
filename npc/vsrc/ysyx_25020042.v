@@ -1014,9 +1014,9 @@ module ysyx_25020042_IDU (
     output  o_ecall_signal,
     output  o_mret_signal,
     output  o_unknown_signal,
-    output wire [4:0] rd,
-    output wire [4:0] rs1,
-    output wire [4:0] rs2
+    output reg [4:0] rd,
+    output reg [4:0] rs1,
+    output reg [4:0] rs2
     );
 
     wire [6:0]  opcode;
