@@ -99,6 +99,9 @@ module axi_arbiter (
                         state <= ARB_IFU;
                     end
                 end
+                default: begin
+                    state <= ARB_IDLE;
+                end
             endcase      
         end
     end
