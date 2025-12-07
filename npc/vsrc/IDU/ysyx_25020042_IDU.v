@@ -1,7 +1,7 @@
 module ysyx_25020042_IDU (
     input   [31:0]  i_inst,
-    output wire [31:0]  o_imm,
-    output wire [31:0]  o_offset,
+    output reg [31:0]  o_imm,
+    output reg [31:0]  o_offset,
     output wire [5:0]   o_shamt,
     output     [3:0]  o_wmask,
     output     [11:0]  o_csr_addr,
@@ -48,9 +48,9 @@ module ysyx_25020042_IDU (
     output  o_ecall_signal,
     output  o_mret_signal,
     output  o_unknown_signal,
-    output wire [4:0] rd,
-    output wire [4:0] rs1,
-    output wire [4:0] rs2
+    output reg [4:0] rd,
+    output reg [4:0] rs1,
+    output reg [4:0] rs2
     );
 
     wire [6:0]  opcode;
