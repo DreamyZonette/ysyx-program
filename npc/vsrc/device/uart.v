@@ -1,8 +1,9 @@
 module uart(
     input clock,
+    /* verilator lint_off UNUSEDSIGNAL */
     input reset,
     // axi 握手信号
-    /* verilator lint_off UNUSEDSIGNAL */
+    
     input [31:0] slave_araddr,
     input slave_arvalid,
     output reg slave_arready,
