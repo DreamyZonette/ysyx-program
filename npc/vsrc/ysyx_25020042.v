@@ -160,6 +160,28 @@
     wire        io_lsu_bready;
     wire [1:0]  io_lsu_bresp;
 
+    wire [31:0] io_araddr;
+    wire        io_arvalid;
+    wire        io_arready;
+
+    wire [31:0] io_rdata;
+    wire        io_rvalid;
+    wire [1:0]  io_rresp;
+    wire        io_rready;
+
+    wire [31:0] io_awaddr;
+    wire        io_awvalid;
+    wire        io_awready;
+
+    wire [31:0] io_wdata;
+    wire [3:0]  io_wstrb;
+    wire        io_wvalid;
+    wire        io_wready;
+
+    wire        io_bvalid;
+    wire        io_bready;
+    wire [1:0]  io_bresp;
+
 //------------------------------------------
 // PC实例化
 //------------------------------------------
@@ -202,32 +224,32 @@ ysyx_25020042_IFU IFU_u (
 //------------------------------------------
 // IFU访存设备实例化
 //------------------------------------------
-ysyx_25020042_mem mem_u_2 (
-    .clock(clock),
-    // axi 握手信号
-    .slave_araddr(io_ifu_araddr),
-    .slave_arvalid(io_ifu_arvalid),
-    .slave_arready(io_ifu_arready),
+// ysyx_25020042_mem mem_u_2 (
+//     .clock(clock),
+//     // axi 握手信号
+//     .slave_araddr(io_ifu_araddr),
+//     .slave_arvalid(io_ifu_arvalid),
+//     .slave_arready(io_ifu_arready),
 
-    .slave_rdata(io_ifu_rdata),
-    .slave_rvalid(io_ifu_rvalid),
-    .slave_rresp(io_ifu_rresp),
-    .slave_rready(io_ifu_rready),
-/* verilator lint_off PINCONNECTEMPTY */
-    .slave_awaddr(),
-    .slave_awvalid(),
-    .slave_awready(),
+//     .slave_rdata(io_ifu_rdata),
+//     .slave_rvalid(io_ifu_rvalid),
+//     .slave_rresp(io_ifu_rresp),
+//     .slave_rready(io_ifu_rready),
+// /* verilator lint_off PINCONNECTEMPTY */
+//     .slave_awaddr(),
+//     .slave_awvalid(),
+//     .slave_awready(),
 
-    .slave_wdata(),
-    .slave_wstrb(),
-    .slave_wvalid(),
-    .slave_wready(),
+//     .slave_wdata(),
+//     .slave_wstrb(),
+//     .slave_wvalid(),
+//     .slave_wready(),
 
-    .slave_bvalid(),
-    .slave_bready(),
-    .slave_bresp()
-    /* verilator lint_on PINCONNECTEMPTY */
-);
+//     .slave_bvalid(),
+//     .slave_bready(),
+//     .slave_bresp()
+//     /* verilator lint_on PINCONNECTEMPTY */
+// );
 //------------------------------------------
 // IDU实例化
 //------------------------------------------
@@ -421,33 +443,94 @@ ysyx_25020042_LSU LSU_u (
     .lsu_bready(io_lsu_bready),
     .lsu_bresp(io_lsu_bresp)
 );
+
+//------------------------------------------
+// axi  仲裁器模块实例化
+//------------------------------------------
+axi_arbiter axi_arbiter_u (
+    .clock(clock),
+    .reset(reset),
+
+    .io_lsu_araddr(io_lsu_araddr),
+    .io_lsu_arvalid(io_lsu_arvalid),
+    .io_lsu_arready(io_lsu_arready),
+
+    .io_lsu_rdata(io_lsu_rdata),
+    .io_lsu_rvalid(io_lsu_rvalid),
+    .io_lsu_rresp(io_lsu_rresp),
+    .io_lsu_rready(io_lsu_rready),
+    .io_lsu_awaddr(io_lsu_awaddr),
+    .io_lsu_awvalid(io_lsu_awvalid),
+    .io_lsu_awready(io_lsu_awready),
+
+    .io_lsu_wdata(io_lsu_wdata),
+    .io_lsu_wstrb(io_lsu_wstrb),
+    .io_lsu_wvalid(io_lsu_wvalid),
+    .io_lsu_wready(io_lsu_wready),
+
+    .io_lsu_bvalid(io_lsu_bvalid),
+    .io_lsu_bready(io_lsu_bready),
+    .io_lsu_bresp(io_lsu_bresp),
+
+    .io_ifu_araddr(io_ifu_araddr),
+    .io_ifu_arvalid(io_ifu_arvalid),
+    .io_ifu_arready(io_ifu_arready),
+
+    .io_ifu_rdata(io_ifu_rdata),
+    .io_ifu_rvalid(io_ifu_rvalid),
+    .io_ifu_rresp(io_ifu_rresp),
+    .io_ifu_rready(io_ifu_rready),
+
+    .io_araddr(io_araddr),
+    .io_arvalid(io_arvalid),
+    .io_arready(io_arready),
+
+    .io_rdata(io_rdata),
+    .io_rvalid(io_rvalid),
+    .io_rresp(io_rresp),
+    .io_rready(io_rready),
+
+    .io_awaddr(io_awaddr),
+    .io_awvalid(io_awvalid),
+    .io_awready(io_awready),
+
+    .io_wdata(io_wdata),
+    .io_wstrb(io_wstrb),
+    .io_wvalid(io_wvalid),
+    .io_wready(io_wready),
+
+    .io_bvalid(io_bvalid),
+    .io_bready(io_bready),
+    .io_bresp(io_bresp)
+);
+
 //------------------------------------------
 // LSU访存模块实例化
 //------------------------------------------
 ysyx_25020042_mem mem_u_1 (
     .clock(clock),
     // axi 握手信号
-    .slave_araddr(io_lsu_araddr),
-    .slave_arvalid(io_lsu_arvalid),
-    .slave_arready(io_lsu_arready),
+    .slave_araddr(io_araddr),
+    .slave_arvalid(io_arvalid),
+    .slave_arready(io_arready),
 
-    .slave_rdata(io_lsu_rdata),
-    .slave_rvalid(io_lsu_rvalid),
-    .slave_rresp(io_lsu_rresp),
-    .slave_rready(io_lsu_rready),
+    .slave_rdata(io_rdata),
+    .slave_rvalid(io_rvalid),
+    .slave_rresp(io_rresp),
+    .slave_rready(io_rready),
 
-    .slave_awaddr(io_lsu_awaddr),
-    .slave_awvalid(io_lsu_awvalid),
-    .slave_awready(io_lsu_awready),
+    .slave_awaddr(io_awaddr),
+    .slave_awvalid(io_awvalid),
+    .slave_awready(io_awready),
 
-    .slave_wdata(io_lsu_wdata),
-    .slave_wstrb(io_lsu_wstrb),
-    .slave_wvalid(io_lsu_wvalid),
-    .slave_wready(io_lsu_wready),
+    .slave_wdata(io_wdata),
+    .slave_wstrb(io_wstrb),
+    .slave_wvalid(io_wvalid),
+    .slave_wready(io_wready),
 
-    .slave_bvalid(io_lsu_bvalid),
-    .slave_bready(io_lsu_bready),
-    .slave_bresp(io_lsu_bresp)
+    .slave_bvalid(io_bvalid),
+    .slave_bready(io_bready),
+    .slave_bresp(io_bresp)
 );
 //------------------------------------------
 // CSR实例化
