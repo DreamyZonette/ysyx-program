@@ -47,7 +47,7 @@ static void convert_timestamp_to_calendar(uint64_t seconds, AM_TIMER_RTC_T *rtc)
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
- uint64_t elapsed_seconds = (am_get_time() - base_time) / 5000000;
+ uint64_t elapsed_seconds = (am_get_time() - base_time) / 10000000;
     uint64_t current_seconds = base_rtc + elapsed_seconds;
     
     // 转换为日历时间
