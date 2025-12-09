@@ -10,7 +10,7 @@ $(FILE).txt: $(FILE).elf
 	$(OBJDUMP) -d $(FILE).elf > $(FILE).txt
 	
 $(FILE).elf: $(FILE).c
-	$(GCC) -nostdlib -ffreestanding -e _start -march=rv32em_zicsr -mabi=ilp32e  -o $(FILE).elf $(FILE).c
+	$(GCC) -nostdlib -ffreestanding -e _start -march=rv32em_zicsr -mabi=ilp32e -Os -o $(FILE).elf $(FILE).c
 
 .PHONY: clean
 clean:
