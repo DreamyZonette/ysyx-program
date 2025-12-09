@@ -207,15 +207,11 @@ always @(posedge clock) begin
                 end
             end
             WAIT: begin
-                
+                lsu_awvalid <= 1'b0;
+                lsu_wvalid <= 1'b0;
                 if(lsu_ready ) begin
                     lsu_ready <= 1'b0;
                 end
-                
-                // if(lsu_reqReady) begin
-                //     lsu_arvalid <= 1'b0;
-                // end
-
                 if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
                     lsu_rready <= 1'b1;
                     lsu_valid <= 1'b1;
@@ -235,8 +231,8 @@ always @(posedge clock) begin
                     lsu_valid <= 1'b1;
                     bresp <= lsu_bresp;
                     state <= IDLE;
-                    lsu_awvalid <= 1'b0;
-                    lsu_wvalid <= 1'b0;
+                    // lsu_awvalid <= 1'b0;
+                    // lsu_wvalid <= 1'b0;
                 end
                 else begin 
                     state <= WAIT;
