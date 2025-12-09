@@ -201,6 +201,7 @@ module axi_arbiter (
             io_awlen = io_lsu_awlen;
             io_awsize = io_lsu_awsize;
             io_awburst = io_lsu_awburst;
+            io_awid = io_lsu_awid;
             io_wdata = io_lsu_wdata;
             io_wstrb = io_lsu_wstrb;
             io_wvalid = io_lsu_wvalid;
