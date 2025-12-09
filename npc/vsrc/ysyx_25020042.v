@@ -32,6 +32,7 @@
         input             io_master_rlast  ,
         input   [3:0]     io_master_rid    ,
         /* verilator lint_off UNDRIVEN */
+        /* verilator lint_off UNUSEDSIGNAL */
         output            io_slave_awready ,
         input             io_slave_awvalid ,
         input   [31:0]    io_slave_awaddr  ,
@@ -62,6 +63,7 @@
         output            io_slave_rlast   ,
         output  [3:0]     io_slave_rid     
     /* verilator lint_on UNDRIVEN */
+    /* verilator lint_on UNUSEDSIGNAL */
     );
 `ifdef VERILATOR
     import "DPI-C" function void dpi_ebreak();
