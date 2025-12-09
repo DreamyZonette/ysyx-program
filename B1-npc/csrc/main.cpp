@@ -54,7 +54,6 @@ void npc_engine_start() {
 }
 
 int main(int argc, char *argv[]){
-    Verilated::commandArgs(argc, argv);
     sim_init();
     
     init_monitor(argc, argv);

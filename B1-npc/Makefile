@@ -1,4 +1,4 @@
-TOP_NAME = ysyxSoCFull
+TOP_NAME = ysyx_25020042
 IMG ?= /home/long/ysyx-workbench/npc/demo/add-minirv-npc.bin
 #IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
@@ -10,24 +10,19 @@ TEST ?=
 TEST_OBJ = $(shell find $(VPATH) -name $(TEST).v)
 VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
-SOC_HOME = /home/long/ysyx-workbench/ysyxSoC
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 
 VSRCS := $(shell find $(VPATH) -name *.v)
-VSRCS += $(shell find $(SOC_HOME)/perip -name *.v)
-VSRCS += $(SOC_HOME)/build/ysyxSoCFull.v
 CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
 
 CFLAGS :=  
 CFLAGS += -CFLAGS "$(INCLUDES)" 
 CFLAGS += -CFLAGS -fpermissive
-VFLAGS := -Wall --cc --exe --build -j 0 --trace
-VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
+VFLAGS := -Wall --cc --exe -I$(VPATH) --build -j 0 --trace
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
-VFLAGS += --timescale "1ns/1ns" --no-timing
 LDFLAGS := -LDFLAGS -lreadline -LDFLAGS -ltinfo
 LDFLAGS += -LDFLAGS -lSDL2
 
