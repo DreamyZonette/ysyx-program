@@ -1,5 +1,5 @@
 TOP_NAME = ysyxSoCFull
-IMG ?= /home/long/ysyx-workbench/npc/demo/add-minirv-npc.bin
+IMG ?= /home/long/ysyx-workbench/npc/demo/tests/char-test.bin
 #IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
