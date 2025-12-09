@@ -16,7 +16,7 @@ VerilatedContext* contextp;
 #if CONFIG_WAVE
 VerilatedVcdC* tfp;
 #endif
-Vysyx_25020042* top;
+VysyxSoCFull* top;
 
 
 void sim_init(){
@@ -24,13 +24,13 @@ void sim_init(){
     #if CONFIG_WAVE
     tfp = new VerilatedVcdC;
     #endif
-    top = new Vysyx_25020042;
+    top = new VysyxSoCFull;
     #if CONFIG_WAVE
     contextp->traceEverOn(true);
     top->trace(tfp,0);
     tfp->open("/home/long/ysyx-workbench/npc/build/wave.vcd");
     #endif
-    svSetScope(svGetScopeFromName("TOP.ysyx_25020042.IFU_u"));
+    svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
 }
 
 void sim_exit(){
