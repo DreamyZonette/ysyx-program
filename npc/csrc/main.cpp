@@ -48,7 +48,7 @@ void npc_engine_start() {
     step_and_dump_wave();
     top->clock = 1;
     step_and_dump_wave();
-    int n = 10;
+    int n = 17;
     while (n--) {
         top->clock ^= 1;
         step_and_dump_wave();
