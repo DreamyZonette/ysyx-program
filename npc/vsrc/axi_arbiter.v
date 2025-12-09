@@ -4,58 +4,84 @@ module axi_arbiter (
     // lsu
     input [31:0]       io_lsu_araddr,
     input              io_lsu_arvalid,
+    input      [3:0]   io_lsu_arid,
+    input      [7:0]   io_lsu_arlen,
+    input      [2:0]   io_lsu_arsize,
+    input      [1:0]   io_lsu_arburst,    
     output reg         io_lsu_arready ,
 
     output reg [31:0]  io_lsu_rdata ,
     output reg         io_lsu_rvalid ,
     output reg [1:0]   io_lsu_rresp ,
+    output reg [3:0]   io_lsu_rid,
+    output reg         io_lsu_rlast,
     input              io_lsu_rready ,
 
     input [31:0]       io_lsu_awaddr ,
     input              io_lsu_awvalid ,
+    input      [3:0]   io_lsu_awid,
+    input      [7:0]   io_lsu_awlen,
+    input      [2:0]   io_lsu_awsize,
+    input      [1:0]   io_lsu_awburst,    
     output reg         io_lsu_awready ,
 
     input [31:0]       io_lsu_wdata ,
     input [3:0]        io_lsu_wstrb ,
     input              io_lsu_wvalid ,
+    input              io_lsu_wlast,
     output reg         io_lsu_wready ,
 
     output reg         io_lsu_bvalid ,
     input              io_lsu_bready ,
     output reg [1:0]   io_lsu_bresp ,
+    output reg [3:0]   io_lsu_bid,
 
     //IFU
     input [31:0]       io_ifu_araddr,
     input              io_ifu_arvalid,
     output reg         io_ifu_arready,
+    input [7:0]        io_ifu_arlen,
+    input [3:0]        io_ifu_arid,
+    input [1:0]        io_ifu_arburst,
+    input [2:0]        io_ifu_arsize,
 
     output reg [31:0]  io_ifu_rdata,
     output reg         io_ifu_rvalid,
     output reg [1:0]   io_ifu_rresp,
     input              io_ifu_rready,
+    output reg         io_ifu_rlast,
+    output reg [3:0]   io_ifu_rid,
 
     // out
-    output reg [31:0]  io_araddr,
-    output reg         io_arvalid,
-    input              io_arready,
-
-    input [31:0]       io_rdata,
-    input              io_rvalid,
-    input [1:0]        io_rresp,
-    output reg         io_rready,
-
-    output reg [31:0]  io_awaddr,
-    output reg         io_awvalid,
     input              io_awready,
-
-    output reg [31:0]  io_wdata,
-    output reg [3:0]   io_wstrb,
-    output reg         io_wvalid,
-    input              io_wready,
-
-    input              io_bvalid,
-    output reg         io_bready,
-    input [1:0]        io_bresp
+    output reg         io_awvalid,
+    output reg [31:0]  io_awaddr ,
+    output reg [3:0]   io_awid   ,
+    output reg [7:0]   io_awlen  ,
+    output reg [2:0]   io_awsize ,
+    output reg [1:0]   io_awburst,
+    input              io_wready ,
+    output reg         io_wvalid ,
+    output reg [31:0]  io_wdata  ,
+    output reg [3:0]   io_wstrb  ,
+    output reg         io_wlast  ,
+    output reg         io_bready ,
+    input              io_bvalid ,
+    input   [1:0]      io_bresp  ,
+    input   [3:0]      io_bid    ,
+    input              io_arready,
+    output reg         io_arvalid,
+    output reg [31:0]  io_araddr ,
+    output reg [3:0]   io_arid   ,
+    output reg [7:0]   io_arlen  ,
+    output reg [2:0]   io_arsize ,
+    output reg [1:0]   io_arburst,
+    output reg         io_rready ,
+    input              io_rvalid ,
+    input   [1:0]      io_rresp  ,
+    input   [31:0]     io_rdata  ,
+    input              io_rlast  ,
+    input   [3:0]      io_rid    
 );
 
     // arbiter
@@ -107,41 +133,78 @@ module axi_arbiter (
     end
 
     always @(*) begin
+        io_araddr = 0;
+        io_arvalid = 0;
+        io_arid = 0;
+        io_arlen = 0;
+        io_arsize = 0;
+        io_arburst = 0;
+        io_rready = 0;
+        io_awaddr = 0;
+        io_awvalid = 0;
+        io_awid = 0;
+        io_awlen = 0;
+        io_awsize = 0;
+        io_awburst = 0;
+        io_wdata = 0;
+        io_wstrb = 0;
+        io_wvalid = 0;
+        io_wlast = 0;
+        io_bready = 0;
+
+        io_lsu_arready = 0;
+        io_lsu_rdata = 0;
+        io_lsu_rvalid = 0;
+        io_lsu_rresp = 0;
+        io_lsu_awready = 0;
+        io_lsu_wready = 0;
+        io_lsu_bvalid = 0;
+        io_lsu_bresp = 0;
+        io_lsu_rid = 0;
+        io_lsu_rlast = 0;
+        io_lsu_bid = 0;
+
+        io_ifu_arready = 0;
+        io_ifu_rdata = 0;
+        io_ifu_rvalid = 0;
+        io_ifu_rresp = 0;
+        io_ifu_rlast = 0;
+        io_ifu_rid = 0;
+        
         if (state == ARB_IFU) begin
             io_araddr = io_ifu_araddr;
             io_arvalid = io_ifu_arvalid;
             io_rready = io_ifu_rready;
-            io_awaddr = 0;
-            io_awvalid = 0;
-            io_wdata = 0;
-            io_wstrb = 0;
-            io_wvalid = 0;
-            io_bready = 0;
+            io_arid = io_ifu_arid;
+            io_arlen = io_ifu_arlen;
+            io_arsize = io_ifu_arsize;
+            io_arburst = io_ifu_arburst;
 
             io_ifu_arready = io_arready;
             io_ifu_rdata = io_rdata;
             io_ifu_rvalid = io_rvalid;
             io_ifu_rresp = io_rresp;
-
-            io_lsu_arready = 0;
-            io_lsu_rdata = 0;
-            io_lsu_rvalid = 0;
-            io_lsu_rresp = 0;
-            io_lsu_awready = 0;
-            io_lsu_wready = 0;
-            io_lsu_bvalid = 0;
-            io_lsu_bresp = 0;
+            io_ifu_rlast = io_rlast;
+            io_ifu_rid = io_rid;
             
         end
         else if (state == ARB_LSU) begin
             io_araddr = io_lsu_araddr;
             io_arvalid = io_lsu_arvalid;
+            io_arid = io_lsu_arid;
+            io_arlen = io_lsu_arlen;
+            io_arsize = io_lsu_arsize;
+            io_arburst = io_lsu_arburst;
             io_rready = io_lsu_rready;
             io_awaddr = io_lsu_awaddr;
             io_awvalid = io_lsu_awvalid;
+            io_awlen = io_lsu_awlen;
+            io_awsize = io_lsu_awsize;
+            io_awburst = io_lsu_awburst;
             io_wdata = io_lsu_wdata;
             io_wstrb = io_lsu_wstrb;
             io_wvalid = io_lsu_wvalid;
+            io_wlast = io_lsu_wlast;
             io_bready = io_lsu_bready;
 
             io_lsu_arready = io_arready;
@@ -152,36 +215,10 @@ module axi_arbiter (
             io_lsu_wready = io_wready;
             io_lsu_bvalid = io_bvalid;
             io_lsu_bresp = io_bresp;
-
-            io_ifu_arready = 0;
-            io_ifu_rdata = 0;
-            io_ifu_rvalid = 0;
-            io_ifu_rresp = 0;
-        end
-        else begin
-            io_araddr = 0;
-            io_arvalid = 0;
-            io_rready = 0;
-            io_awaddr = 0;
-            io_awvalid = 0;
-            io_wdata = 0;
-            io_wstrb = 0;
-            io_wvalid = 0;
-            io_bready = 0;
-
-            io_lsu_arready = 0;
-            io_lsu_rdata = 0;
-            io_lsu_rvalid = 0;
-            io_lsu_rresp = 0;
-            io_lsu_awready = 0;
-            io_lsu_wready = 0;
-            io_lsu_bvalid = 0;
-            io_lsu_bresp = 0;
-
-            io_ifu_arready = 0;
-            io_ifu_rdata = 0;
-            io_ifu_rvalid = 0;
-            io_ifu_rresp = 0;
+            io_lsu_rid = io_rid;
+            io_lsu_rlast = io_rlast;
+            io_lsu_bid = io_bid;
+            
         end
     end
 endmodule

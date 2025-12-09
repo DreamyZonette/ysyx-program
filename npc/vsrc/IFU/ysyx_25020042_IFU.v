@@ -1,21 +1,28 @@
 module ysyx_25020042_IFU(
-    input clock,
-    input reset,
-    input [31:0] i_pc,
-    input pc_valid,
-    input lsu_ready,
-    input wbu_ready,
-    output reg ifu_valid,
-    output reg [31:0] o_instruction,
+    input                  clock,
+    input                  reset,
+    input      [31:0]      i_pc,
+    input                  pc_valid,
+    input                  lsu_ready,
+    input                  wbu_ready,
+    output reg             ifu_valid,
+    output reg [31:0]      o_instruction,
 
-    output reg [31:0] ifu_araddr,
-    output reg ifu_arvalid,
-    input ifu_arready,
-    input [31:0] ifu_rdata,
-    input ifu_rvalid,
-    output reg ifu_rready,
-    input [1:0] ifu_rresp
+    output reg [31:0]      ifu_araddr,
+    output reg             ifu_arvalid,
+    input                  ifu_arready,
+    output reg [7:0]       ifu_arlen,
+    output reg [3:0]       ifu_arid,
+    output reg [1:0]       ifu_arburst,
+    output reg [2:0]       ifu_arsize,
+    input      [31:0]      ifu_rdata,
+    input                  ifu_rvalid,
+    output reg             ifu_rready,
+    input      [1:0]       ifu_rresp,
+    input                  ifu_rlast,
+    input      [3:0]       ifu_rid
 );
+`ifdef VERILATOR
 export "DPI-C" function get_pc;
 export "DPI-C" function get_instruction;
 
@@ -25,6 +32,7 @@ export "DPI-C" function get_instruction;
     function int unsigned get_instruction();   
         return o_instruction;
     endfunction
+`endif
 
 localparam RIDLE = 1'b0;
 localparam RWAIT_READY = 1'b1;
@@ -47,6 +55,10 @@ always @(posedge clock) begin
         o_instruction <= 32'h0;
         ifu_rready <= 1'b0;
         rresp <= 2'b00;
+        ifu_arid <= 4'h0;
+        ifu_arsize <= 3'b010;
+        ifu_arburst <= 2'b00;
+        ifu_arlen <= 8'h0;
     end
     else begin
         // 地址通道
@@ -65,6 +77,7 @@ always @(posedge clock) begin
                 if(ifu_arready) begin
                     ifu_arvalid <= 1'b0;
                     ARstate <= ARIDLE;
+                    
                 end
                 else begin 
                     ARstate <= ARWAIT_READY;

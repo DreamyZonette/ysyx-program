@@ -23,11 +23,11 @@ module ysyx_25020042_mem(
     input slave_bready,
     output reg [1:0] slave_bresp
 );
-
+`ifdef VERILATOR
 import "DPI-C" function int pmem_read(input int addr, input int len);
 import "DPI-C" function void pmem_write(
     input int addr, int len, input int data);
-
+`endif
 
 reg [2:0] state;
 localparam IDLE = 3'd0;
@@ -53,7 +53,9 @@ always @(posedge clock) begin
             if (slave_arready) begin
                 slave_arready <= 1'b0;
             end
+            `ifdef VERILATOR
             slave_rdata <= pmem_read(slave_araddr, 4);
+            `endif
             slave_rvalid <= 1'b1;
             slave_rresp <= 2'b00;
             state <= READ_WAIT;
@@ -71,9 +73,11 @@ always @(posedge clock) begin
                 slave_awready <= 1'b0;
                 slave_wready <= 1'b0;
             end
+            `ifdef VERILATOR
             /* verilator lint_off WIDTHEXPAND */
             pmem_write(slave_awaddr, slave_wstrb, slave_wdata);
             /* verilator lint_on WIDTHEXPAND */
+            `endif
             state <= WRITE_WAIT;
             slave_bresp <= 2'b00;
             slave_bvalid <= 1'b1;

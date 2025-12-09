@@ -31,6 +31,7 @@ wire [31:0] mcycleh_wdata;
 // always @(posedge clock ) begin
 //          $display("当前模块的完整路径: %m");
 //     end
+`ifdef VERILATOR
 export "DPI-C" function get_mstatus_value;
 export "DPI-C" function get_mtvec_value;
 export "DPI-C" function get_mepc_value;
@@ -48,6 +49,7 @@ export "DPI-C" function get_mcause_value;
     function int unsigned get_mcause_value();   
         return o_mcause;
     endfunction
+`endif
 
 assign mstatus_wdata = (i_ecall_signal == 1'b1) ? i_mstatus_wdata : i_csr_wdata;
 assign mtvec_wdata   = (i_ecall_signal == 1'b1) ? i_mtvec_wdata   : i_csr_wdata;
