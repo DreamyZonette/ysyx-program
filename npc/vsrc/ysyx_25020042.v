@@ -353,7 +353,6 @@ axi_arbiter axi_arbiter_u (
     .io_ifu_rready(io_ifu_rready),
     .io_ifu_rid(io_ifu_rid),
     .io_ifu_rlast(io_ifu_rlast),
-    .io_ifu_rready (io_ifu_rready),
 
     .io_araddr(io_master_araddr),
     .io_arvalid(io_master_arvalid),
@@ -370,7 +369,6 @@ axi_arbiter axi_arbiter_u (
     .io_rready(io_master_rready),
     .io_rid(io_master_rid),
     .io_rlast(io_master_rlast),
-    .io_rready (io_master_rready),
 
     .io_awaddr(io_master_awaddr),
     .io_awvalid(io_master_awvalid),
@@ -814,7 +812,7 @@ ysyx_25020042_LSU LSU_u (
     .lsu_wstrb(io_lsu_wstrb),
     .lsu_wvalid(io_lsu_wvalid),
     .lsu_wready(io_lsu_wready),
-    .lsu_wid(io_lsu_wid),
+    .lsu_wlast(io_lsu_wlast),
 
     .lsu_bvalid(io_lsu_bvalid),
     .lsu_bready(io_lsu_bready),
