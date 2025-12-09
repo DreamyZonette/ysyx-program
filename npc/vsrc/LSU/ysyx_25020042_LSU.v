@@ -235,6 +235,8 @@ always @(posedge clock) begin
                     lsu_valid <= 1'b1;
                     bresp <= lsu_bresp;
                     state <= IDLE;
+                    lsu_awvalid <= 1'b0;
+                    lsu_wvalid <= 1'b0;
                 end
                 else begin 
                     state <= WAIT;
