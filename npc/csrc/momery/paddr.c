@@ -149,5 +149,5 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
   *data = (uint32_t)(0x100073);
-  assert(0); 
+  // assert(0); 
 }
