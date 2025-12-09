@@ -103,7 +103,7 @@ always @(posedge clock) begin
                 end 
             end
             RWAIT_READY: begin
-                if (ifu_rvalid) begin
+                if (ifu_rvalid & ifu_rlast & ifu_rid == ifu_arid) begin
                     ifu_rready <= 1'b1;
                     Rstate <= RIDLE;
                     ifu_valid <= 1'b1;

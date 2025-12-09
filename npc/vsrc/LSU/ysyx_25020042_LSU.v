@@ -208,7 +208,7 @@ always @(posedge clock) begin
             end
             WAIT: begin
                 
-                if(lsu_ready) begin
+                if(lsu_ready ) begin
                     lsu_ready <= 1'b0;
                 end
                 
@@ -216,7 +216,7 @@ always @(posedge clock) begin
                 //     lsu_arvalid <= 1'b0;
                 // end
 
-                if (lsu_rvalid) begin
+                if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
                     lsu_rready <= 1'b1;
                     lsu_valid <= 1'b1;
                     rresp <= lsu_rresp;
@@ -230,7 +230,7 @@ always @(posedge clock) begin
                         default: o_rdata <= 0;
                     endcase
                 end
-                else if (lsu_bvalid) begin
+                else if (lsu_bvalid & lsu_bid == lsu_awid) begin
                     lsu_bready <= 1'b1;
                     lsu_valid <= 1'b1;
                     bresp <= lsu_bresp;
