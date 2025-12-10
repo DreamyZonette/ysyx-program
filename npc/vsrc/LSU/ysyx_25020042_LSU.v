@@ -212,6 +212,7 @@ always @(posedge clock) begin
                 if(lsu_arready) begin
                     lsu_arvalid <= 1'b0;
                 end
+                
                 if(lsu_awready & lsu_wready) begin
                     lsu_awvalid <= 1'b0;
                     lsu_wvalid <= 1'b0;
