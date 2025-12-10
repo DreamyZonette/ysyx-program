@@ -111,7 +111,7 @@ always @(posedge clock) begin
                     lsu_bready <= 1'b0;
                 end
                 if(ifu_valid && (wen || ren)) begin
-                    state <= WAIT_READY;
+                    state <= WAIT;
                     lsu_ready <= 1'b1;
                     // // 当前仿真环境不需要移位
                     // if (i_data >= 32'h8000_0000 && i_data <= 32'h8FFF_FFFF) begin
@@ -192,23 +192,31 @@ always @(posedge clock) begin
                     end
                 end
             end
-            WAIT_READY: begin
+            // WAIT_READY: begin
+            //     if(lsu_arready) begin
+            //         lsu_arvalid <= 1'b0;
+            //         state <= WAIT;
+            //     end
+            //     else if(lsu_awready & lsu_wready) begin
+            //         lsu_awvalid <= 1'b0;
+            //         lsu_wvalid <= 1'b0;
+            //         state <= WAIT;
+            //     end
+            //     else begin 
+            //         state <= WAIT_READY;
+            //     end
+            // end
+            WAIT: begin
+                // lsu_awvalid <= 1'b0;
+                // lsu_wvalid <= 1'b0;
                 if(lsu_arready) begin
                     lsu_arvalid <= 1'b0;
-                    state <= WAIT;
                 end
                 else if(lsu_awready & lsu_wready) begin
                     lsu_awvalid <= 1'b0;
                     lsu_wvalid <= 1'b0;
-                    state <= WAIT;
                 end
-                else begin 
-                    state <= WAIT_READY;
-                end
-            end
-            WAIT: begin
-                // lsu_awvalid <= 1'b0;
-                // lsu_wvalid <= 1'b0;
+
                 if(lsu_ready ) begin
                     lsu_ready <= 1'b0;
                 end
