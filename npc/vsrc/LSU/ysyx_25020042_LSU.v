@@ -197,7 +197,7 @@ always @(posedge clock) begin
                     lsu_arvalid <= 1'b0;
                     state <= WAIT;
                 end
-                else if(lsu_awready && lsu_wready) begin
+                else if(lsu_awready & lsu_wready) begin
                     lsu_awvalid <= 1'b0;
                     lsu_wvalid <= 1'b0;
                     state <= WAIT;
@@ -207,8 +207,8 @@ always @(posedge clock) begin
                 end
             end
             WAIT: begin
-                lsu_awvalid <= 1'b0;
-                lsu_wvalid <= 1'b0;
+                // lsu_awvalid <= 1'b0;
+                // lsu_wvalid <= 1'b0;
                 if(lsu_ready ) begin
                     lsu_ready <= 1'b0;
                 end
