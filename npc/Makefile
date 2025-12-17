@@ -22,8 +22,8 @@ CSRCS += $(shell find $(CPATH) -name *.c)
 
 CFLAGS :=  
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-CFLAGS += -CFLAGS -fpermissive -CFLAGS --unbuffered
-VFLAGS :=  --cc --exe --build -j 0 --trace 
+CFLAGS += -CFLAGS -fpermissive -CFLAGS 
+VFLAGS :=  --cc --exe --build -j 0 --trace --unbuffered
 VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
