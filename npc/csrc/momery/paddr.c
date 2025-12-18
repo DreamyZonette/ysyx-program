@@ -8,7 +8,7 @@ static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
 
 void init_mem() {
   memset(mrom, rand(), CONFIG_MROM_SIZE);
-  Log("physical mrom area [%08x, %08x]", PMEM_LEFT, PMEM_RIGHT);
+  Log("physical mrom area [%08x, %08x]", MROM_LEFT, MROM_RIGHT);
 }
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
