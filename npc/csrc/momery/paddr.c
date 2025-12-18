@@ -3,8 +3,9 @@
 #include <device/mmio.h>
 
 #if CONFIG_YSYXSOC
-// 串口
 static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
+
+uint8_t* mrom_guest_to_host(paddr_t paddr) { return mrom + paddr - CONFIG_MROM_BASE; }
 
 void init_mem() {
   memset(mrom, rand(), CONFIG_MROM_SIZE);
@@ -13,8 +14,7 @@ void init_mem() {
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
-  uint8_t *raddr = addr - CONFIG_MROM_BASE + mrom;
-  *data = *(uint32_t *)(raddr);
+  *data = *(uint32_t *)(mrom_guest_to_host(addr));
 }
 
 #endif
