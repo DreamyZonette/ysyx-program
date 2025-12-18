@@ -3,9 +3,18 @@
 
 #include <common.h>
 
+#if CONFIG_YSYXSOC
+
+#define MROM_LEFT  ((paddr_t)CONFIG_MBASE)
+#define MROM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
+#define MROM_RESET_VECTOR (MROM_LEFT + CONFIG_PC_RESET_OFFSET)
+
+#endif
+
 #define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
 #define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
 #define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
+
 
 uint8_t* guest_to_host(paddr_t paddr);
 

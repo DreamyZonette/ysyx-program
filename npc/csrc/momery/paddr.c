@@ -2,15 +2,23 @@
 #include <memory/host.h> 
 #include <device/mmio.h>
 
-// #define CONFIG_SERIAL_MMIO 0xa00003f8
-// #define CONFIG_RTC_MMIO 0xa0000048
-// #define CONFIG_I8042_DATA_MMIO 0xa0000060
-// #define CONFIG_VGA_CTL_MMIO 0xa0000100
-// #define CONFIG_AUDIO_CTL_MMIO 0xa0000200
-// #define CONFIG_SDCARD_CTL_MMIO 0xa3000000
-// #define CONFIG_SB_ADDR 0xa1200000
-// #define CONFIG_FB_ADDR 0xa1000000
+#if CONFIG_YSYXSOC
 // 串口
+static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
+
+void init_mem() {
+  memset(mrom, rand(), CONFIG_MROM_SIZE);
+  Log("physical mrom area [%08x, %08x]", PMEM_LEFT, PMEM_RIGHT);
+}
+
+extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+extern "C" void mrom_read(int32_t addr, int32_t *data) { 
+  uint32_t *raddr = addr - CONFIG_MROM_BASE + mrom;
+  *data = *(raddr);
+}
+
+#endif
+
 #define SERIAL_PORT_LEFT      CONFIG_SERIAL_MMIO
 #define SERIAL_PORT_RIGHT    (CONFIG_SERIAL_MMIO + 7)
 // 时钟
@@ -145,11 +153,4 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   return;
   #endif
   out_of_bound(addr);
-}
-
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
-extern "C" void mrom_read(int32_t addr, int32_t *data) { 
-  *data = internal_pmem_read(addr + 0x60000000, 4);
-  // printf("mrom_read addr = 0x%08x  data = 0x%08x\n", addr, *data);
-  // assert(0); 
 }
