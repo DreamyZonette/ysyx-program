@@ -13,8 +13,8 @@ void init_mem() {
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
-  uint32_t *raddr = addr - CONFIG_MROM_BASE + mrom;
-  *data = *(raddr);
+  uint8_t *raddr = addr - CONFIG_MROM_BASE + mrom;
+  *data = *(uint32_t *)(raddr);
 }
 
 #endif
@@ -50,10 +50,12 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
+#if CONFIG_YSYXSOC
 void init_mem() {
   memset(pmem, rand(), CONFIG_MSIZE);
   Log("physical memory area [%08x, %08x]", PMEM_LEFT, PMEM_RIGHT);
 }
+#endif
 
 static word_t internal_pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
