@@ -5,8 +5,8 @@
 
 #if CONFIG_YSYXSOC
 
-#define MROM_LEFT  ((paddr_t)CONFIG_MBASE)
-#define MROM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
+#define MROM_LEFT  ((paddr_t)CONFIG_MROM_BASE)
+#define MROM_RIGHT ((paddr_t)CONFIG_MROM_BASE + CONFIG_MROM_SIZE - 1)
 #define MROM_RESET_VECTOR (MROM_LEFT + CONFIG_PC_RESET_OFFSET)
 
 #endif
