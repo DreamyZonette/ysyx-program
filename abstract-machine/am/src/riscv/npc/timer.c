@@ -7,12 +7,29 @@
 static uint64_t base_time = 0;
 static uint64_t base_rtc = 0;
 
+// static uint64_t am_get_time() {
+//   inl(RTC_ADDR + 4); // clear pending interrupts
+//   uint32_t hi, lo;
+//   lo = inl(RTC_ADDR);
+//   hi = inl(RTC_ADDR + 4);
+//   return ((uint64_t)hi << 32) | lo;
+// }
+#define CSR_MCYCLE   0xB00
+#define CSR_MCYCLEH  0xB80
+
 static uint64_t am_get_time() {
-  inl(RTC_ADDR + 4); // clear pending interrupts
-  uint32_t hi, lo;
-  lo = inl(RTC_ADDR);
-  hi = inl(RTC_ADDR + 4);
-  return ((uint64_t)hi << 32) | lo;
+  uint32_t lo, hi1, hi2;
+    uint64_t cycles;
+
+    do {
+        __asm__ __volatile__ ("csrr %0, %1" : "=r"(hi1) : "i"(CSR_MCYCLEH));
+        __asm__ __volatile__ ("csrr %0, %1" : "=r"(lo) : "i"(CSR_MCYCLE));
+        __asm__ __volatile__ ("csrr %0, %1" : "=r"(hi2) : "i"(CSR_MCYCLEH));
+    } while (hi1 != hi2);
+
+    cycles = ((uint64_t)hi1 << 32) | lo;
+    //printf("cycles: %ld\n", cycles);
+    return cycles;
 }
 
 void __am_timer_init() {
@@ -22,9 +39,7 @@ void __am_timer_init() {
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint64_t now = am_get_time();
-  uint64_t elapsed_seconds = (now - base_time) / 2;
-  uptime->us = elapsed_seconds;// (μs)
-  // uptime->us = now - base_time;// (μs)
+  uptime->us = now - base_time;// (μs)
 }
 
 static void convert_timestamp_to_calendar(uint64_t seconds, AM_TIMER_RTC_T *rtc) {
@@ -49,7 +64,7 @@ static void convert_timestamp_to_calendar(uint64_t seconds, AM_TIMER_RTC_T *rtc)
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
- uint64_t elapsed_seconds = (am_get_time() - base_time) / 2000000;
+ uint64_t elapsed_seconds = (am_get_time() - base_time) / 1000000;
     uint64_t current_seconds = base_rtc + elapsed_seconds;
     
     // 转换为日历时间

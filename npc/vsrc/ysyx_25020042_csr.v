@@ -28,9 +28,9 @@ wire [31:0] marchid_val;
 wire [31:0] mcycle_wdata;
 wire [31:0] mcycleh_wdata;
 
-// always @(posedge clock ) begin
-//          $display("当前模块的完整路径: %m");
-//     end
+// // always @(posedge clock ) begin
+// //          $display("当前模块的完整路径: %m");
+// //     end
 `ifdef VERILATOR
 export "DPI-C" function get_mstatus_value;
 export "DPI-C" function get_mtvec_value;
@@ -104,58 +104,14 @@ always @(*) begin
     
 end
 
-// ysyx_25020042_Reg #(32, 32'h1800)     mstatus  (clock, reset, mstatus_wdata , o_mstatus     ,  wen[0]);
-// ysyx_25020042_Reg #(32, 32'h0)        mtvec    (clock, reset, mtvec_wdata   , o_mtvec       ,  wen[1]);
-// ysyx_25020042_Reg #(32, 32'h0)        mepc     (clock, reset, mepc_wdata    , o_mepc        ,  wen[2]);
-// ysyx_25020042_Reg #(32, 32'h0)        mcause   (clock, reset, mcause_wdata  , o_mcause      ,  wen[3]);
-// ysyx_25020042_Reg #(32, 32'h0)        mcycle   (clock, reset, mcycle_wdata  , mcycle_val    ,  1'b1  ); 
-// ysyx_25020042_Reg #(32, 32'h0)        mcycleh  (clock, reset, mcycleh_wdata , mcycleh_val   ,  1'b1  ); 
-// ysyx_25020042_Reg #(32, 32'h79737978) mvendorid(clock, reset, 32'h79737978  , mvendorid_val ,  1'b0  ); 
-// ysyx_25020042_Reg #(32, 32'h017DC68A) marchid  (clock, reset, 32'h017DC68A  , marchid_val   ,  1'b0  ); 
+ysyx_25020042_Reg #(32, 32'h1800)     mstatus  (clock, reset, mstatus_wdata , o_mstatus     ,  wen[0]);
+ysyx_25020042_Reg #(32, 32'h0)        mtvec    (clock, reset, mtvec_wdata   , o_mtvec       ,  wen[1]);
+ysyx_25020042_Reg #(32, 32'h0)        mepc     (clock, reset, mepc_wdata    , o_mepc        ,  wen[2]);
+ysyx_25020042_Reg #(32, 32'h0)        mcause   (clock, reset, mcause_wdata  , o_mcause      ,  wen[3]);
+ysyx_25020042_Reg #(32, 32'h0)        mcycle   (clock, reset, mcycle_wdata  , mcycle_val    ,  1'b1  ); 
+ysyx_25020042_Reg #(32, 32'h0)        mcycleh  (clock, reset, mcycleh_wdata , mcycleh_val   ,  1'b1  ); 
+ysyx_25020042_Reg #(32, 32'h79737978) mvendorid(clock, reset, 32'h79737978  , mvendorid_val ,  1'b0  ); 
+ysyx_25020042_Reg #(32, 32'h017DC68A) marchid  (clock, reset, 32'h017DC68A  , marchid_val   ,  1'b0  ); 
 
-reg [31:0] mstatus;  
-reg [31:0] mtvec;    
-reg [31:0] mepc;     
-reg [31:0] mcause;   
-reg [31:0] mcycle;   
-reg [31:0] mcycleh;  
-reg [31:0] mvendorid;
-reg [31:0] marchid;  
-assign o_mstatus = mstatus;
-assign o_mtvec   = mtvec;
-assign o_mepc    = mepc;
-assign o_mcause  = mcause;
-assign mcycle_val = mcycle;
-assign mcycleh_val = mcycleh;
-assign mvendorid_val = mvendorid;
-assign marchid_val = marchid;
-always @(posedge clock) begin
-    if(reset) begin
-        mstatus   <= 32'h1800;
-        mtvec     <= 32'h0;
-        mepc      <= 32'h0;
-        mcause    <= 32'h0;
-        mcycle    <= 32'h0;
-        mcycleh   <= 32'h0;
-        mvendorid <= 32'h79737978;
-        marchid   <= 32'h017DC68A;
-    end
-    else begin
-        if(wen[0]) begin
-            mstatus   <= mstatus_wdata;
-        end
-        if(wen[1]) begin
-            mtvec     <= mtvec_wdata;
-        end
-        if(wen[2]) begin
-            mepc      <= mepc_wdata;
-        end
-        if(wen[3]) begin
-            mcause    <= mcause_wdata;
-        end
-        mcycle    <= mcycle_wdata;
-        mcycleh   <= mcycleh_wdata;
-    end
-end
 
 endmodule

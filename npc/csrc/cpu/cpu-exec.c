@@ -22,8 +22,8 @@ char p[128];
 int print_on = 0;
 CPU_state dut = {
   .gpr = {0},            // 所有寄存器初始化为0
-  .pc = 0x80000000,       // PC初始化为0x30000000
-  .next_pc = 0x80000000,
+  .pc = 0x30000000,       // PC初始化为0x30000000
+  .next_pc = 0x30000000,
   // .diff_mstatus = 0,
   // .diff_mepc = 0x80000000,
   // .diff_mtvec = 0x80000000,
@@ -57,9 +57,9 @@ static void trace_and_difftest() {
   int is_call = 0;
   int is_ret = 0;
 
-  uint32_t opcode = get_instruction() & 0x7F;
-  uint32_t rd = get_instruction() >> 7 & 0x1F;
-  uint32_t rs1 = (get_instruction()) >> 15 & 0x1F;
+  uint32_t opcode = top->de_inst & 0x7F;
+  uint32_t rd = (top->de_inst) >> 7 & 0x1F;
+  uint32_t rs1 = (top->de_inst) >> 15 & 0x1F;
  
 
   if ((opcode == 0x6F && rd == 1) ||  // JAL rd=x1
@@ -80,9 +80,9 @@ static void trace_and_difftest() {
     }
     blank[count] = '\0';
     for(int i = 0; i < functab_count; i ++){
-      if(functab[i].value == dut.next_pc){
+      if(functab[i].value == top->de_next_pc){
         //log_write("0x%08x:%s call [%s@0x%08x]", top->de_pc, blank, functab[i].func_name, functab[i].value);
-        printf("0x%08x:%s call [%s@0x%08x]\n", dut.pc, blank, functab[i].func_name, functab[i].value);
+        printf("0x%08x:%s call [%s@0x%08x]\n", top->de_pc, blank, functab[i].func_name, functab[i].value);
         break;
       }
     }
@@ -93,7 +93,7 @@ static void trace_and_difftest() {
       blank[j] = ' ';
     }
     blank[count] = '\0';
-    printf("0x%08x:%s ret [0x%08x]\n", dut.pc, blank, _gpr(1));
+    printf("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
     //log_write("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
   }
 // }
