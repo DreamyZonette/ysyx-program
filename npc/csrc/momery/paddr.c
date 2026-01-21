@@ -12,8 +12,11 @@ void init_mem() {
   Log("physical mrom area [%08x, %08x]", MROM_LEFT, MROM_RIGHT);
 }
 
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+extern "C" void flash_read(int32_t addr, int32_t *data) { 
+  difftest_skip_ref();
+  assert(0); }
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
+  difftest_skip_ref();
   *data = *(uint32_t *)(mrom_guest_to_host(addr));
 }
 
