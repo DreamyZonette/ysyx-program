@@ -1,6 +1,7 @@
 #include <memory/paddr.h>
 #include <memory/host.h> 
 #include <device/mmio.h>
+#include <cpu/difftest.h>
 
 #if CONFIG_YSYXSOC
 static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
