@@ -87,7 +87,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   assert(ref_so_file != NULL);
   __attribute__((visibility("default")))
   uint8_t mrom[MROM_SIZE];
-  int ret = fread(mrom_guest_to_host(MROM_RESET_VECTOR), size, 1, fp);
+  int ret = fread(mrom_guest_to_host(MROM_RESET_VECTOR), 4 * 1024, 1, fp);
   assert(ret == 1);
 
   void *handle;
