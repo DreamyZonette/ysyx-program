@@ -31,8 +31,10 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 static uint8_t sram[SRAM_SIZE];
 uint8_t mrom[MROM_SIZE];
 
+uint8_t* mrom_guest_to_host(paddr_t paddr) { return mrom + paddr - MROM_BASE; }
+
 static word_t mrom_read(paddr_t addr, int len) {
-  word_t ret = host_read(addr + mrom - MROM_BASE, len);
+  word_t ret = host_read(mrom_guest_to_host(addr), len);
   return ret;
 }
 static word_t sram_read(paddr_t addr, int len) {

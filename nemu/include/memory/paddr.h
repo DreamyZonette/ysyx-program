@@ -24,7 +24,7 @@
 #define MROM_LEFT  ((paddr_t)MROM_BASE)
 #define MROM_RIGHT ((paddr_t)MROM_BASE + MROM_SIZE - 1)
 #define MROM_RESET_VECTOR (MROM_LEFT + CONFIG_PC_RESET_OFFSET)
-
+uint8_t* mrom_guest_to_host(paddr_t paddr);
 
 #define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
 #define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
