@@ -24,9 +24,13 @@ SECTIONS {
   } > mrom AT> mrom : text
 
   /* ========== .data：VMA在sram，LMA在mrom（可读写需复制） ========== */
+  . = ORIGIN(sram);
+  
   .data : {
+    _data_start = .;
     *(.data*)
-  } > mrom AT> mrom : data
+    _data_end = .; 
+  } > sram AT> mrom : data
 
   edata = .;
   _data = .;
