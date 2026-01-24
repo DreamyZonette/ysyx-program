@@ -72,10 +72,11 @@ wire [7:0] wstrb;
 wire [63:0] wdata;
 wire        twice_signal;
 
+/* verilator lint_off WIDTHEXPAND */
 assign wdata = i_src2 << (i_data[1:0] * 8);
 assign wstrb = i_wmask << i_data[1:0];
 assign twice_signal = |wstrb[7:4];
-
+/* verilator lint_on WIDTHEXPAND */
 
 // 记得修改回来
 wire [31:0] shifted_rdata = (i_data >= 32'h8000_0000 && i_data <= 32'h8FFF_FFFF) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
