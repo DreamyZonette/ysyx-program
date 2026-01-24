@@ -25,11 +25,11 @@ SECTIONS {
 
   /* ========== .data：VMA在sram，LMA在mrom（可读写需复制） ========== */
   . = ORIGIN(sram);
-  
+
   .data : {
     _data_start = .;
     *(.data*)
-    _data_end = .; 
+    _data_end = .;
   } > sram AT> mrom : data
 
   edata = .;
@@ -48,9 +48,9 @@ SECTIONS {
   /* _stack_top = ALIGN(0x1000);
   . = _stack_top + 0x2000;
   _stack_pointer = .; */
-  
+
     /* ========== 替换栈定义：固定到 SRAM 区间 ========== */
-  _stack_top = ALIGN(0x0F001FFF, 0x10);  
+  _stack_top = ALIGN(0x0F001FFF, 0x10);
   _stack_pointer = _stack_top;
   _stack_bottom = 0x0F001000;
 
