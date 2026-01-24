@@ -52,7 +52,7 @@ SECTIONS {
     /* ========== 替换栈定义：固定到 SRAM 区间 ========== */
   _stack_top = ALIGN(0x0F001FFF, 0x10);
   _stack_pointer = _stack_top;
-  _stack_bottom = 0x0F001000;
+  _stack_bottom = 0x0F001500;
 
   /* ========== 替换堆定义：固定到 SRAM 区间 ========== */
   _heap_start = _bss_end;
