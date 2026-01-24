@@ -25,9 +25,9 @@
 #if   defined(CONFIG_PMEM_MALLOC)
 static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
+static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
 #ifdef YSYXSOC
-static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 static uint8_t sram[SRAM_SIZE];
 uint8_t mrom[MROM_SIZE];
 
