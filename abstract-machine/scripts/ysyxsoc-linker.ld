@@ -55,9 +55,9 @@ SECTIONS {
   _stack_bottom = 0x0F001000;
 
   /* ========== 替换堆定义：固定到 SRAM 区间 ========== */
-  /* _heap_start = _bss_end;
-  _heap_end = _stack_bottom; */
+  _heap_start = _bss_end;
+  _heap_end = _stack_bottom;
   end = .;
   _end = .;
-  _heap_start = ALIGN(0x1000);
+  /* _heap_start = ALIGN(0x1000); */
 }

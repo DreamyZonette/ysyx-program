@@ -15,13 +15,14 @@
 #define MSB_ADDR (UART_BASE + 0x1)
 
 extern char _heap_start;
+extern char _heap_end;
 int main(const char *args);
 
-extern char _pmem_start;
-#define PMEM_SIZE (4 * 1024)
-#define PMEM_END  ((uintptr_t)&_pmem_start + PMEM_SIZE)
+// extern char _pmem_start;
+// #define PMEM_SIZE (4 * 1024)
+// #define PMEM_END  ((uintptr_t)&_pmem_start + PMEM_SIZE)
 
-Area heap = RANGE(&_heap_start, PMEM_END);
+Area heap = RANGE(&_heap_start, &_heap_end);
 static const char mainargs[MAINARGS_MAX_LEN] = TOSTRING(MAINARGS_PLACEHOLDER); // defined in CFLAGS
 
 void putch(char ch) {
