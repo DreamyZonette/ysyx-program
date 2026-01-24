@@ -8,6 +8,7 @@
 #include <isa/isa_def.h>
 #include <isa/reg.h>
 
+
 void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
@@ -83,11 +84,15 @@ void difftest_skip_dut(int nr_ref, int nr_dut) {
   }
 }
 
+extern static char img_file[256];
 void init_difftest(char *ref_so_file, long img_size, int port) {
   assert(ref_so_file != NULL);
   __attribute__((visibility("default")))
   uint8_t mrom[CONFIG_MROM_SIZE];
-  int ret = fread(mrom_guest_to_host(MROM_RESET_VECTOR), 4 * 1024, 1, mrom);
+
+  FILE *fp = fopen(img_file, "rb");
+
+  int ret = fread(mrom_guest_to_host(mrom), 4 * 1024, 1, fp);
   assert(ret == 1);
 
   void *handle;
