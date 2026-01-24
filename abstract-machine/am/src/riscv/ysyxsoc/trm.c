@@ -57,7 +57,7 @@ void _boot_loader() {
     while (dst < _bss_end) {
         *dst++ = 0;  // 逐字节清零（保证所有未初始化变量为0）
     }
-    putch("Y");
+    putch('Y');
 }
 
 void _uart_init() {
@@ -74,8 +74,8 @@ void _uart_init() {
 
 void _trm_init() {
   _uart_init();
-  printf("Hello, world!\n");
+  // printf("Hello, world!\n");
   _boot_loader();
-  // int ret = main(mainargs);
+  int ret = main(mainargs);
   halt(ret);
 }
