@@ -18,10 +18,35 @@
 #include <device/mmio.h>
 #include <isa.h>
 
+#define YSYXSOC 1
+
+#ifdef YSYXSOC
+#define SRAM_BASE 0x0f000000
+#define SRAM_SIZE 8 * 1024
+#define MROM_BASE 0x20000000
+#define MROM_SIZE 4 * 1024
+#endif
+
 #if   defined(CONFIG_PMEM_MALLOC)
 static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+static uint8_t sram[SRAM_SIZE];
+static uint8_t mrom[MROM_SIZE];
+
+static word_t mrom_read(paddr_t addr, int len) {
+  word_t ret = host_read(addr + mrom - MROM_BASE, len);
+  return ret;
+}
+static word_t sram_read(paddr_t addr, int len) {
+  word_t ret = host_read(addr + sram - SRAM_BASE, len);
+  return ret;
+}
+
+static void sram_write(paddr_t addr, int len, word_t data) {
+  host_write((uint8_t*)(addr + sram - SRAM_BASE), len, data);
+}
+
 #endif
 
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
@@ -57,6 +82,10 @@ word_t paddr_read(paddr_t addr, int len) {
     p[127] = '\0';
     log_write("%s\n", p);
   #endif
+  #ifdef YSYXSOC
+    if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) return mrom_read(addr, len);
+    if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) return sram_read(addr, len);
+  #endif
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
@@ -69,6 +98,10 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     snprintf(p, 127, "write:"FMT_WORD"\tlen:%d\tdata:%u", addr, len, data);
     p[127] = '\0';
     log_write("%s\n", p);
+  #endif
+  #ifdef YSYXSOC
+    if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) return;
+    if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) {sram_write(addr, len, data);return;}
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);

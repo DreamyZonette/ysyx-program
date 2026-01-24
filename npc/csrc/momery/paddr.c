@@ -14,10 +14,10 @@ void init_mem() {
 }
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { 
-  difftest_skip_ref();
+  // difftest_skip_ref();
   assert(0); }
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
-  difftest_skip_ref();
+  // difftest_skip_ref();
   *data = *(uint32_t *)(mrom_guest_to_host(addr));
 }
 
