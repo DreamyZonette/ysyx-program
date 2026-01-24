@@ -119,7 +119,7 @@ always @(posedge clock) begin
                 if (lsu_bready) begin
                     lsu_bready <= 1'b0;
                 end
-                if(ifu_valid && (wen || ren)) begin
+                if((ifu_valid && (wen || ren)) || count == 1'b1) begin
                     state <= WAIT;
                     lsu_ready <= 1'b1;
                     // // 当前仿真环境不需要移位
