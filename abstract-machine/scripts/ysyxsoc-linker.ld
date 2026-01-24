@@ -29,7 +29,7 @@ SECTIONS {
   _stack_pointer = .; */
     /* ========== 替换栈定义：固定到 SRAM 区间 ========== */
   _stack_top = ALIGN(0x0F001FFF, 0x10);  
-  _stack_pointer = _stack_top + 1;
+  _stack_pointer = _stack_top;
   _stack_bottom = 0x0F000000;
   /* ========== 替换堆定义：固定到 SRAM 区间 ========== */
 
