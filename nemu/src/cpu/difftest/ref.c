@@ -19,11 +19,11 @@
 #include <difftest-def.h>
 #include <memory/paddr.h>
 
-
+extern uint8_t mrom[];
 
 __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   if (direction == DIFFTEST_TO_REF) {
-   uint8_t *src = (uint8_t*)buf;
+   uint8_t *src = (uint8_t*)mrom;
     for (size_t i = 0; i < n; i++) {
       paddr_write(addr + i, 1, src[i]); // 逐字节写入 REF
     }
