@@ -22,13 +22,13 @@ CSRCS += $(shell find $(CPATH) -name *.c)
 
 CFLAGS :=  
 CFLAGS += -CFLAGS "$(INCLUDES)" 
-CFLAGS += -CFLAGS "-fpermissive --print-map"
+CFLAGS += -CFLAGS -fpermissive --print-map
 VFLAGS :=  --cc --exe --build -j 0 --trace  #--autoflush
 VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 VFLAGS += --timescale "1ns/1ns" --no-timing
-LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2"
+LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2 --print-map"
 # LDFLAGS += -LDFLAGS -lSDL2
 
 VERILATOR = verilator
