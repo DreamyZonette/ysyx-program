@@ -87,7 +87,7 @@ all:run wave
 
 $(BUILD_DIR)/wave.fst:
 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
-	-@rm -f $(BUILD_DIR)/wave.vcd
+	#-@rm -f $(BUILD_DIR)/wave.vcd
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
