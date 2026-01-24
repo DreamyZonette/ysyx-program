@@ -3,17 +3,13 @@
 
 #include <common.h>
 
-// #if CONFIG_YSYXSOC
-#define CONFIG_MROM_SIZE 0x1000
-#define CONFIG_MROM_BASE 0x20000000
+#if CONFIG_YSYXSOC
+
 #define MROM_LEFT  ((paddr_t)CONFIG_MROM_BASE)
 #define MROM_RIGHT ((paddr_t)CONFIG_MROM_BASE + CONFIG_MROM_SIZE - 1)
 #define MROM_RESET_VECTOR (MROM_LEFT + CONFIG_PC_RESET_OFFSET)
-#define SRAM_BASE 0x0f000000
-#define SRAM_SIZE 8 * 1024
-#define MROM_BASE 0x20000000
-#define MROM_SIZE 4 * 1024
-// #endif
+
+#endif
 
 #define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
 #define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)

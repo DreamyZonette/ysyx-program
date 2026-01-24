@@ -20,12 +20,13 @@
 
 #define YSYXSOC 1
 
-#ifdef YSYXSOC
-#endif
+
 
 #if   defined(CONFIG_PMEM_MALLOC)
 static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
+
+#ifdef YSYXSOC
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 static uint8_t sram[SRAM_SIZE];
 uint8_t mrom[MROM_SIZE];
@@ -42,7 +43,7 @@ static word_t sram_read(paddr_t addr, int len) {
 static void sram_write(paddr_t addr, int len, word_t data) {
   host_write((uint8_t*)(addr + sram - SRAM_BASE), len, data);
 }
-
+#endif
 #endif
 
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }

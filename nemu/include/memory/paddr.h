@@ -17,6 +17,14 @@
 #define __MEMORY_PADDR_H__
 
 #include <common.h>
+#define MROM_SIZE 4 * 1024
+#define MROM_BASE 0x20000000
+#define SRAM_SIZE 8 * 1024
+#define SRAM_BASE 0x0f000000
+#define MROM_LEFT  ((paddr_t)MROM_BASE)
+#define MROM_RIGHT ((paddr_t)MROM_BASE + MROM_SIZE - 1)
+#define MROM_RESET_VECTOR (MROM_LEFT + CONFIG_PC_RESET_OFFSET)
+
 
 #define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
 #define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
