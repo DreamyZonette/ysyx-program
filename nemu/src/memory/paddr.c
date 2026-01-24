@@ -29,6 +29,8 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
 #ifdef YSYXSOC
 uint8_t sram[SRAM_SIZE];
+
+__attribute__((visibility("default")))
 uint8_t mrom[MROM_SIZE];
 
 uint8_t* mrom_guest_to_host(paddr_t paddr) { return mrom + paddr - MROM_BASE; }
