@@ -5,7 +5,7 @@
 #endif
 
 //static char *img_file = NULL;
-static char img_file[256] = {0};
+char img_file[256] = {0};
 static char log_file[256] = {0};
 static char elf_file[256] = {0};
 static char diff_so_file[256] = {0};
