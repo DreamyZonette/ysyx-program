@@ -21,10 +21,6 @@
 #define YSYXSOC 1
 
 #ifdef YSYXSOC
-#define SRAM_BASE 0x0f000000
-#define SRAM_SIZE 8 * 1024
-#define MROM_BASE 0x20000000
-#define MROM_SIZE 4 * 1024
 #endif
 
 #if   defined(CONFIG_PMEM_MALLOC)
@@ -32,7 +28,7 @@ static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 static uint8_t sram[SRAM_SIZE];
-static uint8_t mrom[MROM_SIZE];
+uint8_t mrom[MROM_SIZE];
 
 static word_t mrom_read(paddr_t addr, int len) {
   word_t ret = host_read(addr + mrom - MROM_BASE, len);
@@ -71,6 +67,11 @@ void init_mem() {
   pmem = malloc(CONFIG_MSIZE);
   assert(pmem);
 #endif
+#ifdef YSYXSOC
+  IFDEF(CONFIG_MEM_RANDOM, memset(mrom, rand(), MROM_SIZE));
+  IFDEF(CONFIG_MEM_RANDOM, memset(sram, rand(), SRAM_SIZE));
+  #endif
+
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
 }
