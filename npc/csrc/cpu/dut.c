@@ -91,7 +91,10 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   uint8_t mrom[CONFIG_MROM_SIZE];
 
   FILE *fp = fopen(img_file, "rb");
-
+  if(!fp) {
+    printf("Can not open '%s'\n", img_file);
+    assert(1); // 断言失败，程序退出
+  }
   int ret = fread((uint8_t*)(mrom), 4 * 1024, 1, fp);
   assert(ret == 1);
 
