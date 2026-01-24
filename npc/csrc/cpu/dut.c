@@ -87,20 +87,40 @@ void difftest_skip_dut(int nr_ref, int nr_dut) {
 extern char img_file[256];
 void init_difftest(char *ref_so_file, long img_size, int port) {
   assert(ref_so_file != NULL);
-  __attribute__((visibility("default")))
-  uint8_t mrom[CONFIG_MROM_SIZE];
+  // __attribute__((visibility("default")))
+  // uint8_t mrom[CONFIG_MROM_SIZE];
 
-  FILE *fp = fopen(img_file, "rb");
-  if(!fp) {
-    printf("Can not open '%s'\n", img_file);
-    assert(1); // 断言失败，程序退出
-  }
-  int ret = fread((uint8_t*)(mrom), 4 * 1024, 1, fp);
-  assert(ret == 1);
+  // FILE *fp = fopen(img_file, "rb");
+  // if(!fp) {
+  //   printf("Can not open '%s'\n", img_file);
+  //   assert(1); // 断言失败，程序退出
+  // }
+  // int ret = fread((uint8_t*)(mrom), 4 * 1024, 1, fp);
+  // assert(ret == 1);
 
   void *handle;
   handle = dlopen(ref_so_file, RTLD_LAZY);
   assert(handle);
+
+  uint8_t *mrom_in_so = (uint8_t*)dlsym(handle, "mrom");
+  assert(mrom_in_so && dlerror() && "dlsym 'mrom' failed (check if mrom is exported in so)");
+
+   FILE *fp = fopen(img_file, "rb");
+  if (!fp) {
+    fprintf(stderr, "ERROR: Can not open '%s'! Reason: %s\n", img_file, strerror(errno));
+    dlclose(handle); // 失败时关闭动态库
+    assert(0);
+  }
+
+  size_t ret = fread(mrom_in_so, 1, img_size, fp); // 按字节读取，适配实际镜像大小
+  if (ret != img_size) {
+    fprintf(stderr, "ERROR: Read '%s' failed! Expected %ld bytes, actual %zu bytes\n", 
+            img_file, img_size, ret);
+    fclose(fp);
+    dlclose(handle);
+    assert(0);
+  }
+  fclose(fp); // 关闭文件，释放资源
 
   ref_difftest_memcpy = (void (*)(paddr_t, void*, size_t, bool))dlsym(handle, "difftest_memcpy");
   assert(ref_difftest_memcpy);
