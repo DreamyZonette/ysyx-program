@@ -67,7 +67,6 @@ reg [1:0] state;
 reg [1:0] rresp;
 reg [1:0] bresp;
 /* verilator lint_on UNUSEDSIGNAL */
-reg count;
 wire [7:0] wstrb;
 wire [63:0] wdata;
 wire        twice_signal;
@@ -75,7 +74,6 @@ wire        twice_signal;
 /* verilator lint_off WIDTHEXPAND */
 assign wdata = i_src2 << (i_data[1:0] * 8);
 assign wstrb = i_wmask << i_data[1:0];
-assign twice_signal = wen & |wstrb[7:4];
 /* verilator lint_on WIDTHEXPAND */
 
 // 记得修改回来
@@ -92,7 +90,6 @@ always @(posedge clock) begin
         lsu_arvalid <= 1'b0;
         lsu_awvalid <= 1'b0;
         o_rdata <= 32'b0;
-        count <= 0;
         lsu_araddr <= 32'b0;
         lsu_awaddr <= 32'b0;
         lsu_rready <= 1'b0;
@@ -119,7 +116,7 @@ always @(posedge clock) begin
                 if (lsu_bready) begin
                     lsu_bready <= 1'b0;
                 end
-                if((ifu_valid && (wen || ren)) || count == 1'b1) begin
+                if((ifu_valid && (wen || ren))) begin
                     state <= WAIT;
                     lsu_ready <= 1'b1;
                     // // 当前仿真环境不需要移位
@@ -131,18 +128,18 @@ always @(posedge clock) begin
                     //     lsu_wdata <= i_src2 << (i_data[1:0] * 8);
                     //     lsu_wstrb <= i_wmask << i_data[1:0];
                     // end
-                    if(twice_signal) begin
-                        lsu_wdata <= count == 1'b0 ? wdata[31:0] : wdata[63:32];
-                        lsu_wstrb <= count == 1'b0 ? wstrb[3:0] : wstrb[7:4];
-                        lsu_araddr <= count == 1'b0 ? i_data : i_data + 4;
-                        lsu_awaddr <= count == 1'b0 ? i_data : i_data + 4;
-                    end
-                    else begin
+                    // if(twice_signal) begin
+                    //     lsu_wdata <= count == 1'b0 ? wdata[31:0] : wdata[63:32];
+                    //     lsu_wstrb <= count == 1'b0 ? wstrb[3:0] : wstrb[7:4];
+                    //     lsu_araddr <= count == 1'b0 ? i_data : i_data + 4;
+                    //     lsu_awaddr <= count == 1'b0 ? i_data : i_data + 4;
+                    // end
+                    // else begin
                         lsu_wdata <= wdata[31:0];
                         lsu_wstrb <= wstrb[3:0];
                         lsu_araddr <= i_data;
                         lsu_awaddr <= i_data;
-                    end
+                    // end
                     if (wen) begin
                         lsu_awvalid <= 1'b1;
                         lsu_wvalid <= 1'b1;
@@ -240,16 +237,16 @@ always @(posedge clock) begin
                 end
                 else if (lsu_bvalid & lsu_bid == lsu_awid) begin
                     lsu_bready <= 1'b1;
-                    if (twice_signal) begin
-                        count <= count + 1'b1;
-                        if (count == 1'b1) begin
-                         lsu_valid <= 1'b1;
-                         count <= 1'b0;
-                        end                        
-                    end
-                    else begin
+                    // if (twice_signal) begin
+                    //     count <= count + 1'b1;
+                    //     if (count == 1'b1) begin
+                    //      lsu_valid <= 1'b1;
+                    //      count <= 1'b0;
+                    //     end                        
+                    // end
+                    // else begin
                         lsu_valid <= 1'b1;
-                    end
+                    // end
                     bresp <= lsu_bresp;
                     state <= IDLE;
                 end
