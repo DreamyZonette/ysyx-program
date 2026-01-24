@@ -39,13 +39,22 @@ void halt(int code) {
 
 extern unsigned char _data_start[];   // .data段SRAM运行地址（VMA）起始
 extern unsigned char _data_end[];     // .data段SRAM运行地址（VMA）结束
-extern unsigned char _rodata_end[];  // .stack段SRAM运行地址（VMA）起始
-#define SRAM_BASE 0x0f000000
+extern unsigned char _etext[];        // .data段ROM加载地址（LMA）起始（.text结束地址）
+extern unsigned char _bss_start[];    // .bss段SRAM地址起始
+extern unsigned char _bss_end[];      // .bss段SRAM地址结束
+
 void _boot_loader() {
-    unsigned char *src = _data_start;       // 源地址：ROM中的.data初始值（LMA）
-    unsigned char *dst = SRAM_BASE;  // 目标地址：SRAM中的.data运行地址（VMA）
-    while (src < _data_end) {
+    unsigned char *src = _etext;       // 源地址：ROM中的.data初始值（LMA）
+    unsigned char *dst = _data_start;  // 目标地址：SRAM中的.data运行地址（VMA）
+    while (dst < _data_end) {
         *dst++ = *src++;  // 逐字节复制（兼容任意位宽数据）
+    }
+
+    // ========== 步骤2：清零.bss段（SRAM中未初始化数据段） ==========
+    // .bss段无初始值，必须在SRAM中清零后才能使用
+    dst = _bss_start;
+    while (dst < _bss_end) {
+        *dst++ = 0;  // 逐字节清零（保证所有未初始化变量为0）
     }
 }
 
