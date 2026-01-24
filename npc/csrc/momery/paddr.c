@@ -4,7 +4,7 @@
 #include <cpu/difftest.h>
 
 #if CONFIG_YSYXSOC
-// static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
+static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
 
 uint8_t* mrom_guest_to_host(paddr_t paddr) { return mrom + paddr - CONFIG_MROM_BASE; }
 
