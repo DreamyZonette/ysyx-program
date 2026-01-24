@@ -39,13 +39,10 @@ void halt(int code) {
 
 extern unsigned char _data_start[];   // .data段SRAM运行地址（VMA）起始
 extern unsigned char _data_end[];     // .data段SRAM运行地址（VMA）结束
-extern unsigned char _etext[];        // .data段ROM加载地址（LMA）起始（.text结束地址）
-extern unsigned char _bss_start[];    // .bss段SRAM地址起始
-extern unsigned char _bss_end[];      // .bss段SRAM地址结束
-extern unsigned long _stack_pointer; 
+extern unsigned char _rodata_end[];  // .stack段SRAM运行地址（VMA）起始
 
 void _boot_loader() {
-    unsigned char *src = _etext;       // 源地址：ROM中的.data初始值（LMA）
+    unsigned char *src = _rodata_end;       // 源地址：ROM中的.data初始值（LMA）
     unsigned char *dst = _data_start;  // 目标地址：SRAM中的.data运行地址（VMA）
     while (dst < _data_end) {
         *dst++ = *src++;  // 逐字节复制（兼容任意位宽数据）

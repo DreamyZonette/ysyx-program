@@ -21,6 +21,7 @@ SECTIONS {
 
   .rodata : {
     *(.rodata*)
+    _rodata_end = .;
   } > mrom AT> mrom : text
 
   /* ========== .data：VMA在sram，LMA在mrom（可读写需复制） ========== */
