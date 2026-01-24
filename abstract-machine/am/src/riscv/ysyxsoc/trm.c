@@ -72,7 +72,7 @@ void _uart_init() {
 }
 
 void _trm_init() {
-  putch("Y");
+  printf("Hello, world!\n");
   _boot_loader();
   _uart_init();
   int ret = main(mainargs);
