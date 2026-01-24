@@ -57,7 +57,7 @@ void _boot_loader() {
     while (dst < _bss_end) {
         *dst++ = 0;  // 逐字节清零（保证所有未初始化变量为0）
     }
-    // putch('Y');
+    putch('Y');
 }
 
 void _uart_init() {
@@ -73,15 +73,7 @@ void _uart_init() {
 }
 
 void _trm_init() {
-  // _uart_init();
-  outb(LCR_ADDR, 0x80); // LCR
-  outb(LSB_ADDR, 0x36); // LSB
-  outb(MSB_ADDR, 0x00); // MSB
-
-  outb(LCR_ADDR, 0x03); // LCR
-  outb(FCR_ADDR, 0x07);
-  outb(MCR_ADDR, 0x03); 
-  outb(LER_ADDR, 0x00);
+  _uart_init();
   // printf("Hello, world!\n");
   _boot_loader();
   int ret = main(mainargs);
