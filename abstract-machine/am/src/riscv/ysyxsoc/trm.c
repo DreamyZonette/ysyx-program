@@ -25,9 +25,9 @@ Area heap = RANGE(&_heap_start, PMEM_END);
 static const char mainargs[MAINARGS_MAX_LEN] = TOSTRING(MAINARGS_PLACEHOLDER); // defined in CFLAGS
 
 void putch(char ch) {
-    // while ((inb(LSR_ADDR) & 0x20) == 0) {
-    //     // 空循环，等待LSR[5] (THRE) 位为1
-    // }
+    while ((inb(LSR_ADDR) & 0x20) == 0) {
+        // 空循环，等待LSR[5] (THRE) 位为1
+    }
   outb(THR_ADDR, ch);
 }
 
@@ -37,16 +37,20 @@ void halt(int code) {
   while (1);
 }
 
-void _trm_init() {
-  //   // 配置除数寄存器
-  // outb(LCR_ADDR, 0x80); // LCR
-  // outb(LSB_ADDR, 0x36); // LSB
-  // outb(MSB_ADDR, 0x00); // MSB
+void _uart_init() {
+  // 配置除数寄存器
+  outb(LCR_ADDR, 0x80); // LCR
+  outb(LSB_ADDR, 0x36); // LSB
+  outb(MSB_ADDR, 0x00); // MSB
 
-  // outb(LCR_ADDR, 0x03); // LCR
-  // outb(FCR_ADDR, 0x07);
-  // outb(MCR_ADDR, 0x03); 
-  // outb(LER_ADDR, 0x00);
+  outb(LCR_ADDR, 0x03); // LCR
+  outb(FCR_ADDR, 0x07);
+  outb(MCR_ADDR, 0x03); 
+  outb(LER_ADDR, 0x00);
+}
+
+void _trm_init() {
+  _uart_init();
   int ret = main(mainargs);
   halt(ret);
 }
