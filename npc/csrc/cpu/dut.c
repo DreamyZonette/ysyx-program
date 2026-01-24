@@ -102,14 +102,17 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
     dlclose(handle);
     assert(0);
   }
-
+  printf("INFO: mrom_in_so before write: 0x%02x 0x%02x 0x%02x 0x%02x\n",
+         mrom_in_so[0], mrom_in_so[1], mrom_in_so[2], mrom_in_so[3]);
    FILE *fp = fopen(img_file, "rb");
   if (!fp) {
     fprintf(stderr, "ERROR: Can not open '%s'! Reason: %s\n", img_file, strerror(errno));
     dlclose(handle); // 失败时关闭动态库
     assert(0);
   }
-
+  printf("INFO: mrom_in_so after write: 0x%02x 0x%02x 0x%02x 0x%02x\n",
+         mrom_in_so[0], mrom_in_so[1], mrom_in_so[2], mrom_in_so[3]);
+         
   size_t ret = fread(mrom_in_so, 1, img_size, fp); // 按字节读取，适配实际镜像大小
   if (ret != img_size) {
     fprintf(stderr, "ERROR: Read '%s' failed! Expected %ld bytes, actual %zu bytes\n", 
