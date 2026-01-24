@@ -28,10 +28,10 @@ static uint8_t *pmem = NULL;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
 #ifdef YSYXSOC
-uint8_t sram[SRAM_SIZE];
+uint8_t sram[SRAM_SIZE] PG_ALIGN = {};
 
 __attribute__((visibility("default")))
-uint8_t mrom[MROM_SIZE];
+uint8_t mrom[MROM_SIZE] PG_ALIGN = {};
 
 uint8_t* mrom_guest_to_host(paddr_t paddr) { return mrom + paddr - MROM_BASE; }
 
