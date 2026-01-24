@@ -123,7 +123,7 @@ static long load_img() {
     fseek(fp, 0, SEEK_SET);
     extern uint8_t mrom[];
     ret = fread((uint8_t*)(mrom + (paddr_t)(MROM_RESET_VECTOR) - MROM_BASE), size, 1, fp);
-    ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+    // ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
     assert(ret == 1);
     fclose(fp);
   }
