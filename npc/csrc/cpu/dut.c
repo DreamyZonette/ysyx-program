@@ -92,36 +92,36 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   handle = dlopen(ref_so_file, RTLD_LAZY);
   assert(handle);
 
-  dlerror(); 
+  // dlerror(); 
   
-  uint8_t *mrom_in_so = (uint8_t*)dlsym(handle, "mrom");
-  char *dlsym_err = dlerror(); 
-  if (mrom_in_so == NULL || dlsym_err != NULL) {
-    fprintf(stderr, "ERROR: dlsym 'mrom' failed! Reason: %s\n", 
-            dlsym_err ? dlsym_err : "mrom pointer is NULL");
-    dlclose(handle);
-    assert(0);
-  }
-  printf("INFO: mrom_in_so before write: 0x%02x 0x%02x 0x%02x 0x%02x\n",
-         mrom_in_so[0], mrom_in_so[1], mrom_in_so[2], mrom_in_so[3]);
-   FILE *fp = fopen(img_file, "rb");
-  if (!fp) {
-    fprintf(stderr, "ERROR: Can not open '%s'! Reason: %s\n", img_file, strerror(errno));
-    dlclose(handle); // 失败时关闭动态库
-    assert(0);
-  }
-  printf("INFO: mrom_in_so after write: 0x%02x 0x%02x 0x%02x 0x%02x\n",
-         mrom_in_so[0], mrom_in_so[1], mrom_in_so[2], mrom_in_so[3]);
-         
-  size_t ret = fread(mrom_in_so, 1, img_size, fp); // 按字节读取，适配实际镜像大小
-  if (ret != img_size) {
-    fprintf(stderr, "ERROR: Read '%s' failed! Expected %ld bytes, actual %zu bytes\n", 
-            img_file, img_size, ret);
-    fclose(fp);
-    dlclose(handle);
-    assert(0);
-  }
-  fclose(fp); // 关闭文件，释放资源
+  // uint8_t *mrom_in_so = (uint8_t*)dlsym(handle, "mrom");
+  // char *dlsym_err = dlerror(); 
+  // if (mrom_in_so == NULL || dlsym_err != NULL) {
+  //   fprintf(stderr, "ERROR: dlsym 'mrom' failed! Reason: %s\n", 
+  //           dlsym_err ? dlsym_err : "mrom pointer is NULL");
+  //   dlclose(handle);
+  //   assert(0);
+  // }
+  // printf("INFO: mrom_in_so before write: 0x%02x 0x%02x 0x%02x 0x%02x\n",
+  //        mrom_in_so[0], mrom_in_so[1], mrom_in_so[2], mrom_in_so[3]);
+  //  FILE *fp = fopen(img_file, "rb");
+  // if (!fp) {
+  //   fprintf(stderr, "ERROR: Can not open '%s'! Reason: %s\n", img_file, strerror(errno));
+  //   dlclose(handle); // 失败时关闭动态库
+  //   assert(0);
+  // }
+  // printf("INFO: mrom_in_so after write: 0x%02x 0x%02x 0x%02x 0x%02x\n",
+  //        mrom_in_so[0], mrom_in_so[1], mrom_in_so[2], mrom_in_so[3]);
+
+  // size_t ret = fread(mrom_in_so, 1, img_size, fp); // 按字节读取，适配实际镜像大小
+  // if (ret != img_size) {
+  //   fprintf(stderr, "ERROR: Read '%s' failed! Expected %ld bytes, actual %zu bytes\n", 
+  //           img_file, img_size, ret);
+  //   fclose(fp);
+  //   dlclose(handle);
+  //   assert(0);
+  // }
+  // fclose(fp); // 关闭文件，释放资源
 
   ref_difftest_memcpy = (void (*)(paddr_t, void*, size_t, bool))dlsym(handle, "difftest_memcpy");
   assert(ref_difftest_memcpy);
@@ -144,7 +144,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
       "If it is not necessary, you can turn it off in autoconf.h.", ref_so_file);
 
   ref_difftest_init(port);
-  ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
+  ref_difftest_memcpy(MROM_RESET_VECTOR, mrom_guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
   //printf("0x%08x\n", dut->de_pc);
   ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
 }
