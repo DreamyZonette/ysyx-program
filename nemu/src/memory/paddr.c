@@ -39,6 +39,12 @@ static word_t mrom_read(paddr_t addr, int len) {
   word_t ret = host_read(mrom_guest_to_host(addr), len);
   return ret;
 }
+
+static word_t mrom_write(paddr_t addr, int len, word_t data) {
+  word_t ret = host_read(mrom_guest_to_host(addr), len);
+  return ret;
+}
+
 static word_t sram_read(paddr_t addr, int len) {
   word_t ret = host_read(addr + sram - SRAM_BASE, len);
   return ret;
@@ -106,7 +112,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     log_write("%s\n", p);
   #endif
   #ifdef YSYXSOC
-    if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) return;
+    if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) {mrom_write(addr, len, data);return;}
     if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) {sram_write(addr, len, data);return;}
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
