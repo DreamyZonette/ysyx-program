@@ -79,8 +79,9 @@ void init_mem() {
   assert(pmem);
 #endif
 #ifdef YSYXSOC
-  IFDEF(CONFIG_MEM_RANDOM, memset(mrom, rand(), MROM_SIZE));
-  IFDEF(CONFIG_MEM_RANDOM, memset(sram, rand(), SRAM_SIZE));
+  memset(mrom, rand(), MROM_SIZE);
+  // IFDEF(CONFIG_MEM_RANDOM, memset(mrom, rand(), MROM_SIZE));
+  // IFDEF(CONFIG_MEM_RANDOM, memset(sram, rand(), SRAM_SIZE));
   #endif
 
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
