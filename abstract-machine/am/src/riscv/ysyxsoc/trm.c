@@ -1,6 +1,9 @@
 #include <am.h>
 #include <klib-macros.h>
 #include <riscv/riscv.h>
+#if CONFIG_DIFFTEST
+#include <cpu/difftest.h>
+#endif
 
 #define UART_BASE 0x10000000
 #define THR_ADDR (UART_BASE + 0x0)
@@ -27,6 +30,9 @@ static const char mainargs[MAINARGS_MAX_LEN] = TOSTRING(MAINARGS_PLACEHOLDER); /
 
 void putch(char ch) {
   while ((inb(LSR_ADDR) & 0x20) == 0) {
+    #if CONFIG_DIFFTEST
+    difftest_skip_ref();
+    #endif
       // 空循环，等待LSR[5] (THRE) 位为1
   }
   outb(THR_ADDR, ch);
