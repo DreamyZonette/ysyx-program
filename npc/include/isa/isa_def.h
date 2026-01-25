@@ -4,7 +4,7 @@
 #include <common.h>
 
 typedef struct {
-  word_t gpr[16];
+  word_t gpr[32];
   vaddr_t pc;
   vaddr_t next_pc;
 } riscv32_CPU_state;
