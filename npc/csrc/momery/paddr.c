@@ -16,8 +16,10 @@ void init_mem() {
 extern "C" void flash_read(int32_t addr, int32_t *data) { 
   // difftest_skip_ref();
   assert(0); }
+
+
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
-  unt32_t res = *(uint32_t *)(mrom_guest_to_host(addr));
+  uint32_t res = *(uint32_t *)(mrom_guest_to_host(addr));
   #if CONFIG_MTRACE
     printf("mrom_read(0x%08x, %d) = 0x%08x\n", addr, 4, res);
   #endif
@@ -94,12 +96,12 @@ extern "C" int pmem_read(int addr, int len) {
   else{
     ret = internal_pmem_read(addr, len);
     #if CONFIG_MTRACE
-      if (addr != top->de_pc){
-        char s[128];
-        sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
-        log_write("%s\n", s);
-      }
-      //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+      // if (addr != top->de_pc){
+      //   char s[128];
+      //   sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+      //   log_write("%s\n", s);
+      // }
+      // //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
 
     #endif
   }
@@ -136,10 +138,10 @@ extern "C" void pmem_write(int addr, int len, int data) {
   }
   else{
     #if CONFIG_MTRACE
-    char s[128];
-    sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
-    log_write("%s\n", s);
-    //printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    // char s[128];
+    // sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    // log_write("%s\n", s);
+    // //printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
 
   #endif
     internal_pmem_write(addr, len, data);
