@@ -74,7 +74,7 @@ void _uart_init() {
 extern void _boot_loader(void);
 
 void _trm_init() {
-  // _uart_init();
+  _uart_init();
   // printf("Hello, world!\n");
   _boot_loader();
   int ret = main(mainargs);
