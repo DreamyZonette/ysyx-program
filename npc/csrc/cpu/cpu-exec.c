@@ -175,17 +175,10 @@ static void execute(uint64_t n) {
   #endif
 
   #if CONFIG_DIFFTEST
-    // dut.diff_mstatus = top->de_mstatus;
-    // dut.diff_mcause = top->de_mcause;
-    // dut.diff_mtvec = top->de_mtvec;
-    // dut.diff_mepc = top->de_mepc;
-    if (dut.pc != dut.next_pc){
-      // printf("difftest:pc:%08x => 0x%08x\n", dut.pc, dut.next_pc);
-      // svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"));
+    // if (dut.pc != dut.next_pc){
       for(int i = 0; i < 16; i++){
       dut.gpr[i] = _gpr(i);
-    }
-    // svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
+    // }
   }
   
 
@@ -203,12 +196,6 @@ static void execute(uint64_t n) {
       npc_state.halt_ret = _gpr(10); // 寄存器返回值
       npc_state.state = NPC_END;
     }
-    // if(top->halt == 1){
-    //   npc_state.halt_pc = top->de_pc;
-    //   npc_state.halt_ret = top->reg_data[10];
-    //   npc_state.state = NPC_ABORT;
-    // }
-
     if (npc_state.state != NPC_RUNNING) break;
   }
 }
