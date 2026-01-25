@@ -7,7 +7,7 @@ _boot_loader:
     # 适合你的小系统（4K ROM + 8K SRAM），完全够用
 
     # ---------- 复制 .data 段（从 mrom 的 LMA → sram 的 VMA） ----------
-    la      a0, _etext          # src = mrom 中的 .data 初始值（紧跟 .rodata 后）
+    la      a0, data_lma_addr          # src = mrom 中的 .data 初始值（紧跟 .rodata 后）
     la      a1, _data_start     # dst = sram 中的 .data 运行地址
     la      a2, _data_end       # end
 

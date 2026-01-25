@@ -32,6 +32,7 @@ SECTIONS {
     _data_end = .;
   } > sram AT> mrom : data
 
+  data_lma_addr = LOADADDR(.data);
   edata = .;
   _data = .;
 
