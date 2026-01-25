@@ -144,7 +144,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
       "If it is not necessary, you can turn it off in autoconf.h.", ref_so_file);
 
   ref_difftest_init(port);
-  ref_difftest_memcpy(CONFIG_MROM_BASE, mrom_guest_to_host(MROM_RESET_VECTOR), img_size, DIFFTEST_TO_REF);
+  ref_difftest_memcpy(MROM_RESET_VECTOR, mrom_guest_to_host(MROM_RESET_VECTOR), img_size, DIFFTEST_TO_REF);
   //printf("0x%08x\n", dut->de_pc);
   ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
 }
