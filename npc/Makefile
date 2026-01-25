@@ -21,7 +21,7 @@ CSRCS := $(wildcard $(CPATH)/*.cpp)
 CSRCS += $(shell find $(CPATH) -name *.c)
 
 CFLAGS :=  
-CFLAGS += -CFLAGS "$(INCLUDES)" --ccflags "-Wno-deprecated"
+CFLAGS += -CFLAGS "$(INCLUDES)"  "-Wno-deprecated"
 CFLAGS += -CFLAGS -fpermissive 
 VFLAGS :=  --cc --exe --build -j 0 --trace  #--autoflush
 VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
