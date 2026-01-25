@@ -26,6 +26,8 @@
 static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
+paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 #ifdef YSYXSOC
 uint8_t sram[SRAM_SIZE] PG_ALIGN = {};
@@ -34,20 +36,27 @@ uint8_t sram[SRAM_SIZE] PG_ALIGN = {};
 uint8_t mrom[MROM_SIZE] PG_ALIGN = {};
 
 //划分一个地址给mrom、sram
-uint8_t* mrom_guest_to_host(paddr_t paddr) { return guest_to_host(paddr); }
-paddr_t mrom_host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
+uint8_t* mrom_guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
+// paddr_t mrom_host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
-uint8_t* sram_guest_to_host(paddr_t paddr) { return guest_to_host(paddr); }
-paddr_t sram_host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
+// uint8_t* sram_guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE + MROM_SIZE - SRAM_BASE; }
+// paddr_t sram_host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t mrom_read(paddr_t addr, int len) {
   word_t ret = 0;
-  // ret = host_read(mrom_guest_to_host(addr), len);
+  if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE){
+    addr = addr - MROM_BASE;
+    // ret = host_read(guest_to_host(addr), len);
+  }
+  
   return ret;
 }
 
 static void mrom_write(paddr_t addr, int len, word_t data) {
-  // host_write(mrom_guest_to_host(addr), len, data);
+  if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE){
+    addr = addr - MROM_BASE;
+    // host_write(guest_to_host(addr), len, data);
+  }
 }
 
 static word_t sram_read(paddr_t addr, int len) {
@@ -62,8 +71,7 @@ static void sram_write(paddr_t addr, int len, word_t data) {
 #endif
 #endif
 
-uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
-paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
+
 
 static word_t pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
