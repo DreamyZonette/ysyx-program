@@ -57,7 +57,6 @@ void _boot_loader() {
     while (dst < _bss_end) {
         *dst++ = 0;  // 逐字节清零（保证所有未初始化变量为0）
     }
-    putch('Y');
 }
 
 void _uart_init() {
