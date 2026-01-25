@@ -17,7 +17,7 @@ extern "C" void flash_read(int32_t addr, int32_t *data) {
   // difftest_skip_ref();
   assert(0); }
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
-  uint32_t res = *(uint32_t *)(mrom_guest_to_host(addr))
+  unt32_t res = *(uint32_t *)(mrom_guest_to_host(addr));
   #if CONFIG_MTRACE
     printf("mrom_read(0x%08x, %d) = 0x%08x\n", addr, 4, res);
   #endif
