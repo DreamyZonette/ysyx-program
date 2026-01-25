@@ -4,7 +4,7 @@
 
 #define UART_BASE 0x10000000
 #define THR_ADDR (UART_BASE + 0x0)
-#define LER_ADDR (UART_BASE + 0x1)
+#define IER_ADDR (UART_BASE + 0x1)
 #define IIR_ADDR (UART_BASE + 0x2)
 #define FCR_ADDR (UART_BASE + 0x2)
 #define LCR_ADDR (UART_BASE + 0x3)
@@ -68,7 +68,7 @@ void _uart_init() {
   outb(LCR_ADDR, 0x03); // LCR
   outb(FCR_ADDR, 0x07);
   outb(MCR_ADDR, 0x03); 
-  outb(LER_ADDR, 0x00);
+  outb(IER_ADDR, 0x00);
 }
 
 extern void _boot_loader(void);
