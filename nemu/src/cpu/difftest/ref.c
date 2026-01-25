@@ -19,7 +19,7 @@
 #include <difftest-def.h>
 #include <memory/paddr.h>
 
-extern uint8_t mrom[MROM_SIZE] PG_ALIGN = {};
+// extern uint8_t mrom[MROM_SIZE] PG_ALIGN = {};
 
 __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   if (direction == DIFFTEST_TO_REF) {

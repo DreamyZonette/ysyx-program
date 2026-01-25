@@ -33,25 +33,31 @@ uint8_t sram[SRAM_SIZE] PG_ALIGN = {};
 
 uint8_t mrom[MROM_SIZE] PG_ALIGN = {};
 
-uint8_t* mrom_guest_to_host(paddr_t paddr) { return mrom + paddr - MROM_BASE; }
+//划分一个地址给mrom、sram
+// uint8_t* mrom_guest_to_host(paddr_t paddr) { return guest_to_host(paddr); }
+// paddr_t mrom_host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
+
+// uint8_t* sram_guest_to_host(paddr_t paddr) { return guest_to_host(paddr); }
+// paddr_t sram_host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t mrom_read(paddr_t addr, int len) {
-  word_t ret = host_read(mrom_guest_to_host(addr), len);
+  word_t ret = 0;
+  // ret = host_read(mrom_guest_to_host(addr), len);
   return ret;
 }
 
-static word_t mrom_write(paddr_t addr, int len, word_t data) {
-  word_t ret = host_read(mrom_guest_to_host(addr), len);
-  return ret;
+static void mrom_write(paddr_t addr, int len, word_t data) {
+  // host_write(mrom_guest_to_host(addr), len);
 }
 
 static word_t sram_read(paddr_t addr, int len) {
-  word_t ret = host_read(addr + sram - SRAM_BASE, len);
+  word_t ret = 0;
+  // ret = host_read(sram_guest_to_host(addr), len);
   return ret;
 }
 
 static void sram_write(paddr_t addr, int len, word_t data) {
-  host_write((uint8_t*)(addr + sram - SRAM_BASE), len, data);
+  // host_write(sram_guest_to_host(addr), len, data);
 }
 #endif
 #endif
