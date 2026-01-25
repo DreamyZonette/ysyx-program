@@ -26,9 +26,9 @@ Area heap = RANGE(&_heap_start, &_heap_end);
 static const char mainargs[MAINARGS_MAX_LEN] = TOSTRING(MAINARGS_PLACEHOLDER); // defined in CFLAGS
 
 void putch(char ch) {
-    while ((inb(LSR_ADDR) & 0x20) == 0) {
-        // 空循环，等待LSR[5] (THRE) 位为1
-    }
+  // while ((inb(LSR_ADDR) & 0x20) == 0) {
+  //     // 空循环，等待LSR[5] (THRE) 位为1
+  // }
   outb(THR_ADDR, ch);
 }
 
