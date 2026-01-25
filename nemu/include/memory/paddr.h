@@ -21,9 +21,8 @@
 #define MROM_BASE 0x20000000
 #define SRAM_SIZE 8 * 1024
 #define SRAM_BASE 0x0f000000
-#define MROM_LEFT  ((paddr_t)MROM_BASE)
-#define MROM_RIGHT ((paddr_t)MROM_BASE + MROM_SIZE - 1)
-#define MROM_RESET_VECTOR (MROM_LEFT + CONFIG_PC_RESET_OFFSET)
+#define UART16550_BASE 0x10000000
+#define UART16550_SIZE 0x10000
 uint8_t* mrom_guest_to_host(paddr_t paddr);
 
 #define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
@@ -44,6 +43,9 @@ static inline bool in_pmem(paddr_t addr) {
   }
   else if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE){
     return addr - SRAM_BASE < SRAM_SIZE;
+  }
+  else if (addr >= UART16550_BASE && addr < UART16550_BASE + UART16550_SIZE){
+    return addr - UART16550_BASE < UART16550_SIZE;
   }
   else{
     return addr - CONFIG_MBASE < CONFIG_MSIZE;
