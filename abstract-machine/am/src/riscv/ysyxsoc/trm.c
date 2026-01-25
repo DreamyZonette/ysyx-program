@@ -62,7 +62,7 @@ extern unsigned char _bss_end[];      // .bss段SRAM地址结束
 void _uart_init() {
   // 配置除数寄存器
   outb(LCR_ADDR, 0x80); // LCR
-  outb(LSB_ADDR, 0x36); // LSB
+  outb(LSB_ADDR, 0x01); // LSB
   outb(MSB_ADDR, 0x00); // MSB
 
   outb(LCR_ADDR, 0x03); // LCR
@@ -76,7 +76,7 @@ extern void _boot_loader(void);
 void _trm_init() {
   _uart_init();
   // printf("Hello, world!\n");
-  // _boot_loader();
+  _boot_loader();
   int ret = main(mainargs);
   halt(ret);
 }
