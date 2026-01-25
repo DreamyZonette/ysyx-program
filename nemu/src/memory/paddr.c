@@ -131,6 +131,7 @@ word_t paddr_read(paddr_t addr, int len) {
     #ifdef YSYXSOC
     if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) return mrom_read(addr, len);
     if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) return sram_read(addr, len);
+    return 0;
     #endif
 
     return pmem_read(addr, len);
@@ -155,6 +156,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     #ifdef YSYXSOC
     if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) {mrom_write(addr, len, data);return;}
     if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) {sram_write(addr, len, data);return;}
+    return;
     #endif
     pmem_write(addr, len, data);
     return; }
