@@ -62,8 +62,8 @@ extern unsigned char _bss_end[];      // .bss段SRAM地址结束
 void _uart_init() {
   // 配置除数寄存器
   outb(LCR_ADDR, 0x80); // LCR
-  outb(LSB_ADDR, 0x01); // LSB
   outb(MSB_ADDR, 0x00); // MSB
+  outb(LSB_ADDR, 0x01); // LSB
 
   outb(LCR_ADDR, 0x03); // LCR
   outb(FCR_ADDR, 0x07);
