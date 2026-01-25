@@ -4,15 +4,9 @@
 #include <common.h>
 
 typedef struct {
-  word_t gpr[32];
+  word_t gpr[16];
   vaddr_t pc;
   vaddr_t next_pc;
-  // vaddr_t diff_mstatus;
-  // vaddr_t diff_mepc;
-  // vaddr_t diff_mtvec;
-  // vaddr_t diff_mcause;
-  // //仅供difftest使用
-  // vaddr_t csr[6];
 } riscv32_CPU_state;
 
 #define CPU_state riscv32_CPU_state

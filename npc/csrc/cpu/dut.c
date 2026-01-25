@@ -29,26 +29,6 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     return false;
     }
   }
-  // if(dut.next_pc != ref_r->pc) {
-  //   printf("pc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.next_pc, ref_r->pc);
-  //   return false;
-  // }
-  // if(dut.diff_mstatus != ref_r->csr[0]){
-  //   printf("mstatus \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mstatus, ref_r->csr[0]);
-  //   return false;
-  // }
-  // if(dut.diff_mepc != ref_r->csr[5]){
-  //   printf("mepc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mepc, ref_r->csr[5]);
-  //   return false;
-  // }
-  // if(dut.diff_mtvec != ref_r->csr[3]){
-  //   printf("mtvec \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mtvec, ref_r->csr[3]);
-  //   return false;
-  // }
-  // if(dut.diff_mcause != ref_r->csr[6]){
-  //   printf("mcause \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mcause, ref_r->csr[6]);
-  //   return false;
-  // }
 
   return true;
 }
@@ -129,14 +109,6 @@ static void checkregs(CPU_state *ref, vaddr_t pc) {
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
     CPU_state ref_r;
-
-    if (is_skip_ref) {
-    // to skip the checking of an instruction, just copy the reg state to reference design
-    ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
-    is_skip_ref = false;
-    return;
-  }
-  
   if (skip_dut_nr_inst > 0) {
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
     if (ref_r.pc == npc) {
@@ -150,7 +122,12 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     return;
   }
 
-  
+  if (is_skip_ref) {
+    // to skip the checking of an instruction, just copy the reg state to reference design
+    ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
+    is_skip_ref = false;
+    return;
+  }
     //printf("0x%08x 0x%08x\n", pc, npc);
 
   ref_difftest_exec(1);
