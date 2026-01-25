@@ -6,6 +6,8 @@
 #if CONFIG_YSYXSOC
 static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
 
+extern "C" void difftest_device_skip() { difftest_skip_ref();}
+
 uint8_t* mrom_guest_to_host(paddr_t paddr) { return mrom + paddr - CONFIG_MROM_BASE; }
 
 void init_mem() {

@@ -56,6 +56,11 @@ module ysyx_25020042_LSU(
     input [1:0]                     lsu_bresp,
     input [3:0]                     lsu_bid
 );
+
+`ifdef VERILATOR
+import "DPI-C" function void difftest_device_skip();
+`endif
+
 // 状态定义
 localparam IDLE = 2'b00;
 localparam WAIT = 2'b01;
@@ -119,22 +124,6 @@ always @(posedge clock) begin
                 if((ifu_valid && (wen || ren))) begin
                     state <= WAIT;
                     lsu_ready <= 1'b1;
-                    // // 当前仿真环境不需要移位
-                    // if (i_data >= 32'h8000_0000 && i_data <= 32'h8FFF_FFFF) begin
-                    //     lsu_wdata <= i_src2;
-                    //     lsu_wstrb <= i_wmask;
-                    // end
-                    // else begin
-                    //     lsu_wdata <= i_src2 << (i_data[1:0] * 8);
-                    //     lsu_wstrb <= i_wmask << i_data[1:0];
-                    // end
-                    // if(twice_signal) begin
-                    //     lsu_wdata <= count == 1'b0 ? wdata[31:0] : wdata[63:32];
-                    //     lsu_wstrb <= count == 1'b0 ? wstrb[3:0] : wstrb[7:4];
-                    //     lsu_araddr <= count == 1'b0 ? i_data : i_data + 4;
-                    //     lsu_awaddr <= count == 1'b0 ? i_data : i_data + 4;
-                    // end
-                    // else begin
                         lsu_wdata <= wdata[31:0];
                         lsu_wstrb <= wstrb[3:0];
                         lsu_araddr <= i_data;
@@ -207,10 +196,13 @@ always @(posedge clock) begin
                 end
             end
             WAIT: begin
-                // lsu_awvalid <= 1'b0;
-                // lsu_wvalid <= 1'b0;
                 if(lsu_arready) begin
                     lsu_arvalid <= 1'b0;
+                    `ifdef VERILATOR
+                    if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000) begin
+                        difftest_device_skip();
+                    end
+                    `endif
                 end
                 
                 if(lsu_awready & lsu_wready) begin
@@ -237,16 +229,7 @@ always @(posedge clock) begin
                 end
                 else if (lsu_bvalid & lsu_bid == lsu_awid) begin
                     lsu_bready <= 1'b1;
-                    // if (twice_signal) begin
-                    //     count <= count + 1'b1;
-                    //     if (count == 1'b1) begin
-                    //      lsu_valid <= 1'b1;
-                    //      count <= 1'b0;
-                    //     end                        
-                    // end
-                    // else begin
-                        lsu_valid <= 1'b1;
-                    // end
+                    lsu_valid <= 1'b1;
                     bresp <= lsu_bresp;
                     state <= IDLE;
                 end
