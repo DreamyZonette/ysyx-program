@@ -199,9 +199,9 @@ always @(posedge clock) begin
                 if(lsu_arready) begin
                     lsu_arvalid <= 1'b0;
                     `ifdef VERILATOR
-                    if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000) begin
-                        difftest_device_skip();
-                    end
+                    // if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000) begin
+                    //     difftest_device_skip();
+                    // end
                     `endif
                 end
                 
