@@ -123,9 +123,6 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
   }
 
   if (is_skip_ref) {
-    for(int i = 0; i < 16; i++){
-      dut.gpr[i] = _gpr(i);
-    }
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
     is_skip_ref = false;
