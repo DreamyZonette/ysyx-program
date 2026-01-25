@@ -143,7 +143,6 @@ static void execute(uint64_t n) {
 
       dut.pc = dut.next_pc;
       dut.next_pc = get_pc();
-    // if (dut.pc != dut.next_pc) g_nr_guest_inst ++;
     g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
