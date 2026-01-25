@@ -14,10 +14,10 @@ _boot_loader:
     beq     a1, a2, data_done   # 如果 .data 段为空，直接跳过
 
 data_loop:
-    lb      t0, (a0)            # 读 1 字节
-    sb      t0, (a1)            # 写 1 字节
-    addi    a0, a0, 1
-    addi    a1, a1, 1
+    lw      t0, 0(a0)        
+    sw      t0, 0(a1)         
+    addi    a0, a0, 4
+    addi    a1, a1, 4
     bne     a1, a2, data_loop
 
 data_done:
@@ -29,8 +29,8 @@ data_done:
 
     li      t0, 0
 bss_loop:
-    sb      t0, (a0)
-    addi    a0, a0, 1
+    sw      t0, (a0)
+    addi    a0, a0, 4
     bne     a0, a1, bss_loop
 
 bss_done:
