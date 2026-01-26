@@ -81,7 +81,7 @@ void init_mem() {
   memset(pmem, rand(), CONFIG_MSIZE);
   Log("physical memory area [%08x, %08x]", PMEM_LEFT, PMEM_RIGHT);
 }
-#endif
+
 
 static word_t internal_pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
@@ -124,6 +124,7 @@ extern "C" int pmem_read(int addr, int len) {
   }
   return ret;
 }
+#endif
 extern uint64_t g_nr_guest_inst;
 extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
