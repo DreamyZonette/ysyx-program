@@ -17,8 +17,11 @@ INCLUDES = $(addprefix -I, $(INC_PATH))
 VSRCS := $(shell find $(VPATH) -name *.v)
 VSRCS += $(shell find $(SOC_HOME)/perip -name *.v)
 VSRCS += $(SOC_HOME)/build/ysyxSoCFull.v
-CSRCS := $(wildcard $(CPATH)/*.cpp)
-CSRCS += $(shell find $(CPATH) -name *.c)
+ALL_CSRCS := $(wildcard $(CPATH)/*.cpp)
+ALL_CSRCS += $(shell find $(CPATH) -name *.c)
+
+EXCLUDE_DIR := $(CPATH)/device
+CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
 
 CFLAGS :=  
 CFLAGS += -CFLAGS "$(INCLUDES)"  -Wno-deprecated

@@ -180,8 +180,9 @@ void init_monitor(int argc, char *argv[]) {
   #if CONFIG_DIFFTEST
   init_difftest(diff_so_file, img_size, difftest_port);
   #endif
-
+  #if !CONFIG_YSYXSOC
   init_device();
+  #endif
   #if CONFIG_ITRACE
   void init_disasm(void);
   init_disasm();
