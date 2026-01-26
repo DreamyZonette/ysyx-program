@@ -131,7 +131,7 @@ word_t paddr_read(paddr_t addr, int len) {
     #ifdef YSYXSOC
     if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) return mrom_read(addr, len);
     if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) return sram_read(addr, len);
-    if (addr == 0x10000005) return 0x20;// uart lsr return 0x20 
+    // if (addr == 0x10000005) return 0x20;// uart lsr return 0x20 
     return 0;
     #endif
 
