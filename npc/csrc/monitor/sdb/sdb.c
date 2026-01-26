@@ -98,7 +98,7 @@ static int cmd_x (char *args){
 		return 0;
 	}
 	for(int i = 0 ; i < N  ; i++){
-		printf("\033[32mmrom:0x%08x -> \033[0m\033[33m%08x\033[0m\n",sdb_mrom_read(addr));
+		printf("\033[32mmrom:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr, sdb_mrom_read(addr));
 		addr += 4;
 	}
   #else
