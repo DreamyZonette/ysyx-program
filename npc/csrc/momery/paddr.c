@@ -16,7 +16,7 @@ void init_mem() {
   memset(mrom, rand(), CONFIG_MROM_SIZE);
   memset(flash, rand(), CONFIG_FLASH_SIZE);
   Log("physical mrom area [%08x, %08x]", MROM_LEFT, MROM_RIGHT);
-  Log("physical mrom area [%08x, %08x]", MROM_LEFT, MROM_RIGHT);
+  Log("physical flash area [%08x, %08x]", FLASH_LEFT, FLASH_RIGHT);
 }
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { 
