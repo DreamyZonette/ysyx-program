@@ -82,7 +82,7 @@ assign wstrb = i_wmask << i_data[1:0];
 /* verilator lint_on WIDTHEXPAND */
 
 // 记得修改回来
-wire [31:0] shifted_rdata = (i_data >= 32'h1000_0000 && i_data <= 32'h1000_0FFF) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
+wire [31:0] shifted_rdata = (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
 wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign o_lsu_busy = ren | wen;
