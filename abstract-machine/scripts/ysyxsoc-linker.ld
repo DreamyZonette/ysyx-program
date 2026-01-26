@@ -29,7 +29,7 @@ SECTIONS {
   .data : {
     _data_start = .;
     *(.sdata .sdata.*)
-    *(.data*)
+    *(.data .data.*)
     _data_end = .;
   } > sram AT> mrom : data
 
@@ -40,9 +40,9 @@ SECTIONS {
   /* ========== .bss：仅VMA在sram（无需加载，运行时清零） ========== */
   .bss : {
 	_bss_start = .;
-    *(.bss*)
-    *(.sbss*)
+    *(.sbss .sbss.*)
     *(.scommon)
+    *(.bss .bss.*)
     . = ALIGN(4);
     _bss_end = .;
   } > sram : data
