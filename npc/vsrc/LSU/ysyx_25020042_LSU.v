@@ -222,16 +222,16 @@ always @(posedge clock) begin
                     rresp <= lsu_rresp;
                     state <= IDLE;
                     case (1'b1)
-                        i_lw_signal: o_rdata <= shifted_rdata[31:0];
-                        i_lhu_signal: o_rdata <= {16'b0, shifted_rdata[15:0]};
-                        i_lh_signal: o_rdata <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
-                        i_lbu_signal: o_rdata <= {24'b0, shifted_rdata[7:0]};
-                        i_lb_signal: o_rdata <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
-                        // i_lw_signal: o_rdata <= lsu_rdata;
-                        // i_lhu_signal: o_rdata <= {16'b0, lsu_rdata[15:0]};
-                        // i_lh_signal: o_rdata <= {{16{lsu_rdata[15]}}, lsu_rdata[15:0]};
-                        // i_lbu_signal: o_rdata <= {24'b0, lsu_rdata[7:0]};
-                        // i_lb_signal: o_rdata <= {{24{lsu_rdata[7]}}, lsu_rdata[7:0]};
+                        // i_lw_signal: o_rdata <= shifted_rdata[31:0];
+                        // i_lhu_signal: o_rdata <= {16'b0, shifted_rdata[15:0]};
+                        // i_lh_signal: o_rdata <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
+                        // i_lbu_signal: o_rdata <= {24'b0, shifted_rdata[7:0]};
+                        // i_lb_signal: o_rdata <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
+                        i_lw_signal: o_rdata <= lsu_rdata;
+                        i_lhu_signal: o_rdata <= {16'b0, lsu_rdata[15:0]};
+                        i_lh_signal: o_rdata <= {{16{lsu_rdata[15]}}, lsu_rdata[15:0]};
+                        i_lbu_signal: o_rdata <= {24'b0, lsu_rdata[7:0]};
+                        i_lb_signal: o_rdata <= {{24{lsu_rdata[7]}}, lsu_rdata[7:0]};
                         default: o_rdata <= 0;
                     endcase
                 end
