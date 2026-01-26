@@ -97,7 +97,9 @@ static int cmd_x (char *args){
 		return 0;
 	}
 	for(int i = 0 ; i < N  ; i++){
-		printf("\033[32maddr:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr,pmem_read(addr,4));
+    if(addr >= CONFIG_MROM_BASE && addr < CONFIG_MROM_BASE + CONFIG_MROM_SIZE){
+		printf("\033[32mmrom:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr,mrom_read(addr,4));
+    }
 		addr += 4;
 	}
 	return 0;
@@ -108,9 +110,9 @@ static struct {
   const char *description;
   int (*handler) (char *);
 } cmd_table [] = {
-    { "help", "Display information about all supported commands", cmd_help },
-    { "c", "Continue the execution of the program", cmd_c },
-    { "q", "Exit NPC", cmd_q },
+  { "help", "Display information about all supported commands", cmd_help },
+  { "c", "Continue the execution of the program", cmd_c },
+  { "q", "Exit NPC", cmd_q },
 	{ "si", "Execute one step", cmd_si },
 	{ "info", "Display status", cmd_info },
 	{ "x", "Display memory" , cmd_x }
