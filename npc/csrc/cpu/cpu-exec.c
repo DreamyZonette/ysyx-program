@@ -23,7 +23,7 @@ int print_on = 0;
 CPU_state dut = {
   .gpr = {0},            // 所有寄存器初始化为0
   .pc = 0x20000000,       // PC初始化为0x30000000
-  .next_pc = 0x20000000,
+  .next_pc = 0x20000004,
   // .diff_mstatus = 0,
   // .diff_mepc = 0x80000000,
   // .diff_mtvec = 0x80000000,
@@ -46,10 +46,7 @@ void step_and_dump_wave(){
 static void trace_and_difftest() {
 
   #if CONFIG_DIFFTEST
-  //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
-  // if (dut.pc != dut.next_pc){
     difftest_step(dut.pc, dut.next_pc);
-  // } 
   #endif
 
   #if CONFIG_FTRACE
