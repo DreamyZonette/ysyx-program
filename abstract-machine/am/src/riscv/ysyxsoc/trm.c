@@ -72,7 +72,7 @@ void _spi_init() {
 extern void _boot_loader(void);
 
 void _trm_init() {
-  _spi_init();
+  // _spi_init();
   _uart_init();
   _boot_loader();
   int ret = main(mainargs);
