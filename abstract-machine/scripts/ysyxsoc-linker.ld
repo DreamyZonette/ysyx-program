@@ -10,7 +10,7 @@ MEMORY {
 SECTIONS {
   /* _pmem_start and _entry_offset are defined in LDFLAGS */
   /* . = _mrom_start + _entry_offset; */
-  /* . =  ORIGIN(mrom);
+  . =  ORIGIN(mrom);
   .text : {
     *(entry)
     *(.text*)
@@ -21,9 +21,9 @@ SECTIONS {
 
   .rodata : {
     *(.rodata*)
-  } > mrom AT> mrom : text */
+  } > mrom AT> mrom : text
 
-  . =  ORIGIN(flash);
+  /* . =  ORIGIN(flash);
   .text : {
     *(entry)
     *(.text*)
@@ -34,23 +34,23 @@ SECTIONS {
 
   .rodata : {
     *(.rodata*)
-  } > flash AT> flash : text
+  } > flash AT> flash : text */
 
 /***********************/
-
-  /* .data : {
-    _data_start = .;
-    *(.sdata .sdata.*)
-    *(.data .data.*)
-    _data_end = .;
-  } > sram AT> mrom : data */
 
   .data : {
     _data_start = .;
     *(.sdata .sdata.*)
     *(.data .data.*)
     _data_end = .;
-  } > sram AT> flash : data
+  } > sram AT> mrom : data
+
+  /* .data : {
+    _data_start = .;
+    *(.sdata .sdata.*)
+    *(.data .data.*)
+    _data_end = .;
+  } > sram AT> flash : data */
 
   data_lma_addr = LOADADDR(.data);
   edata = .;

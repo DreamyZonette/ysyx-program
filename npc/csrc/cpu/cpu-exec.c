@@ -21,15 +21,11 @@ void device_update();
 bool sim_finish = false;
 char p[128];
 int print_on = 0;
+
 CPU_state dut = {
   .gpr = {0},            // 所有寄存器初始化为0
-  .pc = 0x30000000,       // PC初始化为0x30000000
-  .next_pc = 0x30000000,
-  // .diff_mstatus = 0,
-  // .diff_mepc = 0x80000000,
-  // .diff_mtvec = 0x80000000,
-  // .diff_mcause = 0,
-  // .csr = {0},
+  .pc = 0x20000000,       // PC初始化为0x30000000
+  .next_pc = 0x20000000,
 };
 
 extern "C" void dpi_ebreak() {
