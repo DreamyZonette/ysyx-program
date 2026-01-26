@@ -10,7 +10,7 @@
 #define MROM_RESET_VECTOR (MROM_LEFT + CONFIG_PC_RESET_OFFSET)
 #define FLASH_LEFT  ((paddr_t)CONFIG_FLASH_BASE)
 #define FLASH_RIGHT ((paddr_t)CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE - 1)
-#define FLASH_RESET_VECTOR (MROM_LEFT + CONFIG_PC_RESET_OFFSET)
+#define FLASH_RESET_VECTOR (FLASH_LEFT + CONFIG_PC_RESET_OFFSET)
 uint8_t* mrom_guest_to_host(paddr_t paddr);
 uint8_t* flash_guest_to_host(paddr_t paddr);
 
