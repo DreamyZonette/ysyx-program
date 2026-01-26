@@ -40,6 +40,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
   CPU_state* top = (CPU_state*)(dut);
   if (direction == DIFFTEST_TO_REF) {
     for(int i = 0; i < RISCV_GPR_NUM; i++){
+      printf("cpu.gpr[%d] = %08x top->gpr[%d] = %08x\n", i, cpu.gpr[i], i, top->gpr[i]);
       cpu.gpr[i] = top->gpr[i];
     }
     printf("cpu.pc = 0x%08x dut->pc = 0x%08x\n", cpu.pc, top->pc);
