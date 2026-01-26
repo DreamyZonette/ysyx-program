@@ -13,8 +13,9 @@
 
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
-
+#if !CONFIG_YSYXSOC
 void device_update();
+#endif
 
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
@@ -178,11 +179,12 @@ static void execute(uint64_t n) {
   }
   #endif
     
-    
+    #if !CONFIG_YSYXSOC
     device_update();
     trace_and_difftest();
     #if CONFIG_DEVICE
     device_update();
+    #endif
     #endif
 
     if(sim_finish) {
