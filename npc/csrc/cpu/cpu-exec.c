@@ -143,7 +143,6 @@ static void execute(uint64_t n) {
 
       dut.pc = dut.next_pc;
       dut.next_pc = get_pc();
-      single_cycle();
     g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
@@ -176,13 +175,9 @@ static void execute(uint64_t n) {
   #endif
 
   #if CONFIG_DIFFTEST
-    // if (dut.pc != dut.next_pc){
       for(int i = 0; i < 16; i++){
       dut.gpr[i] = _gpr(i);
-    // }
   }
-  
-
   #endif
     
     

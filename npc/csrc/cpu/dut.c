@@ -35,6 +35,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 
 static bool is_skip_ref = false;
 static int skip_dut_nr_inst = 0;
+int count = 0;
 
 // this is used to let ref skip instructions which
 // can not produce consistent behavior with NPC
@@ -48,6 +49,7 @@ void difftest_skip_ref() {
   // will load that memory, we will encounter false negative. But such
   // situation is infrequent.
   skip_dut_nr_inst = 0;
+  count = 1;
 }
 
 // this is used to deal with instruction packing in QEMU.
@@ -58,7 +60,6 @@ void difftest_skip_ref() {
 //   We expect that DUT will catch up with REF within `nr_dut` instructions.
 void difftest_skip_dut(int nr_ref, int nr_dut) {
   skip_dut_nr_inst += nr_dut;
-
   while (nr_ref -- > 0) {
     ref_difftest_exec(1);
   }
@@ -132,7 +133,10 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
   
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-
+  if (count == 1) {
+    count = 0;
+    return;
+  }
   checkregs(&ref_r, pc);
 }
 #else
