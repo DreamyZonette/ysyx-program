@@ -1,10 +1,6 @@
 #include <am.h>
 #include <klib-macros.h>
 #include <riscv/riscv.h>
-// #if CONFIG_DIFFTEST
-// #include <cpu/difftest.h>
-// #endif
-
 #define UART_BASE 0x10000000
 #define THR_ADDR (UART_BASE + 0x0)
 #define IER_ADDR (UART_BASE + 0x1)
@@ -21,20 +17,12 @@ extern char _heap_start;
 extern char _heap_end;
 int main(const char *args);
 
-// extern char _pmem_start;
-// #define PMEM_SIZE (4 * 1024)
-// #define PMEM_END  ((uintptr_t)&_pmem_start + PMEM_SIZE)
 
 Area heap = RANGE(&_heap_start, &_heap_end);
 static const char mainargs[MAINARGS_MAX_LEN] = TOSTRING(MAINARGS_PLACEHOLDER); // defined in CFLAGS
 
 void putch(char ch) {
-  while ((inb(LSR_ADDR) & 0x20) == 0) {
-    // #if CONFIG_DIFFTEST
-    // difftest_skip_ref();
-    // #endif
-      // 空循环，等待LSR[5] (THRE) 位为1
-  }
+  while ((inb(LSR_ADDR) & 0x20) == 0) {}
   outb(THR_ADDR, ch);
 }
 
@@ -43,27 +31,6 @@ void halt(int code) {
   asm volatile("ebreak" : : "r"(a0));
   while (1);
 }
-
-extern unsigned char _data_start[];   // .data段SRAM运行地址（VMA）起始
-extern unsigned char _data_end[];     // .data段SRAM运行地址（VMA）结束
-extern unsigned char _etext[];        // .data段ROM加载地址（LMA）起始（.text结束地址）
-extern unsigned char _bss_start[];    // .bss段SRAM地址起始
-extern unsigned char _bss_end[];      // .bss段SRAM地址结束
-
-// void _boot_loader() {
-//     unsigned char *src = _etext;       // 源地址：ROM中的.data初始值（LMA）
-//     unsigned char *dst = _data_start;  // 目标地址：SRAM中的.data运行地址（VMA）
-//     while (dst < _data_end) {
-//         *dst++ = *src++;  // 逐字节复制（兼容任意位宽数据）
-//     }
-
-//     // ========== 步骤2：清零.bss段（SRAM中未初始化数据段） ==========
-//     // .bss段无初始值，必须在SRAM中清零后才能使用
-//     dst = _bss_start;
-//     while (dst < _bss_end) {
-//         *dst++ = 0;  // 逐字节清零（保证所有未初始化变量为0）
-//     }
-// }
 
 void _uart_init() {
   // 配置除数寄存器
@@ -77,11 +44,35 @@ void _uart_init() {
   outb(IER_ADDR, 0x00);
 }
 
+#define SPI_BASE            0x10001000
+#define SPI_RX0       (SPI_BASE + 0x00) 
+#define SPI_RX1       (SPI_BASE + 0x04)
+#define SPI_RX2       (SPI_BASE + 0x08)
+#define SPI_RX3       (SPI_BASE + 0x0c)
+#define SPI_TX0       (SPI_BASE + 0x00) //32 bit
+#define SPI_TX1       (SPI_BASE + 0x04)
+#define SPI_TX2       (SPI_BASE + 0x08)
+#define SPI_TX3       (SPI_BASE + 0x0c)
+#define SPI_CTRL      (SPI_BASE + 0x10)
+#define SPI_DIVIDER   (SPI_BASE + 0x14)
+#define SPI_SS        (SPI_BASE + 0x18)
+
+void _spi_init() {
+  outl(SPI_DIVIDER, 0x01); 
+  outl(SPI_SS     , 0x80); //only 7
+
+  // uint32_t ctrl_value = 0x00000000;
+  // ctrl_value |= 0x10; // char 8 lenth
+
+  outl(SPI_CTRL   , 0x10); 
+
+}
+
+
 extern void _boot_loader(void);
 
 void _trm_init() {
   _uart_init();
-  // printf("Hello, world!\n");
   _boot_loader();
   int ret = main(mainargs);
   halt(ret);
