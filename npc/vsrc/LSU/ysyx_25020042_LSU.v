@@ -229,9 +229,9 @@ always @(posedge clock) begin
                         // i_lb_signal: o_rdata <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
                         i_lw_signal: o_rdata <= lsu_rdata;
                         i_lhu_signal: o_rdata <= {16'b0, lsu_rdata[15:0]};
-                        i_lh_signal: begin o_rdata <= {16{lsu_rdata[15]}, lsu_rdata[15:0]}; end
+                        i_lh_signal: o_rdata <= $signed(lsu_rdata[15:0]);
                         i_lbu_signal: o_rdata <= {24'b0, lsu_rdata[7:0]};
-                        i_lb_signal: begin o_rdata <= {24{lsu_rdata[7]}, lsu_rdata[7:0]}; end
+                        i_lb_signal: o_rdata <= $signed(lsu_rdata[7:0]);
                         default: o_rdata <= 0;
                     endcase
                 end
