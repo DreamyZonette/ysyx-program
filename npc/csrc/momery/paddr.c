@@ -28,6 +28,10 @@ extern "C" void mrom_read(int32_t addr, int32_t *data) {
   *data = res;
 }
 
+uint32_t sdb_mrom_read(int32_t addr){
+  return *(uint32_t *)(mrom_guest_to_host(addr));
+}
+
 #endif
 
 #define SERIAL_PORT_LEFT      CONFIG_SERIAL_MMIO

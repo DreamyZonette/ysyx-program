@@ -91,17 +91,27 @@ static int cmd_x (char *args){
         printf("转换失败或超出范围\n");
         return 1;
     }
+  #if CONFIG_YSYXSOC
+    	if (addr < CONFIG_MROM_BASE || addr >= CONFIG_MROM_BASE + CONFIG_MROM_SIZE) {
+		printf("Invalid address\n");
+		printf("Address is out of range\n");
+		return 0;
+	}
+	for(int i = 0 ; i < N  ; i++){
+		printf("\033[32mmrom:0x%08x -> \033[0m\033[33m%08x\033[0m\n",sdb_mrom_read(addr));
+		addr += 4;
+	}
+  #else
 	if (addr < PMEM_LEFT || addr > PMEM_RIGHT) {
 		printf("Invalid address\n");
 		printf("Address is out of range\n");
 		return 0;
 	}
 	for(int i = 0 ; i < N  ; i++){
-    if(addr >= CONFIG_MROM_BASE && addr < CONFIG_MROM_BASE + CONFIG_MROM_SIZE){
-		printf("\033[32mmrom:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr,mrom_read(addr,4));
-    }
+		printf("\033[32maddr:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr,pmem_read(addr,4));
 		addr += 4;
 	}
+  #endif
 	return 0;
 }
 

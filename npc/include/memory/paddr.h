@@ -25,6 +25,7 @@ extern "C" {
     void pmem_write(int addr, int len, int data);
     void flash_read(int32_t addr, int32_t *data);
     void mrom_read(int32_t addr, int32_t *data);
+    uint32_t sdb_mrom_read(int32_t addr);
 }
 
 static inline bool in_pmem(paddr_t addr) {
