@@ -10,7 +10,7 @@ static uint8_t flash[CONFIG_FLASH_SIZE] PG_ALIGN = {};
 extern "C" void difftest_device_skip() { difftest_skip_ref();}
 
 uint8_t* mrom_guest_to_host(paddr_t paddr) { return mrom + paddr - CONFIG_MROM_BASE; }
-uint8_t* flash_guest_to_host(paddr_t paddr) { return flash + paddr - CONFIG_FLASH_BASE; }
+uint8_t* flash_guest_to_host(paddr_t paddr) { return flash + paddr; }
 
 void init_mem() {
   memset(mrom, rand(), CONFIG_MROM_SIZE);
