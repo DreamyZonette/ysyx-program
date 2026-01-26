@@ -61,10 +61,11 @@ void _spi_init() {
   outl(SPI_SS     , 0x80); //only 7
   outl(SPI_DIVIDER, 0x01); 
 
-  // uint32_t ctrl_value = 0x00000000;
-  // ctrl_value |= 0x10; // char 8 lenth
+  uint32_t ctrl_value = 0x00000000;
+  ctrl_value |= 0x10; // char 8 lenth
+  ctrl_value |= 1 << 10; // negedge change
 
-  outl(SPI_CTRL   , 0x08); 
+  outl(SPI_CTRL   , ctrl_value); 
 }
 
 
