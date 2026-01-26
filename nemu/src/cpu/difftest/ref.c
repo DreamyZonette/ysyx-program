@@ -36,15 +36,32 @@ __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction)
   }
 }
 
+__EXPORT void difftest_exec(uint64_t n) {
+  Decode s;
+  for(uint64_t i = 0; i < n; i ++){
+    //printf("0x%08x\n", cpu.pc);
+    void exec_once(Decode *s, vaddr_t pc);
+    exec_once(&s, cpu.pc);
+  }
+}
+
+int count = 0;
 __EXPORT void difftest_regcpy(void *dut, bool direction) {
   CPU_state* top = (CPU_state*)(dut);
+
+  cpu.pc = top->pc;
+  if (count == 1) {
+    difftest_exec(1);
+  }
   if (direction == DIFFTEST_TO_REF) {
     for(int i = 0; i < RISCV_GPR_NUM; i++){
       printf("cpu.gpr[%d] = %08x top->gpr[%d] = %08x\n", i, cpu.gpr[i], i, top->gpr[i]);
       cpu.gpr[i] = top->gpr[i];
     }
     printf("cpu.pc = 0x%08x dut->pc = 0x%08x\n", cpu.pc, top->pc);
-    cpu.pc = top->pc;
+    if (count == 0) {
+      count = 1;
+    }
     // cpu.csr[0] = top->diff_mstatus; // 只复制mstatus寄存器
     // cpu.csr[5] = top->diff_mepc; // 只复制mepc寄存器
     // cpu.csr[6] = top->diff_mcause; // 只复制mcause寄存器
@@ -62,14 +79,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
   }
 }
 
-__EXPORT void difftest_exec(uint64_t n) {
-  Decode s;
-  for(uint64_t i = 0; i < n; i ++){
-    //printf("0x%08x\n", cpu.pc);
-    void exec_once(Decode *s, vaddr_t pc);
-    exec_once(&s, cpu.pc);
-  }
-}
+
 
 
 __EXPORT void difftest_raise_intr(word_t NO) {
