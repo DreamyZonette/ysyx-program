@@ -163,6 +163,7 @@
     wire [4:0]  rs1;
     wire [4:0]  rs2;
     wire [4:0]  rd;
+    wire        fault;
 //------------------------------------------
 // AXI 总线
 //------------------------------------------
@@ -303,6 +304,10 @@
     // wire        io_mem_bvalid;
     // wire        io_mem_bready;
     // wire [1:0]  io_mem_bresp;
+//------------------------------------------
+// 异常信号
+//------------------------------------------
+assign fault = (io_master_rresp == 2'b00) ? 1'b0 : 1'b1;
 
 //------------------------------------------
 // axi  仲裁器模块实例化
@@ -587,6 +592,7 @@ ysyx_25020042_PC PC_u(
     .reset(reset),
     .i_next_pc(next_pc),
     .wbu_valid(wbu_valid),
+    .fault(fault),
     .pc_valid(pc_valid),
     .o_pc(pc)
 );

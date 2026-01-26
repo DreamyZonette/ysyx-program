@@ -4,6 +4,7 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
     input reset,
     input [PC_LEN-1:0] i_next_pc,
     input wbu_valid,
+    input fault,
     output reg pc_valid,
     output reg [PC_LEN-1:0] o_pc
     );
@@ -13,6 +14,9 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
             o_pc <= 32'h2000_0000;
             pc_valid <= 1'b1;
         end 
+        else if (fault)begin
+            o_pc <= 0;
+        end
         else if (wbu_valid)begin
             o_pc <= i_next_pc;
             pc_valid <= 1'b1;
