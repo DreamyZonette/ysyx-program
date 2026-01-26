@@ -29,6 +29,7 @@ SECTIONS {
   .data : {
     _data_start = .;
     *(.data*)
+    *(.sdata*)
     _data_end = .;
   } > sram AT> mrom : data
 
