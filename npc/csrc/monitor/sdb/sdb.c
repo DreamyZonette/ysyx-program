@@ -19,7 +19,7 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  line_read = readline("(SOC) ");
+  line_read = readline("(soc) ");
 
   if (line_read && *line_read) {
     add_history(line_read);
