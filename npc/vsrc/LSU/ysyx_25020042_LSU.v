@@ -82,7 +82,7 @@ assign wstrb = i_wmask << i_data[1:0];
 /* verilator lint_on WIDTHEXPAND */
 
 // 记得修改回来
-// wire [31:0] shifted_rdata = (i_data >= 32'h8000_0000 && i_data <= 32'h8FFF_FFFF) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
+wire [31:0] shifted_rdata = (i_data >= 32'h1000_0000 && i_data <= 32'h1000_0FFF) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
 wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign o_lsu_busy = ren | wen;
@@ -222,16 +222,16 @@ always @(posedge clock) begin
                     rresp <= lsu_rresp;
                     state <= IDLE;
                     case (1'b1)
-                        // i_lw_signal: o_rdata <= shifted_rdata[31:0];
-                        // i_lhu_signal: o_rdata <= {16'b0, shifted_rdata[15:0]};
-                        // i_lh_signal: o_rdata <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
-                        // i_lbu_signal: o_rdata <= {24'b0, shifted_rdata[7:0]};
-                        // i_lb_signal: o_rdata <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
-                        i_lw_signal: o_rdata <= lsu_rdata;
-                        i_lhu_signal: o_rdata <= {16'b0, lsu_rdata[15:0]};
-                        i_lh_signal: o_rdata <= {{16{lsu_rdata[15]}}, lsu_rdata[15:0]};
-                        i_lbu_signal: o_rdata <= {24'b0, lsu_rdata[7:0]};
-                        i_lb_signal: o_rdata <= {{24{lsu_rdata[7]}}, lsu_rdata[7:0]};
+                        i_lw_signal: o_rdata <= shifted_rdata[31:0];
+                        i_lhu_signal: o_rdata <= {16'b0, shifted_rdata[15:0]};
+                        i_lh_signal: o_rdata <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
+                        i_lbu_signal: o_rdata <= {24'b0, shifted_rdata[7:0]};
+                        i_lb_signal: o_rdata <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
+                        // i_lw_signal: o_rdata <= lsu_rdata;
+                        // i_lhu_signal: o_rdata <= {16'b0, lsu_rdata[15:0]};
+                        // i_lh_signal: o_rdata <= {{16{lsu_rdata[15]}}, lsu_rdata[15:0]};
+                        // i_lbu_signal: o_rdata <= {24'b0, lsu_rdata[7:0]};
+                        // i_lb_signal: o_rdata <= {{24{lsu_rdata[7]}}, lsu_rdata[7:0]};
                         default: o_rdata <= 0;
                     endcase
                 end
