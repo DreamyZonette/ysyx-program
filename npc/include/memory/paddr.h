@@ -11,6 +11,8 @@
 #define FLASH_LEFT  ((paddr_t)CONFIG_FLASH_BASE)
 #define FLASH_RIGHT ((paddr_t)CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE - 1)
 #define FLASH_RESET_VECTOR (MROM_LEFT + CONFIG_PC_RESET_OFFSET)
+uint8_t* mrom_guest_to_host(paddr_t paddr);
+uint8_t* flash_guest_to_host(paddr_t paddr);
 
 #endif
 
@@ -20,24 +22,26 @@
 
 
 uint8_t* guest_to_host(paddr_t paddr);
-uint8_t* mrom_guest_to_host(paddr_t paddr);
-uint8_t* flash_guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 
 extern "C" {
+  #if !CONFIG_YSYXSOC
     int pmem_read(int addr, int len);
     void pmem_write(int addr, int len, int data);
+    #else 
     void flash_read(int32_t addr, int32_t *data);
     void mrom_read(int32_t addr, int32_t *data);
     uint32_t sdb_mrom_read(int32_t addr);
     uint32_t sdb_flash_read(int32_t addr);
+    #endif
 }
-
+#if !CONFIG_YSYXSOC
 static inline bool in_pmem(paddr_t addr) {
   return addr - CONFIG_MBASE < CONFIG_MSIZE;
 }
 
 word_t paddr_read(paddr_t addr, int len);
 void paddr_write(paddr_t addr, int len, word_t data);
+#endif
 
 #endif
