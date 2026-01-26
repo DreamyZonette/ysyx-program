@@ -126,8 +126,8 @@ always @(posedge clock) begin
                     lsu_ready <= 1'b1;
                         lsu_wdata <= wdata[31:0];
                         lsu_wstrb <= wstrb[3:0];
-                        lsu_araddr <= i_data;
-                        lsu_awaddr <= i_data;
+                        lsu_araddr <= {i_data[31:2], 2'b00};
+                        lsu_awaddr <= {i_data[31:2], 2'b00};
                     // end
                     if (wen) begin
                         lsu_awvalid <= 1'b1;
