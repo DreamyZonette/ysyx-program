@@ -65,7 +65,6 @@ void _spi_init() {
   // ctrl_value |= 0x10; // char 8 lenth
 
   outl(SPI_CTRL   , 0x10); 
-
 }
 
 
