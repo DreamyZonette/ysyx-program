@@ -30,7 +30,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     }
   }
   if(ref_r->pc != pc){
-    printf("PC \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", i, pc, ref_r->pc);
+    printf("PC \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", pc, ref_r->pc);
     return false;
   }
 
