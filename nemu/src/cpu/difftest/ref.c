@@ -42,6 +42,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
     for(int i = 0; i < RISCV_GPR_NUM; i++){
       cpu.gpr[i] = top->gpr[i];
     }
+    printf("cpu.pc = 0x%08x dut->pc = 0x%08x\n", cpu.pc, top->pc);
     cpu.pc = top->pc;
     // cpu.csr[0] = top->diff_mstatus; // 只复制mstatus寄存器
     // cpu.csr[5] = top->diff_mepc; // 只复制mepc寄存器
