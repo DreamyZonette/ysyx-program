@@ -200,7 +200,7 @@ always @(posedge clock) begin
                     // if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000 && lsu_arvalid && lsu_arready || 
                     //     lsu_awaddr >= 32'h1000_0000 && lsu_awaddr < 32'h1000_1000 && lsu_awvalid && lsu_awready) begin
                     if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000 && lsu_arvalid && lsu_arready) begin
-                        difftest_device_skip();
+                        // difftest_device_skip();
                     end
                 `endif
                 if(lsu_arready) begin
