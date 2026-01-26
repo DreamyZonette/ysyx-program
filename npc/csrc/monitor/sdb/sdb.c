@@ -19,7 +19,7 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  line_read = readline("(SOC NPC) ");
+  line_read = readline("(SOC) ");
 
   if (line_read && *line_read) {
     add_history(line_read);
@@ -92,13 +92,19 @@ static int cmd_x (char *args){
         return 1;
     }
   #if CONFIG_YSYXSOC
-    	if (addr < CONFIG_MROM_BASE || addr >= CONFIG_MROM_BASE + CONFIG_MROM_SIZE) {
+    	if (addr < CONFIG_MROM_BASE || addr >= CONFIG_MROM_BASE + CONFIG_MROM_SIZE &&
+          addr < CONFIG_FLASH_BASE || addr >= CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE) {
 		printf("Invalid address\n");
 		printf("Address is out of range\n");
 		return 0;
 	}
 	for(int i = 0 ; i < N  ; i++){
-		printf("\033[32mmrom:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr, sdb_mrom_read(addr));
+    if (addr < CONFIG_MROM_BASE || addr >= CONFIG_MROM_BASE + CONFIG_MROM_SIZE){
+  		printf("\033[32mmrom:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr, sdb_mrom_read(addr));
+    }
+    else if (addr < CONFIG_FLASH_BASE || addr >= CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE){
+  		printf("\033[32mflash:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr, sdb_flash_read(addr));
+    }
 		addr += 4;
 	}
   #else

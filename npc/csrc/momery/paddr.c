@@ -5,25 +5,36 @@
 
 #if CONFIG_YSYXSOC
 static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
+static uint8_t flash[CONFIG_FLASH_SIZE] PG_ALIGN = {};
 
 extern "C" void difftest_device_skip() { difftest_skip_ref();}
 
 uint8_t* mrom_guest_to_host(paddr_t paddr) { return mrom + paddr - CONFIG_MROM_BASE; }
+uint8_t* flash_guest_to_host(paddr_t paddr) { return flash + paddr - CONFIG_FLASH_BASE; }
 
 void init_mem() {
   memset(mrom, rand(), CONFIG_MROM_SIZE);
+  memset(flash, rand(), CONFIG_FLASH_SIZE);
+  Log("physical mrom area [%08x, %08x]", MROM_LEFT, MROM_RIGHT);
   Log("physical mrom area [%08x, %08x]", MROM_LEFT, MROM_RIGHT);
 }
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { 
-  // difftest_skip_ref();
-  assert(0); }
+  uint32_t res = *(uint32_t *)(flash_guest_to_host(addr));
+  #if CONFIG_MTRACE
+    printf("flash_read(0x%08x, %d) = 0x%08x\n", addr, 4, res);
+  #endif
+  *data = res;
+}
 
+uint32_t sdb_flash_read(int32_t addr){
+  return *(uint32_t *)(flash_guest_to_host(addr));
+}
 
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
   uint32_t res = *(uint32_t *)(mrom_guest_to_host(addr));
   #if CONFIG_MTRACE
-    // fprintf(stderr,"mrom_read(0x%08x, %d) = 0x%08x\n", addr, 4, res);
+    printf("mrom_read(0x%08x, %d) = 0x%08x\n", addr, 4, res);
   #endif
   *data = res;
 }
