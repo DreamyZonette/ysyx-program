@@ -28,6 +28,7 @@ extern "C" void flash_read(int32_t addr, int32_t *data) {
 }
 
 uint32_t sdb_flash_read(int32_t addr){
+  printf("%08x\n", addr + CONFIG_FLASH_BASE);
   return *(uint32_t *)(flash_guest_to_host(addr + CONFIG_FLASH_BASE));
 }
 
