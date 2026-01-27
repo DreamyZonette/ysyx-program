@@ -99,7 +99,7 @@ void _trm_init() {
   _spi_init();
   _uart_init();
   _boot_loader();
-  flash_read(0x30000000);
+  flash_read(0x30000004);
   putch('Y');
   int ret = main(mainargs);
   halt(ret);
