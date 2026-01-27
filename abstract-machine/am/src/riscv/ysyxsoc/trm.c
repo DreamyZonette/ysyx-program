@@ -85,7 +85,7 @@ void _spi_init() {
 uint32_t flash_read(uint32_t addr) {
   uint32_t read_ctrl = 0;
   read_ctrl |= 0x03; // read cmd
-  read_ctrl |= addr << 8; // 32 bit mode
+  // read_ctrl |= addr << 8; // 32 bit mode
   outl(SPI_TX0, read_ctrl);
   uint32_t ctrl = inl(SPI_CTRL);
   ctrl |= SPI_CTRL_GO_BSY;
