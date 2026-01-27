@@ -99,10 +99,10 @@ static int cmd_x (char *args){
 		return 0;
 	}
 	for(int i = 0 ; i < N  ; i++){
-    if (addr < CONFIG_MROM_BASE || addr >= CONFIG_MROM_BASE + CONFIG_MROM_SIZE){
+    if (addr >= CONFIG_MROM_BASE || addr < CONFIG_MROM_BASE + CONFIG_MROM_SIZE){
   		printf("\033[32mmrom:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr, sdb_mrom_read(addr));
     }
-    else if (addr < CONFIG_FLASH_BASE || addr >= CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE){
+    else if (addr >= CONFIG_FLASH_BASE || addr < CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE){
   		printf("\033[32mflash:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr, sdb_flash_read(addr));
     }
 		addr += 4;
