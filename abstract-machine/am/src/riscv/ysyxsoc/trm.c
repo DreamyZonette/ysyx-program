@@ -86,7 +86,7 @@ uint32_t flash_read(uint32_t addr) {
   uint32_t read_ctrl = 0;
   read_ctrl |= 0x3 << 24; // read cmd
   read_ctrl |= addr & ADDR_MASK; // 32 bit mode
-  outl(SPI_TX0, read_ctrl);
+  outl(SPI_TX1, read_ctrl);
 
   outl(SPI_SS     , 0x01); //flash
   outl(SPI_DIVIDER, 0x01); 
@@ -100,6 +100,8 @@ uint32_t flash_read(uint32_t addr) {
   // read data
   while ((inl(SPI_CTRL) & SPI_CTRL_GO_BSY) != 0) {}
     return inl(SPI_RX1);
+
+  outl(SPI_SS     , 0x00); 
 }
 
 
