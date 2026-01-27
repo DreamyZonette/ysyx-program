@@ -58,7 +58,7 @@ void _uart_init() {
 #define SPI_SS        (SPI_BASE + 0x18)
 
 void _spi_init() {
-  outl(SPI_SS     , 0x00); //only 7
+  outl(SPI_SS     , 0x01); //only 7
   outl(SPI_DIVIDER, 0x01); 
 
   uint32_t ctrl_value = 0x00000000;
