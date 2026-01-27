@@ -14,7 +14,7 @@ uint8_t* flash_guest_to_host(paddr_t paddr) { return flash + paddr - CONFIG_FLAS
 
 void init_mem() {
   memset(mrom, rand(), CONFIG_MROM_SIZE);
-  memset(flash, 0x10086, CONFIG_FLASH_SIZE);
+  memset(flash, 0x86, CONFIG_FLASH_SIZE);
   Log("physical mrom area [%08x, %08x]", MROM_LEFT, MROM_RIGHT);
   Log("physical flash area [%08x, %08x]", FLASH_LEFT, FLASH_RIGHT);
 }

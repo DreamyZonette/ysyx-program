@@ -99,8 +99,12 @@ void _trm_init() {
   _spi_init();
   _uart_init();
   _boot_loader();
-  flash_read(0x30000004);
-  putch('Y');
+  if (flash_read(0x30000004) == 0x86868686) {
+    putstr("SPI PASS");
+  }
+  else {
+    putstr("SPI FAIL");
+  }
   int ret = main(mainargs);
   halt(ret);
 }
