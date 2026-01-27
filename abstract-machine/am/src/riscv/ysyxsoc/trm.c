@@ -58,6 +58,16 @@ void _uart_init() {
 #define SPI_SS        (SPI_BASE + 0x18)
 
 void _spi_init() {
+  outl(SPI_SS     , 0x00); //only 7
+  outl(SPI_DIVIDER, 0x01); 
+
+  uint32_t ctrl_value = 0x00000000;
+  ctrl_value |= 0x40; // char 64 lenth
+  ctrl_value |= 1 << 10; // Tx negedge change
+
+  outl(SPI_CTRL   , ctrl_value); 
+
+  /*
   outl(SPI_SS     , 0x80); //only 7
   outl(SPI_DIVIDER, 0x01); 
 
@@ -66,7 +76,20 @@ void _spi_init() {
   ctrl_value |= 1 << 9; // negedge change
   ctrl_value |= 1 << 11; // low frist
 
-  outl(SPI_CTRL   , ctrl_value); 
+  outl(SPI_CTRL   , ctrl_value); */
+}
+#define SPI_CTRL_GO_BSY   (1 << 8)
+
+uint32_t flash_read(uint32_t addr) {
+  uint32_t read_ctrl = 0;
+  read_ctrl |= 0x03; // read cmd
+  read_ctrl |= addr << 8; // 32 bit mode
+  outl(SPI_TX0, read_ctrl);
+  uint32_t ctrl = inl(SPI_CTRL);
+  ctrl |= SPI_CTRL_GO_BSY;
+  outl(SPI_CTRL, ctrl);
+  while ((inl(SPI_CTRL) & SPI_CTRL_GO_BSY) != 0) {}
+    return inl(SPI_RX1);
 }
 
 
@@ -76,6 +99,8 @@ void _trm_init() {
   _spi_init();
   _uart_init();
   _boot_loader();
+  flash_read(0x30000000);
+  putch('Y');
   int ret = main(mainargs);
   halt(ret);
 }
