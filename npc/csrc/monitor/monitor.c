@@ -73,7 +73,8 @@ static long load_img() {
   }
 
     fseek(temp_fp, 0, SEEK_SET); // 回到文件开头
-    int ret = fread(flash_guest_to_host(FLASH_RESET_VECTOR), size, 1, fp);
+    int temp_ret = fread(flash_guest_to_host(FLASH_RESET_VECTOR), size, 1, temp_fp);
+    assert(temp_ret == 1);
   /*---------temp--------*/
 
   FILE *fp = fopen(img_file, "rb");
