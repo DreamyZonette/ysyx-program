@@ -63,7 +63,7 @@ void _spi_init() {
 
   uint32_t ctrl_value = 0x00000000;
   ctrl_value |= 0x10; // char 8 lenth
-  ctrl_value |= 1 << 10; // negedge change
+  // ctrl_value |= 1 << 10; // negedge change
   ctrl_value |= 1 << 11; // low frist
 
   outl(SPI_CTRL   , ctrl_value); 
