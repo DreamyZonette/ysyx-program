@@ -100,10 +100,10 @@ void _trm_init() {
   _uart_init();
   _boot_loader();
   if (flash_read(0x30000004) == 0x86868686) {
-    putstr("SPI PASS");
+    putstr("SPI FLASH PASS\n");
   }
   else {
-    putstr("SPI FAIL");
+    putstr("SPI FLASH FAIL\n");
   }
   int ret = main(mainargs);
   halt(ret);
