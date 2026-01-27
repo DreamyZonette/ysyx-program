@@ -99,7 +99,7 @@ uint32_t flash_read(uint32_t addr) {
 
   // read data
   while ((inl(SPI_CTRL) & SPI_CTRL_GO_BSY) != 0) {}
-    return inl(SPI_RX1);
+    return inl(SPI_RX0);
 
   outl(SPI_SS     , 0x00); 
 }
