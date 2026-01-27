@@ -74,9 +74,9 @@ static long load_img() {
 
     fseek(temp_fp, 0, SEEK_SET); // 回到文件开头
     long temp_size = 0;
-    fseek(fp, 0, SEEK_END);
-    temp_size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
+    fseek(temp_fp, 0, SEEK_END);
+    temp_size = ftell(temp_fp);
+    fseek(temp_fp, 0, SEEK_SET);
     int temp_ret = fread(flash_guest_to_host(FLASH_RESET_VECTOR), temp_size, 1, temp_fp);
     assert(temp_ret == 1);
   /*---------temp--------*/
