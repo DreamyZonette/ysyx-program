@@ -65,7 +65,7 @@ void _spi_init() {
   ctrl_value |= 0x40; // char 64 lenth
   // ctrl_value |= 1 << 9; // negedge change
   ctrl_value |= 1 << 10; // Tx negedge change
-  // ctrl_value |= 1 << 11; // low frist
+  ctrl_value |= 1 << 11; // low frist
 
   outl(SPI_CTRL   , ctrl_value); 
 
