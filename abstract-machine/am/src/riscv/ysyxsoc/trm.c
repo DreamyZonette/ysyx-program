@@ -57,39 +57,47 @@ void _uart_init() {
 #define SPI_DIVIDER   (SPI_BASE + 0x14)
 #define SPI_SS        (SPI_BASE + 0x18)
 
-void _spi_init() {
-  outl(SPI_SS     , 0x01); //only 7
-  outl(SPI_DIVIDER, 0x01); 
+// void _spi_init() {
+//   outl(SPI_SS     , 0x01); //only 7
+//   outl(SPI_DIVIDER, 0x01); 
 
-  uint32_t ctrl_value = 0x00000000;
-  ctrl_value |= 0x40; // char 64 lenth
-  // ctrl_value |= 1 << 9; // negedge change
-  ctrl_value |= 1 << 10; // Tx negedge change
-  ctrl_value |= 1 << 11; // low frist
+//   uint32_t ctrl_value = 0x00000000;
+//   ctrl_value |= 0x40; // char 64 lenth
+//   ctrl_value |= 1 << 10; // Tx negedge change
 
-  outl(SPI_CTRL   , ctrl_value); 
+//   outl(SPI_CTRL   , ctrl_value); 
 
-  /*
-  outl(SPI_SS     , 0x80); //only 7
-  outl(SPI_DIVIDER, 0x01); 
+//   /*
+//   outl(SPI_SS     , 0x80); //only 7
+//   outl(SPI_DIVIDER, 0x01); 
 
-  uint32_t ctrl_value = 0x00000000;
-  ctrl_value |= 0x10; // char 8 lenth
-  ctrl_value |= 1 << 9; // negedge change
-  ctrl_value |= 1 << 11; // low frist
+//   uint32_t ctrl_value = 0x00000000;
+//   ctrl_value |= 0x10; // char 8 lenth
+//   ctrl_value |= 1 << 9; // negedge change
+//   ctrl_value |= 1 << 11; // low frist
 
-  outl(SPI_CTRL   , ctrl_value); */
-}
+//   outl(SPI_CTRL   , ctrl_value); */
+// }
 #define SPI_CTRL_GO_BSY   (1 << 8)
+#define ADDR_MASK         0x00ffffff
+
 
 uint32_t flash_read(uint32_t addr) {
   uint32_t read_ctrl = 0;
-  read_ctrl |= 0x3; // read cmd
-  // read_ctrl |= addr << 8; // 32 bit mode
+  read_ctrl |= 0x3 << 24; // read cmd
+  read_ctrl |= addr & ADDR_MASK; // 32 bit mode
   outl(SPI_TX0, read_ctrl);
-  uint32_t ctrl = inl(SPI_CTRL);
-  ctrl |= SPI_CTRL_GO_BSY;
-  outl(SPI_CTRL, ctrl);
+
+  outl(SPI_SS     , 0x01); //flash
+  outl(SPI_DIVIDER, 0x01); 
+  uint32_t ctrl_value = 0x00000000;
+  ctrl_value |= 0x40; // char 64 lenth
+  ctrl_value |= 1 << 10; // Tx negedge change
+  outl(SPI_CTRL   , ctrl_value); 
+  ctrl_value |= SPI_CTRL_GO_BSY; 
+  outl(SPI_CTRL    , ctrl_value); // start
+
+  // read data
   while ((inl(SPI_CTRL) & SPI_CTRL_GO_BSY) != 0) {}
     return inl(SPI_RX1);
 }
@@ -98,7 +106,7 @@ uint32_t flash_read(uint32_t addr) {
 extern void _boot_loader(void);
 
 void _trm_init() {
-  _spi_init();
+  // _spi_init();
   _uart_init();
   _boot_loader();
   if (flash_read(0x30000004) == 0x86868686) {
