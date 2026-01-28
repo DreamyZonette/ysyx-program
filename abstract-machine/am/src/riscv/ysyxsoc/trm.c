@@ -100,9 +100,15 @@ uint32_t flash_read(uint32_t addr) {
 
   // read data
   while ((inl(SPI_CTRL) & SPI_CTRL_GO_BSY) != 0) {}
-    return inl(SPI_RX0);
+    uint32_t data = inl(SPI_RX0);
+    uint32_t data1 = 0;
+    data1 |= (data & 0xff) << 24;
+    data1 |= (data & 0xff00) << 8;
+    data1 |= (data & 0xff0000) >> 8;
+    data1 |= (data & 0xff000000) >> 24;
 
   outl(SPI_SS     , 0x00); 
+  return data1;
 }
 
 
