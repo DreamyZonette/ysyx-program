@@ -85,7 +85,7 @@ void _uart_init() {
 uint32_t flash_read(uint32_t addr) {
   uint32_t read_ctrl = 0;
   read_ctrl |= 0x3 << 24; // read cmd
-  read_ctrl |= addr & ADDR_MASK; // 32 bit mode
+  read_ctrl |= (addr << 1) & ADDR_MASK; // 32 bit mode
   outl(SPI_TX1, read_ctrl);
 
   outl(SPI_SS     , 0x01); //flash
