@@ -111,7 +111,7 @@ void _trm_init() {
   // _spi_init();
   _uart_init();
   _boot_loader();
-  if (flash_read(0x30000004) == 0x86868686) {
+  if (flash_read(0x30000004) == 0x100007b7) {
     putstr("SPI FLASH PASS\n");
   }
   else {
