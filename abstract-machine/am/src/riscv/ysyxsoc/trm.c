@@ -93,7 +93,7 @@ uint32_t flash_read(uint32_t addr) {
   uint32_t ctrl_value = 0x00000000;
   ctrl_value |= 0x40; // char 64 lenth
   ctrl_value |= 1 << 10; // Tx negedge change
-  // ctrl_value |= 1 << 9; // Rx negedge change
+  ctrl_value |= 1 << 9; // Rx negedge change
   outl(SPI_CTRL   , ctrl_value); 
   ctrl_value |= SPI_CTRL_GO_BSY; 
   outl(SPI_CTRL    , ctrl_value); // start
