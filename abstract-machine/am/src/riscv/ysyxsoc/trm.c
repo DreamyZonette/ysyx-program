@@ -119,8 +119,8 @@ uint32_t read_marchid(void);
 void _print_info() {
   uint32_t vendorid = read_mvendorid();
   uint32_t archid = read_marchid();
-  printf("vendorid: 0x%x\n", vendorid);
-  printf("archid: 0x%x\n", archid);
+  printf("vendorid: %d\n", vendorid);
+  printf("archid: %d\n", archid);
 
   // putstr("vendorid: ");
   // putul(vendorid);
