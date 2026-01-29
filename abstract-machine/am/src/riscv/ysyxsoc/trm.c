@@ -82,35 +82,35 @@ void _uart_init() {
 #define ADDR_MASK         0x00ffffff
 
 
-uint32_t flash_read(uint32_t addr) {
-  return *(uint32_t*)(addr);
-  uint32_t read_ctrl = 0;
-  read_ctrl |= 0x3 << 24; // read cmd
-  read_ctrl |= (addr) & ADDR_MASK; // 32 bit mode
-  outl(SPI_TX1, read_ctrl);
+// uint32_t flash_read(uint32_t addr) {
+//   return *(uint32_t*)(addr);
+//   uint32_t read_ctrl = 0;
+//   read_ctrl |= 0x3 << 24; // read cmd
+//   read_ctrl |= (addr) & ADDR_MASK; // 32 bit mode
+//   outl(SPI_TX1, read_ctrl);
 
-  outl(SPI_SS     , 0x01); //flash
-  outl(SPI_DIVIDER, 0x01); 
-  uint32_t ctrl_value = 0x00000000;
-  ctrl_value |= 0x40; // char 64 lenth
-  ctrl_value |= 1 << 10; // Tx negedge change
-  // ctrl_value |= 1 << 9; // Rx negedge change
-  // outl(SPI_CTRL   , ctrl_value); 
-  ctrl_value |= SPI_CTRL_GO_BSY; 
-  outl(SPI_CTRL    , ctrl_value); // start
+//   outl(SPI_SS     , 0x01); //flash
+//   outl(SPI_DIVIDER, 0x01); 
+//   uint32_t ctrl_value = 0x00000000;
+//   ctrl_value |= 0x40; // char 64 lenth
+//   ctrl_value |= 1 << 10; // Tx negedge change
+//   // ctrl_value |= 1 << 9; // Rx negedge change
+//   // outl(SPI_CTRL   , ctrl_value); 
+//   ctrl_value |= SPI_CTRL_GO_BSY; 
+//   outl(SPI_CTRL    , ctrl_value); // start
 
-  // read data
-  while ((inl(SPI_CTRL) & SPI_CTRL_GO_BSY) != 0) {}
-    uint32_t data = inl(SPI_RX0);
-    uint32_t data1 = 0;
-    data1 |= (data & 0xff) << 24;
-    data1 |= (data & 0xff00) << 8;
-    data1 |= (data & 0xff0000) >> 8;
-    data1 |= (data & 0xff000000) >> 24;
+//   // read data
+//   while ((inl(SPI_CTRL) & SPI_CTRL_GO_BSY) != 0) {}
+//     uint32_t data = inl(SPI_RX0);
+//     uint32_t data1 = 0;
+//     data1 |= (data & 0xff) << 24;
+//     data1 |= (data & 0xff00) << 8;
+//     data1 |= (data & 0xff0000) >> 8;
+//     data1 |= (data & 0xff000000) >> 24;
 
-  outl(SPI_SS     , 0x00); 
-  return data1;
-}
+//   outl(SPI_SS     , 0x00); 
+//   return data1;
+// }
 
 
 extern void _boot_loader(void);
@@ -119,12 +119,12 @@ void _trm_init() {
   // _spi_init();
   _uart_init();
   _boot_loader();
-  if (flash_read(0x30000004) == 0x04100713) {
-    putstr("SPI FLASH PASS\n");
-  }
-  else {
-    putstr("SPI FLASH FAIL\n");
-  }
+  // if (flash_read(0x30000004) == 0x04100713) {
+  //   putstr("SPI FLASH PASS\n");
+  // }
+  // else {
+  //   putstr("SPI FLASH FAIL\n");
+  // }
   int ret = main(mainargs);
   halt(ret);
 }
