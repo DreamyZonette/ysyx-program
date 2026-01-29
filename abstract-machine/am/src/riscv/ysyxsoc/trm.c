@@ -1,5 +1,6 @@
 #include <am.h>
 #include <klib-macros.h>
+#include <klib.h>
 #include <riscv/riscv.h>
 #define UART_BASE 0x10000000
 #define THR_ADDR (UART_BASE + 0x0)
@@ -112,19 +113,28 @@ void _uart_init() {
 //   return data1;
 // }
 
+uint32_t read_mvendorid(void);
+uint32_t read_marchid(void);
+
+void _print_info() {
+  uint32_t vendorid = read_mvendorid();
+  uint32_t archid = read_marchid();
+  printf("vendorid: 0x%x\n", vendorid);
+  printf("archid: 0x%x\n", archid);
+
+  // putstr("vendorid: ");
+  // putul(vendorid);
+  // putch('\n');
+  // putstr("archid: ");
+  // putul(archid);
+  // putch('\n');
+}
 
 extern void _boot_loader(void);
 
 void _trm_init() {
-  // _spi_init();
   _uart_init();
   _boot_loader();
-  // if (flash_read(0x30000004) == 0x04100713) {
-  //   putstr("SPI FLASH PASS\n");
-  // }
-  // else {
-  //   putstr("SPI FLASH FAIL\n");
-  // }
   int ret = main(mainargs);
   halt(ret);
 }
