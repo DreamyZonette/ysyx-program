@@ -45,6 +45,8 @@ uint32_t sdb_mrom_read(int32_t addr){
 
 #endif
 
+
+#if !CONFIG_YSYXSOC
 #define SERIAL_PORT_LEFT      CONFIG_SERIAL_MMIO
 #define SERIAL_PORT_RIGHT    (CONFIG_SERIAL_MMIO + 7)
 // 时钟
@@ -76,7 +78,6 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
-#if !CONFIG_YSYXSOC
 void init_mem() {
   memset(pmem, rand(), CONFIG_MSIZE);
   Log("physical memory area [%08x, %08x]", PMEM_LEFT, PMEM_RIGHT);
