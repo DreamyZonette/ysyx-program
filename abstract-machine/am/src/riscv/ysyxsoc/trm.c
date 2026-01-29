@@ -135,6 +135,7 @@ extern void _boot_loader(void);
 void _trm_init() {
   _uart_init();
   _boot_loader();
+  _print_info();
   int ret = main(mainargs);
   halt(ret);
 }
