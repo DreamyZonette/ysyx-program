@@ -83,6 +83,7 @@ void _uart_init() {
 
 
 uint32_t flash_read(uint32_t addr) {
+  return *(uint32_t*)(addr);
   uint32_t read_ctrl = 0;
   read_ctrl |= 0x3 << 24; // read cmd
   read_ctrl |= (addr) & ADDR_MASK; // 32 bit mode
