@@ -130,11 +130,11 @@ void _print_info() {
   // putch('\n');
 }
 
-extern void _boot_loader(void);
+// extern void _boot_loader(void);
 
 void _trm_init() {
   _uart_init();
-  _boot_loader();
+  // _boot_loader();
   _print_info();
   int ret = main(mainargs);
   halt(ret);
