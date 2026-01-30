@@ -13,7 +13,7 @@ SECTIONS {
     _text_start = .;
     *(entry)
     *(.text*)
-  } > psram AT> flash : text
+  } > flash AT> flash : text
 
   etext = .;
   _etext = .;
