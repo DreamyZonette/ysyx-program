@@ -4,7 +4,7 @@ _boot_loader:
 
     # ---------- 复制 .data 段（从 mrom 的 LMA → sram 的 VMA） ----------
     la      a0, data_lma_addr          
-    la      a1, _text_start     
+    la      a1, _data_start     
     la      a2, _data_end       
 
     beq     a1, a2, data_done   

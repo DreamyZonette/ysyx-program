@@ -13,14 +13,14 @@ SECTIONS {
     _text_start = .;
     *(entry)
     *(.text*)
-  } > psram AT> flash : text
+  } > flash AT> flash : text
 
   etext = .;
   _etext = .;
 
   .rodata : {
     *(.rodata*)
-  } > psram AT> flash : text
+  } > flash AT> flash : text
   _text_end = .;
   text_lma_addr = LOADADDR(.text);
 
