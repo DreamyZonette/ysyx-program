@@ -2,9 +2,13 @@
     .global _boot_loader
 _boot_loader:
 
-    la      a0, text_lma_addr          
-    la      a1, _text_start     
-    la      a2, etext       
+
+    lui a0, %hi(text_lma_addr)      # LMA 起始
+    addi a0, a0, %lo(text_lma_addr)
+    lui a1, %hi(_text_start)        # VMA 起始
+    addi a1, a1, %lo(_text_start)
+    lui a2, %hi(etext)        # VMA 结束
+    addi a2, a2, %lo(etext)     
 
     beq     a1, a2, text_done   
 
@@ -16,10 +20,13 @@ text_loop:
     bne     a1, a2, text_loop
 
 text_done:
-
-    la      a0, rodata_lma_addr          
-    la      a1, _rodata_start     
-    la      a2, _rodata_end       
+     
+    lui a0, %hi(rodata_lma_addr)      # LMA 起始
+    addi a0, a0, %lo(rodata_lma_addr)
+    lui a1, %hi(_rodata_start)        # VMA 起始
+    addi a1, a1, %lo(_rodata_start)
+    lui a2, %hi(_rodata_end)        # VMA 结束
+    addi a2, a2, %lo(_rodata_end)   
 
     beq     a1, a2, rodata_done   
 
@@ -34,9 +41,12 @@ rodata_done:
 
     # ---------- 复制 .data 段（从 mrom 的 LMA → sram 的 VMA） ----------
     
-    la      a0, data_lma_addr          
-    la      a1, _data_start     
-    la      a2, _data_end       
+    lui a0, %hi(rodata_lma_addr)      # LMA 
+    addi a0, a0, %lo(rodata_lma_addr)
+    lui a1, %hi(_rodata_start)        # VMA 起始
+    addi a1, a1, %lo(_rodata_start)
+    lui a2, %hi(_rodata_end)        # VMA 结束
+    addi a2, a2, %lo(_rodata_end)        
 
     beq     a1, a2, data_done   
 
@@ -50,8 +60,11 @@ data_loop:
 data_done:
 
     # ---------- 清零 .bss 段 ----------
-    la      a0, _bss_start
-    la      a1, _bss_end
+
+    lui a0, %hi(_bss_start)      # LMA 
+    addi a0, a0, %lo(_bss_start)
+    lui a1, %hi(_bss_end)        # VMA 
+    addi a1, a1, %lo(_bss_end)
     beq     a0, a1, bss_done   
 
     li      t0, 0
