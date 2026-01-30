@@ -43,7 +43,7 @@ SECTIONS {
     *(.bss .bss.*)
     . = ALIGN(4);
     _bss_end = .;
-  } > psram : data
+  } > psram 
 
   . = ALIGN(16);
   _heap_start = .;
