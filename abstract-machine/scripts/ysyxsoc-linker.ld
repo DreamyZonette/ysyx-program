@@ -66,27 +66,28 @@ SECTIONS {
     _bss_end = .;
   } > sram : data
 
-  _heap_start = _bss_end;
+  /* _heap_start = _bss_end;
   _heap_end = _stack_bottom;
 
   _stack_top = ALIGN(0x0F001FFF, 0x10);
   _stack_pointer = _stack_top;
-  _stack_bottom = 0x0F001000;
+  _stack_bottom = 0x0F001000; */
+  . = ALIGN(16);
+  _heap_start = .;
+  PROVIDE(__heap_start = .);
+  PROVIDE(_end = .);
+  PROVIDE(end = .);
 
-  /* _heap_start = _bss_end;
-
-  _stack_top = ALIGN(ORIGIN(sram) + LENGTH(sram), 0x10);
+  _stack_top = ALIGN(ORIGIN(sram) + LENGTH(sram), 16);
   _stack_pointer = _stack_top;
-  _stack_bottom = .;
-  _heap_end = _stack_bottom; 
+  PROVIDE(__stack_top = _stack_top);
 
-  .stack : {
-    . = . + (_stack_top - _stack_bottom);
-    . = ALIGN(4);
-  } > sram : data
+  _heap_end = _stack_top;
 
-  ASSERT(_stack_top <= ORIGIN(sram) + LENGTH(sram), "Stack overflow SRAM!")
-  ASSERT(_heap_start < _heap_end, "Heap size is zero (BSS overlaps stack)!") */
+  _stack_bottom = _heap_end;
+
+  ASSERT(_stack_top == ORIGIN(sram) + LENGTH(sram) || _stack_top <= ORIGIN(sram) + LENGTH(sram), "Stack top overflows SRAM!")
+  ASSERT(_heap_start < _heap_end, "No space left for heap/stack (BSS too large or overlap)!")
   
   end = .;
   _end = .;
