@@ -9,6 +9,21 @@ MEMORY {
 }
 
 SECTIONS {
+  /* _pmem_start and _entry_offset are defined in LDFLAGS */
+  /* . = _mrom_start + _entry_offset; */
+  /* . =  ORIGIN(mrom);
+  .text : {
+    *(entry)
+    *(.text*)
+  } > mrom AT> mrom : text
+
+  etext = .;
+  _etext = .;
+
+  .rodata : {
+    *(.rodata*)
+  } > mrom AT> mrom : text */
+
   . =  ORIGIN(flash);
   .text : {
     *(entry)
@@ -23,14 +38,20 @@ SECTIONS {
   } > flash AT> flash : text
 
 /***********************/
-  . =  ORIGIN(psram);
+  . =  ORIGIN(sram);
+  /* .data : {
+    _data_start = .;
+    *(.sdata .sdata.*)
+    *(.data .data.*)
+    _data_end = .;
+  } > sram AT> mrom : data */
 
   .data : {
     _data_start = .;
     *(.sdata .sdata.*)
     *(.data .data.*)
     _data_end = .;
-  } > psram AT> flash : data
+  } > sram AT> flash : data
 
   data_lma_addr = LOADADDR(.data);
   edata = .;
@@ -43,15 +64,21 @@ SECTIONS {
     *(.bss .bss.*)
     . = ALIGN(4);
     _bss_end = .;
-  } > psram : data
+  } > sram : data
 
+  /* _heap_start = _bss_end;
+  _heap_end = _stack_bottom;
+
+  _stack_top = ALIGN(0x0F001FFF, 0x10);
+  _stack_pointer = _stack_top;
+  _stack_bottom = 0x0F001000; */
   . = ALIGN(16);
   _heap_start = .;
   PROVIDE(__heap_start = .);
   PROVIDE(_end = .);
   PROVIDE(end = .);
 
-  _stack_top = ALIGN(ORIGIN(psram) + LENGTH(psram), 16);
+  _stack_top = ALIGN(ORIGIN(sram) + LENGTH(sram), 16);
   _stack_pointer = _stack_top;
   PROVIDE(__stack_top = _stack_top);
 
@@ -59,7 +86,7 @@ SECTIONS {
 
   _stack_bottom = _heap_end;
 
-  ASSERT(_stack_top == ORIGIN(psram) + LENGTH(psram) || _stack_top <= ORIGIN(psram) + LENGTH(psram), "Stack top overflows PSRAM!")
+  ASSERT(_stack_top == ORIGIN(sram) + LENGTH(sram) || _stack_top <= ORIGIN(sram) + LENGTH(sram), "Stack top overflows SRAM!")
   ASSERT(_heap_start < _heap_end, "No space left for heap/stack (BSS too large or overlap)!")
   
   end = .;
