@@ -74,6 +74,6 @@ bss_loop:
     bne     a0, a1, bss_loop
 
 bss_done:
-    ret   
     lui     t0, 0x50000
-    add     ra, ra, t0                 
+    add     ra, ra, t0  
+    ret                  
