@@ -9,7 +9,6 @@ MEMORY {
 }
 
 SECTIONS {
-  /* . =  ORIGIN(flash); */
   .text : {
     _text_start = .;
     *(entry)
@@ -38,7 +37,7 @@ SECTIONS {
   edata = .;
   _data = .;
 
-  .bss : {
+  .bss (NOLOAD) : {
 	_bss_start = .;
     *(.sbss .sbss.*)
     *(.scommon)
@@ -50,7 +49,7 @@ SECTIONS {
   _heap_start = .;
   _heap_end = ORIGIN(psram) + LENGTH(psram);
 
-  _stack_top = ALIGN(ORIGIN(sram) + LENGTH(sram), 16);
+  _stack_top = ORIGIN(sram) + LENGTH(sram);
   _stack_pointer = _stack_top;
   _stack_bottom = ORIGIN(sram);
 
