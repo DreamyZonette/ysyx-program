@@ -1,5 +1,5 @@
 ENTRY(_start)
-PHDRS { text PT_LOAD; data PT_LOAD; }
+PHDRS { text PT_LOAD; data PT_LOAD; bss PT_LOAD;}
 
 MEMORY {
   mrom (r x): ORIGIN = 0x20000000, LENGTH = 4K
@@ -44,7 +44,7 @@ SECTIONS {
     *(.bss .bss.*)
     . = ALIGN(16);
     _bss_end = .;
-  } > psram : data
+  } > psram : bss
 
   _heap_start = .;
   _heap_end = ORIGIN(psram) + LENGTH(psram);
