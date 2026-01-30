@@ -1,5 +1,5 @@
 ENTRY(_start)
-PHDRS { text PT_LOAD; data PT_LOAD; bss PT_LOAD;}
+PHDRS { text PT_LOAD; rodata PT_LOAD; data PT_LOAD; bss PT_LOAD;}
 
 MEMORY {
   mrom (r x): ORIGIN = 0x20000000, LENGTH = 4K
@@ -13,16 +13,19 @@ SECTIONS {
     _text_start = .;
     *(entry)
     *(.text*)
-  } > flash AT> flash : text
+  } > psram AT> flash : text
 
   etext = .;
   _etext = .;
+  text_lma_addr = LOADADDR(.text);
 
   .rodata : {
+    _rodata_start = .;
     *(.rodata*)
-  } > flash AT> flash : text
+    _rodata_end = .;
+  } > psram AT> flash : rodata
   _text_end = .;
-  text_lma_addr = LOADADDR(.text);
+  rodata_lma_addr = LOADADDR(.rodata);
 
 /***********************/
 
