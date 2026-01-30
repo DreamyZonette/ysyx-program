@@ -38,7 +38,7 @@ SECTIONS {
   } > flash AT> flash : text
 
 /***********************/
-
+  . =  ORIGIN(sram);
   /* .data : {
     _data_start = .;
     *(.sdata .sdata.*)
@@ -66,15 +66,28 @@ SECTIONS {
     _bss_end = .;
   } > sram : data
 
+  _heap_start = _bss_end;
+  _heap_end = _stack_bottom;
 
-    /* ========== 替换栈定义：固定到 SRAM 区间 ========== */
   _stack_top = ALIGN(0x0F001FFF, 0x10);
   _stack_pointer = _stack_top;
   _stack_bottom = 0x0F001000;
 
-  /* ========== 替换堆定义：固定到 SRAM 区间 ========== */
-  _heap_start = _bss_end;
-  _heap_end = _stack_bottom;
+  /* _heap_start = _bss_end;
+
+  _stack_top = ALIGN(ORIGIN(sram) + LENGTH(sram), 0x10);
+  _stack_pointer = _stack_top;
+  _stack_bottom = .;
+  _heap_end = _stack_bottom; 
+
+  .stack : {
+    . = . + (_stack_top - _stack_bottom);
+    . = ALIGN(4);
+  } > sram : data
+
+  ASSERT(_stack_top <= ORIGIN(sram) + LENGTH(sram), "Stack overflow SRAM!")
+  ASSERT(_heap_start < _heap_end, "Heap size is zero (BSS overlaps stack)!") */
+  
   end = .;
   _end = .;
 }
