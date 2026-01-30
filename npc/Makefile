@@ -108,7 +108,7 @@ wave: $(BUILD_DIR)/wave.fst
 # 	rm $(BUILD_DIR)/wave.fst
 
 
-PHONY: clean test adapt
+PHONY: clean test adapt cleanwave
 
 adapt: sim
 	$(MAKE) -C $(CPU_TEST_HOME) ARCH=minirv-npc ALL=$(OBJ)
@@ -126,6 +126,9 @@ test:
 	@echo PASS
 
 clean:
-	-rm -rf *.vcd $(BUILD_DIR)
+	-rm -rf  $(BUILD_DIR)
+
+cleanwave:
+	-rm -rf  $(BUILD_DIR)/wave.fst
 
 
