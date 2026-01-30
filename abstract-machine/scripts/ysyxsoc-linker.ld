@@ -45,7 +45,7 @@ SECTIONS {
     *(.bss .bss.*)
     . = ALIGN(16);
     _bss_end = .;
-  } > psram
+  } > psram : data
 
   _heap_start = .;
   _heap_end = ORIGIN(psram) + LENGTH(psram);
