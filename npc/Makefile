@@ -88,9 +88,9 @@ $(shell mkdir -p $(BUILD_DIR))
 
 all:run wave
 
-$(BUILD_DIR)/wave.fst:
-	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
-	#-@rm -f $(BUILD_DIR)/wave.vcd
+# $(BUILD_DIR)/wave.fst:
+# 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+# 	#-@rm -f $(BUILD_DIR)/wave.vcd
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
@@ -105,7 +105,7 @@ include ../Makefile
 wave: $(BUILD_DIR)/wave.fst
 	
 	gtkwave $(BUILD_DIR)/wave.fst
-	rm $(BUILD_DIR)/wave.fst
+# 	rm $(BUILD_DIR)/wave.fst
 
 
 PHONY: clean test adapt
@@ -117,8 +117,8 @@ adapt: sim
 gdb:sim
 	@echo "Start gdb"
 	gdb --args $(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
-	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
-	-@rm -f $(BUILD_DIR)/wave.vcd
+# 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+# 	-@rm -f $(BUILD_DIR)/wave.vcd
 
 test:
 	$(VERILATOR) --lint-only -Wall $(TEST_OBJ)

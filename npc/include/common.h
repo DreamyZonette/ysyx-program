@@ -36,7 +36,8 @@ typedef uint16_t ioaddr_t;
 
 extern VerilatedContext* contextp;
 #if CONFIG_WAVE
-extern VerilatedVcdC* tfp;
+extern VerilatedFstC* tfp;
+// extern VerilatedVcdC* tfp;
 #endif
 extern VysyxSoCFull* top;
 
