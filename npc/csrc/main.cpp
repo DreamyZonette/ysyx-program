@@ -14,7 +14,7 @@ void sdb_mainloop();
 
 VerilatedContext* contextp;
 #if CONFIG_WAVE
-VerilatedVcdC* tfp;
+VerilatedFstC* tfp;
 #endif
 VysyxSoCFull* top;
 
