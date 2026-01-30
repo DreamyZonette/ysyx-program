@@ -17,7 +17,7 @@ SECTIONS {
 
   etext = .;
   _etext = .;
-  /* text_lma_addr = LOADADDR(.text); */
+  text_lma_addr = LOADADDR(.text);
 
   .rodata : {
     _rodata_start = .;
