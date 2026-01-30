@@ -21,6 +21,8 @@
 #define MROM_BASE 0x20000000
 #define SRAM_SIZE 8 * 1024
 #define SRAM_BASE 0x0f000000
+#define SRAM_SIZE 8 * 1024
+#define SRAM_BASE 0x0f000000
 #define UART16550_BASE 0x10000000
 #define UART16550_SIZE 0x10000
 uint8_t* mrom_guest_to_host(paddr_t paddr);
