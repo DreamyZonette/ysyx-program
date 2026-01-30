@@ -9,7 +9,7 @@ MEMORY {
 }
 
 SECTIONS {
-  . =  ORIGIN(flash);
+  /* . =  ORIGIN(flash); */
   .text : {
     _text_start = .;
     *(entry)
@@ -22,6 +22,8 @@ SECTIONS {
   .rodata : {
     *(.rodata*)
   } > psram AT> flash : text
+  _text_end = .;
+  text_lma_addr = LOADADDR(.text);
 
 /***********************/
 
@@ -32,7 +34,7 @@ SECTIONS {
     _data_end = .;
   } > psram AT> flash : data
 
-  data_lma_addr = LOADADDR(.text);
+  data_lma_addr = LOADADDR(.data);
   edata = .;
   _data = .;
 
@@ -41,21 +43,18 @@ SECTIONS {
     *(.sbss .sbss.*)
     *(.scommon)
     *(.bss .bss.*)
-    . = ALIGN(4);
+    . = ALIGN(16);
     _bss_end = .;
-  } > psram 
+  } > psram
 
-  . = ALIGN(16);
   _heap_start = .;
-  _heap_end = ALIGN(ORIGIN(psram) + LENGTH(psram), 16);
+  _heap_end = ORIGIN(psram) + LENGTH(psram);
 
   _stack_top = ALIGN(ORIGIN(sram) + LENGTH(sram), 16);
   _stack_pointer = _stack_top;
-  _stack_bottom = ALIGN(ORIGIN(sram), 16);
+  _stack_bottom = ORIGIN(sram);
 
 
-  /* ASSERT(_stack_top == ORIGIN(psram) + LENGTH(psram) || _stack_top <= ORIGIN(psram) + LENGTH(psram), "Stack top overflows PSRAM!")
-  ASSERT(_heap_start < _heap_end, "No space left for heap/stack (BSS too large or overlap)!") */
   
   end = .;
   _end = .;
