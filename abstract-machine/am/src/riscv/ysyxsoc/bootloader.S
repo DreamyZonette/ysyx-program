@@ -3,23 +3,23 @@
 _boot_loader:
 
 
-    lui a0, %hi(text_lma_addr)      # LMA 起始
-    addi a0, a0, %lo(text_lma_addr)
-    lui a1, %hi(_text_start)        # VMA 起始
-    addi a1, a1, %lo(_text_start)
-    lui a2, %hi(etext)        # VMA 结束
-    addi a2, a2, %lo(etext)     
-
-    beq     a1, a2, text_done   
-
-text_loop:
-    lw      t0, 0(a0)        
-    sw      t0, 0(a1)         
-    addi    a0, a0, 4
-    addi    a1, a1, 4
-    bne     a1, a2, text_loop
-
-text_done:
+#    lui a0, %hi(text_lma_addr)      # LMA 起始
+#    addi a0, a0, %lo(text_lma_addr)
+#    lui a1, %hi(_text_start)        # VMA 起始
+#    addi a1, a1, %lo(_text_start)
+#    lui a2, %hi(etext)        # VMA 结束
+#    addi a2, a2, %lo(etext)     
+#
+#    beq     a1, a2, text_done   
+#
+#text_loop:
+#    lw      t0, 0(a0)        
+#    sw      t0, 0(a1)         
+#    addi    a0, a0, 4
+#    addi    a1, a1, 4
+#    bne     a1, a2, text_loop
+#
+#text_done:
      
     lui a0, %hi(rodata_lma_addr)      # LMA 起始
     addi a0, a0, %lo(rodata_lma_addr)
@@ -74,6 +74,6 @@ bss_loop:
     bne     a0, a1, bss_loop
 
 bss_done:
-    lui     t0, 0x50000
-    add     ra, ra, t0  
+    #lui     t0, 0x50000
+    #add     ra, ra, t0  
     ret                  
