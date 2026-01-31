@@ -21,15 +21,16 @@ SECTIONS {
   _etext = .;
   text_lma_addr = LOADADDR(.text);
   
-  .rodata : {
+  .rodata : ALIGN(4) {
     _rodata_start = .;
     *(.rodata*)
     *(.srodata*)
     *(.srodata.*)
+    . = ALIGN(4);
     _rodata_end = .;
   } > psram AT> flash : data
   _text_end = .;
-  /* rodata_lma_addr = LOADADDR(.data); */
+  rodata_lma_addr = LOADADDR(.data);
 
 /***********************/
   /* INCLUDE extra.ld; */
