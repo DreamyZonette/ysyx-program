@@ -2,25 +2,31 @@
     .global _boot_loader
 _boot_loader:
 
+    li      t0, 1          # 把立即数1加载到t0寄存器（临时寄存器）
+    bne     a0, t0, FSBL_loop  # 如果a0≠1，跳转到FSBL_entry（原FSBL_loop入口）
+    j       SSBL_loop      # 如果a0=1，直接跳转到SSBL_loop
 
-#    lui a0, %hi(text_lma_addr)      # LMA 起始
-#    addi a0, a0, %lo(text_lma_addr)
-#    lui a1, %hi(_text_start)        # VMA 起始
-#    addi a1, a1, %lo(_text_start)
-#    lui a2, %hi(etext)        # VMA 结束
-#    addi a2, a2, %lo(etext)     
-#
-#    beq     a1, a2, text_done   
-#
-#text_loop:
-#    lw      t0, 0(a0)        
-#    sw      t0, 0(a1)         
-#    addi    a0, a0, 4
-#    addi    a1, a1, 4
-#    bne     a1, a2, text_loop
-#
-#text_done:
-     
+    lui a0, %hi(bootloader_lma_addr)      # LMA 起始
+    addi a0, a0, %lo(bootloader_lma_addr)
+    lui a1, %hi(_bootloader_start)        # VMA 起始
+    addi a1, a1, %lo(_bootloader_start)
+    lui a2, %hi(_bootloader_end)        # VMA 结束
+    addi a2, a2, %lo(_bootloader_end)   
+
+FSBL_loop:
+    lw      t0, 0(a0)        
+    sw      t0, 0(a1)         
+    addi    a0, a0, 4
+    addi    a1, a1, 4
+    bne     a1, a2, FSBL_loop
+
+FSBL_done:
+    li      a0, 1
+    lui     t0, 0x50000  #
+    add     ra, ra, t0 
+    ret
+
+SSBL_loop:
     lui a0, %hi(rodata_lma_addr)      # LMA 起始
     addi a0, a0, %lo(rodata_lma_addr)
     lui a1, %hi(_rodata_start)        # VMA 起始
@@ -74,6 +80,6 @@ bss_loop:
     bne     a0, a1, bss_loop
 
 bss_done:
-    #lui     t0, 0x50000
-    #add     ra, ra, t0  
+    lui     t0, 0x50000          # 等价于lui t0, %hi(0x50000000)，t0 = 0x50000000
+    sub     ra, ra, t0           # ra = ra - 0x50000000
     ret                  
