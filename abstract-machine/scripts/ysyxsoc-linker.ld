@@ -58,6 +58,10 @@ SECTIONS {
     . = ALIGN(16);
     _bss_end = .;
   } > psram : data
+  
+  .bss.extra (NOLOAD) : {
+  *(.bss.extra)
+} > psram : data
 
   _heap_start = .;
   _heap_end = ORIGIN(psram) + LENGTH(psram);
