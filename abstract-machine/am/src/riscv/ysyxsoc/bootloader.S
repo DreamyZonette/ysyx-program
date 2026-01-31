@@ -43,8 +43,8 @@ _boot_loader:
     
     lui a0, %hi(data_lma_addr)      # LMA 
     addi a0, a0, %lo(data_lma_addr)
-    lui a1, %hi(_data_start)        # VMA 起始
-    addi a1, a1, %lo(_data_start)
+    lui a1, %hi(_rodata_start)        # VMA 起始
+    addi a1, a1, %lo(_rodata_start)
     lui a2, %hi(_data_end)        # VMA 结束
     addi a2, a2, %lo(_data_end)        
 
@@ -55,7 +55,7 @@ data_loop:
     sw      t0, 0(a1)         
     addi    a0, a0, 4
     addi    a1, a1, 4
-    bne     a1, a2, data_loop
+    bgeu     a1, a2, data_loop
 
 data_done:
 
@@ -71,7 +71,7 @@ data_done:
 bss_loop:
     sw      t0, (a0)
     addi    a0, a0, 4
-    bne     a0, a1, bss_loop
+    bgeu     a0, a1, bss_loop
 
 bss_done:
     #lui     t0, 0x50000
