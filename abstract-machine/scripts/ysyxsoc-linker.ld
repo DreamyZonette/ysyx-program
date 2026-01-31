@@ -1,5 +1,5 @@
 ENTRY(_start)
-PHDRS { bootloader PT_LOAD; text PT_LOAD; rodata PT_LOAD; data PT_LOAD;}
+PHDRS { text PT_LOAD; bootloader PT_LOAD; rodata PT_LOAD; data PT_LOAD;}
 
 MEMORY {
   mrom (r x): ORIGIN = 0x20000000, LENGTH = 4K
@@ -10,15 +10,6 @@ MEMORY {
 }
 
 SECTIONS {
-  . = ORIGIN(psram);
-  
-  .bootloader : {
-    _bootloader_start = .;
-    KEEP(*(entry))          
-    KEEP(*(.bootloader))
-    _bootloader_end = .;
-  } > flash AT> flash : bootloader
-  bootloader_lma_addr = LOADADDR(.text);
 
   . = ORIGIN(flash);
 
@@ -31,7 +22,15 @@ SECTIONS {
   _etext = .;
   text_lma_addr = LOADADDR(.text);
 
-  . = _bootloader_end;
+  . = ORIGIN(psram);
+
+  .bootloader : {
+    _bootloader_start = .;
+    KEEP(*(.bootloader))
+    _bootloader_end = .;
+  } > psram AT> flash : bootloader
+  bootloader_lma_addr = LOADADDR(.text);
+  
   .rodata : ALIGN(4) {
     _rodata_start = .;
     *(.rodata*)
