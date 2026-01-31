@@ -23,15 +23,15 @@ SECTIONS {
   _etext = .;
   text_lma_addr = LOADADDR(.text);
 
-  . = ORIGIN(psram);
-
   .bootloader : {
     _bootloader_start = .;
     KEEP(*(.text.boot))     
     _bootloader_end = .;
   } > flash AT> flash : bootloader
   bootloader_lma_addr = LOADADDR(.bootloader);
-  
+
+  . = ORIGIN(psram) + SIZEOF(.bootloader);
+
   .rodata : ALIGN(4) {
     _rodata_start = .;
     *(.rodata*)
