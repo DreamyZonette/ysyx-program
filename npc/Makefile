@@ -129,6 +129,6 @@ clean:
 	-rm -rf  $(BUILD_DIR)
 
 cleanwave:
-	-rm -rf  $(BUILD_DIR)/wave.fst
+	-rm $(BUILD_DIR)/wave.fst
 
 
