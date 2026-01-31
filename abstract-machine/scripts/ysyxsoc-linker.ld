@@ -22,7 +22,7 @@ SECTIONS {
   text_lma_addr = LOADADDR(.text);
   
   .rodata : ALIGN(4) {
-    _rodata_start = .;
+    _data_start = .;
     *(.rodata*)
     *(.srodata*)
     *(.srodata.*)
@@ -30,13 +30,12 @@ SECTIONS {
     _rodata_end = .;
   } > psram AT> flash : data
   _text_end = .;
-  rodata_lma_addr = LOADADDR(.data);
+  /* rodata_lma_addr = LOADADDR(.data); */
 
 /***********************/
   /* INCLUDE extra.ld; */
 
   .data : ALIGN(4) {
-    _data_start = .;
     *(.data .data.*)
     *(.sdata .sdata.*)
 
