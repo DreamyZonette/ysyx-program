@@ -1,5 +1,5 @@
 ENTRY(_start)
-PHDRS { text PT_LOAD; rodata PT_LOAD; data PT_LOAD; bss PT_LOAD;}
+PHDRS { text PT_LOAD; data PT_LOAD;}
 
 MEMORY {
   mrom (r x): ORIGIN = 0x20000000, LENGTH = 4K
@@ -18,15 +18,17 @@ SECTIONS {
   etext = .;
   _etext = .;
   text_lma_addr = LOADADDR(.text);
-
+  
   .rodata : {
     _rodata_start = .;
     *(.rodata*)
+    *(.srodata*)
+    *(.srodata.*)
     . = ALIGN(16);
     _rodata_end = .;
-  } > psram AT> flash : rodata
+  } > psram AT> flash : data
   _text_end = .;
-  rodata_lma_addr = LOADADDR(.rodata);
+  /* rodata_lma_addr = LOADADDR(.data); */
 
 /***********************/
 
@@ -34,6 +36,7 @@ SECTIONS {
     _data_start = .;
     *(.sdata .sdata.*)
     *(.data .data.*)
+    *(.data.extra)
     . = ALIGN(16);
     _data_end = .;
   } > psram AT> flash : data
@@ -47,9 +50,10 @@ SECTIONS {
     *(.sbss .sbss.*)
     *(.scommon)
     *(.bss .bss.*)
+    *(.bss.extra)
     . = ALIGN(16);
     _bss_end = .;
-  } > psram : bss
+  } > psram : data
 
   _heap_start = .;
   _heap_end = ORIGIN(psram) + LENGTH(psram);
