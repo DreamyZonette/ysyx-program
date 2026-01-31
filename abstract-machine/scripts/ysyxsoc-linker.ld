@@ -31,7 +31,6 @@ SECTIONS {
     _rodata_end = .;
   } > psram AT> flash : data
   _text_end = .;
-  rodata_lma_addr = LOADADDR(.rodata);
 
 /***********************/
   /* INCLUDE extra.ld; */
@@ -72,6 +71,7 @@ SECTIONS {
     _data_end = .;
   } > psram AT> flash : data
 
+  rodata_lma_addr = LOADADDR(.rodata);
   data_lma_addr = LOADADDR(.data);
   edata = .;
   _data = .;
