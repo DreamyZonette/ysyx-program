@@ -7,25 +7,25 @@ _boot_loader:
     j       SSBL_entry      # 如果a0=1，直接跳转到SSBL_loop
 
 FSBL_entry:
-#    lui a0, %hi(bootloader_lma_addr)      # LMA 起始
-#    addi a0, a0, %lo(bootloader_lma_addr)
-#    lui a1, %hi(_bootloader_start)        # VMA 起始
-#    addi a1, a1, %lo(_bootloader_start)
-#    lui a2, %hi(_bootloader_end)        # VMA 结束
-#    addi a2, a2, %lo(_bootloader_end)   
-#
-#FSBL_loop:
-#    lw      t0, 0(a0)        
-#    sw      t0, 0(a1)         
-#    addi    a0, a0, 4
-#    addi    a1, a1, 4
-#    bne     a1, a2, FSBL_loop
-#
-#FSBL_done:
-#    li      a0, 1
-#    lui     t0, 0x50000  #
-#    add     ra, ra, t0 
-#    ret
+    lui a0, %hi(entry_lma_addr)      # LMA 起始
+    addi a0, a0, %lo(entry_lma_addr)
+    lui a1, %hi(_entry_start)        # VMA 起始
+    addi a1, a1, %lo(_entry_start)
+    lui a2, %hi(_boot_loader_end)        # VMA 结束
+    addi a2, a2, %lo(_boot_loader_end)   
+
+FSBL_loop:
+    lw      t0, 0(a0)        
+    sw      t0, 0(a1)         
+    addi    a0, a0, 4
+    addi    a1, a1, 4
+    bne     a1, a2, FSBL_loop
+
+FSBL_done:
+    li      a0, 1
+    lui     t0, 0x50000  # PSRAM
+    add     ra, ra, t0 
+    ret
 
 SSBL_entry:
     lui a0, %hi(text_lma_addr)      # LMA 起始
@@ -99,6 +99,6 @@ bss_loop:
     bne     a0, a1, bss_loop
 
 bss_done:
-    lui     t0, 0x50000          # 等价于lui t0, %hi(0x50000000)，t0 = 0x50000000
-    sub     ra, ra, t0           # ra = ra - 0x50000000
+    #lui     t0, 0x50000          # 等价于lui t0, %hi(0x50000000)，t0 = 0x50000000
+    #sub     ra, ra, t0           # ra = ra - 0x50000000
     ret                  

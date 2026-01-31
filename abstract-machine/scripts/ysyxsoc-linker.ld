@@ -14,19 +14,23 @@ SECTIONS {
   /* . = ORIGIN(flash); */
 
   .text : {
+    _entry_start = .;
+    *(entry) 
+    _entry_end = .;
+    _boot_loader_start = .;
+    *(.text.boot)
+    _boot_loader_end = .;
     _text_start = .;
-    *(entry)
     *(.text*)
   } > psram AT> flash : text
 
   etext = .;
   _etext = .;
-  text_lma_addr = LOADADDR(.text);
+  entry_lma_addr = LOADADDR(.text);
+  text_lma_addr = entry_lma_addr - _entry_start + _boot_loader_end;
 
-  _entry_start = _start;
-  /* _entry_end = _entry_start + SIZEOF(*(entry)); */
-  _boot_loader_start = _boot_loader;
-  /* _boot_loader_end = _boot_loader_start + SIZEOF(*(.text.boot)); */
+  
+  /* _boot_loader_end = _boot_loader_start + SIZEOF(.text.boot); */
 
   /* . = ORIGIN(psram) + SIZEOF(.bootloader); */
 
