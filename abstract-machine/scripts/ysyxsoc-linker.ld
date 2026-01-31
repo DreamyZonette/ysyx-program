@@ -14,8 +14,8 @@ SECTIONS {
   
   .bootloader : {
     _bootloader_start = .;
-    *(entry)
-    *(.bootloader)
+    KEEP(*(entry))          
+    KEEP(*(.bootloader))
     _bootloader_end = .;
   } > flash AT> flash : bootloader
   bootloader_lma_addr = LOADADDR(.text);
