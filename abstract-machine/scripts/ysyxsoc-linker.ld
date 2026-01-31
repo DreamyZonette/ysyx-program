@@ -15,6 +15,7 @@ SECTIONS {
 
   .text : {
     _text_start = .;
+    *(entry)
     *(.text*)
   } > flash AT> flash : text
 
