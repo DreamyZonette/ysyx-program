@@ -27,7 +27,7 @@ SECTIONS {
 
   .bootloader : {
     _bootloader_start = .;
-    KEEP(*(._boot_loader))
+    KEEP(*(_boot_loader))
     _bootloader_end = .;
   } > psram AT> flash : bootloader
   bootloader_lma_addr = LOADADDR(.bootloader);
