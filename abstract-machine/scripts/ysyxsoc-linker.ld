@@ -23,9 +23,9 @@ SECTIONS {
   _etext = .;
   text_lma_addr = LOADADDR(.text);
 
-  /* _entry_start = _start; */
+  _entry_start = _start;
   /* _entry_end = _entry_start + SIZEOF(*(entry)); */
-  /* _boot_loader_start = _boot_loader; */
+  _boot_loader_start = _boot_loader;
   /* _boot_loader_end = _boot_loader_start + SIZEOF(*(.text.boot)); */
 
   /* . = ORIGIN(psram) + SIZEOF(.bootloader); */
