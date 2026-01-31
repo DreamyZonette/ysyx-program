@@ -45,10 +45,6 @@ SECTIONS {
   *(.data.extra)
 } > psram AT> flash : data
 
-.bss.extra (NOLOAD) : {
-  *(.bss.extra)
-} > psram : dat
-
   data_lma_addr = LOADADDR(.data);
   edata = .;
   _data = .;
