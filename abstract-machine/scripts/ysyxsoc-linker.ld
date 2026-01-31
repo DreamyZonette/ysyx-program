@@ -36,7 +36,6 @@ SECTIONS {
     _data_start = .;
     *(.sdata .sdata.*)
     *(.data .data.*)
-    *(.data.extra)
     . = ALIGN(16);
     _data_end = .;
   } > psram AT> flash : data
@@ -58,7 +57,7 @@ SECTIONS {
     . = ALIGN(16);
     _bss_end = .;
   } > psram : data
-  
+
   .bss.extra (NOLOAD) : {
   *(.bss.extra)
 } > psram : data
