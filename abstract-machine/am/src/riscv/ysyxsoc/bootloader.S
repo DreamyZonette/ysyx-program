@@ -3,9 +3,10 @@
 _boot_loader:
 
     li      t0, 1          # 把立即数1加载到t0寄存器（临时寄存器）
-    bne     a0, t0, FSBL_loop  # 如果a0≠1，跳转到FSBL_entry（原FSBL_loop入口）
-    j       SSBL_loop      # 如果a0=1，直接跳转到SSBL_loop
+    bne     a0, t0, FSBL_entry  # 如果a0≠1，跳转到FSBL_entry（原FSBL_loop入口）
+    j       SSBL_entry      # 如果a0=1，直接跳转到SSBL_loop
 
+FSBL_entry:
     lui a0, %hi(bootloader_lma_addr)      # LMA 起始
     addi a0, a0, %lo(bootloader_lma_addr)
     lui a1, %hi(_bootloader_start)        # VMA 起始
@@ -26,7 +27,7 @@ FSBL_done:
     add     ra, ra, t0 
     ret
 
-SSBL_loop:
+SSBL_entry:
     lui a0, %hi(rodata_lma_addr)      # LMA 起始
     addi a0, a0, %lo(rodata_lma_addr)
     lui a1, %hi(_rodata_start)        # VMA 起始
