@@ -1,5 +1,5 @@
 ENTRY(_start)
-PHDRS { text PT_LOAD; data PT_LOAD;}
+PHDRS { text PT_LOAD; rodata PT_LOAD; data PT_LOAD;}
 
 MEMORY {
   mrom (r x): ORIGIN = 0x20000000, LENGTH = 4K
@@ -29,7 +29,7 @@ SECTIONS {
     *(.srodata.*)
     . = ALIGN(4);
     _rodata_end = .;
-  } > psram AT> flash : data
+  } > psram AT> flash : rodata
   _text_end = .;
 
 /***********************/
