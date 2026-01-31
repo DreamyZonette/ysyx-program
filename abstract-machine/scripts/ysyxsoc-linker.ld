@@ -22,7 +22,7 @@ SECTIONS {
   text_lma_addr = LOADADDR(.text);
   
   .rodata : ALIGN(4) {
-    _data_start = .;
+    _rodata_start = .;
     *(.rodata*)
     *(.srodata*)
     *(.srodata.*)
@@ -36,6 +36,7 @@ SECTIONS {
   /* INCLUDE extra.ld; */
 
   .data : ALIGN(4) {
+    _data_start = .;
     *(.data .data.*)
     *(.sdata .sdata.*)
 
