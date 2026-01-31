@@ -9,7 +9,7 @@ MEMORY {
 }
 
 SECTIONS {
-  /* . = ORIGIN(flash); */
+  . = ORIGIN(flash);
   
   .text : {
     _text_start = .;
@@ -20,7 +20,8 @@ SECTIONS {
   etext = .;
   _etext = .;
   text_lma_addr = LOADADDR(.text);
-  
+
+  . = ORIGIN(psram);
   .rodata : ALIGN(4) {
     _rodata_start = .;
     *(.rodata*)
