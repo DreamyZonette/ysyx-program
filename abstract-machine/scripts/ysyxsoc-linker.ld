@@ -29,7 +29,7 @@ SECTIONS {
     _bootloader_start = .;
     KEEP(*(.text.boot))     
     _bootloader_end = .;
-  } > psram AT> flash : bootloader
+  } > flash AT> flash : bootloader
   bootloader_lma_addr = LOADADDR(.bootloader);
   
   .rodata : ALIGN(4) {
