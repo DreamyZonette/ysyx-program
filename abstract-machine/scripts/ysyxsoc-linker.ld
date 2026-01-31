@@ -22,6 +22,7 @@ SECTIONS {
   .rodata : {
     _rodata_start = .;
     *(.rodata*)
+    . = ALIGN(16);
     _rodata_end = .;
   } > psram AT> flash : rodata
   _text_end = .;
@@ -33,6 +34,7 @@ SECTIONS {
     _data_start = .;
     *(.sdata .sdata.*)
     *(.data .data.*)
+    . = ALIGN(16);
     _data_end = .;
   } > psram AT> flash : data
 
