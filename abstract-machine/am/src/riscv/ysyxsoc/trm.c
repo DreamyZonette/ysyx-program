@@ -121,13 +121,6 @@ void _print_info() {
   uint32_t archid = read_marchid();
   printf("vendorid: %d\n", vendorid);
   printf("archid: %d\n", archid);
-
-  // putstr("vendorid: ");
-  // putul(vendorid);
-  // putch('\n');
-  // putstr("archid: ");
-  // putul(archid);
-  // putch('\n');
 }
 
 // extern void _boot_loader(void);
