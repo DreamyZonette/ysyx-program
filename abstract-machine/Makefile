@@ -134,10 +134,10 @@ endif
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `IMAGE.elf`, the final ELF binary to be packed into image (ld)
 $(IMAGE).elf: $(LINKAGE) $(LDSCRIPTS)
-	@echo "===== 当前使用的链接脚本 ====="
-	@echo "LDSCRIPTS = $(LDSCRIPTS)"  # 打印链接脚本变量
-	@echo "LDFLAGS = $(LDFLAGS)"      # 打印链接参数（含-T）
-	@echo "=============================="
+# 	@echo "===== 当前使用的链接脚本 ====="
+# 	@echo "LDSCRIPTS = $(LDSCRIPTS)"  # 打印链接脚本变量
+# 	@echo "LDFLAGS = $(LDFLAGS)"      # 打印链接参数（含-T）
+# 	@echo "=============================="
 	@echo \# Creating image [$(ARCH)]
 	@echo + LD "->" $(IMAGE_REL).elf
 ifneq ($(filter $(ARCH),native),)
