@@ -30,7 +30,7 @@ SECTIONS {
     KEEP(*(.bootloader))
     _bootloader_end = .;
   } > psram AT> flash : bootloader
-  bootloader_lma_addr = LOADADDR(.text);
+  bootloader_lma_addr = LOADADDR(.bootloader);
   
   .rodata : ALIGN(4) {
     _rodata_start = .;
