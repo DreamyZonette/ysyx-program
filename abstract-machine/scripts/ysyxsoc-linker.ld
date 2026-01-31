@@ -30,7 +30,7 @@ SECTIONS {
     _rodata_end = .;
   } > psram AT> flash : data
   _text_end = .;
-  /* rodata_lma_addr = LOADADDR(.data); */
+  rodata_lma_addr = LOADADDR(.rodata);
 
 /***********************/
   /* INCLUDE extra.ld; */
