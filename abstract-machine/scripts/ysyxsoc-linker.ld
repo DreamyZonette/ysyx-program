@@ -53,7 +53,6 @@ SECTIONS {
     *(.sbss .sbss.*)
     *(.scommon)
     *(.bss .bss.*)
-    *(.bss.extra)
     . = ALIGN(16);
     _bss_end = .;
   } > psram : data
