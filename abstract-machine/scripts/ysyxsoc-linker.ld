@@ -9,7 +9,7 @@ MEMORY {
 }
 
 SECTIONS {
-  . = ORIGIN(flash);
+  /* . = ORIGIN(flash); */
   
   .text : {
     _text_start = .;
