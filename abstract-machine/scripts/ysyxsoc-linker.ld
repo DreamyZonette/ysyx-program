@@ -36,13 +36,10 @@ SECTIONS {
     _data_start = .;
     *(.sdata .sdata.*)
     *(.data .data.*)
+    *(.data.extra)
     . = ALIGN(16);
     _data_end = .;
   } > psram AT> flash : data
-
-  .data.extra : {
-  *(.data.extra)
-} > psram AT> flash : data
 
   data_lma_addr = LOADADDR(.data);
   edata = .;
@@ -53,13 +50,10 @@ SECTIONS {
     *(.sbss .sbss.*)
     *(.scommon)
     *(.bss .bss.*)
+    *(.bss.extra)
     . = ALIGN(16);
     _bss_end = .;
   } > psram : data
-
-  .bss.extra (NOLOAD) : {
-  *(.bss.extra)
-} > psram : data
 
   _heap_start = .;
   _heap_end = ORIGIN(psram) + LENGTH(psram);
