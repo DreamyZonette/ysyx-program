@@ -1,3 +1,5 @@
+`define LSU_MTRACE
+
 module ysyx_25020042_LSU(
     input                           clock,
     input                           reset,
@@ -135,6 +137,9 @@ always @(posedge clock) begin
                         lsu_awvalid <= 1'b1;
                         lsu_wvalid <= 1'b1;
                         lsu_wlast <= 1'b1;
+                        `ifdef LSU_MTRACE
+                            $display("LSU: %08x write addr: %x data: %x", i_data, wdata[31:0]);
+                        `endif
                     end
                     else begin
                         lsu_arvalid <= 1'b1;
