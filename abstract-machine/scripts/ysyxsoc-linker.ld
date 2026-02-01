@@ -22,7 +22,7 @@ SECTIONS {
     _boot_loader_end = .;
     _text_start = .;
     *(.text*)
-  } > psram AT> flash : text
+  } > sdram AT> flash : text
 
   etext = .;
   _etext = .;
@@ -81,7 +81,7 @@ SECTIONS {
 
     . = ALIGN(4);
     _data_end = .;
-  } > psram AT> flash : data
+  } > sdram AT> flash : data
 
   rodata_lma_addr = LOADADDR(.rodata);
   data_lma_addr = LOADADDR(.data);
