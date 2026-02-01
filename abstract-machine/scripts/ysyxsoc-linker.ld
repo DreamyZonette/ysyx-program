@@ -81,7 +81,7 @@ SECTIONS {
 
     . = ALIGN(4);
     _data_end = .;
-  } > psram AT> flash : data
+  } > sdram AT> flash : data
 
   rodata_lma_addr = LOADADDR(.rodata);
   data_lma_addr = LOADADDR(.data);
@@ -103,7 +103,7 @@ SECTIONS {
     . = ALIGN(8);
     
     _bss_end = .;
-  } > psram : data
+  } > sdram : data
 
   _heap_start = .;
   _heap_end = ORIGIN(psram) + LENGTH(psram);
