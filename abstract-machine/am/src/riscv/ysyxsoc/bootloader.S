@@ -1,4 +1,4 @@
-# This file is PSRAM bootloader.
+# This file is SDSRAM bootloader.
     .section .text.boot, "ax"
     .global _boot_loader
 _boot_loader:
@@ -24,7 +24,7 @@ FSBL_loop:
 
 FSBL_done:
     li      a0, 1
-    lui     t0, 0x50000  # PSRAM
+    lui     t0, 0x70000  # SDRAM
     add     ra, ra, t0 
     ret
 
