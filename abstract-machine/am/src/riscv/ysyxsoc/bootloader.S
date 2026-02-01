@@ -24,7 +24,7 @@ FSBL_loop:
 
 FSBL_done:
     li      a0, 1
-    lui     t0, 0x50000  # PSRAM
+    lui     t0, 0x70000  # PSRAM
     add     ra, ra, t0 
     ret
 
