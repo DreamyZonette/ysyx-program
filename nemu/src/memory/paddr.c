@@ -32,13 +32,10 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 #ifdef YSYXSOC
 uint8_t sram[SRAM_SIZE] PG_ALIGN = {};
 uint8_t mrom[MROM_SIZE] PG_ALIGN = {};
+uint8_t flash[FLASH_SIZE] PG_ALIGN = {};
+uint8_t psram[PSRAM_SIZE] PG_ALIGN = {};
+uint8_t sdram[SDRAM_SIZE] PG_ALIGN = {};
 
-//划分一个地址给mrom、sram
-// uint8_t* mrom_guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
-// paddr_t mrom_host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
-
-// uint8_t* sram_guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE + MROM_SIZE - SRAM_BASE; }
-// paddr_t sram_host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t mrom_read(paddr_t addr, int len) {
   word_t ret = 0;
@@ -87,6 +84,79 @@ static void sram_write(paddr_t addr, int len, word_t data) {
     default: assert(0);
   }
 }
+
+static word_t flash_read(paddr_t addr, int len) {
+  word_t ret = 0;
+  uint32_t offset = addr - FLASH_BASE;
+  uint8_t* flash_addr = flash + offset;
+  switch (len) {
+    case 1: ret = *flash_addr; break;
+    case 2: ret = *(uint16_t*)flash_addr; break;
+    case 4: ret = *(uint32_t*)flash_addr; break;
+    default: assert(0);
+  }
+  return ret;
+}
+
+static void flash_write(paddr_t addr, int len, word_t data) {
+  uint32_t offset = addr - FLASH_BASE;
+  uint8_t* flash_addr = flash + offset;
+  switch (len) {
+    case 1: *flash_addr = data; break;
+    case 2: *(uint16_t*)flash_addr = data; break;
+    case 4: *(uint32_t*)flash_addr = data; break;
+    default: assert(0);
+  }
+}
+
+static word_t psram_read(paddr_t addr, int len) {
+  word_t ret = 0;
+  uint32_t offset = addr - PSRAM_BASE;
+  uint8_t* psram_addr = psram + offset;
+  switch (len) {
+    case 1: ret = *psram_addr; break;
+    case 2: ret = *(uint16_t*)psram_addr; break;
+    case 4: ret = *(uint32_t*)psram_addr; break;
+    default: assert(0);
+  }
+  return ret;
+}
+
+static void psram_write(paddr_t addr, int len, word_t data) {
+  uint32_t offset = addr - PSRAM_BASE;
+  uint8_t* psram_addr = psram + offset;
+  switch (len) {
+    case 1: *psram_addr = data; break;
+    case 2: *(uint16_t*)psram_addr = data; break;
+    case 4: *(uint32_t*)psram_addr = data; break;
+    default: assert(0);
+  }
+}
+
+static word_t sdram_read(paddr_t addr, int len) {
+  word_t ret = 0;
+  uint32_t offset = addr - SDRAM_BASE;
+  uint8_t* sdram_addr = sdram + offset;
+  switch (len) {
+    case 1: ret = *sdram_addr; break;
+    case 2: ret = *(uint16_t*)sdram_addr; break;
+    case 4: ret = *(uint32_t*)sdram_addr; break;
+    default: assert(0);
+  }
+  return ret;
+}
+
+static void sdram_write(paddr_t addr, int len, word_t data) {
+  uint32_t offset = addr - SDRAM_BASE;
+  uint8_t* sdram_addr = sdram + offset;
+  switch (len) {
+    case 1: *sdram_addr = data; break;
+    case 2: *(uint16_t*)sdram_addr = data; break;
+    case 4: *(uint32_t*)sdram_addr = data; break;
+    default: assert(0);
+  }
+}
+
 #endif
 #endif
 
@@ -131,6 +201,10 @@ word_t paddr_read(paddr_t addr, int len) {
     #ifdef YSYXSOC
     if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) return mrom_read(addr, len);
     if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) return sram_read(addr, len);
+    if (addr >= FLASH_BASE && addr < FLASH_BASE + FLASH_SIZE) return flash_read(addr, len);
+    if (addr >= PSRAM_BASE && addr < PSRAM_BASE + PSRAM_SIZE) return psram_read(addr, len);
+    if (addr >= SDRAM_BASE && addr < SDRAM_BASE + SDRAM_SIZE) return sdram_read(addr, len);
+ 
     // if (addr == 0x10000005) return 0x20;// uart lsr return 0x20 
     return 0;
     #endif
@@ -157,6 +231,9 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     #ifdef YSYXSOC
     if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) {mrom_write(addr, len, data);return;}
     if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) {sram_write(addr, len, data);return;}
+    if (addr >= FLASH_BASE && addr < FLASH_BASE + FLASH_SIZE) {flash_write(addr, len, data);return;}
+    if (addr >= PSRAM_BASE && addr < PSRAM_BASE + PSRAM_SIZE) {psram_write(addr, len, data);return;}
+    if (addr >= SDRAM_BASE && addr < SDRAM_BASE + SDRAM_SIZE) {sdram_write(addr, len, data);return;}
     return;
     #endif
     pmem_write(addr, len, data);
