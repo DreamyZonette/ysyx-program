@@ -22,7 +22,7 @@ SECTIONS {
     _boot_loader_end = .;
     _text_start = .;
     *(.text*)
-  } > psram AT> flash : text
+  } > sdram AT> flash : text
 
   etext = .;
   _etext = .;
@@ -105,8 +105,8 @@ SECTIONS {
     _bss_end = .;
   } > sdram : data
 
-  _heap_start = _bss_end;
-  /* _heap_start = ORIGIN(psram); */
+  /* _heap_start = _bss_end; */
+  _heap_start = ORIGIN(psram);
   _heap_end = ORIGIN(psram) + LENGTH(psram);
 
   _stack_top = ORIGIN(sram) + LENGTH(sram);
