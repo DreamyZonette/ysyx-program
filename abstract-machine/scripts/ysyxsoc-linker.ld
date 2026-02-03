@@ -105,7 +105,7 @@ SECTIONS {
     _bss_end = .;
   } > sdram : data
 
-  _heap_start = .;
+  _heap_start = ORIGIN(psram);
   _heap_end = ORIGIN(psram) + LENGTH(psram);
 
   _stack_top = ORIGIN(sram) + LENGTH(sram);
