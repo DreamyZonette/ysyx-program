@@ -22,7 +22,7 @@ SECTIONS {
     _boot_loader_end = .;
     _text_start = .;
     *(.text*)
-  } > psram AT> flash : text
+  } > sdram AT> flash : text
 
   etext = .;
   _etext = .;
