@@ -22,7 +22,7 @@ SECTIONS {
     _boot_loader_end = .;
     _text_start = .;
     *(.text*)
-  } > psram AT> flash : text
+  } > sdram AT> flash : text
 
   etext = .;
   _etext = .;
@@ -41,7 +41,7 @@ SECTIONS {
     *(.srodata.*)
     . = ALIGN(4);
     _rodata_end = .;
-  } > psram AT> flash : rodata
+  } > sdram AT> flash : rodata
   _text_end = .;
 
 /***********************/
@@ -81,7 +81,7 @@ SECTIONS {
 
     . = ALIGN(4);
     _data_end = .;
-  } > psram AT> flash : data
+  } > sdram AT> flash : data
 
   rodata_lma_addr = LOADADDR(.rodata);
   data_lma_addr = LOADADDR(.data);
@@ -103,7 +103,7 @@ SECTIONS {
     . = ALIGN(8);
     
     _bss_end = .;
-  } > psram : data
+  } > sdram : data
 
   _heap_start = .;
   _heap_end = ORIGIN(psram) + LENGTH(psram);
