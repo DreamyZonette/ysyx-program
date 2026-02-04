@@ -12,7 +12,7 @@ TEST_OBJ = $(shell find $(VPATH) -name $(TEST).v)
 VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 SOC_HOME = /home/long/ysyx-workbench/ysyxSoC
-INC_PATH := $(WORK_DIR)/include
+INC_PATH := $(WORK_DIR)/include $(INC_PATH)
 
 
 
