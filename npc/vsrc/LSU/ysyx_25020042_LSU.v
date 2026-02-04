@@ -1,3 +1,5 @@
+// `define LSU_MTRACE
+
 module ysyx_25020042_LSU(
     input                           clock,
     input                           reset,
@@ -56,6 +58,11 @@ module ysyx_25020042_LSU(
     input [1:0]                     lsu_bresp,
     input [3:0]                     lsu_bid
 );
+
+`ifdef VERILATOR
+import "DPI-C" function void difftest_device_skip();
+`endif
+
 // 状态定义
 localparam IDLE = 2'b00;
 localparam WAIT = 2'b01;
@@ -67,11 +74,18 @@ reg [1:0] state;
 reg [1:0] rresp;
 reg [1:0] bresp;
 /* verilator lint_on UNUSEDSIGNAL */
+wire [7:0] wstrb;
+wire [63:0] wdata;
+wire        twice_signal;
 
-
+/* verilator lint_off WIDTHEXPAND */
+assign wdata = i_src2 << (i_data[1:0] * 8);
+assign wstrb = i_wmask << i_data[1:0];
+/* verilator lint_on WIDTHEXPAND */
 
 // 记得修改回来
-wire [31:0] shifted_rdata = (i_data >= 32'h8000_0000 && i_data <= 32'h8FFF_FFFF) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
+wire [31:0] shifted_rdata = (lsu_araddr >= 32'h3000_0000 && lsu_araddr < 32'h4000_0000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
+// wire [31:0] shifted_rdata = (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
 wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
 assign o_lsu_busy = ren | wen;
@@ -110,26 +124,22 @@ always @(posedge clock) begin
                 if (lsu_bready) begin
                     lsu_bready <= 1'b0;
                 end
-                if(ifu_valid && (wen || ren)) begin
+                if((ifu_valid && (wen || ren))) begin
                     state <= WAIT;
                     lsu_ready <= 1'b1;
-                    // // 当前仿真环境不需要移位
-                    // if (i_data >= 32'h8000_0000 && i_data <= 32'h8FFF_FFFF) begin
-                    //     lsu_wdata <= i_src2;
-                    //     lsu_wstrb <= i_wmask;
-                    // end
-                    // else begin
-                    //     lsu_wdata <= i_src2 << (i_data[1:0] * 8);
-                    //     lsu_wstrb <= i_wmask << i_data[1:0];
-                    // end
-                    lsu_wdata <= i_src2 << (i_data[1:0] * 8);
-                    lsu_wstrb <= i_wmask << i_data[1:0];
-                    lsu_araddr <= i_data;
-                    lsu_awaddr <= i_data;
+                        lsu_wdata <= wdata[31:0];
+                        lsu_wstrb <= wstrb[3:0];
+                        // lsu_araddr <= {i_data[31:2], 2'b00};
+                        // lsu_awaddr <= {i_data[31:2], 2'b00};
+                        lsu_araddr <= i_data;
+                        lsu_awaddr <= i_data;                    // end
                     if (wen) begin
                         lsu_awvalid <= 1'b1;
                         lsu_wvalid <= 1'b1;
                         lsu_wlast <= 1'b1;
+                        `ifdef LSU_MTRACE
+                            $display("LSU: write addr: %x data: %x", i_data, wdata[31:0]);
+                        `endif
                     end
                     else begin
                         lsu_arvalid <= 1'b1;
@@ -192,23 +202,15 @@ always @(posedge clock) begin
                     end
                 end
             end
-            // WAIT_READY: begin
-            //     if(lsu_arready) begin
-            //         lsu_arvalid <= 1'b0;
-            //         state <= WAIT;
-            //     end
-            //     else if(lsu_awready & lsu_wready) begin
-            //         lsu_awvalid <= 1'b0;
-            //         lsu_wvalid <= 1'b0;
-            //         state <= WAIT;
-            //     end
-            //     else begin 
-            //         state <= WAIT_READY;
-            //     end
-            // end
             WAIT: begin
-                // lsu_awvalid <= 1'b0;
-                // lsu_wvalid <= 1'b0;
+                `ifdef VERILATOR
+                    // if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000 && lsu_arvalid && lsu_arready || 
+                    //     lsu_awaddr >= 32'h1000_0000 && lsu_awaddr < 32'h1000_1000 && lsu_awvalid && lsu_awready) begin
+                    if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000 && lsu_arvalid && lsu_arready || 
+                        lsu_araddr >= 32'h1000_1000 && lsu_araddr < 32'h1000_2000 && lsu_arvalid && lsu_arready) begin
+                        difftest_device_skip();
+                    end
+                `endif
                 if(lsu_arready) begin
                     lsu_arvalid <= 1'b0;
                 end
@@ -232,6 +234,11 @@ always @(posedge clock) begin
                         i_lh_signal: o_rdata <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
                         i_lbu_signal: o_rdata <= {24'b0, shifted_rdata[7:0]};
                         i_lb_signal: o_rdata <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
+                        // i_lw_signal: o_rdata <= lsu_rdata;
+                        // i_lhu_signal: o_rdata <= {16'b0, lsu_rdata[15:0]};
+                        // i_lh_signal: o_rdata <= {{16{lsu_rdata[15]}}, lsu_rdata[15:0]};
+                        // i_lbu_signal: o_rdata <= {24'b0, lsu_rdata[7:0]};
+                        // i_lb_signal: o_rdata <= {{24{lsu_rdata[7]}}, lsu_rdata[7:0]};
                         default: o_rdata <= 0;
                     endcase
                 end
@@ -240,8 +247,6 @@ always @(posedge clock) begin
                     lsu_valid <= 1'b1;
                     bresp <= lsu_bresp;
                     state <= IDLE;
-                    // lsu_awvalid <= 1'b0;
-                    // lsu_wvalid <= 1'b0;
                 end
                 else begin 
                     state <= WAIT;

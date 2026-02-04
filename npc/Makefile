@@ -17,13 +17,16 @@ INCLUDES = $(addprefix -I, $(INC_PATH))
 VSRCS := $(shell find $(VPATH) -name *.v)
 VSRCS += $(shell find $(SOC_HOME)/perip -name *.v)
 VSRCS += $(SOC_HOME)/build/ysyxSoCFull.v
-CSRCS := $(wildcard $(CPATH)/*.cpp)
-CSRCS += $(shell find $(CPATH) -name *.c)
+ALL_CSRCS := $(wildcard $(CPATH)/*.cpp)
+ALL_CSRCS += $(shell find $(CPATH) -name *.c)
+
+EXCLUDE_DIR := $(CPATH)/device
+CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
 
 CFLAGS :=  
-CFLAGS += -CFLAGS "$(INCLUDES)" 
+CFLAGS += -CFLAGS "$(INCLUDES)"  -Wno-deprecated
 CFLAGS += -CFLAGS -fpermissive 
-VFLAGS :=  --cc --exe --build -j 0 --trace  --autoflush
+VFLAGS :=  --cc --exe --build -j 0 --trace-fst  #--autoflush
 VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
@@ -85,16 +88,15 @@ $(shell mkdir -p $(BUILD_DIR))
 
 all:run wave
 
-$(BUILD_DIR)/wave.fst:
-	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
-	-@rm -f $(BUILD_DIR)/wave.vcd
+# $(BUILD_DIR)/wave.fst:
+# 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+# 	#-@rm -f $(BUILD_DIR)/wave.vcd
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
 run:sim
-	@echo "Start simulation"
 	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
 	
 	
@@ -103,10 +105,10 @@ include ../Makefile
 wave: $(BUILD_DIR)/wave.fst
 	
 	gtkwave $(BUILD_DIR)/wave.fst
-	rm $(BUILD_DIR)/wave.fst
+# 	rm $(BUILD_DIR)/wave.fst
 
 
-PHONY: clean test adapt
+PHONY: clean test adapt cleanwave
 
 adapt: sim
 	$(MAKE) -C $(CPU_TEST_HOME) ARCH=minirv-npc ALL=$(OBJ)
@@ -115,8 +117,8 @@ adapt: sim
 gdb:sim
 	@echo "Start gdb"
 	gdb --args $(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
-	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
-	-@rm -f $(BUILD_DIR)/wave.vcd
+# 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
+# 	-@rm -f $(BUILD_DIR)/wave.vcd
 
 test:
 	$(VERILATOR) --lint-only -Wall $(TEST_OBJ)
@@ -124,6 +126,9 @@ test:
 	@echo PASS
 
 clean:
-	-rm -rf *.vcd $(BUILD_DIR)
+	-rm -rf  $(BUILD_DIR)
+
+cleanwave:
+	-rm $(BUILD_DIR)/wave.fst
 
 

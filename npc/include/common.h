@@ -8,9 +8,10 @@
 
 #include "verilated.h"
 #include "VysyxSoCFull.h"
-#include "verilated_vcd_c.h"
+// #include "verilated_vcd_c.h"
 #include "svdpi.h"
 #include "VysyxSoCFull__Dpi.h"
+#include "verilated_fst_c.h"
 
 
 typedef uint32_t word_t;
@@ -36,7 +37,8 @@ typedef uint16_t ioaddr_t;
 
 extern VerilatedContext* contextp;
 #if CONFIG_WAVE
-extern VerilatedVcdC* tfp;
+extern VerilatedFstC* tfp;
+// extern VerilatedVcdC* tfp;
 #endif
 extern VysyxSoCFull* top;
 

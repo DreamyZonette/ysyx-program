@@ -1,24 +1,52 @@
 #include <memory/paddr.h>
 #include <memory/host.h> 
 #include <device/mmio.h>
+#include <cpu/difftest.h>
 
 #if CONFIG_YSYXSOC
 static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
+static uint8_t flash[CONFIG_FLASH_SIZE] PG_ALIGN = {};
+
+extern "C" void difftest_device_skip() { difftest_skip_ref();}
 
 uint8_t* mrom_guest_to_host(paddr_t paddr) { return mrom + paddr - CONFIG_MROM_BASE; }
+uint8_t* flash_guest_to_host(paddr_t paddr) { return flash + paddr - CONFIG_FLASH_BASE; }
 
 void init_mem() {
   memset(mrom, rand(), CONFIG_MROM_SIZE);
+  memset(flash, 0x86, CONFIG_FLASH_SIZE);
   Log("physical mrom area [%08x, %08x]", MROM_LEFT, MROM_RIGHT);
+  Log("physical flash area [%08x, %08x]", FLASH_LEFT, FLASH_RIGHT);
 }
 
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+extern "C" void flash_read(int32_t addr, int32_t *data) { 
+  uint32_t res = *(uint32_t *)(flash_guest_to_host(addr + CONFIG_FLASH_BASE));
+  #if CONFIG_MTRACE
+    printf("flash_read(0x%08x, %d) = 0x%08x\n", addr, 4, res);
+  #endif
+  *data = res;
+}
+
+uint32_t sdb_flash_read(int32_t addr){
+  return *(uint32_t *)(flash_guest_to_host(addr));
+}
+
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
-  *data = *(uint32_t *)(mrom_guest_to_host(addr));
+  uint32_t res = *(uint32_t *)(mrom_guest_to_host(addr));
+  #if CONFIG_MTRACE
+    printf("mrom_read(0x%08x, %d) = 0x%08x\n", addr, 4, res);
+  #endif
+  *data = res;
+}
+
+uint32_t sdb_mrom_read(int32_t addr){
+  return *(uint32_t *)(mrom_guest_to_host(addr));
 }
 
 #endif
 
+
+#if !CONFIG_YSYXSOC
 #define SERIAL_PORT_LEFT      CONFIG_SERIAL_MMIO
 #define SERIAL_PORT_RIGHT    (CONFIG_SERIAL_MMIO + 7)
 // 时钟
@@ -50,12 +78,10 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
-#if !CONFIG_YSYXSOC
 void init_mem() {
   memset(pmem, rand(), CONFIG_MSIZE);
   Log("physical memory area [%08x, %08x]", PMEM_LEFT, PMEM_RIGHT);
 }
-#endif
 
 static word_t internal_pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
@@ -87,18 +113,17 @@ extern "C" int pmem_read(int addr, int len) {
   else{
     ret = internal_pmem_read(addr, len);
     #if CONFIG_MTRACE
-      if (addr != top->de_pc){
-        char s[128];
-        sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
-        log_write("%s\n", s);
-      }
-      //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+      // if (addr != top->de_pc){
+      //   char s[128];
+      //   sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+      //   log_write("%s\n", s);
+      // }
+      // //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
 
     #endif
   }
   return ret;
 }
-extern uint64_t g_nr_guest_inst;
 extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
   data = word_t(data);
@@ -129,10 +154,10 @@ extern "C" void pmem_write(int addr, int len, int data) {
   }
   else{
     #if CONFIG_MTRACE
-    char s[128];
-    sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
-    log_write("%s\n", s);
-    //printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    // char s[128];
+    // sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    // log_write("%s\n", s);
+    // //printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
 
   #endif
     internal_pmem_write(addr, len, data);
@@ -156,3 +181,5 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   #endif
   out_of_bound(addr);
 }
+
+#endif

@@ -1,19 +1,22 @@
-AM_SRCS := riscv/npc/start.S \
-           riscv/npc/trm.c \
-           riscv/npc/ioe.c \
-           riscv/npc/timer.c \
-           riscv/npc/input.c \
-           riscv/npc/audio.c \
-           riscv/npc/gpu.c \
-           riscv/npc/cte.c \
-           riscv/npc/trap.S \
+AM_SRCS := riscv/ysyxsoc/start.S \
+           riscv/ysyxsoc/bootloader.S \
+           riscv/ysyxsoc/printcsr.S \
+           riscv/ysyxsoc/trm.c \
+           riscv/ysyxsoc/ioe.c \
+           riscv/ysyxsoc/timer.c \
+           riscv/ysyxsoc/input.c \
+           riscv/ysyxsoc/audio.c \
+           riscv/ysyxsoc/gpu.c \
+           riscv/ysyxsoc/cte.c \
+           riscv/ysyxsoc/trap.S \
            platform/dummy/vme.c \
            platform/dummy/mpe.c
 
 CFLAGS    += -fdata-sections -ffunction-sections
 LDSCRIPTS += $(AM_HOME)/scripts/ysyxsoc-linker.ld
-LDFLAGS   += --defsym=_mrom_start=0x20000000 --defsym=_entry_offset=0x0
+# LDFLAGS   += --defsym=_mrom_start=0x20000000 --defsym=_entry_offset=0x0
 LDFLAGS   += --gc-sections -e _start
+LDFLAGS   += --print-map 
 
 MAINARGS_MAX_LEN = 64
 MAINARGS_PLACEHOLDER = the_insert-arg_rule_in_Makefile_will_insert_mainargs_here

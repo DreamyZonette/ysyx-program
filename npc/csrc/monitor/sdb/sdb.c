@@ -19,7 +19,7 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  line_read = readline("(npc) ");
+  line_read = readline("(soc) ");
 
   if (line_read && *line_read) {
     add_history(line_read);
@@ -91,6 +91,24 @@ static int cmd_x (char *args){
         printf("转换失败或超出范围\n");
         return 1;
     }
+  #if CONFIG_YSYXSOC
+    	if (addr < CONFIG_MROM_BASE || addr >= CONFIG_MROM_BASE + CONFIG_MROM_SIZE &&
+          addr < CONFIG_FLASH_BASE || addr >= CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE) {
+		printf("Invalid address\n");
+		printf("Address is out of range\n");
+		return 0;
+	}
+	for(int i = 0 ; i < N  ; i++){
+    // printf("%08x\n", addr);
+    if (addr >= CONFIG_MROM_BASE && addr < CONFIG_MROM_BASE + CONFIG_MROM_SIZE){
+  		printf("\033[32mmrom:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr, sdb_mrom_read(addr));
+    }
+    else if (addr >= CONFIG_FLASH_BASE && addr < CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE){
+  		printf("\033[32mflash:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr, sdb_flash_read(addr));
+    }
+		addr += 4;
+	}
+  #else
 	if (addr < PMEM_LEFT || addr > PMEM_RIGHT) {
 		printf("Invalid address\n");
 		printf("Address is out of range\n");
@@ -100,6 +118,7 @@ static int cmd_x (char *args){
 		printf("\033[32maddr:0x%08x -> \033[0m\033[33m%08x\033[0m\n",addr,pmem_read(addr,4));
 		addr += 4;
 	}
+  #endif
 	return 0;
 }
 
@@ -108,9 +127,9 @@ static struct {
   const char *description;
   int (*handler) (char *);
 } cmd_table [] = {
-    { "help", "Display information about all supported commands", cmd_help },
-    { "c", "Continue the execution of the program", cmd_c },
-    { "q", "Exit NPC", cmd_q },
+  { "help", "Display information about all supported commands", cmd_help },
+  { "c", "Continue the execution of the program", cmd_c },
+  { "q", "Exit NPC", cmd_q },
 	{ "si", "Execute one step", cmd_si },
 	{ "info", "Display status", cmd_info },
 	{ "x", "Display memory" , cmd_x }

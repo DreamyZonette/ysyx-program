@@ -72,59 +72,31 @@ static long load_img() {
   long size = 0;
 
   if (magic == ELF_MAGIC) {
-    // ELF文件处理逻辑 - 关键改进部分
-    Log("Loading ELF image: %s", img_file);
-    
-    // 读取ELF头
-    Elf32_Ehdr ehdr;
-    ret = fread(&ehdr, sizeof(ehdr), 1, fp);
-    assert(ret == 1);
-    
-    // 查找第一个可加载段(PT_LOAD)作为基准
-    Elf32_Phdr first_phdr;
-    int found_load_segment = 0;
-    uint32_t min_offset = UINT32_MAX;
-    
-    fseek(fp, ehdr.e_phoff, SEEK_SET);
-    for (int i = 0; i < ehdr.e_phnum; i++) {
-      Elf32_Phdr phdr;
-      ret = fread(&phdr, sizeof(phdr), 1, fp);
-      assert(ret == 1);
-      
-      // 记录第一个可加载段的信息
-      if (phdr.p_type == PT_LOAD && phdr.p_offset < min_offset) {
-        first_phdr = phdr;
-        min_offset = phdr.p_offset;
-        found_load_segment = 1;
-      }
-    }
-    
-    if (!found_load_segment) {
-      panic("No PT_LOAD segment found in ELF file");
-    }
-
-    // 计算ELF文件的实际代码/数据大小
-    fseek(fp, 0, SEEK_END);
-    size = ftell(fp) - first_phdr.p_offset;
-    fseek(fp, first_phdr.p_offset, SEEK_SET);
-    
-    // 关键改进：将ELF的有效内容加载到RESET_VECTOR
-    ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
-    assert(ret == 1);
-    
-    Log("Loaded ELF segment at 0x%x, size = %ld", RESET_VECTOR, size);
-    fclose(fp);
+  if (img_file[0] == '\0') {
+    Log("No image is given. Use the default build-in image.");
+    return 4096; // built-in image size
   }
-  else {
+
+  FILE *fp = fopen(img_file, "rb");
+  if(!fp) {
+    printf("Can not open '%s'\n", img_file);
+    assert(1); // 断言失败，程序退出
+  }
+
+    fseek(fp, 0, SEEK_SET); // 回到文件开头
+    long size = 0;
+
     // BIN文件处理逻辑（保持不变）
     fseek(fp, 0, SEEK_END);
     size = ftell(fp);
     Log("The image is %s, size = %ld", img_file, size);
     fseek(fp, 0, SEEK_SET);
-    ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+    // int ret = fread(mrom_guest_to_host(MROM_RESET_VECTOR), size, 1, fp);
+    int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
     assert(ret == 1);
     fclose(fp);
   }
+  
   return size;
 }
 

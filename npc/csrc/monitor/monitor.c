@@ -5,7 +5,7 @@
 #endif
 
 //static char *img_file = NULL;
-static char img_file[256] = {0};
+char img_file[256] = {0};
 static char log_file[256] = {0};
 static char elf_file[256] = {0};
 static char diff_so_file[256] = {0};
@@ -65,6 +65,21 @@ static long load_img() {
     Log("No image is given. Use the default build-in image.");
     return 4096; // built-in image size
   }
+  // /*---------temp--------*/
+  // FILE *temp_fp = fopen("/home/long/ysyx-workbench/npc/demo/tests/char-test.bin", "rb");
+  // if(!temp_fp) {
+  //   printf("Can not open '/home/long/ysyx-workbench/npc/demo/tests/char-test.bin'\n");
+  //   assert(1); // 断言失败，程序退出
+  // }
+
+  //   fseek(temp_fp, 0, SEEK_SET); // 回到文件开头
+  //   long temp_size = 0;
+  //   fseek(temp_fp, 0, SEEK_END);
+  //   temp_size = ftell(temp_fp);
+  //   fseek(temp_fp, 0, SEEK_SET);
+  //   int temp_ret = fread(flash_guest_to_host(FLASH_RESET_VECTOR), temp_size, 1, temp_fp);
+  //   assert(temp_ret == 1);
+  // /*---------temp--------*/
 
   FILE *fp = fopen(img_file, "rb");
   if(!fp) {
@@ -80,8 +95,9 @@ static long load_img() {
     size = ftell(fp);
     Log("The image is %s, size = %ld", img_file, size);
     fseek(fp, 0, SEEK_SET);
-    #if CONFIG_YSYXSOC
-    int ret = fread(mrom_guest_to_host(MROM_RESET_VECTOR), size, 1, fp);
+    #if CONFIG_YSYXSOC  
+    int ret = fread(flash_guest_to_host(FLASH_RESET_VECTOR), size, 1, fp);
+    // int ret = fread(mrom_guest_to_host(MROM_RESET_VECTOR), size, 1, fp);
     #else
     int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
     #endif
@@ -180,8 +196,9 @@ void init_monitor(int argc, char *argv[]) {
   #if CONFIG_DIFFTEST
   init_difftest(diff_so_file, img_size, difftest_port);
   #endif
-
+  #if !CONFIG_YSYXSOC
   init_device();
+  #endif
   #if CONFIG_ITRACE
   void init_disasm(void);
   init_disasm();

@@ -13,22 +13,19 @@
 
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
-
+#if !CONFIG_YSYXSOC
 void device_update();
+#endif
 
 // 全局结束标志和 DPI-C 函数
 bool sim_finish = false;
 char p[128];
 int print_on = 0;
+
 CPU_state dut = {
   .gpr = {0},            // 所有寄存器初始化为0
-  .pc = 0x80000000,       // PC初始化为0x30000000
-  .next_pc = 0x80000000,
-  // .diff_mstatus = 0,
-  // .diff_mepc = 0x80000000,
-  // .diff_mtvec = 0x80000000,
-  // .diff_mcause = 0,
-  // .csr = {0},
+  .pc = 0x20000000,       // PC初始化为0x30000000
+  .next_pc = 0x20000000,
 };
 
 extern "C" void dpi_ebreak() {
@@ -46,10 +43,8 @@ void step_and_dump_wave(){
 static void trace_and_difftest() {
 
   #if CONFIG_DIFFTEST
-  //printf("0x%08x 0x%08x\n", top->de_pc, top->de_next_pc);
-  if (dut.pc != dut.next_pc){
+    // printf("DIFFTEST:pc:0x%08x next_pc:0x%08x\n", dut.pc, dut.next_pc);
     difftest_step(dut.pc, dut.next_pc);
-  } 
   #endif
 
   #if CONFIG_FTRACE
@@ -143,7 +138,6 @@ static void execute(uint64_t n) {
 
       dut.pc = dut.next_pc;
       dut.next_pc = get_pc();
-    // if (dut.pc != dut.next_pc) g_nr_guest_inst ++;
     g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
@@ -176,27 +170,17 @@ static void execute(uint64_t n) {
   #endif
 
   #if CONFIG_DIFFTEST
-    // dut.diff_mstatus = top->de_mstatus;
-    // dut.diff_mcause = top->de_mcause;
-    // dut.diff_mtvec = top->de_mtvec;
-    // dut.diff_mepc = top->de_mepc;
-    if (dut.pc != dut.next_pc){
-      printf("difftest:pc:%08x => 0x%08x\n", dut.pc, dut.next_pc);
-      // svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"));
       for(int i = 0; i < 16; i++){
       dut.gpr[i] = _gpr(i);
-    }
-    // svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
   }
-  
-
   #endif
     
-    
+    #if !CONFIG_YSYXSOC
     device_update();
     trace_and_difftest();
     #if CONFIG_DEVICE
     device_update();
+    #endif
     #endif
 
     if(sim_finish) {
@@ -204,12 +188,6 @@ static void execute(uint64_t n) {
       npc_state.halt_ret = _gpr(10); // 寄存器返回值
       npc_state.state = NPC_END;
     }
-    // if(top->halt == 1){
-    //   npc_state.halt_pc = top->de_pc;
-    //   npc_state.halt_ret = top->reg_data[10];
-    //   npc_state.state = NPC_ABORT;
-    // }
-
     if (npc_state.state != NPC_RUNNING) break;
   }
 }

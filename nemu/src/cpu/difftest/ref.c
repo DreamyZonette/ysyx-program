@@ -19,7 +19,7 @@
 #include <difftest-def.h>
 #include <memory/paddr.h>
 
-
+// extern uint8_t mrom[MROM_SIZE] PG_ALIGN = {};
 
 __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   if (direction == DIFFTEST_TO_REF) {
@@ -35,18 +35,29 @@ __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction)
     }
   }
 }
+void difftest_exec(uint64_t n);
 
+int count = 0;
 __EXPORT void difftest_regcpy(void *dut, bool direction) {
   CPU_state* top = (CPU_state*)(dut);
+
   if (direction == DIFFTEST_TO_REF) {
     for(int i = 0; i < RISCV_GPR_NUM; i++){
+      // printf("cpu.gpr[%d] = %08x top->gpr[%d] = %08x\n", i, cpu.gpr[i], i, top->gpr[i]);
       cpu.gpr[i] = top->gpr[i];
     }
-    cpu.pc = top->pc;
+    // printf("cpu.pc = 0x%08x dut->pc = 0x%08x\n", cpu.pc, top->pc);
     // cpu.csr[0] = top->diff_mstatus; // 只复制mstatus寄存器
     // cpu.csr[5] = top->diff_mepc; // 只复制mepc寄存器
     // cpu.csr[6] = top->diff_mcause; // 只复制mcause寄存器
     // cpu.csr[3] = top->diff_mtvec; // 只复制mtvec寄存器
+      if (count == 1) {
+        cpu.pc = top->pc + 4;
+      }
+      else {
+        count = 1;
+        cpu.pc = top->pc;
+      }
   }
   else{
     for(int i = 0; i < RISCV_GPR_NUM; i++){

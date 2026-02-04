@@ -8,6 +8,7 @@
 #include <isa/isa_def.h>
 #include <isa/reg.h>
 
+
 void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
@@ -19,7 +20,7 @@ void isa_reg_display();
 extern CPU_state dut;
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
-  
+  // printf("\n");
   for(int i = 0; i < 16; i ++){
     uint32_t ref_value = ref_r->gpr[i];
     uint32_t value = _gpr(i);
@@ -28,24 +29,8 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     return false;
     }
   }
-  // if(dut.next_pc != ref_r->pc) {
-  //   printf("pc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.next_pc, ref_r->pc);
-  //   return false;
-  // }
-  // if(dut.diff_mstatus != ref_r->csr[0]){
-  //   printf("mstatus \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mstatus, ref_r->csr[0]);
-  //   return false;
-  // }
-  // if(dut.diff_mepc != ref_r->csr[5]){
-  //   printf("mepc \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mepc, ref_r->csr[5]);
-  //   return false;
-  // }
-  // if(dut.diff_mtvec != ref_r->csr[3]){
-  //   printf("mtvec \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mtvec, ref_r->csr[3]);
-  //   return false;
-  // }
-  // if(dut.diff_mcause != ref_r->csr[6]){
-  //   printf("mcause \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", dut.diff_mcause, ref_r->csr[6]);
+  // if(ref_r->pc != pc){
+  //   printf("PC \33[1;31mdut:0x%08x \33[1;32mref:0x%08x\n", pc, ref_r->pc);
   //   return false;
   // }
 
@@ -77,12 +62,12 @@ void difftest_skip_ref() {
 //   We expect that DUT will catch up with REF within `nr_dut` instructions.
 void difftest_skip_dut(int nr_ref, int nr_dut) {
   skip_dut_nr_inst += nr_dut;
-
   while (nr_ref -- > 0) {
     ref_difftest_exec(1);
   }
 }
 
+extern char img_file[256];
 void init_difftest(char *ref_so_file, long img_size, int port) {
   assert(ref_so_file != NULL);
 
@@ -111,7 +96,8 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
       "If it is not necessary, you can turn it off in autoconf.h.", ref_so_file);
 
   ref_difftest_init(port);
-  ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
+  ref_difftest_memcpy(CONFIG_FLASH_BASE, flash_guest_to_host(FLASH_RESET_VECTOR), img_size, DIFFTEST_TO_REF);
+  // ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
   //printf("0x%08x\n", dut->de_pc);
   ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
 }
@@ -142,15 +128,16 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
   if (is_skip_ref) {
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
+    // ref_difftest_exec(1);
+    // ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
     is_skip_ref = false;
     return;
   }
     //printf("0x%08x 0x%08x\n", pc, npc);
-
+  
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-
-  checkregs(&ref_r, pc);
+  checkregs(&ref_r, npc);
 }
 #else
 void init_difftest(char *ref_so_file, long img_size, int port) { }
