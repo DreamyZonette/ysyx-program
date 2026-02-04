@@ -3,6 +3,7 @@ IMG ?= /home/long/ysyx-workbench/npc/demo/tests/char-test.bin
 #IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+NXDC_FILES ?= $(WORK_DIR)/constr/ysyxSoCFull.nxdc
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -11,8 +12,9 @@ TEST_OBJ = $(shell find $(VPATH) -name $(TEST).v)
 VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 SOC_HOME = /home/long/ysyx-workbench/ysyxSoC
-INC_PATH := $(WORK_DIR)/include $(INC_PATH)
-INCLUDES = $(addprefix -I, $(INC_PATH))
+INC_PATH := $(WORK_DIR)/include
+
+
 
 VSRCS := $(shell find $(VPATH) -name *.v)
 VSRCS += $(shell find $(SOC_HOME)/perip -name *.v)
@@ -31,12 +33,27 @@ VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/r
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 VFLAGS += --timescale "1ns/1ns" --no-timing
+NVBOARD_FLAGS :=  -MMD -O3 --x-assign fast --x-initial fast --noassert
 LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2"
 # LDFLAGS += -LDFLAGS -lSDL2
 
 VERILATOR = verilator
 ARGS ?=  
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
+
+ifeq ($(NVBOARD),1)
+	VFLAGS += $(NVBOARD_FLAGS)
+
+# auto_bind.cpp
+	SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
+
+CSRCS += $(SRC_AUTO_BIND)
+
+include $(NVBOARD_HOME)/scripts/nvboard.mk
+
+endif
 
 
 CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/generated/autoconf.h | awk '{print $$3}')
@@ -82,6 +99,8 @@ src/utils/disasm.c: $(LIBCAPSTONE)
 $(LIBCAPSTONE):
 	$(MAKE) -C $(NEMU_HOME)/tools/capstone
 endif
+
+INCLUDES = $(addprefix -I, $(INC_PATH))
 
 $(shell mkdir -p $(BUILD_DIR))
 
