@@ -30,15 +30,18 @@ EXCLUDE_DIR := $(CPATH)/device
 CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
 
 CFLAGS :=  
-CFLAGS += -CFLAGS "$(INCLUDES)"  -Wno-deprecated
-CFLAGS += -CFLAGS -fpermissive 
+CFLAGS += $(INCLUDES)  -Wno-deprecated
+CFLAGS +=  -fpermissive 
+# CFLAGS += -CFLAGS "$(INCLUDES)"  -Wno-deprecated
+# CFLAGS += -CFLAGS -fpermissive 
 VFLAGS :=  --cc --exe --build -j 0 --trace-fst  #--autoflush
 VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 VFLAGS += --timescale "1ns/1ns" --no-timing
 NVBOARD_FLAGS :=  -MMD -O3 --x-assign fast --x-initial fast --noassert
-LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2"
+LDFLAGS := -lreadline -ltinfo -lSDL2
+# LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2"
 # LDFLAGS += -LDFLAGS -lSDL2
 
 VERILATOR = verilator
@@ -116,7 +119,8 @@ all:run wave
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
+	@$(VERILATOR) $(VFLAGS) $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) $(CSRCS) $(VSRCS) 
+# 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
 run:sim
 	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
