@@ -13,6 +13,7 @@ VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 SOC_HOME = /home/long/ysyx-workbench/ysyxSoC
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
+INCLUDES = $(addprefix -I, $(INC_PATH))
 
 
 
@@ -100,7 +101,6 @@ $(LIBCAPSTONE):
 	$(MAKE) -C $(NEMU_HOME)/tools/capstone
 endif
 
-INCLUDES = $(addprefix -I, $(INC_PATH))
 
 $(shell mkdir -p $(BUILD_DIR))
 
