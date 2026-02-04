@@ -13,6 +13,9 @@ VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 SOC_HOME = /home/long/ysyx-workbench/ysyxSoC
 INC_PATH := $(WORK_DIR)/include 
+ifeq ($(NVBOARD),1)
+include $(NVBOARD_HOME)/scripts/nvboard.mk
+endif
 INCLUDES = $(addprefix -I, $(INC_PATH))
 
 
