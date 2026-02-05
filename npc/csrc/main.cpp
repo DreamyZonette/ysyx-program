@@ -74,6 +74,7 @@ static void reset(int n) {
 
 int main(int argc, char *argv[]){
 
+    //--------------------------------
   nvboard_bind_all_pins(top);
   nvboard_init();
 
