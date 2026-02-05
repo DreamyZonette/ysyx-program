@@ -13,14 +13,6 @@ VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 SOC_HOME = /home/long/ysyx-workbench/ysyxSoC
 INC_PATH := $(WORK_DIR)/include 
-ifeq ($(NVBOARD),1)
-include $(NVBOARD_HOME)/scripts/nvboard.mk
-endif
-
-# auto_bind.cpp
-SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
-$(SRC_AUTO_BIND): $(NXDC_FILES)
-	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 
 VSRCS := $(shell find $(VPATH) -name *.v)
@@ -32,7 +24,14 @@ ALL_CSRCS += $(shell find $(CPATH) -name *.c)
 EXCLUDE_DIR := $(CPATH)/device
 CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
 
+# ifeq ($(NVBOARD),1)
+include $(NVBOARD_HOME)/scripts/nvboard.mk
+# endif
 
+# auto_bind.cpp
+SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS :=  
@@ -46,7 +45,7 @@ VFLAGS += --top-module $(TOP_NAME)
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 VFLAGS += --timescale "1ns/1ns" --no-timing
 NVBOARD_FLAGS :=  -MMD -O3 --x-assign fast --x-initial fast --noassert
-LDFLAGS := -lreadline -ltinfo -lSDL2
+LDFLAGS += -lreadline -ltinfo -lSDL2
 # LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2"
 # LDFLAGS += -LDFLAGS -lSDL2
 ifeq ($(NVBOARD),1)
