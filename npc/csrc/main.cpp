@@ -73,6 +73,7 @@ static void reset(int n) {
 }
 
 int main(int argc, char *argv[]){
+    Verilated::commandArgs(argc, argv);
 
     //--------------------------------
   nvboard_bind_all_pins(top);
@@ -86,7 +87,6 @@ int main(int argc, char *argv[]){
     top->clock = 1; top->eval();
   }
 //--------------------------------------
-    Verilated::commandArgs(argc, argv);
     sim_init();
     
     init_monitor(argc, argv);

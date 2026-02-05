@@ -75,7 +75,7 @@ ifeq ($(IMG),)
 endif
 
 ifeq ($(MAKECMDGOALS),gdb)
-  CFLAGS += -CFLAGS -g
+  CFLAGS += -g
 endif
 
 ifeq ($(CONFIG_FTRACE),1)
@@ -142,7 +142,7 @@ adapt: sim
 
 gdb:sim
 	@echo "Start gdb"
-	gdb --args $(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
+	gdb --args $(BIN) $(ARGS)
 # 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
 # 	-@rm -f $(BUILD_DIR)/wave.vcd
 
