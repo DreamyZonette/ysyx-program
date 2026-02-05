@@ -33,8 +33,8 @@ void sim_init(){
     #endif
     svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
     #if CONFIG_NVBOARD
-        nvboard_bind_all_pins(top);
-        nvboard_init();
+        // nvboard_bind_all_pins(top);
+        // nvboard_init();
     #endif
 }
 
