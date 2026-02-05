@@ -17,7 +17,10 @@ ifeq ($(NVBOARD),1)
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 endif
 
-
+# auto_bind.cpp
+SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 
 VSRCS := $(shell find $(VPATH) -name *.v)
@@ -31,11 +34,6 @@ CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
 
 ifeq ($(NVBOARD),1)
 	VFLAGS += $(NVBOARD_FLAGS)
-
-# auto_bind.cpp
-	SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
-$(SRC_AUTO_BIND): $(NXDC_FILES)
-	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 CSRCS += $(SRC_AUTO_BIND)
 
