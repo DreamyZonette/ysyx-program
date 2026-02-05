@@ -4,6 +4,7 @@ IMG ?= /home/long/ysyx-workbench/npc/demo/tests/char-test.bin
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 NXDC_FILES ?= $(WORK_DIR)/constr/ysyxSoCFull.nxdc
+BIN := $(BUILD_DIR)/obj_dir/V$(TOP_NAME)
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -48,11 +49,11 @@ NVBOARD_FLAGS :=  -MMD -O3 --x-assign fast --x-initial fast --noassert
 LDFLAGS += -lreadline -ltinfo -lSDL2
 # LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2"
 # LDFLAGS += -LDFLAGS -lSDL2
-ifeq ($(NVBOARD),1)
+# ifeq ($(NVBOARD),1)
 VFLAGS += $(NVBOARD_FLAGS)
 CSRCS += $(SRC_AUTO_BIND)
 
-endif
+# endif
 
 VERILATOR = verilator
 ARGS ?=  
@@ -112,13 +113,17 @@ all:run wave
 # 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
 # 	#-@rm -f $(BUILD_DIR)/wave.vcd
 
-sim:
+$(BIN):$(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
+	@rm -rf $(OBJ_DIR)
+	$(VERILATOR) $(VFLAGS) $^ $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS))
+
+sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(VERILATOR) $(VFLAGS) $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) $(CSRCS) $(VSRCS) 
+# 	$(VERILATOR) $(VFLAGS) $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) $(CSRCS) $(VSRCS) 
 # 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
-run:$(SRC_AUTO_BIND) sim
-	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
+run: sim
+	$(BIN) $(ARGS)
 	
 	
 include ../Makefile
