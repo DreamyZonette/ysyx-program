@@ -4,7 +4,6 @@ IMG ?= /home/long/ysyx-workbench/npc/demo/tests/char-test.bin
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 NXDC_FILES ?= $(WORK_DIR)/constr/ysyxSoCFull.nxdc
-BIN := $(BUILD_DIR)/obj_dir/V$(TOP_NAME)
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -106,6 +105,7 @@ endif
 
 $(shell mkdir -p $(BUILD_DIR))
 
+BIN := $(BUILD_DIR)/obj_dir/V$(TOP_NAME)
 
 all:run wave
 
