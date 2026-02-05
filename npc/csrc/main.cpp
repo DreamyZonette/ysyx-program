@@ -1,6 +1,7 @@
 #include <common.h>
 #include <memory/paddr.h>
 #include <cpu/cpu.h>
+#include <nvboard.h>
 
 //函数申明
 extern void init_isa();
