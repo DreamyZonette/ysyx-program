@@ -3,14 +3,10 @@
 #include <cpu/cpu.h>
 
 //函数申明
-// extern word_t pmem_read(paddr_t addr, int len);
-// extern void pmem_write(paddr_t addr, int len, word_t data);
 extern void init_isa();
 void init_monitor(int, char *[]);
 void step_and_dump_wave();
 void sdb_mainloop();
-// void sim_run();
-// void engine_start();
 
 VerilatedContext* contextp;
 #if CONFIG_WAVE
@@ -18,6 +14,9 @@ VerilatedFstC* tfp;
 #endif
 VysyxSoCFull* top;
 
+#if CONFIG_NVBOARD
+void nvboard_bind_all_pins(VysyxSoCFull* top);
+#endif
 
 void sim_init(){
     contextp = new VerilatedContext;
@@ -32,6 +31,9 @@ void sim_init(){
     tfp->open("/home/long/ysyx-workbench/npc/build/wave.fst");
     #endif
     svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
+    #if CONFIG_NVBOARD
+        nvboard_bind_all_pins(top);
+    #endif
 }
 
 void sim_exit(){
