@@ -63,7 +63,28 @@ void npc_engine_start() {
     step_and_dump_wave();
 }
 
+static void reset(int n) {
+  top->reset = 1;
+  while (n -- > 0) {
+    top->clock = 0; top->eval();
+    top->clock = 1; top->eval();
+  }
+  top->reset = 0;
+}
+
 int main(int argc, char *argv[]){
+
+  nvboard_bind_all_pins(top);
+  nvboard_init();
+
+  reset(10);
+
+  while(1) {
+    nvboard_update();
+    top->clock = 0; top->eval();
+    top->clock = 1; top->eval();
+  }
+//--------------------------------------
     Verilated::commandArgs(argc, argv);
     sim_init();
     
