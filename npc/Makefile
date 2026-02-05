@@ -118,7 +118,7 @@ sim:
 	@$(VERILATOR) $(VFLAGS) $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) $(CSRCS) $(VSRCS) 
 # 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
-run:sim
+run:$(SRC_AUTO_BIND) sim
 	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
 	
 	
