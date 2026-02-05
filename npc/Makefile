@@ -32,12 +32,7 @@ ALL_CSRCS += $(shell find $(CPATH) -name *.c)
 EXCLUDE_DIR := $(CPATH)/device
 CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
 
-ifeq ($(NVBOARD),1)
-	VFLAGS += $(NVBOARD_FLAGS)
 
-CSRCS += $(SRC_AUTO_BIND)
-
-endif
 
 INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS :=  
@@ -54,6 +49,11 @@ NVBOARD_FLAGS :=  -MMD -O3 --x-assign fast --x-initial fast --noassert
 LDFLAGS := -lreadline -ltinfo -lSDL2
 # LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2"
 # LDFLAGS += -LDFLAGS -lSDL2
+ifeq ($(NVBOARD),1)
+VFLAGS += $(NVBOARD_FLAGS)
+CSRCS += $(SRC_AUTO_BIND)
+
+endif
 
 VERILATOR = verilator
 ARGS ?=  
