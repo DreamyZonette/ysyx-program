@@ -16,7 +16,7 @@ INC_PATH := $(WORK_DIR)/include
 ifeq ($(NVBOARD),1)
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 endif
-INCLUDES = $(addprefix -I, $(INC_PATH))
+
 
 
 
@@ -29,6 +29,19 @@ ALL_CSRCS += $(shell find $(CPATH) -name *.c)
 EXCLUDE_DIR := $(CPATH)/device
 CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
 
+ifeq ($(NVBOARD),1)
+	VFLAGS += $(NVBOARD_FLAGS)
+
+# auto_bind.cpp
+	SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
+
+CSRCS += $(SRC_AUTO_BIND)
+
+endif
+
+INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS :=  
 CFLAGS += $(INCLUDES)  -Wno-deprecated
 CFLAGS +=  -fpermissive 
@@ -47,19 +60,6 @@ LDFLAGS := -lreadline -ltinfo -lSDL2
 VERILATOR = verilator
 ARGS ?=  
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
-
-ifeq ($(NVBOARD),1)
-	VFLAGS += $(NVBOARD_FLAGS)
-
-# auto_bind.cpp
-	SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
-$(SRC_AUTO_BIND): $(NXDC_FILES)
-	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
-
-CSRCS += $(SRC_AUTO_BIND)
-
-endif
-
 
 CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/generated/autoconf.h | awk '{print $$3}')
 CONFIG_DIFFTEST      := $(shell grep -m1 '^#define CONFIG_DIFFTEST' include/generated/autoconf.h | awk '{print $$3}')
