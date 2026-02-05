@@ -58,8 +58,6 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 
 CSRCS += $(SRC_AUTO_BIND)
 
-include $(NVBOARD_HOME)/scripts/nvboard.mk
-
 endif
 
 
