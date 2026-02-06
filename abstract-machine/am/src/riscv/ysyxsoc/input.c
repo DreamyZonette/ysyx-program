@@ -4,7 +4,7 @@
 
 #define KBD_ADDR        (0x10011000)
 
-#define KEYDOWN_MASK 0x8000
+#define KEYDOWN_MASK 0x1000
 #define KEYCODE_MASK 0xFFFF
 
 static uint32_t am_get_keycode (){
