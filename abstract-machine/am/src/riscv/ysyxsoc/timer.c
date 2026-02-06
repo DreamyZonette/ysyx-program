@@ -21,7 +21,7 @@ void __am_timer_init() {
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint64_t now = am_get_time();
-  uint64_t elapsed_seconds = (now - base_time) / 2;
+  uint64_t elapsed_seconds = (now - base_time);
   uptime->us = elapsed_seconds;// (μs)
   // uptime->us = now - base_time;// (μs)
 }
