@@ -79,13 +79,13 @@ int main(int argc, char *argv[]){
   
     sim_init();
 
-//   reset(10);
+  reset(10);
 
-//   while(1) {
-//     nvboard_update();
-//     top->clock = 0; top->eval();
-//     top->clock = 1; top->eval();
-//   }
+  while(1) {
+    nvboard_update();
+    top->clock = 0; top->eval();
+    top->clock = 1; top->eval();
+  }
 //--------------------------------------
     
     init_monitor(argc, argv);
