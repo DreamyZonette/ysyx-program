@@ -102,7 +102,12 @@ static uint32_t key_code_lut(uint32_t keycode){
 
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
   uint32_t value = am_get_keycode();
-  
+  // if (value & KEYDOWN_MASK != 0xf000){
+  //   putstr("Key down\n");
+  // }
+  // else {
+  //   putstr("Key up\n");
+  // }
   kbd->keydown = (value & KEYDOWN_MASK) != 0xf000;  
   uint32_t raw_code = key_code_lut(value & KEYCODE_MASK);
   kbd->keycode = raw_code;
