@@ -28,5 +28,5 @@ void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
 void __am_uart_recever (AM_UART_RX_T *rx) {
   uint8_t value = getch();
   rx->data = (char)value;
-  rx->data = 'a';
+  // rx->data = 'a';
 }
