@@ -67,6 +67,7 @@ always @(posedge clock) begin
                 slave_arready <= 1'b1;
                 state <= READ;
                 slave_rid <= slave_arid;
+                $display("CLINT: Read Address: %08x", slave_araddr);
             end
             else if (slave_awvalid && slave_wvalid) begin
                 slave_awready <= 1'b1;
