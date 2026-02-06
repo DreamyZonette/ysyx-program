@@ -4,7 +4,7 @@
 
 #define KBD_ADDR        (0x10011000)
 
-#define KEYDOWN_MASK 0x1000
+#define KEYDOWN_MASK 0xFF00
 #define KEYCODE_MASK 0xFFFF
 
 static uint32_t am_get_keycode (){
@@ -103,7 +103,7 @@ static uint32_t key_code_lut(uint32_t keycode){
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
   uint32_t value = am_get_keycode();
   
-  kbd->keydown = (value & KEYDOWN_MASK) != 0;
+  kbd->keydown = (value & KEYDOWN_MASK) != 0xf000;  
   uint32_t raw_code = key_code_lut(value & KEYCODE_MASK);
   kbd->keycode = raw_code;
 
