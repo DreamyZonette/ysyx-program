@@ -2,8 +2,7 @@
 #include <riscv/riscv.h>
 
 
-#define DEVICE_BASE 0xa0000000
-#define KBD_ADDR        (DEVICE_BASE + 0x0000060)
+#define KBD_ADDR        (0x10011000)
 
 #define KEYDOWN_MASK 0x8000
 #define KEYCODE_MASK 0x7FFF
