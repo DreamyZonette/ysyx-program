@@ -29,7 +29,7 @@ void putch(char ch) {
 }
 
 uint8_t getch() {
-  while ((inb(LSR_ADDR) & 0x01) == 0) {}
+  // while ((inb(LSR_ADDR) & 0x01) == 0) {}
   return inb(RB_ADDR);
 }
 
