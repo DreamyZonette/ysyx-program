@@ -122,12 +122,9 @@ module axi_arbiter (
 
     reg io_lsu_arvalid_reg;
     reg io_lsu_awvalid_reg;
-    reg io_ifu_arvalid_reg;
 
     always @(posedge clock) begin
         io_lsu_arvalid_reg <= io_lsu_arvalid;
-        io_lsu_awvalid_reg <= io_lsu_awvalid;
-        io_ifu_arvalid_reg <= io_ifu_arvalid;
     end
 
     always @ (posedge clock) begin
@@ -233,7 +230,7 @@ module axi_arbiter (
         
         if (state == ARB_IFU) begin
             io_araddr = io_ifu_araddr;
-            io_arvalid = io_ifu_arvalid_reg;
+            io_arvalid = io_ifu_arvalid;
             io_rready = io_ifu_rready;
             io_arid = io_ifu_arid;
             io_arlen = io_ifu_arlen;
@@ -259,7 +256,7 @@ module axi_arbiter (
                 io_clint_arburst = io_lsu_arburst;
                 io_clint_rready =  io_lsu_rready;
                 io_clint_awaddr =  io_lsu_awaddr;
-                io_clint_awvalid = io_lsu_awvalid_reg;
+                io_clint_awvalid = io_lsu_awvalid;
                 io_clint_awlen =   io_lsu_awlen;
                 io_clint_awsize =  io_lsu_awsize;
                 io_clint_awburst = io_lsu_awburst;
