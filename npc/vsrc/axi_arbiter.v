@@ -116,9 +116,19 @@ module axi_arbiter (
 
     // arbiter
     reg [1:0] state;
-    wire clint_active = (io_lsu_araddr >= 32'h0200_0000 && io_lsu_araddr < 32'h0201_0000) && io_lsu_arvalid;
+    wire clint_active = (io_lsu_araddr >= 32'h0200_0000 && io_lsu_araddr < 32'h0201_0000);
 
     parameter ARB_IDLE = 2'd0, ARB_LSU = 2'd1, ARB_IFU = 2'd2;
+
+    reg io_lsu_arvalid_reg;
+    reg io_lsu_awvalid_reg;
+    reg io_ifu_arvalid_reg;
+
+    always @(posedge clock) begin
+        io_lsu_arvalid_reg <= io_lsu_arvalid;
+        io_lsu_awvalid_reg <= io_lsu_awvalid;
+        io_ifu_arvalid_reg <= io_ifu_arvalid;
+    end
 
     always @ (posedge clock) begin
         if (reset) begin
@@ -223,7 +233,7 @@ module axi_arbiter (
         
         if (state == ARB_IFU) begin
             io_araddr = io_ifu_araddr;
-            io_arvalid = io_ifu_arvalid;
+            io_arvalid = io_ifu_arvalid_reg;
             io_rready = io_ifu_rready;
             io_arid = io_ifu_arid;
             io_arlen = io_ifu_arlen;
@@ -242,14 +252,14 @@ module axi_arbiter (
             if (clint_active) begin
                 $display("clint_active");
                 io_clint_araddr =  io_lsu_araddr;
-                io_clint_arvalid = io_lsu_arvalid;
+                io_clint_arvalid = io_lsu_arvalid_reg;
                 io_clint_arid =    io_lsu_arid;
                 io_clint_arlen =   io_lsu_arlen;
                 io_clint_arsize =  io_lsu_arsize;
                 io_clint_arburst = io_lsu_arburst;
                 io_clint_rready =  io_lsu_rready;
                 io_clint_awaddr =  io_lsu_awaddr;
-                io_clint_awvalid = io_lsu_awvalid;
+                io_clint_awvalid = io_lsu_awvalid_reg;
                 io_clint_awlen =   io_lsu_awlen;
                 io_clint_awsize =  io_lsu_awsize;
                 io_clint_awburst = io_lsu_awburst;
@@ -274,14 +284,14 @@ module axi_arbiter (
             end
             else begin
                 io_araddr =  io_lsu_araddr;
-                io_arvalid = io_lsu_arvalid;
+                io_arvalid = io_lsu_arvalid_reg;
                 io_arid =    io_lsu_arid;
                 io_arlen =   io_lsu_arlen;
                 io_arsize =  io_lsu_arsize;
                 io_arburst = io_lsu_arburst;
                 io_rready =  io_lsu_rready;
                 io_awaddr =  io_lsu_awaddr;
-                io_awvalid = io_lsu_awvalid;
+                io_awvalid = io_lsu_awvalid_reg;
                 io_awlen =   io_lsu_awlen;
                 io_awsize =  io_lsu_awsize;
                 io_awburst = io_lsu_awburst;
