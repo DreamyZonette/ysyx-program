@@ -241,7 +241,7 @@ module axi_arbiter (
         end
         else if (state == ARB_LSU) begin
             if (clint_active) begin
-                $display("clint_active");
+                // $display("clint_active");
                 io_clint_araddr =  io_lsu_araddr;
                 io_clint_arvalid = io_lsu_arvalid;
                 io_clint_arid =    io_lsu_arid;
@@ -260,6 +260,18 @@ module axi_arbiter (
                 io_clint_wvalid =  io_lsu_wvalid;
                 io_clint_wlast =   io_lsu_wlast;
                 io_clint_bready =  io_lsu_bready;
+
+                io_lsu_arready =io_clint_arready ;
+                io_lsu_rdata   =io_clint_rdata   ;
+                io_lsu_rvalid  =io_clint_rvalid  ;
+                io_lsu_rresp   =io_clint_rresp   ;
+                io_lsu_awready =io_clint_awready ;
+                io_lsu_wready  =io_clint_wready  ;
+                io_lsu_bvalid  =io_clint_bvalid  ;
+                io_lsu_bresp   =io_clint_bresp   ;
+                io_lsu_rid     =io_clint_rid     ;
+                io_lsu_rlast   =io_clint_rlast   ;
+                io_lsu_bid     =io_clint_bid     ;
             end
             else begin
                 io_araddr =  io_lsu_araddr;
@@ -280,19 +292,19 @@ module axi_arbiter (
                 io_wvalid =  io_lsu_wvalid;
                 io_wlast =   io_lsu_wlast;
                 io_bready =  io_lsu_bready;
-            end
 
-            io_lsu_arready = clint_active ? io_clint_arready :io_arready;
-            io_lsu_rdata   = clint_active ? io_clint_rdata :io_rdata;
-            io_lsu_rvalid  = clint_active ? io_clint_rvalid :io_rvalid;
-            io_lsu_rresp   = clint_active ? io_clint_rresp :io_rresp;
-            io_lsu_awready = clint_active ? io_clint_awready :io_awready;
-            io_lsu_wready  = clint_active ? io_clint_wready :io_wready;
-            io_lsu_bvalid  = clint_active ? io_clint_bvalid :io_bvalid;
-            io_lsu_bresp   = clint_active ? io_clint_bresp :io_bresp;
-            io_lsu_rid     = clint_active ? io_clint_rid :io_rid;
-            io_lsu_rlast   = clint_active ? io_clint_rlast :io_rlast;
-            io_lsu_bid     = clint_active ? io_clint_bid :io_bid;
+                io_lsu_arready = io_arready;
+                io_lsu_rdata   = io_rdata;
+                io_lsu_rvalid  = io_rvalid;
+                io_lsu_rresp   = io_rresp;
+                io_lsu_awready = io_awready;
+                io_lsu_wready  = io_wready;
+                io_lsu_bvalid  = io_bvalid;
+                io_lsu_bresp   = io_bresp;
+                io_lsu_rid     = io_rid;
+                io_lsu_rlast   = io_rlast;
+                io_lsu_bid     = io_bid;
+            end
             
         end
     end
