@@ -246,40 +246,40 @@ module axi_arbiter (
             
         end
         else if (state == ARB_LSU) begin
-            if (clint_active) begin
-                $display("clint_active");
-                io_clint_araddr =  io_lsu_araddr;
-                io_clint_arvalid = io_lsu_arvalid_reg;
-                io_clint_arid =    io_lsu_arid;
-                io_clint_arlen =   io_lsu_arlen;
-                io_clint_arsize =  io_lsu_arsize;
-                io_clint_arburst = io_lsu_arburst;
-                io_clint_rready =  io_lsu_rready;
-                io_clint_awaddr =  io_lsu_awaddr;
-                io_clint_awvalid = io_lsu_awvalid;
-                io_clint_awlen =   io_lsu_awlen;
-                io_clint_awsize =  io_lsu_awsize;
-                io_clint_awburst = io_lsu_awburst;
-                io_clint_awid =    io_lsu_awid;
-                io_clint_wdata =   io_lsu_wdata;
-                io_clint_wstrb =   io_lsu_wstrb;
-                io_clint_wvalid =  io_lsu_wvalid;
-                io_clint_wlast =   io_lsu_wlast;
-                io_clint_bready =  io_lsu_bready;
+            // if (clint_active) begin
+            //     $display("clint_active");
+            //     io_clint_araddr =  io_lsu_araddr;
+            //     io_clint_arvalid = io_lsu_arvalid_reg;
+            //     io_clint_arid =    io_lsu_arid;
+            //     io_clint_arlen =   io_lsu_arlen;
+            //     io_clint_arsize =  io_lsu_arsize;
+            //     io_clint_arburst = io_lsu_arburst;
+            //     io_clint_rready =  io_lsu_rready;
+            //     io_clint_awaddr =  io_lsu_awaddr;
+            //     io_clint_awvalid = io_lsu_awvalid;
+            //     io_clint_awlen =   io_lsu_awlen;
+            //     io_clint_awsize =  io_lsu_awsize;
+            //     io_clint_awburst = io_lsu_awburst;
+            //     io_clint_awid =    io_lsu_awid;
+            //     io_clint_wdata =   io_lsu_wdata;
+            //     io_clint_wstrb =   io_lsu_wstrb;
+            //     io_clint_wvalid =  io_lsu_wvalid;
+            //     io_clint_wlast =   io_lsu_wlast;
+            //     io_clint_bready =  io_lsu_bready;
 
-                io_lsu_arready =io_clint_arready ;
-                io_lsu_rdata   =io_clint_rdata   ;
-                io_lsu_rvalid  =io_clint_rvalid  ;
-                io_lsu_rresp   =io_clint_rresp   ;
-                io_lsu_awready =io_clint_awready ;
-                io_lsu_wready  =io_clint_wready  ;
-                io_lsu_bvalid  =io_clint_bvalid  ;
-                io_lsu_bresp   =io_clint_bresp   ;
-                io_lsu_rid     =io_clint_rid     ;
-                io_lsu_rlast   =io_clint_rlast   ;
-                io_lsu_bid     =io_clint_bid     ;
-            end
-            else begin
+            //     io_lsu_arready =io_clint_arready ;
+            //     io_lsu_rdata   =io_clint_rdata   ;
+            //     io_lsu_rvalid  =io_clint_rvalid  ;
+            //     io_lsu_rresp   =io_clint_rresp   ;
+            //     io_lsu_awready =io_clint_awready ;
+            //     io_lsu_wready  =io_clint_wready  ;
+            //     io_lsu_bvalid  =io_clint_bvalid  ;
+            //     io_lsu_bresp   =io_clint_bresp   ;
+            //     io_lsu_rid     =io_clint_rid     ;
+            //     io_lsu_rlast   =io_clint_rlast   ;
+            //     io_lsu_bid     =io_clint_bid     ;
+            // end
+            // else begin
                 io_araddr =  io_lsu_araddr;
                 io_arvalid = io_lsu_arvalid_reg;
                 io_arid =    io_lsu_arid;
@@ -310,7 +310,7 @@ module axi_arbiter (
                 io_lsu_rid     = io_rid;
                 io_lsu_rlast   = io_rlast;
                 io_lsu_bid     = io_bid;
-            end
+            // end
             
         end
     end
