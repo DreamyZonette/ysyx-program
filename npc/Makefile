@@ -105,7 +105,7 @@ endif
 
 $(shell mkdir -p $(BUILD_DIR))
 
-BIN := $(BUILD_DIR)/obj_dir/V$(TOP_NAME)
+BIN = $(BUILD_DIR)/$(TOPNAME)
 
 all:run wave
 
@@ -115,7 +115,8 @@ all:run wave
 
 $(BIN):$(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	@rm -rf $(OBJ_DIR)
-	$(VERILATOR) $(VFLAGS) $^ $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS))
+	$(VERILATOR) $(VFLAGS) $^ $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+		-o $(abspath $(BIN))
 
 sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
