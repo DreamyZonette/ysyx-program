@@ -33,8 +33,8 @@ void sim_init(){
     #endif
     svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
     #if CONFIG_NVBOARD
-        // nvboard_bind_all_pins(top);
-        // nvboard_init();
+        nvboard_bind_all_pins(top);
+        nvboard_init();
     #endif
 }
 
@@ -76,8 +76,8 @@ int main(int argc, char *argv[]){
     Verilated::commandArgs(argc, argv);
 
     //--------------------------------
-  nvboard_bind_all_pins(top);
-  nvboard_init();
+  
+    sim_init();
 
   reset(10);
 
@@ -87,7 +87,6 @@ int main(int argc, char *argv[]){
     top->clock = 1; top->eval();
   }
 //--------------------------------------
-    sim_init();
     
     init_monitor(argc, argv);
 
