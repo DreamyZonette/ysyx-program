@@ -116,7 +116,7 @@ module axi_arbiter (
 
     // arbiter
     reg [1:0] state;
-    wire clint_active = io_lsu_araddr >= 32'h0200_0000 && io_lsu_araddr < 32'h0201_0000
+    wire clint_active = (io_lsu_araddr >= 32'h0200_0000 && io_lsu_araddr < 32'h0201_0000)
                         || io_lsu_awaddr >= 32'h0200_0000 && io_lsu_awaddr < 32'h0201_0000;
 
     parameter ARB_IDLE = 2'd0, ARB_LSU = 2'd1, ARB_IFU = 2'd2;
@@ -241,6 +241,7 @@ module axi_arbiter (
         end
         else if (state == ARB_LSU) begin
             if (clint_active) begin
+                $display("clint_active");
                 io_clint_araddr =  io_lsu_araddr;
                 io_clint_arvalid = io_lsu_arvalid;
                 io_clint_arid =    io_lsu_arid;
