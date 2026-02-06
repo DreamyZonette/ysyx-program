@@ -116,8 +116,7 @@ module axi_arbiter (
 
     // arbiter
     reg [1:0] state;
-    wire clint_active = (io_lsu_araddr >= 32'h0200_0000 && io_lsu_araddr < 32'h0201_0000)
-                        || io_lsu_awaddr >= 32'h0200_0000 && io_lsu_awaddr < 32'h0201_0000;
+    wire clint_active = (io_lsu_araddr >= 32'h0200_0000 && io_lsu_araddr < 32'h0201_0000) && io_lsu_arvalid;
 
     parameter ARB_IDLE = 2'd0, ARB_LSU = 2'd1, ARB_IFU = 2'd2;
 
