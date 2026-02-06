@@ -79,10 +79,10 @@ always @(posedge clock) begin
             if (slave_arready) begin
                 slave_arready <= 1'b0;
             end
-            if (slave_araddr == 32'ha0000048) begin
+            if (slave_araddr == 32'h02000000) begin
                 slave_rdata <= mtime;
             end
-            else if (slave_araddr == 32'ha000004c) begin
+            else if (slave_araddr == 32'h02000004) begin
                 slave_rdata <= mtimeh;
             end
             else begin
