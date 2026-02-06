@@ -240,7 +240,7 @@ module axi_arbiter (
         end
         else if (state == ARB_LSU) begin
             if (clint_active) begin
-                // $display("clint_active");
+                $display("clint_active");
                 io_clint_araddr =  io_lsu_araddr;
                 io_clint_arvalid = io_lsu_arvalid;
                 io_clint_arid =    io_lsu_arid;
