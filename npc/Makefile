@@ -36,7 +36,7 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS :=  
 CFLAGS += $(INCLUDES)  -Wno-deprecated
-CFLAGS +=  -fpermissive 
+CFLAGS +=  -fpermissive -DTOP_NAME="\"V$(TOPNAME)\""
 # CFLAGS += -CFLAGS "$(INCLUDES)"  -Wno-deprecated
 # CFLAGS += -CFLAGS -fpermissive 
 VFLAGS :=  --cc --exe --build -j 0 --trace-fst  #--autoflush
