@@ -116,16 +116,16 @@ module axi_arbiter (
 
     // arbiter
     reg [1:0] state;
-    wire clint_active = (io_lsu_araddr >= 32'h0200_0000 && io_lsu_araddr < 32'h0201_0000);
+    // wire clint_active = (io_lsu_araddr >= 32'h0200_0000 && io_lsu_araddr < 32'h0201_0000);
 
     parameter ARB_IDLE = 2'd0, ARB_LSU = 2'd1, ARB_IFU = 2'd2;
 
-    reg io_lsu_arvalid_reg;
-    reg io_lsu_awvalid_reg;
+    // reg io_lsu_arvalid_reg;
+    // reg io_lsu_awvalid_reg;
 
-    always @(posedge clock) begin
-        io_lsu_arvalid_reg <= io_lsu_arvalid;
-    end
+    // always @(posedge clock) begin
+    //     io_lsu_arvalid_reg <= io_lsu_arvalid;
+    // end
 
     always @ (posedge clock) begin
         if (reset) begin
@@ -281,14 +281,14 @@ module axi_arbiter (
             // end
             // else begin
                 io_araddr =  io_lsu_araddr;
-                io_arvalid = io_lsu_arvalid_reg;
+                io_arvalid = io_lsu_arvalid;
                 io_arid =    io_lsu_arid;
                 io_arlen =   io_lsu_arlen;
                 io_arsize =  io_lsu_arsize;
                 io_arburst = io_lsu_arburst;
                 io_rready =  io_lsu_rready;
                 io_awaddr =  io_lsu_awaddr;
-                io_awvalid = io_lsu_awvalid_reg;
+                io_awvalid = io_lsu_awvalid;
                 io_awlen =   io_lsu_awlen;
                 io_awsize =  io_lsu_awsize;
                 io_awburst = io_lsu_awburst;
