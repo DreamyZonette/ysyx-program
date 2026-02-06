@@ -260,7 +260,35 @@
     // wire        io_uart_bvalid;
     // wire        io_uart_bready;
     // wire [1:0]  io_uart_bresp;
-
+    wire            io_clint_awready;
+    wire            io_clint_awvalid;
+    wire  [31:0]    io_clint_awaddr ;
+    wire  [3:0]     io_clint_awid   ;
+    wire  [7:0]     io_clint_awlen  ;
+    wire  [2:0]     io_clint_awsize ;
+    wire  [1:0]     io_clint_awburst;
+    wire            io_clint_wready ;
+    wire            io_clint_wvalid ;
+    wire  [31:0]    io_clint_wdata  ;
+    wire  [3:0]     io_clint_wstrb  ;
+    wire            io_clint_wlast  ;
+    wire            io_clint_bready ;
+    wire            io_clint_bvalid ;
+    wire  [1:0]     io_clint_bresp  ;
+    wire  [3:0]     io_clint_bid    ;
+    wire            io_clint_arready;
+    wire            io_clint_arvalid;
+    wire  [31:0]    io_clint_araddr ;
+    wire  [3:0]     io_clint_arid   ;
+    wire  [7:0]     io_clint_arlen  ;
+    wire  [2:0]     io_clint_arsize ;
+    wire  [1:0]     io_clint_arburst;
+    wire            io_clint_rready ;
+    wire            io_clint_rvalid ;
+    wire  [1:0]     io_clint_rresp  ;
+    wire  [31:0]    io_clint_rdata  ;
+    wire            io_clint_rlast  ;
+    wire  [3:0]     io_clint_rid    ;
     // wire [31:0] io_clint_araddr;
     // wire        io_clint_arvalid;
     // wire        io_clint_arready;
@@ -398,7 +426,43 @@ axi_arbiter axi_arbiter_u (
     .io_bvalid(io_master_bvalid),
     .io_bready(io_master_bready),
     .io_bresp(io_master_bresp),
-    .io_bid(io_master_bid)
+    .io_bid(io_master_bid),
+
+    .io_clint_araddr(io_master_araddr),
+    .io_clint_arvalid(io_master_arvalid),
+    .io_clint_arready(io_master_arready),
+    .io_clint_arid(io_master_arid),
+    .io_clint_arlen(io_master_arlen),
+    .io_clint_arsize(io_master_arsize),
+    .io_clint_arburst(io_master_arburst),
+    
+
+    .io_clint_rdata(io_master_rdata),
+    .io_clint_rvalid(io_master_rvalid),
+    .io_clint_rresp(io_master_rresp),
+    .io_clint_rready(io_master_rready),
+    .io_clint_rid(io_master_rid),
+    .io_clint_rlast(io_master_rlast),
+
+    .io_clint_awaddr(io_master_awaddr),
+    .io_clint_awvalid(io_master_awvalid),
+    .io_clint_awready(io_master_awready),
+    .io_clint_awid(io_master_awid),
+    .io_clint_awlen(io_master_awlen),
+    .io_clint_awsize(io_master_awsize),
+    .io_clint_awburst(io_master_awburst), 
+
+
+    .io_clint_wdata(io_master_wdata),
+    .io_clint_wstrb(io_master_wstrb),
+    .io_clint_wvalid(io_master_wvalid),
+    .io_clint_wready(io_master_wready),
+    .io_clint_wlast(io_master_wlast),
+
+    .io_clint_bvalid(io_master_bvalid),
+    .io_clint_bready(io_master_bready),
+    .io_clint_bresp(io_master_bresp),
+    .io_clint_bid(io_master_bid)
 );
 
 //------------------------------------------
@@ -558,32 +622,44 @@ axi_arbiter axi_arbiter_u (
 //------------------------------------------
 // clint实例化
 //------------------------------------------
-// clint clint_u (
-//     .clock(clock),
-//     .reset(reset),
-//     // axi 握手信号
-//     .slave_araddr(io_clint_araddr),
-//     .slave_arvalid(io_clint_arvalid),
-//     .slave_arready(io_clint_arready),
+clint clint_u (
+    .clock(clock),
+    .reset(reset),
+    // axi 握手信号
+    .slave_araddr(io_clint_araddr),
+    .slave_arvalid(io_clint_arvalid),
+    .slave_arready(io_clint_arready),
+    .slave_arid(io_clint_arid),
+    .slave_arlen(io_clint_arlen),
+    .slave_arsize(io_clint_arsize),
+    .slave_arburst(io_clint_arburst),
 
-//     .slave_rdata(io_clint_rdata),
-//     .slave_rvalid(io_clint_rvalid),
-//     .slave_rresp(io_clint_rresp),
-//     .slave_rready(io_clint_rready),
+    .slave_rdata(io_clint_rdata),
+    .slave_rvalid(io_clint_rvalid),
+    .slave_rresp(io_clint_rresp),
+    .slave_rready(io_clint_rready),
+    .slave_rlast(io_clint_rlast),
+    .slave_rid(io_clint_rid),
 
-//     .slave_awaddr(io_clint_awaddr),
-//     .slave_awvalid(io_clint_awvalid),
-//     .slave_awready(io_clint_awready),
+    .slave_awaddr(io_clint_awaddr),
+    .slave_awvalid(io_clint_awvalid),
+    .slave_awready(io_clint_awready),
+    .slave_awid(io_clint_awid),
+    .slave_awlen(io_clint_awlen),
+    .slave_awsize(io_clint_awsize),
+    .slave_awburst(io_clint_awburst),
 
-//     .slave_wdata(io_clint_wdata),
-//     .slave_wstrb(io_clint_wstrb),
-//     .slave_wvalid(io_clint_wvalid),
-//     .slave_wready(io_clint_wready),
+    .slave_wdata(io_clint_wdata),
+    .slave_wstrb(io_clint_wstrb),
+    .slave_wvalid(io_clint_wvalid),
+    .slave_wready(io_clint_wready),
+    .slave_wlast(io_clint_wlast),
 
-//     .slave_bvalid(io_clint_bvalid),
-//     .slave_bready(io_clint_bready),
-//     .slave_bresp(io_clint_bresp)
-// );
+    .slave_bvalid(io_clint_bvalid),
+    .slave_bready(io_clint_bready),
+    .slave_bresp(io_clint_bresp),
+    .slave_bid(io_clint_bid)
+);
 //------------------------------------------
 // PC实例化
 //------------------------------------------

@@ -5,7 +5,8 @@
 #define DEVICE_BASE 0xa0000000
 #define VGACTL_ADDR     (DEVICE_BASE + 0x0000100)
 #define SYNC_ADDR (VGACTL_ADDR + 4)
-#define FB_ADDR         (MMIO_BASE   + 0x1000000)
+// #define FB_ADDR         (MMIO_BASE   + 0x1000000)
+#define FB_ADDR         (0x21000000)
 
 static uint32_t width = 0;
 static uint32_t height = 0;
