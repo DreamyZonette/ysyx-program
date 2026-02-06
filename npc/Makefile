@@ -36,7 +36,7 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS :=  
 CFLAGS += $(INCLUDES)  -Wno-deprecated
-CFLAGS +=  -fpermissive -DTOP_NAME="\"V$(TOPNAME)\""
+CFLAGS +=  -fpermissive -DTOP_NAME="\"V$(TOP_NAME)\""
 # CFLAGS += -CFLAGS "$(INCLUDES)"  -Wno-deprecated
 # CFLAGS += -CFLAGS -fpermissive 
 VFLAGS :=  --cc --exe --build -j 0 --trace-fst  #--autoflush
@@ -105,7 +105,7 @@ endif
 
 $(shell mkdir -p $(BUILD_DIR))
 
-BIN = $(BUILD_DIR)/$(TOPNAME)
+BIN = $(BUILD_DIR)/$(TOP_NAME)
 
 all:run wave
 
