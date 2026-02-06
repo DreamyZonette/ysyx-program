@@ -24,3 +24,8 @@ void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
     kbd->keycode = AM_KEY_NONE;
   }
 }
+
+void __am_uart_recever (AM_UART_RX_T *rx) {
+  uint8_t value = getch();
+  rx->data = value;
+}
