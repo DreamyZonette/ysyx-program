@@ -20,7 +20,7 @@ static void am_get_gpu_config() {
 }
 
 void __am_gpu_init() {
-  putstr("GPU init\n");
+  // putstr("GPU init\n");
   am_get_gpu_config();
 
   int i;
@@ -42,6 +42,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
+  putstr("GPU fbdraw\n");
   if (width == 0 || height == 0) {
         am_get_gpu_config();
     }
