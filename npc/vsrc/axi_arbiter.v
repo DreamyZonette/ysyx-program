@@ -298,7 +298,7 @@ module axi_arbiter (
                 io_arburst = io_lsu_arburst;
                 io_rready =  io_lsu_rready;
                 io_awaddr =  io_lsu_awaddr;
-                io_awvalid = vga_active ? io_lsu_awvalid_reg : io_lsu_awvalid;
+                io_awvalid = io_lsu_awvalid;
                 io_awlen =   io_lsu_awlen;
                 io_awsize =  io_lsu_awsize;
                 io_awburst = io_lsu_awburst;
