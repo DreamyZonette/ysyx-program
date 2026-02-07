@@ -19,7 +19,7 @@ module ipc_counter(
             if (pc != nepc)
                 counter <= counter + 1;
             if (ebreak)
-            $display("ipc = %f",  $itor(counter) / $itor(cycle_counter));
+            $display("instruction counter = %d, cycle counter = %d, ipc = %f",  counter, cycle_counter, $itor(counter) / $itor(cycle_counter));
         end
     end
 
