@@ -15,7 +15,9 @@ static uint32_t height = 0;
 
 static void am_get_gpu_config() {
     // uint32_t config = inl(VGACTL_ADDR);
-    width = 512;
+    // width = 512;
+    // height = 640;
+    width = 480;
     height = 640;
 }
 
