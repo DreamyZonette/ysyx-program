@@ -15,6 +15,9 @@ module ysyx_25020042_LSU(
     input [31:0]                    i_data,
     /* verilator lint_off UNUSEDSIGNAL */
     input [3:0]                     i_wmask,//表示写哪些位
+    `ifdef VERILATOR
+    input                           i_ebreak_signal,
+    `endif
     /* verilator lint_on UNUSEDSIGNAL */
     input                           ifu_valid,
     input                           wbu_ready,
@@ -61,6 +64,15 @@ module ysyx_25020042_LSU(
 
 `ifdef VERILATOR
 import "DPI-C" function void difftest_device_skip();
+    reg [63:0] performance_counter;
+    always @(posedge clock) begin
+        if(reset) 
+            performance_counter <= 0;
+        else if (lsu_bvalid | lsu_rvalid)
+            performance_counter <= performance_counter + 1;
+        else if (i_ebreak_signal)
+            $display("\033[1;33mLSU Performance Counter: %d\033[0m", performance_counter);
+    end
 `endif
 
 // 状态定义
@@ -129,8 +141,6 @@ always @(posedge clock) begin
                     lsu_ready <= 1'b1;
                         lsu_wdata <= wdata[31:0];
                         lsu_wstrb <= wstrb[3:0];
-                        // lsu_araddr <= {i_data[31:2], 2'b00};
-                        // lsu_awaddr <= {i_data[31:2], 2'b00};
                         lsu_araddr <= i_data;
                         lsu_awaddr <= i_data;                    // end
                     if (wen) begin
@@ -203,9 +213,7 @@ always @(posedge clock) begin
                 end
             end
             WAIT: begin
-                `ifdef VERILATOR
-                    // if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000 && lsu_arvalid && lsu_arready || 
-                    //     lsu_awaddr >= 32'h1000_0000 && lsu_awaddr < 32'h1000_1000 && lsu_awvalid && lsu_awready) begin
+                `ifdef VERILATOR 
                     if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000 && lsu_arvalid && lsu_arready || 
                         lsu_araddr >= 32'h1000_1000 && lsu_araddr < 32'h1000_2000 && lsu_arvalid && lsu_arready) begin
                         difftest_device_skip();

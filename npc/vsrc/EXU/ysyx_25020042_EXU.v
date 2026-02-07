@@ -1,4 +1,10 @@
 module ysyx_25020042_EXU(
+    input wire clock,
+    input wire reset,
+    `ifdef VERILATOR
+    input wire ifu_valid,
+    input wire slave_ready,
+    `endif
     input wire [31:0] i_src1,
     input wire [31:0] i_src2,
     input wire [31:0] i_imm,
@@ -52,6 +58,18 @@ module ysyx_25020042_EXU(
     output wire [31:0] o_data
 
 );
+
+    `ifdef VERILATOR
+    reg [63:0] performance_counter;
+    always @(posedge clock) begin
+        if(reset) 
+            performance_counter <= 0;
+        else if (ifu_valid & slave_ready)
+            performance_counter <= performance_counter + 1;
+        else if (i_ebreak_signal)
+            $display("\033[1;33mEXU Performance Counter: %d\033[0m", performance_counter);
+    end
+    `endif
 
 ysyx_25020042_alu alu_u(
     .i_src1(i_src1),

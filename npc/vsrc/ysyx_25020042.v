@@ -383,7 +383,7 @@ axi_arbiter axi_arbiter_u (
 //------------------------------------------
 // ipc_counter实例化
 //------------------------------------------
-
+`ifdef VERILATOR
 ipc_counter ipc_counter_u(
     .clk(clock),
     .rst(reset),
@@ -391,6 +391,7 @@ ipc_counter ipc_counter_u(
     .nepc(next_pc),
     .ebreak(ebreak_signal)
 );
+`endif
 
 //------------------------------------------
 // clint实例化
@@ -457,6 +458,9 @@ ysyx_25020042_IFU IFU_u (
     .wbu_ready(wbu_ready),
     .ifu_valid(ifu_valid),
     .o_instruction(instruction),
+    `ifdef VERILATOR
+    .ebreak(ebreak_signal),
+    `endif
 
     .ifu_araddr(io_ifu_araddr),
     .ifu_arvalid(io_ifu_arvalid),
@@ -535,6 +539,12 @@ ysyx_25020042_IDU IDU_u (
 // EXU实例化
 //------------------------------------------
 ysyx_25020042_EXU EXU_u (
+    .clock(clock),
+    .reset(reset),
+    `ifdef VERILATOR
+    .ifu_valid(ifu_valid),
+    .slave_ready(wbu_ready | lsu_ready),
+    `endif
     .i_src1(src1),
     .i_src2(src2),
     .i_imm(imm),
@@ -644,6 +654,9 @@ ysyx_25020042_LSU LSU_u (
     .lsu_ready(lsu_ready),
     .o_lsu_busy(lsu_busy),
     .o_rdata(rdata),
+        `ifdef VERILATOR
+    .i_ebreak_signal(ebreak_signal),
+    `endif
     // axi 握手信号
     .lsu_araddr(io_lsu_araddr),
     .lsu_arvalid(io_lsu_arvalid),
