@@ -39,7 +39,7 @@ CFLAGS += $(INCLUDES)  -Wno-deprecated
 CFLAGS +=  -fpermissive -DTOP_NAME="\"V$(TOP_NAME)\""
 # CFLAGS += -CFLAGS "$(INCLUDES)"  -Wno-deprecated
 # CFLAGS += -CFLAGS -fpermissive 
-VFLAGS :=  --cc --exe --build -j 0 --trace-fst  #--autoflush
+VFLAGS :=  --cc --exe --build -j 0 --trace-fst  --autoflush
 VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
