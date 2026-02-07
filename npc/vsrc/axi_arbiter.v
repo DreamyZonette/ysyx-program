@@ -122,6 +122,8 @@ module axi_arbiter (
     always @(posedge clock) begin
         if (vga_active & io_lsu_awvalid)
         $display("vga_active");
+        if (vga_active && io_bvalid)
+        $display("vga_active_bvalid");
     end
 
     parameter ARB_IDLE = 2'd0, ARB_LSU = 2'd1, ARB_IFU = 2'd2;
