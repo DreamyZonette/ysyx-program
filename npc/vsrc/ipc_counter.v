@@ -9,6 +9,9 @@ module ipc_counter(
     reg [63:0] counter;
     reg [63:0] cycle_counter;
 
+    real ipc_value; 
+
+
     always @(posedge clk) begin
         if (rst) begin
             counter <= 0;
@@ -18,7 +21,7 @@ module ipc_counter(
             if (pc != nepc)
                 counter <= counter + 1;
             if (ebreak)
-            $display("ipc = %f", counter / cycle_counter);
+            $display("ipc = %lf", ipc_value);
         end
     end
 
