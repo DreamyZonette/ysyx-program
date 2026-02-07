@@ -129,9 +129,11 @@ module axi_arbiter (
     parameter ARB_IDLE = 2'd0, ARB_LSU = 2'd1, ARB_IFU = 2'd2;
 
     reg io_lsu_arvalid_reg;
+    reg io_lsu_awvalid_reg;
 
     always @(posedge clock) begin
         io_lsu_arvalid_reg <= io_lsu_arvalid;
+        io_lsu_awvalid_reg <= io_lsu_awvalid;
     end
 
     always @ (posedge clock) begin
@@ -296,7 +298,7 @@ module axi_arbiter (
                 io_arburst = io_lsu_arburst;
                 io_rready =  io_lsu_rready;
                 io_awaddr =  io_lsu_awaddr;
-                io_awvalid = io_lsu_awvalid;
+                io_awvalid = vga_active ? io_lsu_awvalid_reg : io_lsu_awvalid;
                 io_awlen =   io_lsu_awlen;
                 io_awsize =  io_lsu_awsize;
                 io_awburst = io_lsu_awburst;
