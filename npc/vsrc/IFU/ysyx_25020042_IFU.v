@@ -37,7 +37,7 @@ export "DPI-C" function get_instruction;
     endfunction
 
     reg [63:0] performance_counter;
-    always @(posedge clock) begin
+    always @(posedge clock or posedge ebreak) begin
         if(reset) 
             performance_counter <= 0;
         else if (ifu_rvalid)
