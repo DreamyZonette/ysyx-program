@@ -246,6 +246,12 @@
     wire  [31:0]    io_clint_rdata  ;
     wire            io_clint_rlast  ;
     wire  [3:0]     io_clint_rid    ;
+//------------------------------------------
+// 性能计数器
+//------------------------------------------    
+        `ifdef VERILATOR
+    wire [63:0] ifu_performance_counter;
+    `endif
 
 //------------------------------------------
 // 异常信号
@@ -389,7 +395,8 @@ ipc_counter ipc_counter_u(
     .rst(reset),
     .pc(pc),
     .nepc(next_pc),
-    .ebreak(ebreak_signal)
+    .ebreak(ebreak_signal),
+    .ifu_performance_counter(ifu_performance_counter)
 );
 `endif
 
@@ -449,6 +456,8 @@ ysyx_25020042_PC PC_u(
 //------------------------------------------
 // IFU实例化
 //------------------------------------------
+
+
 ysyx_25020042_IFU IFU_u (
     .clock(clock),
     .reset(reset),
@@ -459,7 +468,7 @@ ysyx_25020042_IFU IFU_u (
     .ifu_valid(ifu_valid),
     .o_instruction(instruction),
     `ifdef VERILATOR
-    .i_ebreak_signal(ebreak_signal),
+    .o_performance_counter(ifu_performance_counter),
     `endif
 
     .ifu_araddr(io_ifu_araddr),

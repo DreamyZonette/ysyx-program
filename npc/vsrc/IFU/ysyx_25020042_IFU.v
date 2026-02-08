@@ -8,7 +8,8 @@ module ysyx_25020042_IFU(
     output reg             ifu_valid,
     output reg [31:0]      o_instruction,
     `ifdef VERILATOR
-    input                  i_ebreak_signal,
+    // input                  i_ebreak_signal,
+    output     [63:0]      o_performance_counter,
     `endif
 
     output reg [31:0]      ifu_araddr,
@@ -37,13 +38,14 @@ export "DPI-C" function get_instruction;
     endfunction
 
     reg [63:0] performance_counter;
-    always @(posedge clock or posedge i_ebreak_signal) begin
+    assign o_performance_counter = performance_counter;
+    always @(posedge clock) begin
         if(reset) 
             performance_counter <= 0;
         else if (ifu_rvalid)
             performance_counter <= performance_counter + 1;
-        else if (i_ebreak_signal)
-            $display("\033[1;33mIFU Performance Counter: %d\033[0m", performance_counter);
+        // else if (i_ebreak_signal)
+        //     $display("\033[1;33mIFU Performance Counter: %d\033[0m", performance_counter);
     end
 
 `endif
