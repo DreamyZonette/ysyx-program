@@ -70,7 +70,7 @@ module ipc_counter(
                 $display("\033[1;33mLSU Performance Counter: %8d\033[0m", lsu_performance_counter);
                 $display("\033[1;33mEXU instructions:%8d account for %02f%% spent %8d cycles\033[0m", 
                         EXU_instructions, $itor(EXU_instructions) / $itor(ifu_performance_counter), exu_cycle_counter);
-                $display("\033[1;33mCSR instructions:%2d account for %02f%% spent %8d cycles\033[0m", 
+                $display("\033[1;33mCSR instructions:%8d account for %02f%% spent %8d cycles\033[0m", 
                         CSR_instructions, $itor(CSR_instructions) / $itor(ifu_performance_counter), csr_cycle_counter);
                 $display("\033[1;33mLSU instructions:%8d account for %02f%% spent %8d cycles\033[0m", 
                         LSU_instructions, $itor(LSU_instructions) / $itor(ifu_performance_counter), lsu_cycle_counter);
