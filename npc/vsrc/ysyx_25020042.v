@@ -253,6 +253,7 @@
     wire [63:0] ifu_performance_counter;
     wire [63:0] exu_performance_counter;
     wire [63:0] lsu_performance_counter;
+    wire [63:0] csr_performance_counter;
     `endif
 
 //------------------------------------------
@@ -400,7 +401,8 @@ ipc_counter ipc_counter_u(
     .ebreak(ebreak_signal),
     .ifu_performance_counter(ifu_performance_counter),
     .lsu_performance_counter(lsu_performance_counter),
-    .exu_performance_counter(exu_performance_counter)
+    .exu_performance_counter(exu_performance_counter),
+    .csr_performance_counter(csr_performance_counter)
 );
 `endif
 
@@ -495,6 +497,12 @@ ysyx_25020042_IFU IFU_u (
 // IDU实例化
 //------------------------------------------
 ysyx_25020042_IDU IDU_u (
+    .clock(clock),
+    .reset(reset),
+    `ifdef VERILATOR
+    .inst_valid(ifu_valid & (wbu_ready | lsu_ready)),
+    .csr_perfomance_counter(csr_performance_counter),
+    `endif
     .i_inst(instruction),
     .o_imm(imm),
     .o_offset(offset),
