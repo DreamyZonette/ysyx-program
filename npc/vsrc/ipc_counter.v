@@ -66,14 +66,14 @@ module ipc_counter(
             if (pc != nepc)
                 counter <= counter + 1;
             if (ebreak) begin
-                $display("\033[1;33mIFU Performance Counter: %8d\033[0m", ifu_performance_counter);
-                $display("\033[1;33mEXU Performance Counter: %8d\033[0m", exu_performance_counter);
-                $display("\033[1;33mLSU Performance Counter: %8d\033[0m", lsu_performance_counter);
-                $display("\033[1;33mEXU instructions:%8d account for %02f%% spent %8d cycles\033[0m", 
+                $display("\033[1;33mIFU Performance Counter: %16d\033[0m", ifu_performance_counter);
+                $display("\033[1;33mEXU Performance Counter: %16d\033[0m", exu_performance_counter);
+                $display("\033[1;33mLSU Performance Counter: %16d\033[0m", lsu_performance_counter);
+                $display("\033[1;33mEXU instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
                         EXU_instructions, $itor(EXU_instructions) / $itor(ifu_performance_counter), exu_cycle_counter);
-                $display("\033[1;33mCSR instructions:%8d account for %02f%% spent %8d cycles\033[0m", 
+                $display("\033[1;33mCSR instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
                         CSR_instructions, $itor(CSR_instructions) / $itor(ifu_performance_counter), csr_cycle_counter);
-                $display("\033[1;33mLSU instructions:%8d account for %02f%% spent %8d cycles\033[0m", 
+                $display("\033[1;33mLSU instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
                         LSU_instructions, $itor(LSU_instructions) / $itor(ifu_performance_counter), lsu_cycle_counter);
                 $display("\033[1;32mipc = %f\033[0m",  $itor(counter) / $itor(cycle_counter));
             end
