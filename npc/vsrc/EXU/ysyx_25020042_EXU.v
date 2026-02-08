@@ -67,7 +67,7 @@ module ysyx_25020042_EXU(
         else if (ifu_valid & slave_ready)
             performance_counter <= performance_counter + 1;
         else if (i_ebreak_signal)
-            $display("\033[1;33mEXU Performance Counter: %d\033[0m", performance_counter);
+            $display("\033[1;33mEXU Performance Counter: %8d\033[0m", performance_counter);
     end
     `endif
 

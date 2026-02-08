@@ -71,7 +71,7 @@ import "DPI-C" function void difftest_device_skip();
         else if (lsu_bvalid | lsu_rvalid)
             performance_counter <= performance_counter + 1;
         else if (i_ebreak_signal)
-            $display("\033[1;33mLSU Performance Counter: %d\033[0m", performance_counter);
+            $display("\033[1;33mLSU Performance Counter: %8d\033[0m", performance_counter);
     end
 `endif
 
