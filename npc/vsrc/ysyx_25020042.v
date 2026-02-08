@@ -251,6 +251,8 @@
 //------------------------------------------    
         `ifdef VERILATOR
     wire [63:0] ifu_performance_counter;
+    wire [63:0] exu_performance_counter;
+    wire [63:0] lsu_performance_counter;
     `endif
 
 //------------------------------------------
@@ -396,7 +398,9 @@ ipc_counter ipc_counter_u(
     .pc(pc),
     .nepc(next_pc),
     .ebreak(ebreak_signal),
-    .ifu_performance_counter(ifu_performance_counter)
+    .ifu_performance_counter(ifu_performance_counter),
+    .lsu_performance_counter(lsu_performance_counter),
+    .exu_performance_counter(exu_performance_counter)
 );
 `endif
 
@@ -553,6 +557,7 @@ ysyx_25020042_EXU EXU_u (
     `ifdef VERILATOR
     .ifu_valid(ifu_valid),
     .slave_ready(wbu_ready | lsu_ready),
+    .performance_counter(exu_performance_counter),
     `endif
     .i_src1(src1),
     .i_src2(src2),
@@ -664,7 +669,7 @@ ysyx_25020042_LSU LSU_u (
     .o_lsu_busy(lsu_busy),
     .o_rdata(rdata),
         `ifdef VERILATOR
-    .i_ebreak_signal(ebreak_signal),
+    .performance_counter(lsu_performance_counter),
     `endif
     // axi 握手信号
     .lsu_araddr(io_lsu_araddr),

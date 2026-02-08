@@ -16,7 +16,7 @@ module ysyx_25020042_LSU(
     /* verilator lint_off UNUSEDSIGNAL */
     input [3:0]                     i_wmask,//表示写哪些位
     `ifdef VERILATOR
-    input                           i_ebreak_signal,
+    output reg [63:0]               performance_counter,
     `endif
     /* verilator lint_on UNUSEDSIGNAL */
     input                           ifu_valid,
@@ -64,14 +64,14 @@ module ysyx_25020042_LSU(
 
 `ifdef VERILATOR
 import "DPI-C" function void difftest_device_skip();
-    reg [63:0] performance_counter;
+    // reg [63:0] performance_counter;
     always @(posedge clock) begin
         if(reset) 
             performance_counter <= 0;
         else if (lsu_bvalid | lsu_rvalid)
             performance_counter <= performance_counter + 1;
-        else if (i_ebreak_signal)
-            $display("\033[1;33mLSU Performance Counter: %8d\033[0m", performance_counter);
+        // else if (i_ebreak_signal)
+        //     $display("\033[1;33mLSU Performance Counter: %8d\033[0m", performance_counter);
     end
 `endif
 
