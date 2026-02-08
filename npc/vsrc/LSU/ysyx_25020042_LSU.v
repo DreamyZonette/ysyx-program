@@ -65,10 +65,23 @@ module ysyx_25020042_LSU(
 `ifdef VERILATOR
 import "DPI-C" function void difftest_device_skip();
     // reg [63:0] performance_counter;
+    reg lsu_valid_signal;
+    always @(posedge clock) begin
+        if(reset) begin
+            lsu_valid_signal <= 1'b0;
+        end
+        else if (lsu_arvalid | lsu_awvalid) begin
+            lsu_valid_signal <= 1;
+        end
+        else if (lsu_rvalid | lsu_bvalid) begin
+            lsu_valid_signal <= 0;
+        end
+    end
+
     always @(posedge clock) begin
         if(reset) 
             performance_counter <= 0;
-        else if (lsu_bvalid | lsu_rvalid)
+        else if ((lsu_bvalid | lsu_rvalid) & lsu_valid_signal)
             performance_counter <= performance_counter + 1;
         // else if (i_ebreak_signal)
         //     $display("\033[1;33mLSU Performance Counter: %8d\033[0m", performance_counter);
