@@ -446,37 +446,7 @@ ysyx_25020042_PC PC_u(
     .pc_valid(pc_valid),
     .o_pc(pc)
 );
-//------------------------------------------
-// IFU实例化
-//------------------------------------------
-ysyx_25020042_IFU IFU_u (
-    .clock(clock),
-    .reset(reset),
-    .i_pc(pc),
-    .pc_valid(pc_valid),
-    .lsu_ready(lsu_ready),
-    .wbu_ready(wbu_ready),
-    .ifu_valid(ifu_valid),
-    .o_instruction(instruction),
-    `ifdef VERILATOR
-    .ebreak(ebreak_signal),
-    `endif
 
-    .ifu_araddr(io_ifu_araddr),
-    .ifu_arvalid(io_ifu_arvalid),
-    .ifu_arready(io_ifu_arready),
-    .ifu_arlen(io_ifu_arlen),
-    .ifu_arid(io_ifu_arid),
-    .ifu_arburst(io_ifu_arburst),
-    .ifu_arsize(io_ifu_arsize),
-    .ifu_rdata(io_ifu_rdata),
-    .ifu_rvalid(io_ifu_rvalid),
-    .ifu_rready(io_ifu_rready),
-    .ifu_rresp(io_ifu_rresp),
-    .ifu_rlast(io_ifu_rlast),
-    .ifu_rid(io_ifu_rid)
-
-);
 
 //------------------------------------------
 // IDU实例化
@@ -535,6 +505,38 @@ ysyx_25020042_IDU IDU_u (
     .rs2(rs2),
     .rd(rd)
     );
+
+//------------------------------------------
+// IFU实例化
+//------------------------------------------
+ysyx_25020042_IFU IFU_u (
+    .clock(clock),
+    .reset(reset),
+    .i_pc(pc),
+    .pc_valid(pc_valid),
+    .lsu_ready(lsu_ready),
+    .wbu_ready(wbu_ready),
+    .ifu_valid(ifu_valid),
+    .o_instruction(instruction),
+    `ifdef VERILATOR
+    .ebreak(ebreak_signal),
+    `endif
+
+    .ifu_araddr(io_ifu_araddr),
+    .ifu_arvalid(io_ifu_arvalid),
+    .ifu_arready(io_ifu_arready),
+    .ifu_arlen(io_ifu_arlen),
+    .ifu_arid(io_ifu_arid),
+    .ifu_arburst(io_ifu_arburst),
+    .ifu_arsize(io_ifu_arsize),
+    .ifu_rdata(io_ifu_rdata),
+    .ifu_rvalid(io_ifu_rvalid),
+    .ifu_rready(io_ifu_rready),
+    .ifu_rresp(io_ifu_rresp),
+    .ifu_rlast(io_ifu_rlast),
+    .ifu_rid(io_ifu_rid)
+
+);
 //------------------------------------------
 // EXU实例化
 //------------------------------------------
