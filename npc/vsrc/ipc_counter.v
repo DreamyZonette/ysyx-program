@@ -1,3 +1,4 @@
+`ifdef VERILATOR
 module ipc_counter(
     input clk,
     input rst,
@@ -80,3 +81,4 @@ module ipc_counter(
     end
 
 endmodule
+`endif
