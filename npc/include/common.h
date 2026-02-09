@@ -50,6 +50,10 @@ extern VerilatedContext* contextp;
 extern VerilatedFstC* tfp;
 // extern VerilatedVcdC* tfp;
 #endif
+#ifdef PLATFORM_YSYXSOC
 extern VysyxSoCFull* top;
+#else
+extern Vysyx_25020042* top;
+#endif
 
 #endif
