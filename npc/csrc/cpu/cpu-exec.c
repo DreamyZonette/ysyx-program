@@ -98,7 +98,9 @@ static void trace_and_difftest() {
 }
 
 void single_cycle() {
+  #ifdef PLATFORM_YSYXSOC
   nvboard_update();
+  #endif
   top->clock ^= 1; top->eval();
   step_and_dump_wave();
   top->clock ^= 1; top->eval();

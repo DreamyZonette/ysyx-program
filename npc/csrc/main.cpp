@@ -1,7 +1,9 @@
 #include <common.h>
 #include <memory/paddr.h>
 #include <cpu/cpu.h>
+#ifdef PLATFORM_YSYXSOC
 #include <nvboard.h>
+#endif
 
 //函数申明
 extern void init_isa();
@@ -13,10 +15,12 @@ VerilatedContext* contextp;
 #if CONFIG_WAVE
 VerilatedFstC* tfp;
 #endif
-VysyxSoCFull* top;
 
-#if CONFIG_NVBOARD
+#ifdef PLATFORM_YSYXSOC
+VysyxSoCFull* top;
 void nvboard_bind_all_pins(VysyxSoCFull* top);
+#else 
+Vysyx_25020042* top;
 #endif
 
 void sim_init(){
@@ -25,14 +29,19 @@ void sim_init(){
     tfp = new VerilatedFstC;
     // tfp = new VerilatedVcdC;
     #endif
+    #ifdef PLATFORM_YSYXSOC
     top = new VysyxSoCFull;
+    #else 
+    top = new Vysyx_25020042;
+    #endif
     #if CONFIG_WAVE
     contextp->traceEverOn(true);
     top->trace(tfp,0);
     tfp->open("/home/long/ysyx-workbench/npc/build/wave.fst");
     #endif
+    svSetScope(svGetScopeFromName("TOP.ysyx_25020042.IFU_u"));
+    #ifdef PLATFORM_YSYXSOC
     svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
-    #if CONFIG_NVBOARD
         nvboard_bind_all_pins(top);
         nvboard_init();
     #endif

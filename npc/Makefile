@@ -33,7 +33,6 @@ NXDC_FILES ?= $(WORK_DIR)/constr/ysyxSoCFull.nxdc
 SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
 $(SRC_AUTO_BIND): $(NXDC_FILES)
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
-
 endif
 
 INCLUDES = $(addprefix -I, $(INC_PATH))
@@ -63,6 +62,7 @@ endif
 
 ifeq ($(PLATFORM),npc)
 	CFLAGS += -DPLATFORM_NPC
+	VFLAGS += -DPLATFORM_NPC
 	CSRCS += $(ALL_CSRCS)
 endif
 

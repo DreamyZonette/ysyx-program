@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+#ifdef PLATFORM_YSYXSOC
 #include "verilated.h"
 #include "VysyxSoCFull.h"
 // #include "verilated_vcd_c.h"
@@ -13,6 +14,14 @@
 #include "VysyxSoCFull__Dpi.h"
 #include "verilated_fst_c.h"
 #include <nvboard.h> 
+#else 
+#include "verilated.h"
+#include "Vysyx_25020042.h"
+// #include "verilated_vcd_c.h"
+#include "svdpi.h"
+#include "Vysyx_25020042__Dpi.h"
+#include "verilated_fst_c.h"
+#endif
 
 
 typedef uint32_t word_t;

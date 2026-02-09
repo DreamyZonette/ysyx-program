@@ -3,6 +3,7 @@
         input             clock            ,
         input             reset            ,
         input             io_interrupt     ,
+        `ifndef PLATFORM_NPC
         input             io_master_awready,
         output            io_master_awvalid,
         output  [31:0]    io_master_awaddr,
@@ -32,6 +33,7 @@
         input   [31:0]    io_master_rdata  ,
         input             io_master_rlast  ,
         input   [3:0]     io_master_rid    ,
+        `endif
         /* verilator lint_off UNDRIVEN */
         /* verilator lint_off UNUSEDSIGNAL */
         output            io_slave_awready ,
@@ -246,6 +248,37 @@
     wire  [31:0]    io_clint_rdata  ;
     wire            io_clint_rlast  ;
     wire  [3:0]     io_clint_rid    ;
+    `ifdef PLATFORM_NPC
+    wire            io_master_awready;
+    wire            io_master_awvalid;
+    wire  [31:0]    io_master_awaddr ;
+    wire  [3:0]     io_master_awid   ;
+    wire  [7:0]     io_master_awlen  ;
+    wire  [2:0]     io_master_awsize ;
+    wire  [1:0]     io_master_awburst;
+    wire            io_master_wready ;
+    wire            io_master_wvalid ;
+    wire  [31:0]    io_master_wdata  ;
+    wire  [3:0]     io_master_wstrb  ;
+    wire            io_master_wlast  ;
+    wire            io_master_bready ;
+    wire            io_master_bvalid ;
+    wire  [1:0]     io_master_bresp  ;
+    wire  [3:0]     io_master_bid    ;
+    wire            io_master_arready;
+    wire            io_master_arvalid;
+    wire  [31:0]    io_master_araddr ;
+    wire  [3:0]     io_master_arid   ;
+    wire  [7:0]     io_master_arlen  ;
+    wire  [2:0]     io_master_arsize ;
+    wire  [1:0]     io_master_arburst;
+    wire            io_master_rready ;
+    wire            io_master_rvalid ;
+    wire  [1:0]     io_master_rresp  ;
+    wire  [31:0]    io_master_rdata  ;
+    wire            io_master_rlast  ;
+    wire  [3:0]     io_master_rid    ;
+    `endif
 //------------------------------------------
 // 性能计数器
 //------------------------------------------    
@@ -403,6 +436,49 @@ ipc_counter ipc_counter_u(
     .lsu_performance_counter(lsu_performance_counter),
     .exu_performance_counter(exu_performance_counter),
     .csr_performance_counter(csr_performance_counter)
+);
+`endif
+
+//------------------------------------------
+// clint实例化
+//------------------------------------------
+`ifdef PLATFORM_NPC
+ysyx_25020042_mem ysyx_25020042_mem_u (
+    .clock(clock),
+    // axi 握手信号
+    .slave_araddr(io_master_araddr),
+    .slave_arvalid(io_master_arvalid),
+    .slave_arready(io_master_arready),
+    .slave_arid(io_master_arid),
+    .slave_arlen(io_master_arlen),
+    .slave_arsize(io_master_arsize),
+    .slave_arburst(io_master_arburst),
+
+    .slave_rdata(io_master_rdata),
+    .slave_rvalid(io_master_rvalid),
+    .slave_rresp(io_master_rresp),
+    .slave_rready(io_master_rready),
+    .slave_rlast(io_master_rlast),
+    .slave_rid(io_master_rid),
+
+    .slave_awaddr(io_master_awaddr),
+    .slave_awvalid(io_master_awvalid),
+    .slave_awready(io_master_awready),
+    .slave_awid(io_master_awid),
+    .slave_awlen(io_master_awlen),
+    .slave_awsize(io_master_awsize),
+    .slave_awburst(io_master_awburst),
+
+    .slave_wdata(io_master_wdata),
+    .slave_wstrb(io_master_wstrb),
+    .slave_wvalid(io_master_wvalid),
+    .slave_wready(io_master_wready),
+    .slave_wlast(io_master_wlast),
+
+    .slave_bvalid(io_master_bvalid),
+    .slave_bready(io_master_bready),
+    .slave_bresp(io_master_bresp),
+    .slave_bid(io_master_bid)
 );
 `endif
 
