@@ -217,93 +217,45 @@
     wire [1:0]  io_lsu_bresp;
     wire [3:0]  io_lsu_bid;
 
-    // wire [31:0] io_araddr;
-    // wire        io_arvalid;
-    // wire        io_arready;
+    wire            io_clint_awready;
+    wire            io_clint_awvalid;
+    wire  [31:0]    io_clint_awaddr ;
+    wire  [3:0]     io_clint_awid   ;
+    wire  [7:0]     io_clint_awlen  ;
+    wire  [2:0]     io_clint_awsize ;
+    wire  [1:0]     io_clint_awburst;
+    wire            io_clint_wready ;
+    wire            io_clint_wvalid ;
+    wire  [31:0]    io_clint_wdata  ;
+    wire  [3:0]     io_clint_wstrb  ;
+    wire            io_clint_wlast  ;
+    wire            io_clint_bready ;
+    wire            io_clint_bvalid ;
+    wire  [1:0]     io_clint_bresp  ;
+    wire  [3:0]     io_clint_bid    ;
+    wire            io_clint_arready;
+    wire            io_clint_arvalid;
+    wire  [31:0]    io_clint_araddr ;
+    wire  [3:0]     io_clint_arid   ;
+    wire  [7:0]     io_clint_arlen  ;
+    wire  [2:0]     io_clint_arsize ;
+    wire  [1:0]     io_clint_arburst;
+    wire            io_clint_rready ;
+    wire            io_clint_rvalid ;
+    wire  [1:0]     io_clint_rresp  ;
+    wire  [31:0]    io_clint_rdata  ;
+    wire            io_clint_rlast  ;
+    wire  [3:0]     io_clint_rid    ;
+//------------------------------------------
+// 性能计数器
+//------------------------------------------    
+        `ifdef VERILATOR
+    wire [63:0] ifu_performance_counter;
+    wire [63:0] exu_performance_counter;
+    wire [63:0] lsu_performance_counter;
+    wire [63:0] csr_performance_counter;
+    `endif
 
-    // wire [31:0] io_rdata;
-    // wire        io_rvalid;
-    // wire [1:0]  io_rresp;
-    // wire        io_rready;
-
-    // wire [31:0] io_awaddr;
-    // wire        io_awvalid;
-    // wire        io_awready;
-
-    // wire [31:0] io_wdata;
-    // wire [3:0]  io_wstrb;
-    // wire        io_wvalid;
-    // wire        io_wready;
-
-    // wire        io_bvalid;
-    // wire        io_bready;
-    // wire [1:0]  io_bresp;
-
-    // wire [31:0] io_uart_araddr;
-    // wire        io_uart_arvalid;
-    // wire        io_uart_arready;
-
-    // wire [31:0] io_uart_rdata;
-    // wire        io_uart_rvalid;
-    // wire [1:0]  io_uart_rresp;
-    // wire        io_uart_rready;
-
-    // wire [31:0] io_uart_awaddr;
-    // wire        io_uart_awvalid;
-    // wire        io_uart_awready;
-
-    // wire [31:0] io_uart_wdata;
-    // wire [3:0]  io_uart_wstrb;
-    // wire        io_uart_wvalid;
-    // wire        io_uart_wready;
-
-    // wire        io_uart_bvalid;
-    // wire        io_uart_bready;
-    // wire [1:0]  io_uart_bresp;
-
-    // wire [31:0] io_clint_araddr;
-    // wire        io_clint_arvalid;
-    // wire        io_clint_arready;
-
-    // wire [31:0] io_clint_rdata;
-    // wire        io_clint_rvalid;
-    // wire [1:0]  io_clint_rresp;
-    // wire        io_clint_rready;
-
-    // wire [31:0] io_clint_awaddr;
-    // wire        io_clint_awvalid;
-    // wire        io_clint_awready;
-
-    // wire [31:0] io_clint_wdata;
-    // wire [3:0]  io_clint_wstrb;
-    // wire        io_clint_wvalid;
-    // wire        io_clint_wready;
-
-    // wire        io_clint_bvalid;
-    // wire        io_clint_bready;
-    // wire [1:0]  io_clint_bresp;
-
-    // wire [31:0] io_mem_araddr;
-    // wire        io_mem_arvalid;
-    // wire        io_mem_arready;
-
-    // wire [31:0] io_mem_rdata;
-    // wire        io_mem_rvalid;
-    // wire [1:0]  io_mem_rresp;
-    // wire        io_mem_rready;
-
-    // wire [31:0] io_mem_awaddr;
-    // wire        io_mem_awvalid;
-    // wire        io_mem_awready;
-
-    // wire [31:0] io_mem_wdata;
-    // wire [3:0]  io_mem_wstrb;
-    // wire        io_mem_wvalid;
-    // wire        io_mem_wready;
-
-    // wire        io_mem_bvalid;
-    // wire        io_mem_bready;
-    // wire [1:0]  io_mem_bresp;
 //------------------------------------------
 // 异常信号
 //------------------------------------------
@@ -398,192 +350,103 @@ axi_arbiter axi_arbiter_u (
     .io_bvalid(io_master_bvalid),
     .io_bready(io_master_bready),
     .io_bresp(io_master_bresp),
-    .io_bid(io_master_bid)
+    .io_bid(io_master_bid),
+
+    .io_clint_araddr(io_clint_araddr),
+    .io_clint_arvalid(io_clint_arvalid),
+    .io_clint_arready(io_clint_arready),
+    .io_clint_arid(io_clint_arid),
+    .io_clint_arlen(io_clint_arlen),
+    .io_clint_arsize(io_clint_arsize),
+    .io_clint_arburst(io_clint_arburst),
+    
+
+    .io_clint_rdata(io_clint_rdata),
+    .io_clint_rvalid(io_clint_rvalid),
+    .io_clint_rresp(io_clint_rresp),
+    .io_clint_rready(io_clint_rready),
+    .io_clint_rid(io_clint_rid),
+    .io_clint_rlast(io_clint_rlast),
+
+    .io_clint_awaddr(io_clint_awaddr),
+    .io_clint_awvalid(io_clint_awvalid),
+    .io_clint_awready(io_clint_awready),
+    .io_clint_awid(io_clint_awid),
+    .io_clint_awlen(io_clint_awlen),
+    .io_clint_awsize(io_clint_awsize),
+    .io_clint_awburst(io_clint_awburst), 
+
+
+    .io_clint_wdata(io_clint_wdata),
+    .io_clint_wstrb(io_clint_wstrb),
+    .io_clint_wvalid(io_clint_wvalid),
+    .io_clint_wready(io_clint_wready),
+    .io_clint_wlast(io_clint_wlast),
+
+    .io_clint_bvalid(io_clint_bvalid),
+    .io_clint_bready(io_clint_bready),
+    .io_clint_bresp(io_clint_bresp),
+    .io_clint_bid(io_clint_bid)
 );
 
 //------------------------------------------
-// crossbar例化
+// ipc_counter实例化
 //------------------------------------------
-// crossbar crossbar_u (
-//     // cpu
-//     .io_araddr        (io_araddr),
-//     .io_arvalid       (io_arvalid),
-//     .io_arready       (io_arready),
+`ifdef VERILATOR
+ipc_counter ipc_counter_u(
+    .clk(clock),
+    .rst(reset),
+    .pc(pc),
+    .nepc(next_pc),
+    .ebreak(ebreak_signal),
+    .ifu_performance_counter(ifu_performance_counter),
+    .lsu_performance_counter(lsu_performance_counter),
+    .exu_performance_counter(exu_performance_counter),
+    .csr_performance_counter(csr_performance_counter)
+);
+`endif
 
-//     .io_rdata         (io_rdata),
-//     .io_rvalid        (io_rvalid),
-//     .io_rresp         (io_rresp),
-//     .io_rready        (io_rready),
-
-//     .io_awaddr        (io_awaddr),
-//     .io_awvalid       (io_awvalid),
-//     .io_awready       (io_awready),
-
-//     .io_wdata         (io_wdata),
-//     .io_wstrb         (io_wstrb),
-//     .io_wvalid        (io_wvalid),
-//     .io_wready        (io_wready),
-
-//     .io_bvalid        (io_bvalid),
-//     .io_bready        (io_bready),
-//     .io_bresp         (io_bresp),
-
-//     // uart
-//     .io_uart_araddr    (io_uart_araddr),
-//     .io_uart_arvalid   (io_uart_arvalid),
-//     .io_uart_arready   (io_uart_arready),
-
-//     .io_uart_rdata     (io_uart_rdata),
-//     .io_uart_rvalid    (io_uart_rvalid),
-//     .io_uart_rresp     (io_uart_rresp),
-//     .io_uart_rready    (io_uart_rready),
-
-//     .io_uart_awaddr    (io_uart_awaddr),
-//     .io_uart_awvalid   (io_uart_awvalid),
-//     .io_uart_awready   (io_uart_awready),
-
-//     .io_uart_wdata     (io_uart_wdata),
-//     .io_uart_wstrb     (io_uart_wstrb),
-//     .io_uart_wvalid    (io_uart_wvalid),
-//     .io_uart_wready    (io_uart_wready),
-
-//     .io_uart_bvalid    (io_uart_bvalid),
-//     .io_uart_bready    (io_uart_bready),
-//     .io_uart_bresp     (io_uart_bresp),
-
-//     // clint
-//     .io_clint_araddr   (io_clint_araddr),
-//     .io_clint_arvalid  (io_clint_arvalid),
-//     .io_clint_arready  (io_clint_arready),
-
-//     .io_clint_rdata    (io_clint_rdata),
-//     .io_clint_rvalid   (io_clint_rvalid),
-//     .io_clint_rresp    (io_clint_rresp),
-//     .io_clint_rready   (io_clint_rready),
-
-//     .io_clint_awaddr   (io_clint_awaddr),
-//     .io_clint_awvalid  (io_clint_awvalid),
-//     .io_clint_awready  (io_clint_awready),
-
-//     .io_clint_wdata    (io_clint_wdata),
-//     .io_clint_wstrb    (io_clint_wstrb),
-//     .io_clint_wvalid   (io_clint_wvalid),
-//     .io_clint_wready   (io_clint_wready),
-
-//     .io_clint_bvalid   (io_clint_bvalid),
-//     .io_clint_bready   (io_clint_bready),
-//     .io_clint_bresp    (io_clint_bresp),
-
-//     // mem
-//     .io_mem_araddr     (io_mem_araddr),
-//     .io_mem_arvalid    (io_mem_arvalid),
-//     .io_mem_arready    (io_mem_arready),
-
-//     .io_mem_rdata      (io_mem_rdata),
-//     .io_mem_rvalid     (io_mem_rvalid),
-//     .io_mem_rresp      (io_mem_rresp),
-//     .io_mem_rready     (io_mem_rready),
-
-//     .io_mem_awaddr     (io_mem_awaddr),
-//     .io_mem_awvalid    (io_mem_awvalid),
-//     .io_mem_awready    (io_mem_awready),
-
-//     .io_mem_wdata      (io_mem_wdata),
-//     .io_mem_wstrb      (io_mem_wstrb),
-//     .io_mem_wvalid     (io_mem_wvalid),
-//     .io_mem_wready     (io_mem_wready),
-
-//     .io_mem_bvalid     (io_mem_bvalid),
-//     .io_mem_bready     (io_mem_bready),
-//     .io_mem_bresp      (io_mem_bresp)
-// );
-//------------------------------------------
-// 访存模块实例化
-//------------------------------------------
-// ysyx_25020042_mem mem_u (
-//     .clock(clock),
-//     // axi 握手信号
-//     .slave_araddr(io_mem_araddr),
-//     .slave_arvalid(io_mem_arvalid),
-//     .slave_arready(io_mem_arready),
-
-//     .slave_rdata(io_mem_rdata),
-//     .slave_rvalid(io_mem_rvalid),
-//     .slave_rresp(io_mem_rresp),
-//     .slave_rready(io_mem_rready),
-
-//     .slave_awaddr(io_mem_awaddr),
-//     .slave_awvalid(io_mem_awvalid),
-//     .slave_awready(io_mem_awready),
-
-//     .slave_wdata(io_mem_wdata),
-//     .slave_wstrb(io_mem_wstrb),
-//     .slave_wvalid(io_mem_wvalid),
-//     .slave_wready(io_mem_wready),
-
-//     .slave_bvalid(io_mem_bvalid),
-//     .slave_bready(io_mem_bready),
-//     .slave_bresp(io_mem_bresp)
-// );
-
-//------------------------------------------
-// uart实例化
-//------------------------------------------
-// uart uart_u (
-//     .clock(clock),
-//     .reset(reset),
-//     // axi 握手信号
-//     .slave_araddr(io_uart_araddr),
-//     .slave_arvalid(io_uart_arvalid),
-//     .slave_arready(io_uart_arready),
-
-//     .slave_rdata(io_uart_rdata),
-//     .slave_rvalid(io_uart_rvalid),
-//     .slave_rresp(io_uart_rresp),
-//     .slave_rready(io_uart_rready),
-
-//     .slave_awaddr(io_uart_awaddr),
-//     .slave_awvalid(io_uart_awvalid),
-//     .slave_awready(io_uart_awready),
-
-//     .slave_wdata(io_uart_wdata),
-//     .slave_wstrb(io_uart_wstrb),
-//     .slave_wvalid(io_uart_wvalid),
-//     .slave_wready(io_uart_wready),
-
-//     .slave_bvalid(io_uart_bvalid),
-//     .slave_bready(io_uart_bready),
-//     .slave_bresp(io_uart_bresp)
-// );
 //------------------------------------------
 // clint实例化
 //------------------------------------------
-// clint clint_u (
-//     .clock(clock),
-//     .reset(reset),
-//     // axi 握手信号
-//     .slave_araddr(io_clint_araddr),
-//     .slave_arvalid(io_clint_arvalid),
-//     .slave_arready(io_clint_arready),
+clint clint_u (
+    .clock(clock),
+    .reset(reset),
+    // axi 握手信号
+    .slave_araddr(io_clint_araddr),
+    .slave_arvalid(io_clint_arvalid),
+    .slave_arready(io_clint_arready),
+    .slave_arid(io_clint_arid),
+    .slave_arlen(io_clint_arlen),
+    .slave_arsize(io_clint_arsize),
+    .slave_arburst(io_clint_arburst),
 
-//     .slave_rdata(io_clint_rdata),
-//     .slave_rvalid(io_clint_rvalid),
-//     .slave_rresp(io_clint_rresp),
-//     .slave_rready(io_clint_rready),
+    .slave_rdata(io_clint_rdata),
+    .slave_rvalid(io_clint_rvalid),
+    .slave_rresp(io_clint_rresp),
+    .slave_rready(io_clint_rready),
+    .slave_rlast(io_clint_rlast),
+    .slave_rid(io_clint_rid),
 
-//     .slave_awaddr(io_clint_awaddr),
-//     .slave_awvalid(io_clint_awvalid),
-//     .slave_awready(io_clint_awready),
+    .slave_awaddr(io_clint_awaddr),
+    .slave_awvalid(io_clint_awvalid),
+    .slave_awready(io_clint_awready),
+    .slave_awid(io_clint_awid),
+    .slave_awlen(io_clint_awlen),
+    .slave_awsize(io_clint_awsize),
+    .slave_awburst(io_clint_awburst),
 
-//     .slave_wdata(io_clint_wdata),
-//     .slave_wstrb(io_clint_wstrb),
-//     .slave_wvalid(io_clint_wvalid),
-//     .slave_wready(io_clint_wready),
+    .slave_wdata(io_clint_wdata),
+    .slave_wstrb(io_clint_wstrb),
+    .slave_wvalid(io_clint_wvalid),
+    .slave_wready(io_clint_wready),
+    .slave_wlast(io_clint_wlast),
 
-//     .slave_bvalid(io_clint_bvalid),
-//     .slave_bready(io_clint_bready),
-//     .slave_bresp(io_clint_bresp)
-// );
+    .slave_bvalid(io_clint_bvalid),
+    .slave_bready(io_clint_bready),
+    .slave_bresp(io_clint_bresp),
+    .slave_bid(io_clint_bid)
+);
 //------------------------------------------
 // PC实例化
 //------------------------------------------
@@ -599,6 +462,8 @@ ysyx_25020042_PC PC_u(
 //------------------------------------------
 // IFU实例化
 //------------------------------------------
+
+
 ysyx_25020042_IFU IFU_u (
     .clock(clock),
     .reset(reset),
@@ -608,6 +473,9 @@ ysyx_25020042_IFU IFU_u (
     .wbu_ready(wbu_ready),
     .ifu_valid(ifu_valid),
     .o_instruction(instruction),
+    `ifdef VERILATOR
+    .o_performance_counter(ifu_performance_counter),
+    `endif
 
     .ifu_araddr(io_ifu_araddr),
     .ifu_arvalid(io_ifu_arvalid),
@@ -629,6 +497,12 @@ ysyx_25020042_IFU IFU_u (
 // IDU实例化
 //------------------------------------------
 ysyx_25020042_IDU IDU_u (
+    .clock(clock),
+    .reset(reset),
+    `ifdef VERILATOR
+    .inst_valid(ifu_valid & (wbu_ready | lsu_ready)),
+    .csr_perfomance_counter(csr_performance_counter),
+    `endif
     .i_inst(instruction),
     .o_imm(imm),
     .o_offset(offset),
@@ -686,6 +560,13 @@ ysyx_25020042_IDU IDU_u (
 // EXU实例化
 //------------------------------------------
 ysyx_25020042_EXU EXU_u (
+    .clock(clock),
+    .reset(reset),
+    `ifdef VERILATOR
+    .ifu_valid(ifu_valid),
+    .slave_ready(wbu_ready | lsu_ready),
+    .performance_counter(exu_performance_counter),
+    `endif
     .i_src1(src1),
     .i_src2(src2),
     .i_imm(imm),
@@ -795,6 +676,9 @@ ysyx_25020042_LSU LSU_u (
     .lsu_ready(lsu_ready),
     .o_lsu_busy(lsu_busy),
     .o_rdata(rdata),
+        `ifdef VERILATOR
+    .performance_counter(lsu_performance_counter),
+    `endif
     // axi 握手信号
     .lsu_araddr(io_lsu_araddr),
     .lsu_arvalid(io_lsu_arvalid),

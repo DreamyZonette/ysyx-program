@@ -4,6 +4,7 @@
 #include <riscv/riscv.h>
 #define UART_BASE 0x10000000
 #define THR_ADDR (UART_BASE + 0x0)
+#define RB_ADDR  (UART_BASE + 0x0)
 #define IER_ADDR (UART_BASE + 0x1)
 #define IIR_ADDR (UART_BASE + 0x2)
 #define FCR_ADDR (UART_BASE + 0x2)
@@ -25,6 +26,11 @@ static const char mainargs[MAINARGS_MAX_LEN] = TOSTRING(MAINARGS_PLACEHOLDER); /
 void putch(char ch) {
   while ((inb(LSR_ADDR) & 0x20) == 0) {}
   outb(THR_ADDR, ch);
+}
+
+uint8_t getch() {
+  while ((inb(LSR_ADDR) & 0x01) == 0) {}
+  return inb(RB_ADDR);
 }
 
 void halt(int code) {

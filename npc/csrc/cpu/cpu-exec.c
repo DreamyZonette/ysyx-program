@@ -98,6 +98,7 @@ static void trace_and_difftest() {
 }
 
 void single_cycle() {
+  nvboard_update();
   top->clock ^= 1; top->eval();
   step_and_dump_wave();
   top->clock ^= 1; top->eval();

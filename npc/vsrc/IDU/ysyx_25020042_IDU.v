@@ -1,4 +1,10 @@
 module ysyx_25020042_IDU (
+    input   clock,
+    input   reset,
+    `ifdef VERILATOR
+    input             inst_valid,
+    output reg [63:0] csr_perfomance_counter,
+    `endif
     input   [31:0]  i_inst,
     output reg [31:0]  o_imm,
     output reg [31:0]  o_offset,
@@ -52,6 +58,17 @@ module ysyx_25020042_IDU (
     output reg [4:0] rs1,
     output reg [4:0] rs2
     );
+
+    `ifdef VERILATOR
+        always @(posedge clock) begin
+            if (reset) begin
+                csr_perfomance_counter <= 0;
+            end
+            if (inst_valid & (o_csrrs_signal | o_csrrw_signal | o_ecall_signal | o_mret_signal)) begin
+                csr_perfomance_counter <= csr_perfomance_counter + 1;
+            end
+        end
+    `endif
 
     wire [6:0]  opcode;
     wire [31:0] J_offset;

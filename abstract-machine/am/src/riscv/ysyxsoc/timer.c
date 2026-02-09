@@ -1,14 +1,13 @@
 #include <am.h>
 #include <riscv/riscv.h>
 
-#define DEVICE_BASE 0xa0000000
-#define RTC_ADDR  (DEVICE_BASE + 0x0000048)
+#define RTC_ADDR  (0x02000000)
 
 static uint64_t base_time = 0;
 static uint64_t base_rtc = 0;
 
 static uint64_t am_get_time() {
-  inl(RTC_ADDR + 4); // clear pending interrupts
+  // inl(RTC_ADDR + 4); // clear pending interrupts
   uint32_t hi, lo;
   lo = inl(RTC_ADDR);
   hi = inl(RTC_ADDR + 4);
@@ -22,7 +21,7 @@ void __am_timer_init() {
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint64_t now = am_get_time();
-  uint64_t elapsed_seconds = (now - base_time) / 2;
+  uint64_t elapsed_seconds = (now - base_time) / 1;
   uptime->us = elapsed_seconds;// (μs)
   // uptime->us = now - base_time;// (μs)
 }
@@ -50,7 +49,7 @@ static void convert_timestamp_to_calendar(uint64_t seconds, AM_TIMER_RTC_T *rtc)
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
  uint64_t elapsed_seconds = (am_get_time() - base_time) / 2000000;
-    uint64_t current_seconds = base_rtc + elapsed_seconds;
+  uint64_t current_seconds = base_rtc + elapsed_seconds;
     
     // 转换为日历时间
     convert_timestamp_to_calendar(current_seconds, rtc);

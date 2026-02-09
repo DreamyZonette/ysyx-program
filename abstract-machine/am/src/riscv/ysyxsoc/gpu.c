@@ -1,28 +1,34 @@
 #include <am.h>
 #include <riscv/riscv.h>
+#include <klib-macros.h>
 
-#define MMIO_BASE 0xa0000000
-#define DEVICE_BASE 0xa0000000
-#define VGACTL_ADDR     (DEVICE_BASE + 0x0000100)
-#define SYNC_ADDR (VGACTL_ADDR + 4)
-#define FB_ADDR         (MMIO_BASE   + 0x1000000)
+// #define MMIO_BASE 0xa0000000
+// #define DEVICE_BASE 0xa0000000
+// #define VGACTL_ADDR     (DEVICE_BASE + 0x0000100)
+// #define SYNC_ADDR (VGACTL_ADDR + 4)
+// #define FB_ADDR         (MMIO_BASE   + 0x1000000)
+
+#define FB_ADDR         (0x21000000)
 
 static uint32_t width = 0;
 static uint32_t height = 0;
 
 static void am_get_gpu_config() {
-    uint32_t config = inl(VGACTL_ADDR);
-    width = config >> 16;
-    height = config & 0xFFFF;
+    // uint32_t config = inl(VGACTL_ADDR);
+    // width = 512;
+    // height = 640;
+    width = 640;
+    height = 480;
 }
 
 void __am_gpu_init() {
+  // putstr("GPU init\n");
   am_get_gpu_config();
 
-  int i;
-  uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  for (i = 0; i < width * height; i ++) fb[i] = 0;
-  outl(SYNC_ADDR, 1);
+  // int i;
+  // uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+  // for (i = 0; i < width * height; i ++) fb[i] = 0;
+  // outl(SYNC_ADDR, 1);
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
@@ -38,6 +44,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
+  // putstr("GPU fbdraw\n");
   if (width == 0 || height == 0) {
         am_get_gpu_config();
     }
@@ -69,7 +76,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     }
   }
   if (ctl->sync) {
-    outl(SYNC_ADDR, 1);
+    // outl(SYNC_ADDR, 1);
   }
 }
 

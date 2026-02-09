@@ -1,16 +1,13 @@
 #include <common.h>
 #include <memory/paddr.h>
 #include <cpu/cpu.h>
+#include <nvboard.h>
 
 //函数申明
-// extern word_t pmem_read(paddr_t addr, int len);
-// extern void pmem_write(paddr_t addr, int len, word_t data);
 extern void init_isa();
 void init_monitor(int, char *[]);
 void step_and_dump_wave();
 void sdb_mainloop();
-// void sim_run();
-// void engine_start();
 
 VerilatedContext* contextp;
 #if CONFIG_WAVE
@@ -18,6 +15,9 @@ VerilatedFstC* tfp;
 #endif
 VysyxSoCFull* top;
 
+#if CONFIG_NVBOARD
+void nvboard_bind_all_pins(VysyxSoCFull* top);
+#endif
 
 void sim_init(){
     contextp = new VerilatedContext;
@@ -32,6 +32,10 @@ void sim_init(){
     tfp->open("/home/long/ysyx-workbench/npc/build/wave.fst");
     #endif
     svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
+    #if CONFIG_NVBOARD
+        nvboard_bind_all_pins(top);
+        nvboard_init();
+    #endif
 }
 
 void sim_exit(){
@@ -59,13 +63,35 @@ void npc_engine_start() {
     step_and_dump_wave();
 }
 
+static void reset(int n) {
+  top->reset = 1;
+  while (n -- > 0) {
+    top->clock = 0; top->eval();
+    top->clock = 1; top->eval();
+  }
+  top->reset = 0;
+}
+
 int main(int argc, char *argv[]){
     Verilated::commandArgs(argc, argv);
+
+
+  
     sim_init();
-    
+
     init_monitor(argc, argv);
 
     npc_engine_start();
+    // reset(10);
+
+//   while(1) {
+//     nvboard_update();
+//     top->clock = 0; top->eval();
+//     top->clock = 1; top->eval();
+//   }
+//--------------------------------------
+    
+
     
     sdb_mainloop();
 

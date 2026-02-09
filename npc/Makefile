@@ -3,6 +3,7 @@ IMG ?= /home/long/ysyx-workbench/npc/demo/tests/char-test.bin
 #IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+NXDC_FILES ?= $(WORK_DIR)/constr/ysyxSoCFull.nxdc
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -11,8 +12,8 @@ TEST_OBJ = $(shell find $(VPATH) -name $(TEST).v)
 VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 SOC_HOME = /home/long/ysyx-workbench/ysyxSoC
-INC_PATH := $(WORK_DIR)/include $(INC_PATH)
-INCLUDES = $(addprefix -I, $(INC_PATH))
+INC_PATH := $(WORK_DIR)/include 
+
 
 VSRCS := $(shell find $(VPATH) -name *.v)
 VSRCS += $(shell find $(SOC_HOME)/perip -name *.v)
@@ -23,21 +24,40 @@ ALL_CSRCS += $(shell find $(CPATH) -name *.c)
 EXCLUDE_DIR := $(CPATH)/device
 CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
 
+# ifeq ($(NVBOARD),1)
+include $(NVBOARD_HOME)/scripts/nvboard.mk
+# endif
+
+# auto_bind.cpp
+SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
+
+INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS :=  
-CFLAGS += -CFLAGS "$(INCLUDES)"  -Wno-deprecated
-CFLAGS += -CFLAGS -fpermissive 
-VFLAGS :=  --cc --exe --build -j 0 --trace-fst  #--autoflush
+CFLAGS += $(INCLUDES)  -Wno-deprecated
+CFLAGS +=  -fpermissive -DTOP_NAME="\"V$(TOP_NAME)\""
+# CFLAGS += -CFLAGS "$(INCLUDES)"  -Wno-deprecated
+# CFLAGS += -CFLAGS -fpermissive 
+VFLAGS :=  --cc --exe --build -j 0 --trace-fst  --autoflush
 VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 VFLAGS += --timescale "1ns/1ns" --no-timing
-LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2"
+NVBOARD_FLAGS :=  -MMD 
+# NVBOARD_FLAGS :=  -MMD -O3 --x-assign fast --x-initial fast --noassert
+LDFLAGS += -lreadline -ltinfo -lSDL2
+# LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2"
 # LDFLAGS += -LDFLAGS -lSDL2
+# ifeq ($(NVBOARD),1)
+VFLAGS += $(NVBOARD_FLAGS)
+CSRCS += $(SRC_AUTO_BIND)
+
+# endif
 
 VERILATOR = verilator
 ARGS ?=  
 ARGS += -l $(BUILD_DIR)/npc.log # 启用日志
-
 
 CONFIG_FTRACE        := $(shell grep -m1 '^#define CONFIG_FTRACE' include/generated/autoconf.h | awk '{print $$3}')
 CONFIG_DIFFTEST      := $(shell grep -m1 '^#define CONFIG_DIFFTEST' include/generated/autoconf.h | awk '{print $$3}')
@@ -56,7 +76,7 @@ ifeq ($(IMG),)
 endif
 
 ifeq ($(MAKECMDGOALS),gdb)
-  CFLAGS += -CFLAGS -g
+  CFLAGS += -g
 endif
 
 ifeq ($(CONFIG_FTRACE),1)
@@ -83,8 +103,10 @@ $(LIBCAPSTONE):
 	$(MAKE) -C $(NEMU_HOME)/tools/capstone
 endif
 
+
 $(shell mkdir -p $(BUILD_DIR))
 
+BIN = $(BUILD_DIR)/$(TOP_NAME)
 
 all:run wave
 
@@ -92,12 +114,18 @@ all:run wave
 # 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
 # 	#-@rm -f $(BUILD_DIR)/wave.vcd
 
-sim:
+$(BIN):$(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
+	@rm -rf $(OBJ_DIR)
+	$(VERILATOR) $(VFLAGS) $^ $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+		-o $(abspath $(BIN))
+
+sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
+# 	$(VERILATOR) $(VFLAGS) $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) $(CSRCS) $(VSRCS) 
+# 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
-run:sim
-	$(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
+run: sim
+	$(BIN) $(ARGS)
 	
 	
 include ../Makefile
@@ -108,7 +136,7 @@ wave: $(BUILD_DIR)/wave.fst
 # 	rm $(BUILD_DIR)/wave.fst
 
 
-PHONY: clean test adapt cleanwave
+PHONY: clean test adapt cleanwave perf
 
 adapt: sim
 	$(MAKE) -C $(CPU_TEST_HOME) ARCH=minirv-npc ALL=$(OBJ)
@@ -116,7 +144,7 @@ adapt: sim
 
 gdb:sim
 	@echo "Start gdb"
-	gdb --args $(BUILD_DIR)/obj_dir/V$(TOP_NAME) $(ARGS)
+	gdb --args $(BIN) $(ARGS)
 # 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
 # 	-@rm -f $(BUILD_DIR)/wave.vcd
 
@@ -124,6 +152,9 @@ test:
 	$(VERILATOR) --lint-only -Wall $(TEST_OBJ)
 	$(VERILATOR) --cc -Wall --Mdir $(BUILD_DIR)/obj_dir $(TEST_OBJ)
 	@echo PASS
+
+perf:
+	gedit ./performance/perf.md
 
 clean:
 	-rm -rf  $(BUILD_DIR)
