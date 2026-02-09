@@ -1,10 +1,13 @@
-TOP_NAME = ysyxSoCFull
+PLATFORM ?= npc
+ifeq ($(PLATFORM),ysyxsoc)
+	TOP_NAME = ysyxSoCFull
+else 
+	TOP_NAME = ysyx_25020042
+endif
 IMG ?= /home/long/ysyx-workbench/npc/demo/tests/char-test.bin
 #IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
-NXDC_FILES ?= $(WORK_DIR)/constr/ysyxSoCFull.nxdc
-PLATFORM ?= npc
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -17,8 +20,6 @@ INC_PATH := $(WORK_DIR)/include
 
 
 VSRCS := $(shell find $(VPATH) -name *.v)
-VSRCS += $(shell find $(SOC_HOME)/perip -name *.v)
-VSRCS += $(SOC_HOME)/build/ysyxSoCFull.v
 ALL_CSRCS := $(wildcard $(CPATH)/*.cpp)
 ALL_CSRCS += $(shell find $(CPATH) -name *.c)
 
@@ -27,6 +28,7 @@ EXCLUDE_DIR := $(CPATH)/device
 ifeq ($(PLATFORM),ysyxsoc)
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
+NXDC_FILES ?= $(WORK_DIR)/constr/ysyxSoCFull.nxdc
 # auto_bind.cpp
 SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
 $(SRC_AUTO_BIND): $(NXDC_FILES)
@@ -39,10 +41,8 @@ CFLAGS :=
 CFLAGS += $(INCLUDES)  -Wno-deprecated
 CFLAGS +=  -fpermissive -DTOP_NAME="\"V$(TOP_NAME)\""
 VFLAGS :=  --cc --exe --build -j 0 --trace-fst  --autoflush
-VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
-VFLAGS += --timescale "1ns/1ns" --no-timing
 NVBOARD_FLAGS :=  -MMD -O3
 # NVBOARD_FLAGS :=  -MMD -O3 --x-assign fast --x-initial fast --noassert
 LDFLAGS += -lreadline -ltinfo -lSDL2
@@ -54,7 +54,11 @@ ifeq ($(PLATFORM),ysyxsoc)
 	CFLAGS += -DPLATFORM_YSYXSOC
 	CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
 	VFLAGS += $(NVBOARD_FLAGS)
+	VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
+	VFLAGS += --timescale "1ns/1ns" --no-timing
 	CSRCS += $(SRC_AUTO_BIND)
+	VSRCS += $(shell find $(SOC_HOME)/perip -name *.v)
+	VSRCS += $(SOC_HOME)/build/ysyxSoCFull.v
 endif
 
 ifeq ($(PLATFORM),npc)
