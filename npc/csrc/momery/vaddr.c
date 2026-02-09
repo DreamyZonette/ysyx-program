@@ -1,6 +1,6 @@
 
 #include <memory/paddr.h>
-#if !CONFIG_YSYXSOC
+#ifdef PLATFORM_NPC
 word_t vaddr_ifetch(vaddr_t addr, int len) {
   return paddr_read(addr, len);
 }

@@ -12,7 +12,7 @@ static const uint32_t img [] = {
 
 void init_isa() {
   /* Load built-in image. */
-  #if CONFIG_YSYXSOC
+  #ifdef PLATFORM_YSYXSOC
   memcpy(mrom_guest_to_host(MROM_RESET_VECTOR), img, sizeof(img));
   #else
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));

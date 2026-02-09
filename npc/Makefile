@@ -4,6 +4,7 @@ IMG ?= /home/long/ysyx-workbench/npc/demo/tests/char-test.bin
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 NXDC_FILES ?= $(WORK_DIR)/constr/ysyxSoCFull.nxdc
+PLATFORM ?= npc
 
 WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
@@ -22,38 +23,44 @@ ALL_CSRCS := $(wildcard $(CPATH)/*.cpp)
 ALL_CSRCS += $(shell find $(CPATH) -name *.c)
 
 EXCLUDE_DIR := $(CPATH)/device
-CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
 
-# ifeq ($(NVBOARD),1)
+ifeq ($(PLATFORM),ysyxsoc)
 include $(NVBOARD_HOME)/scripts/nvboard.mk
-# endif
 
 # auto_bind.cpp
 SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
 $(SRC_AUTO_BIND): $(NXDC_FILES)
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
+endif
+
 INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS :=  
 CFLAGS += $(INCLUDES)  -Wno-deprecated
 CFLAGS +=  -fpermissive -DTOP_NAME="\"V$(TOP_NAME)\""
-# CFLAGS += -CFLAGS "$(INCLUDES)"  -Wno-deprecated
-# CFLAGS += -CFLAGS -fpermissive 
 VFLAGS :=  --cc --exe --build -j 0 --trace-fst  --autoflush
 VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
 VFLAGS += --top-module $(TOP_NAME) 
 VFLAGS += --Mdir $(BUILD_DIR)/obj_dir 
 VFLAGS += --timescale "1ns/1ns" --no-timing
-NVBOARD_FLAGS :=  -MMD 
+NVBOARD_FLAGS :=  -MMD -O3
 # NVBOARD_FLAGS :=  -MMD -O3 --x-assign fast --x-initial fast --noassert
 LDFLAGS += -lreadline -ltinfo -lSDL2
 # LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2"
 # LDFLAGS += -LDFLAGS -lSDL2
-# ifeq ($(NVBOARD),1)
-VFLAGS += $(NVBOARD_FLAGS)
-CSRCS += $(SRC_AUTO_BIND)
 
-# endif
+
+ifeq ($(PLATFORM),ysyxsoc)
+	CFLAGS += -DPLATFORM_YSYXSOC
+	CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
+	VFLAGS += $(NVBOARD_FLAGS)
+	CSRCS += $(SRC_AUTO_BIND)
+endif
+
+ifeq ($(PLATFORM),npc)
+	CFLAGS += -DPLATFORM_NPC
+	CSRCS += $(ALL_CSRCS)
+endif
 
 VERILATOR = verilator
 ARGS ?=  
@@ -75,8 +82,9 @@ ifeq ($(IMG),)
 	endif
 endif
 
+
 ifeq ($(MAKECMDGOALS),gdb)
-  CFLAGS += -g
+	CFLAGS += -g
 endif
 
 ifeq ($(CONFIG_FTRACE),1)
@@ -110,19 +118,20 @@ BIN = $(BUILD_DIR)/$(TOP_NAME)
 
 all:run wave
 
-# $(BUILD_DIR)/wave.fst:
-# 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
-# 	#-@rm -f $(BUILD_DIR)/wave.vcd
-
+ifeq ($(PLATFORM),ysyxsoc)
 $(BIN):$(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	@rm -rf $(OBJ_DIR)
 	$(VERILATOR) $(VFLAGS) $^ $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		-o $(abspath $(BIN))
+else
+$(BIN):$(VSRCS) $(CSRCS)
+	@rm -rf $(OBJ_DIR)
+	$(VERILATOR) $(VFLAGS) $^ $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+		-o $(abspath $(BIN))
+endif
 
 sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-# 	$(VERILATOR) $(VFLAGS) $(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) $(CSRCS) $(VSRCS) 
-# 	@$(VERILATOR) $(VFLAGS) $(CFLAGS) $(LDFLAGS) $(CSRCS) $(VSRCS) 
 	
 run: sim
 	$(BIN) $(ARGS)
@@ -133,10 +142,8 @@ include ../Makefile
 wave: $(BUILD_DIR)/wave.fst
 	
 	gtkwave $(BUILD_DIR)/wave.fst
-# 	rm $(BUILD_DIR)/wave.fst
 
-
-PHONY: clean test adapt cleanwave
+PHONY: clean test adapt cleanwave perf
 
 adapt: sim
 	$(MAKE) -C $(CPU_TEST_HOME) ARCH=minirv-npc ALL=$(OBJ)
@@ -145,13 +152,14 @@ adapt: sim
 gdb:sim
 	@echo "Start gdb"
 	gdb --args $(BIN) $(ARGS)
-# 	-@vcd2fst $(BUILD_DIR)/wave.vcd $(BUILD_DIR)/wave.fst
-# 	-@rm -f $(BUILD_DIR)/wave.vcd
 
 test:
 	$(VERILATOR) --lint-only -Wall $(TEST_OBJ)
 	$(VERILATOR) --cc -Wall --Mdir $(BUILD_DIR)/obj_dir $(TEST_OBJ)
 	@echo PASS
+
+perf:
+	gedit ./performance/perf.md
 
 clean:
 	-rm -rf  $(BUILD_DIR)

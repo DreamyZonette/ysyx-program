@@ -91,7 +91,7 @@ static int cmd_x (char *args){
         printf("转换失败或超出范围\n");
         return 1;
     }
-  #if CONFIG_YSYXSOC
+  #ifdef PLATFORM_YSYXSOC
     	if (addr < CONFIG_MROM_BASE || addr >= CONFIG_MROM_BASE + CONFIG_MROM_SIZE &&
           addr < CONFIG_FLASH_BASE || addr >= CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE) {
 		printf("Invalid address\n");

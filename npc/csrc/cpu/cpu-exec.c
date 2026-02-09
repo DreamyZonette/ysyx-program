@@ -13,7 +13,7 @@
 
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
-#if !CONFIG_YSYXSOC
+#ifdef PLATFORM_NPC
 void device_update();
 #endif
 
@@ -176,7 +176,7 @@ static void execute(uint64_t n) {
   }
   #endif
     
-    #if !CONFIG_YSYXSOC
+    #ifdef PLATFORM_NPC
     device_update();
     trace_and_difftest();
     #if CONFIG_DEVICE

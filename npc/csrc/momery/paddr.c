@@ -3,7 +3,7 @@
 #include <device/mmio.h>
 #include <cpu/difftest.h>
 
-#if CONFIG_YSYXSOC
+#ifdef PLATFORM_YSYXSOC
 static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
 static uint8_t flash[CONFIG_FLASH_SIZE] PG_ALIGN = {};
 
@@ -46,7 +46,7 @@ uint32_t sdb_mrom_read(int32_t addr){
 #endif
 
 
-#if !CONFIG_YSYXSOC
+#ifdef PLATFORM_NPC
 #define SERIAL_PORT_LEFT      CONFIG_SERIAL_MMIO
 #define SERIAL_PORT_RIGHT    (CONFIG_SERIAL_MMIO + 7)
 // 时钟
