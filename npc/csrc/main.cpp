@@ -39,11 +39,13 @@ void sim_init(){
     top->trace(tfp,0);
     tfp->open("/home/long/ysyx-workbench/npc/build/wave.fst");
     #endif
-    svSetScope(svGetScopeFromName("TOP.ysyx_25020042.IFU_u"));
     #ifdef PLATFORM_YSYXSOC
     svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
         nvboard_bind_all_pins(top);
         nvboard_init();
+    #else 
+
+    svSetScope(svGetScopeFromName("TOP.ysyx_25020042.IFU_u"));
     #endif
 }
 

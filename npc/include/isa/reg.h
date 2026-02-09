@@ -50,6 +50,7 @@ unsigned int get_mcause_value();
 // #define gpr(idx) (TOP->ysyxSoCFull->asic->cpu->cpu->gpr_u->reg_file[check_reg_idx(idx)])
 #define gpr(idx) (get_register_value(check_reg_idx(idx)))
 
+
 #define _gpr(idx) ({ \
     svScope prev_scope = svGetScope(); \
     svScope gpr_scope = svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"); \
