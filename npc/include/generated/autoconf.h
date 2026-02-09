@@ -7,7 +7,7 @@
 #define CONFIG_DIFFTEST 0
 #define CONFIG_DEVICE 0
 #define CONFIG_LOG 1
-#define PLATFORM_YSYXSOC
+// #define PLATFORM_YSYXSOC
 // #define CONFIG_NVBOARD 1
 
 #define CONFIG_HAS_SERIAL 0
