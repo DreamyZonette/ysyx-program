@@ -10,5 +10,7 @@ read_mvendorid:
 
 
 read_marchid:
-    csrr    a0, 0xF12      
+    csrr    a0, 0xF12   
+    li      t0, 0x10002008  
+    sw      a0, 0(t0)     
     ret                    
