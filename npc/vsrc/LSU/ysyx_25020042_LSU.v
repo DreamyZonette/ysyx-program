@@ -112,7 +112,8 @@ assign wstrb = i_wmask << i_data[1:0];
 
 // 记得修改回来
 `ifdef PLATFORM_NPC
-wire [31:0] shifted_rdata = (lsu_araddr >= 32'h8000_0000 && lsu_araddr < 32'h9000_0000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
+// wire [31:0] shifted_rdata = (lsu_araddr >= 32'h8000_0000 && lsu_araddr < 32'h9000_0000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
+wire [31:0] shifted_rdata = lsu_rdata >> (lsu_araddr[1:0] * 8);
 
 `else 
 wire [31:0] shifted_rdata = (lsu_araddr >= 32'h3000_0000 && lsu_araddr < 32'h4000_0000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
