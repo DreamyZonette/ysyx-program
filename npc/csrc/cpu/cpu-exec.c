@@ -24,8 +24,13 @@ int print_on = 0;
 
 CPU_state dut = {
   .gpr = {0},            // 所有寄存器初始化为0
+  #ifdef PLATFORM_NPC
+  .pc = 0x80000000,       // PC初始化为0x30000000
+  .next_pc = 0x80000000,
+  #else
   .pc = 0x20000000,       // PC初始化为0x30000000
   .next_pc = 0x20000000,
+  #endif
 };
 
 extern "C" void dpi_ebreak() {
