@@ -63,7 +63,9 @@ module ysyx_25020042_LSU(
 );
 
 `ifdef VERILATOR
+`ifndef PLATFORM_NPC
 import "DPI-C" function void difftest_device_skip();
+`endif
     // reg [63:0] performance_counter;
     reg lsu_valid_signal;
     always @(posedge clock) begin
@@ -226,11 +228,13 @@ always @(posedge clock) begin
                 end
             end
             WAIT: begin
+                `ifndef PLATFORM_NPC
                 `ifdef VERILATOR 
                     if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000 && lsu_arvalid && lsu_arready || 
                         lsu_araddr >= 32'h1000_1000 && lsu_araddr < 32'h1000_2000 && lsu_arvalid && lsu_arready) begin
                         difftest_device_skip();
                     end
+                `endif
                 `endif
                 if(lsu_arready) begin
                     lsu_arvalid <= 1'b0;
