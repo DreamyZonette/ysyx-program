@@ -167,7 +167,7 @@ static void execute(uint64_t n) {
     if(print_on){
       print_on = 0;
       printf("0x%08x: %08x\n", 
-        get_pc(), get_instruction());
+         dut.pc, get_instruction());
     }
   }
   #endif
