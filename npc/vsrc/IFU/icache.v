@@ -91,7 +91,7 @@ always @(posedge clock) begin
             end
         end
         if (state == IDLE) begin
-            if (hit) begin
+            if (hit & pc_valid) begin
                 instruction_ready <= 1'b1;
                 instruction       <= icache_data[index];
             end
