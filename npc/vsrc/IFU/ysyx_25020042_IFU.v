@@ -46,7 +46,7 @@ export "DPI-C" function get_instruction;
             ifu_valid_signal <= 1'b1;
         end
         `ifdef ICACHE_ON
-        else if (instruction_ready) begin
+        else if (wbu_ready | lsu_ready) begin
             ifu_valid_signal <= 1'b0;
         end
         `else
