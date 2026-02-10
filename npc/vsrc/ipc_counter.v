@@ -8,7 +8,8 @@ module ipc_counter(
     input [63:0] ifu_performance_counter,
     input [63:0] exu_performance_counter,
     input [63:0] lsu_performance_counter,
-    output [63:0] csr_performance_counter
+    input [63:0] csr_performance_counter,
+    input [63:0] icache_hit_counter
 );
 
     wire [63:0] EXU_instructions = ifu_performance_counter - csr_performance_counter - lsu_performance_counter;
@@ -75,6 +76,7 @@ module ipc_counter(
                         CSR_instructions, $itor(CSR_instructions) / $itor(ifu_performance_counter), csr_cycle_counter);
                 $display("\033[1;33mLSU instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
                         LSU_instructions, $itor(LSU_instructions) / $itor(ifu_performance_counter), lsu_cycle_counter);
+                $display("\033[1;32micache hit rate = %f\033[0m",  $itor(icache_hit_counter) / $itor(ifu_performance_counter));
                 $display("\033[1;32mipc = %f\033[0m",  $itor(counter) / $itor(cycle_counter));
             end
         end

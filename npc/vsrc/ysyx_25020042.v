@@ -289,6 +289,9 @@
     wire [63:0] exu_performance_counter;
     wire [63:0] lsu_performance_counter;
     wire [63:0] csr_performance_counter;
+        `ifdef ICACHE_ON
+    wire [63:0]      icache_hit_count;
+    `endif
     `endif
 
 //------------------------------------------
@@ -437,7 +440,8 @@ ipc_counter ipc_counter_u(
     .ifu_performance_counter(ifu_performance_counter),
     .lsu_performance_counter(lsu_performance_counter),
     .exu_performance_counter(exu_performance_counter),
-    .csr_performance_counter(csr_performance_counter)
+    .csr_performance_counter(csr_performance_counter),
+    .icache_hit_counter(icache_hit_count)
 );
 `endif
 
@@ -555,6 +559,9 @@ ysyx_25020042_IFU IFU_u (
     .o_instruction(instruction),
     `ifdef VERILATOR
     .o_performance_counter(ifu_performance_counter),
+    `ifdef ICACHE_ON
+    .o_icache_hit_count(icache_hit_count),
+    `endif
     `endif
 
     .ifu_araddr(io_ifu_araddr),

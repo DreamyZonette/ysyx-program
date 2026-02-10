@@ -5,6 +5,9 @@ module icache(
     input   [31:0]     pc_addr          ,
     output reg         instruction_ready,
     output reg [31:0]  instruction      ,
+    `ifdef VERILATOR
+    output reg [63:0]  icache_hit_count ,
+    `endif
 
     input              io_icache_arready,
     output reg         io_icache_arvalid,
@@ -20,6 +23,21 @@ module icache(
     input              io_icache_rlast  ,
     input   [3:0]      io_icache_rid    
 );
+
+`ifdef VERILATOR
+// reg [63:0] icache_hit_count;
+
+always @(posedge clock) begin
+    if (reset) begin
+        icache_hit_count <= 0;
+    end
+    else begin
+        if (hit & pc_valid)
+            icache_hit_count <= icache_hit_count + 1;
+    end
+end
+
+`endif
 
 parameter CACHE_BLOCK_SIZE  = 4;
 parameter CACHE_BLOCK_BANK  = 16;
