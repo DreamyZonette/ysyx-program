@@ -97,7 +97,7 @@ static void out_of_bound(paddr_t addr) {
 }
 
 extern "C" int pmem_read(int addr, int len) {
-  addr = paddr_t(addr) & 0xfffffffc;
+  addr = paddr_t(addr);
   uint32_t ret;
   if (addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
       addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
