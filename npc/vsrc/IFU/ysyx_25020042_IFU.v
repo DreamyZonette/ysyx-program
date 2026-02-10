@@ -46,7 +46,7 @@ export "DPI-C" function get_instruction;
             ifu_valid_signal <= 1'b1;
         end
         `ifdef ICACHE_ON
-        else if (wbu_ready | lsu_ready) begin
+        else if (instruction_ready) begin
             ifu_valid_signal <= 1'b0;
         end
         `else
@@ -61,8 +61,13 @@ export "DPI-C" function get_instruction;
     always @(posedge clock) begin
         if(reset) 
             performance_counter <= 0;
+        `ifdef ICACHE_ON
+        else if (instruction_ready)
+            performance_counter <= performance_counter + 1;
+        `else
         else if (ifu_rvalid & ifu_valid_signal)
             performance_counter <= performance_counter + 1;
+        `endif
         // else if (i_ebreak_signal)
         //     $display("\033[1;33mIFU Performance Counter: %d\033[0m", performance_counter);
     end
