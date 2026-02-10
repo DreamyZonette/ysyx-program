@@ -7,9 +7,9 @@
 void cpu_exec(uint64_t n);
 void sim_run();
 
-extern VerilatedContext* contextp;
-// extern VerilatedVcdC* tfp;
-extern VysyxSoCFull* top;
+// extern VerilatedContext* contextp;
+// // extern VerilatedVcdC* tfp;
+// extern TOP_NAME* top;
 
 
 #endif /* __CPU_H__ */

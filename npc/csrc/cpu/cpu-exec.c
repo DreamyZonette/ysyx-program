@@ -13,7 +13,7 @@
 
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
-#if !CONFIG_YSYXSOC
+#ifdef PLATFORM_NPC
 void device_update();
 #endif
 
@@ -24,8 +24,13 @@ int print_on = 0;
 
 CPU_state dut = {
   .gpr = {0},            // 所有寄存器初始化为0
+  #ifdef PLATFORM_NPC
+  .pc = 0x80000000,       // PC初始化为0x30000000
+  .next_pc = 0x80000000,
+  #else
   .pc = 0x20000000,       // PC初始化为0x30000000
   .next_pc = 0x20000000,
+  #endif
 };
 
 extern "C" void dpi_ebreak() {
@@ -98,7 +103,9 @@ static void trace_and_difftest() {
 }
 
 void single_cycle() {
+  #ifdef PLATFORM_YSYXSOC
   nvboard_update();
+  #endif
   top->clock ^= 1; top->eval();
   step_and_dump_wave();
   top->clock ^= 1; top->eval();
@@ -165,7 +172,7 @@ static void execute(uint64_t n) {
     if(print_on){
       print_on = 0;
       printf("0x%08x: %08x\n", 
-        get_pc(), get_instruction());
+         dut.pc, get_instruction());
     }
   }
   #endif
@@ -176,7 +183,7 @@ static void execute(uint64_t n) {
   }
   #endif
     
-    #if !CONFIG_YSYXSOC
+    #ifdef PLATFORM_NPC
     device_update();
     trace_and_difftest();
     #if CONFIG_DEVICE

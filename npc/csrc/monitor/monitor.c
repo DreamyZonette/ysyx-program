@@ -95,7 +95,7 @@ static long load_img() {
     size = ftell(fp);
     Log("The image is %s, size = %ld", img_file, size);
     fseek(fp, 0, SEEK_SET);
-    #if CONFIG_YSYXSOC  
+    #ifdef PLATFORM_YSYXSOC
     int ret = fread(flash_guest_to_host(FLASH_RESET_VECTOR), size, 1, fp);
     // int ret = fread(mrom_guest_to_host(MROM_RESET_VECTOR), size, 1, fp);
     #else
@@ -196,7 +196,7 @@ void init_monitor(int argc, char *argv[]) {
   #if CONFIG_DIFFTEST
   init_difftest(diff_so_file, img_size, difftest_port);
   #endif
-  #if !CONFIG_YSYXSOC
+  #ifdef PLATFORM_NPC
   init_device();
   #endif
   #if CONFIG_ITRACE

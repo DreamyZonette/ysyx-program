@@ -28,6 +28,7 @@
 #define MAX_INST_TO_PRINT 10
 
 CPU_state cpu = {
+  // .pc = 0x80000000,
   .mstatus = 0x1800,
   .mepc = 0,
   .mcause = 0,

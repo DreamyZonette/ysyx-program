@@ -46,7 +46,11 @@ module ysyx_25020042_WBU(
 always @(posedge clock) begin
     if(reset) begin
         state <= IDLE;
+        `ifndef PLATFORM_NPC
         next_pc <= 32'h3000_0004;
+        `else
+        next_pc <= 32'h8000_0004;
+        `endif
         reg_wdata <= 32'b0;
         csr_wdata <= 32'b0;
         wbu_ready <= 1'b0;

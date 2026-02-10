@@ -1,9 +1,10 @@
+#include <common.h>
 #include <memory/paddr.h>
 #include <memory/host.h> 
 #include <device/mmio.h>
 #include <cpu/difftest.h>
 
-#if CONFIG_YSYXSOC
+#ifdef PLATFORM_YSYXSOC
 static uint8_t mrom[CONFIG_MROM_SIZE] PG_ALIGN = {};
 static uint8_t flash[CONFIG_FLASH_SIZE] PG_ALIGN = {};
 
@@ -42,11 +43,9 @@ extern "C" void mrom_read(int32_t addr, int32_t *data) {
 uint32_t sdb_mrom_read(int32_t addr){
   return *(uint32_t *)(mrom_guest_to_host(addr));
 }
-
-#endif
-
-
-#if !CONFIG_YSYXSOC
+// #endif
+#else
+// #ifdef PLATFORM_NPC
 #define SERIAL_PORT_LEFT      CONFIG_SERIAL_MMIO
 #define SERIAL_PORT_RIGHT    (CONFIG_SERIAL_MMIO + 7)
 // 时钟
@@ -98,7 +97,7 @@ static void out_of_bound(paddr_t addr) {
 }
 
 extern "C" int pmem_read(int addr, int len) {
-  addr = paddr_t(addr);
+  addr = paddr_t(addr) & 0xfffffffc;
   uint32_t ret;
   if (addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
       addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
@@ -113,28 +112,45 @@ extern "C" int pmem_read(int addr, int len) {
   else{
     ret = internal_pmem_read(addr, len);
     #if CONFIG_MTRACE
-      // if (addr != top->de_pc){
-      //   char s[128];
-      //   sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
-      //   log_write("%s\n", s);
-      // }
-      // //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+        char s[128];
+        sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+        log_write("%s\n", s);
+        printf("DPI-CALL: pmem_read(0x%08x, %d, 0x%08x)\n", addr, len, ret);
 
     #endif
   }
   return ret;
 }
 extern "C" void pmem_write(int addr, int len, int data) {
-  addr = paddr_t(addr);
-  data = word_t(data);
+  addr = paddr_t(addr) & 0xfffffffc;
+  word_t wdata = word_t(data);
+  // data = word_t(data);
+  int shift_len = len;
+  while ((shift_len & 1) == 0) {
+    wdata = wdata >> 8;
+    addr = addr + 1;
+    shift_len = shift_len >> 1;
+  }
   switch (len) {
     case 0b1111:
       len = 4;
       break;
-    case 0b11:
+    case 0b0011:
       len = 2;
       break;
-    case 0b1:
+    case 0b1100:
+      len = 2;
+      break;
+    case 0b0001:
+      len = 1;
+      break;
+    case 0b0010:
+      len = 1;
+      break;
+    case 0b0100:
+      len = 1;
+      break;
+    case 0b1000:
       len = 1;
       break;
   }
@@ -149,18 +165,18 @@ extern "C" void pmem_write(int addr, int len, int data) {
       addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
       addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT){
     // putchar(char(data));
-    mmio_write(addr, len, data);
+    mmio_write(addr, len, wdata);
     // printf("串口传出数据%08x\n", data);
   }
   else{
     #if CONFIG_MTRACE
-    // char s[128];
-    // sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
-    // log_write("%s\n", s);
-    // //printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    char s[128];
+    sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, wdata);
+    log_write("%s\n", s);
+    printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, wdata);
 
   #endif
-    internal_pmem_write(addr, len, data);
+    internal_pmem_write(addr, len, wdata);
   }
 }
 

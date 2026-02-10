@@ -11,7 +11,11 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
     
     always @(posedge clock) begin
         if (reset)begin
+            `ifndef PLATFORM_NPC
             o_pc <= 32'h3000_0000;
+            `else
+            o_pc <= 32'h8000_0000;
+            `endif
             pc_valid <= 1'b1;
         end 
         else if (fault)begin

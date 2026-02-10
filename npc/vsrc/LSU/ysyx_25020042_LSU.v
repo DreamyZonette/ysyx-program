@@ -63,7 +63,9 @@ module ysyx_25020042_LSU(
 );
 
 `ifdef VERILATOR
+`ifndef PLATFORM_NPC
 import "DPI-C" function void difftest_device_skip();
+`endif
     // reg [63:0] performance_counter;
     reg lsu_valid_signal;
     always @(posedge clock) begin
@@ -109,7 +111,13 @@ assign wstrb = i_wmask << i_data[1:0];
 /* verilator lint_on WIDTHEXPAND */
 
 // 记得修改回来
+`ifdef PLATFORM_NPC
+// wire [31:0] shifted_rdata = (lsu_araddr >= 32'h8000_0000 && lsu_araddr < 32'h9000_0000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
+wire [31:0] shifted_rdata = lsu_rdata >> (lsu_araddr[1:0] * 8);
+
+`else 
 wire [31:0] shifted_rdata = (lsu_araddr >= 32'h3000_0000 && lsu_araddr < 32'h4000_0000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
+`endif
 // wire [31:0] shifted_rdata = (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
 wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
 wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
@@ -226,11 +234,13 @@ always @(posedge clock) begin
                 end
             end
             WAIT: begin
+                `ifndef PLATFORM_NPC
                 `ifdef VERILATOR 
                     if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000 && lsu_arvalid && lsu_arready || 
                         lsu_araddr >= 32'h1000_1000 && lsu_araddr < 32'h1000_2000 && lsu_arvalid && lsu_arready) begin
                         difftest_device_skip();
                     end
+                `endif
                 `endif
                 if(lsu_arready) begin
                     lsu_arvalid <= 1'b0;

@@ -6,7 +6,11 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
+	#ifdef PLATFORM_YSYXSOC
 	svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.gpr_u"));
+	#else 
+	svSetScope(svGetScopeFromName("TOP.ysyx_25020042.gpr_u"));
+	#endif
 	int i;
 	int count = 0;
 	int len = sizeof(regs) / sizeof(regs[0]);
@@ -22,6 +26,7 @@ void isa_reg_display() {
 			count = 0;
 		}
 	}
+	#ifdef PLATFORM_YSYXSOC
 	svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.csr_u"));
 	printf("\033[32mmstatus\033[0m:\033[33m%08x\033[0m ", get_mstatus_value());
 	printf("\033[32mmcause\033[0m:\033[33m%08x\033[0m ", get_mcause_value());
@@ -29,6 +34,15 @@ void isa_reg_display() {
 	printf("\033[32mmtvec\033[0m:\033[33m%08x\033[0m ", get_mtvec_value());
 	printf("\n");
 	svSetScope(svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu.IFU_u"));
+	#else 
+	svSetScope(svGetScopeFromName("TOP.ysyx_25020042.csr_u"));
+	printf("\033[32mmstatus\033[0m:\033[33m%08x\033[0m ", get_mstatus_value());
+	printf("\033[32mmcause\033[0m:\033[33m%08x\033[0m ", get_mcause_value());
+	printf("\033[32mmepc\033[0m:\033[33m%08x\033[0m ", get_mepc_value());
+	printf("\033[32mmtvec\033[0m:\033[33m%08x\033[0m ", get_mtvec_value());
+	printf("\n");
+	svSetScope(svGetScopeFromName("TOP.ysyx_25020042.IFU_u"));
+	#endif
 }
 
 word_t isa_reg_str2val(const char *s) {
