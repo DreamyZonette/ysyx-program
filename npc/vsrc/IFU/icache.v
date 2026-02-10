@@ -22,12 +22,14 @@ module icache(
 );
 
 parameter CACHE_BLOCK_SIZE  = 4;
-parameter CACHE_BLOCK_BANK  = 1;
+parameter CACHE_BLOCK_BANK  = 16;
+parameter m                 = $clog2(CACHE_BLOCK_SIZE);
+parameter n                 = $clog2(CACHE_BLOCK_BANK);
 
-wire [31:2]                   addr_tag   = pc_addr[31:2];
-wire [CACHE_BLOCK_BANK-1:0]   index      = CACHE_BLOCK_BANK == 1 ? 0 : addr_tag[CACHE_BLOCK_BANK-1:0];
-wire [1:0]                    offset     = pc_addr[1:0];
-wire [31:2]                   icache_tag = icache_addr[index][31:2];
+wire [31:m+n]                 addr_tag   = pc_addr[31:m+n];
+wire [m+n-1:m]                index      = CACHE_BLOCK_BANK == 1 ? 0 : addr_tag[m+n-1:m];
+wire [m-1:0]                  offset     = pc_addr[m-1:0];
+wire [31:m+n]                 icache_tag = icache_addr[index][31:m+n];
 wire                          hit        = (icache_tag == addr_tag) && (icache_valid[index]);
 
 reg [CACHE_BLOCK_SIZE*8-1:0] icache_data[0:CACHE_BLOCK_BANK-1];

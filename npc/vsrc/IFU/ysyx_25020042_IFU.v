@@ -118,7 +118,10 @@ always @(posedge clock) begin
     end
 end
 
-icache u_icache(
+icache #(
+    .CACHE_BLOCK_SIZE(4), //4 * 8
+    .CACHE_BLOCK_BANK(16) //2 ^ n
+) u_icache(
     .clock            (clock),
     .reset            (reset),
     .pc_valid         (pc_valid),
