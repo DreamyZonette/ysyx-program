@@ -1,3 +1,4 @@
+#include <common.h>
 #include <memory/paddr.h>
 #include <memory/host.h> 
 #include <device/mmio.h>
@@ -111,12 +112,10 @@ extern "C" int pmem_read(int addr, int len) {
   else{
     ret = internal_pmem_read(addr, len);
     #if CONFIG_MTRACE
-      // if (addr != top->de_pc){
-      //   char s[128];
-      //   sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
-      //   log_write("%s\n", s);
-      // }
-      // //if (addr == 0x80011071 || addr == 0x80011070)printf("DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+        char s[128];
+        sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
+        log_write("%s\n", s);
+        printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, ret);
 
     #endif
   }
@@ -124,7 +123,8 @@ extern "C" int pmem_read(int addr, int len) {
 }
 extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
-  data = word_t(data);
+  word_t wdata = word_t(data);
+  // data = word_t(data);
   switch (len) {
     case 0b1111:
       len = 4;
@@ -147,18 +147,18 @@ extern "C" void pmem_write(int addr, int len, int data) {
       addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
       addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT){
     // putchar(char(data));
-    mmio_write(addr, len, data);
+    mmio_write(addr, len, wdata);
     // printf("串口传出数据%08x\n", data);
   }
   else{
     #if CONFIG_MTRACE
-    // char s[128];
-    // sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
-    // log_write("%s\n", s);
-    // //printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, data);
+    char s[128];
+    sprintf(s, "DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, wdata);
+    log_write("%s\n", s);
+    printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, wdata);
 
   #endif
-    internal_pmem_write(addr, len, data);
+    internal_pmem_write(addr, len, wdata);
   }
 }
 
