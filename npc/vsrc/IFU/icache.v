@@ -86,7 +86,9 @@ always @(posedge clock) begin
         if (state == READ) begin
             if (io_icache_rlast && io_icache_rvalid && io_icache_rid == io_icache_arid) begin
                 icache_valid[index] <= 1'b1;
-                icache_addr[index]  <= io_icache_araddr;
+                icache_addr[index][31:m+n]   <= addr_tag;
+                icache_addr[index][m+n-1:m]  <= addr_tag[m+n-1:m];
+                icache_addr[index][m-1:0]    <= pc_addr[m-1:0];
                 icache_data[index]  <= io_icache_rdata;
                 instruction_ready <= 1'b1;
                 instruction       <= io_icache_rdata;
