@@ -126,7 +126,7 @@ extern "C" void pmem_write(int addr, int len, int data) {
   word_t wdata = word_t(data);
   // data = word_t(data);
   int shift_len = len;
-  while (shift_len & 1 == 0) {
+  while ((shift_len & 1) == 0) {
     wdata = wdata >> 8;
     addr = addr + 1;
     shift_len = shift_len >> 1;
