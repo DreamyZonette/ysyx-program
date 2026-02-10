@@ -27,7 +27,7 @@ parameter m                 = $clog2(CACHE_BLOCK_SIZE);
 parameter n                 = $clog2(CACHE_BLOCK_BANK);
 
 wire [31:m+n]                 addr_tag   = pc_addr[31:m+n];
-wire [m+n-1:m]                index      = CACHE_BLOCK_BANK == 1 ? 0 : addr_tag[m+n-1:m];
+wire [m+n-1:m]                index      = pc_addr[m+n-1:m];
 wire [m-1:0]                  offset     = pc_addr[m-1:0];
 wire [31:m+n]                 icache_tag = icache_addr[index][31:m+n];
 wire                          hit        = (icache_tag == addr_tag) && (icache_valid[index]);
