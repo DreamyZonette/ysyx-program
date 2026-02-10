@@ -42,12 +42,18 @@ export "DPI-C" function get_instruction;
         if(reset) begin
             ifu_valid_signal <= 1'b0;
         end
-        else if (ifu_arvalid)begin
+        else if (pc_valid)begin
             ifu_valid_signal <= 1'b1;
         end
+        `ifdef ICACHE_ON
+        else if (instruction_ready) begin
+            ifu_valid_signal <= 1'b0;
+        end
+        `else
         else if (ifu_rvalid) begin
             ifu_valid_signal <= 1'b0;
         end
+        `endif
     end
 
     reg [63:0] performance_counter;
@@ -62,6 +68,79 @@ export "DPI-C" function get_instruction;
     end
 
 `endif
+
+`ifdef ICACHE_ON
+
+wire instruction_ready;
+wire [31:0] instruction;
+reg state ;
+localparam IDLE  = 1'b0;
+localparam READY = 1'b1;
+
+always @(posedge clock) begin
+    if(reset) begin
+        state <= IDLE;
+    end
+    else begin
+        case(state)
+            IDLE: begin
+                if(pc_valid) begin
+                    state <= READY;
+                end
+                else begin
+                    state <= IDLE;
+                end
+            end
+            READY: begin
+                if(instruction_ready) begin
+                    state <= IDLE;
+                end
+                else begin
+                    state <= READY;
+                end
+            end
+        endcase
+    end
+end
+
+always @(posedge clock) begin
+    if(reset) begin
+        o_instruction <= 32'h0;
+        ifu_valid <= 1'b0;
+    end
+    else begin
+        if(state == READY && instruction_ready) begin
+            o_instruction <= instruction;
+            ifu_valid <= 1'b1;
+        end
+        if(wbu_ready || lsu_ready) 
+            ifu_valid <= 1'b0;
+    end
+end
+
+icache u_icache(
+    .clock            (clock),
+    .reset            (reset),
+    .pc_valid         (pc_valid),
+    .pc_addr          (i_pc),
+    .instruction_ready(instruction_ready),
+    .instruction      (instruction),
+    .io_icache_arready(ifu_arready),
+    .io_icache_arvalid(ifu_arvalid),
+    .io_icache_araddr (ifu_araddr),
+    .io_icache_arid   (ifu_arid),
+    .io_icache_arlen  (ifu_arlen),
+    .io_icache_arsize (ifu_arsize),
+    .io_icache_arburst(ifu_arburst),
+    .io_icache_rready (ifu_rready),
+    .io_icache_rvalid (ifu_rvalid),
+    .io_icache_rresp  (ifu_rresp),
+    .io_icache_rdata  (ifu_rdata),
+    .io_icache_rlast  (ifu_rlast),
+    .io_icache_rid    (ifu_rid)
+);
+
+`else
 
 localparam RIDLE = 1'b0;
 localparam RWAIT_READY = 1'b1;
@@ -147,5 +226,7 @@ always @(posedge clock) begin
         
     end
 end
+
+`endif
 
 endmodule
