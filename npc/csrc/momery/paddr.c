@@ -125,14 +125,32 @@ extern "C" void pmem_write(int addr, int len, int data) {
   addr = paddr_t(addr);
   word_t wdata = word_t(data);
   // data = word_t(data);
+  int shift_len = len;
+  while (shift_len % 2 == 0) {
+    wdata = wdata >> 8;
+    addr = addr + 1;
+    shift_len = shift_len >> 1;
+  }
   switch (len) {
     case 0b1111:
       len = 4;
       break;
-    case 0b11:
+    case 0b0011:
       len = 2;
       break;
-    case 0b1:
+    case 0b1100:
+      len = 2;
+      break;
+    case 0b0001:
+      len = 1;
+      break;
+    case 0b0010:
+      len = 1;
+      break;
+    case 0b0100:
+      len = 1;
+      break;
+    case 0b1000:
       len = 1;
       break;
   }
