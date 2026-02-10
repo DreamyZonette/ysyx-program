@@ -115,7 +115,7 @@ extern "C" int pmem_read(int addr, int len) {
         char s[128];
         sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
         log_write("%s\n", s);
-        printf("DPI-CALL: pmem_write(0x%08x, %d, 0x%08x)\n", addr, len, ret);
+        printf("DPI-CALL: pmem_read(0x%08x, %d, 0x%08x)\n", addr, len, ret);
 
     #endif
   }
