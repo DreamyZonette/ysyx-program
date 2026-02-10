@@ -248,6 +248,7 @@
     wire  [31:0]    io_clint_rdata  ;
     wire            io_clint_rlast  ;
     wire  [3:0]     io_clint_rid    ;
+    `ifdef VERILATOR
     `ifdef PLATFORM_NPC
     wire            io_master_awready;
     wire            io_master_awvalid;
@@ -278,6 +279,7 @@
     wire  [31:0]    io_master_rdata  ;
     wire            io_master_rlast  ;
     wire  [3:0]     io_master_rid    ;
+    `endif
     `endif
 //------------------------------------------
 // 性能计数器
@@ -442,6 +444,7 @@ ipc_counter ipc_counter_u(
 //------------------------------------------
 // clint实例化
 //------------------------------------------
+`ifdef VERILATOR
 `ifdef PLATFORM_NPC
 ysyx_25020042_mem ysyx_25020042_mem_u (
     .clock(clock),
@@ -480,6 +483,7 @@ ysyx_25020042_mem ysyx_25020042_mem_u (
     .slave_bresp(io_master_bresp),
     .slave_bid(io_master_bid)
 );
+`endif
 `endif
 
 //------------------------------------------
