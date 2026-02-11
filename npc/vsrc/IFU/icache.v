@@ -133,7 +133,7 @@ always @(posedge clock) begin
                 icache_data[burst_index]           <= io_icache_rdata;
                 if (io_icache_rlast) begin
                     instruction_ready            <= 1'b1;
-                    instruction                  <= sdram_valid ? icache_data[index] : io_icache_rdata;
+                    instruction                  <= (sdram_valid && io_icache_arlen != 0) ? icache_data[index] : io_icache_rdata;
                 end
             end
         end
@@ -164,7 +164,7 @@ always @(posedge clock) begin
                 io_icache_araddr  <= pc_addr;
                 io_icache_arvalid <= 1'b1;
                 io_icache_arburst <= 2'b01; // INCR 01
-                io_icache_arlen   <= 8'h1; // 4beat  3
+                io_icache_arlen   <= 8'h0; // 4beat  3
             end
             else begin
                 io_icache_arburst <= 2'b00; // INCR 01
