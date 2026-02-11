@@ -82,13 +82,13 @@ always @(posedge clock) begin
         end
         READ: begin
             if (slave_rready) begin
-                if (slave_rvalid == 0) begin
+                if (slave_rvalid == 1'b1) begin
+                    slave_rvalid <= 1'b0;
+                end
                     slave_rvalid <= 1'b1;
                     `ifdef VERILATOR
-                    slave_rdata <= pmem_read(read_addr, 4);
+                    slave_rdata <= slave_rvalid == 0 ? pmem_read(read_addr, 4) : 32'b0;
                     `endif
-                end
-                slave_rvalid <= 1'b0;
                 if (slave_arlen == burst_count && slave_rvalid == 0) begin
                     slave_rlast <= 1'b1;
                     slave_rresp <= 2'b00;
