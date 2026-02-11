@@ -159,7 +159,7 @@ always @(posedge clock) begin
         io_icache_arlen <= 8'h0; // 4beat  3
     end
     else begin
-        if (state == IDLE && !hit) begin
+        if (state == IDLE && !hit && pc_valid) begin
             if (sdram_valid) begin
                 io_icache_araddr  <= pc_addr;
                 io_icache_arvalid <= 1'b1;
@@ -175,6 +175,8 @@ always @(posedge clock) begin
         end
 
         if (io_icache_arvalid & io_icache_arready) begin
+            io_icache_arburst <= 2'b00; 
+                io_icache_arlen   <= 8'h0; 
             io_icache_arvalid <= 1'b0;
             io_icache_rready <= 1'b1;
         end
