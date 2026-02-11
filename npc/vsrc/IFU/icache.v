@@ -131,7 +131,7 @@ always @(posedge clock) begin
                 icache_data[burst_index]           <= io_icache_rdata;
                 if (io_icache_rlast) begin
                     instruction_ready            <= 1'b1;
-                    instruction                  <= icache_data[index];
+                    instruction                  <= sdram_valid ? icache_data[index] : io_icache_rdata;
                 end
             end
         end
