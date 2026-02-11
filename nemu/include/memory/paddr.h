@@ -44,24 +44,24 @@ static inline bool in_pmem(paddr_t addr) {
   if(addr >= CONFIG_MBASE && addr < CONFIG_MBASE + CONFIG_MSIZE){
     return addr - CONFIG_MBASE < CONFIG_MSIZE;
   }
-  else if(addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE){
-    return addr - MROM_BASE < MROM_SIZE;
-  }
-  else if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE){
-    return addr - SRAM_BASE < SRAM_SIZE;
-  }
-  else if (addr >= FLASH_BASE && addr < FLASH_BASE + FLASH_SIZE){
-    return addr - FLASH_BASE < FLASH_SIZE;
-  }
-  else if (addr >= PSRAM_BASE && addr < PSRAM_BASE + PSRAM_SIZE){
-    return addr - PSRAM_BASE < PSRAM_SIZE;
-  }
-  else if (addr >= SDRAM_BASE && addr < SDRAM_BASE + SDRAM_SIZE){
-    return addr - SDRAM_BASE < SDRAM_SIZE;
-  }
-  else if (addr >= UART16550_BASE && addr < UART16550_BASE + UART16550_SIZE){
-    return addr - UART16550_BASE < UART16550_SIZE;
-  }
+  // else if(addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE){
+  //   return addr - MROM_BASE < MROM_SIZE;
+  // }
+  // else if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE){
+  //   return addr - SRAM_BASE < SRAM_SIZE;
+  // }
+  // else if (addr >= FLASH_BASE && addr < FLASH_BASE + FLASH_SIZE){
+  //   return addr - FLASH_BASE < FLASH_SIZE;
+  // }
+  // else if (addr >= PSRAM_BASE && addr < PSRAM_BASE + PSRAM_SIZE){
+  //   return addr - PSRAM_BASE < PSRAM_SIZE;
+  // }
+  // else if (addr >= SDRAM_BASE && addr < SDRAM_BASE + SDRAM_SIZE){
+  //   return addr - SDRAM_BASE < SDRAM_SIZE;
+  // }
+  // else if (addr >= UART16550_BASE && addr < UART16550_BASE + UART16550_SIZE){
+  //   return addr - UART16550_BASE < UART16550_SIZE;
+  // }
   else{
     return addr - CONFIG_MBASE < CONFIG_MSIZE;
   }
