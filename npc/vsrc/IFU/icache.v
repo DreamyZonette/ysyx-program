@@ -139,15 +139,17 @@ always @(posedge clock) begin
             io_icache_arvalid <= 1'b1;
         end
 
-        if (io_icache_arvalid & io_icache_arready)
+        if (io_icache_arvalid & io_icache_arready) begin
             io_icache_arvalid <= 1'b0;
-        
-        if (io_icache_rlast && io_icache_rvalid && io_icache_rid == io_icache_arid) begin
             io_icache_rready <= 1'b1;
         end
-
-        if (io_icache_rready)
+            
+        if (io_icache_rlast && io_icache_rvalid && io_icache_rid == io_icache_arid) begin
             io_icache_rready <= 1'b0;
+        end
+
+        // if (io_icache_rready)
+        //     io_icache_rready <= 1'b0;
     end
 end
 
