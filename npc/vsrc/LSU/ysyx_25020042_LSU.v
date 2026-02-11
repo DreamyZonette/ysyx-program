@@ -173,6 +173,7 @@ always @(posedge clock) begin
                         `endif
                     end
                     else begin
+                        lsu_rready <= 1'b1;
                         lsu_arvalid <= 1'b1;
                     end
                     case (1'b1)
@@ -255,7 +256,7 @@ always @(posedge clock) begin
                     lsu_ready <= 1'b0;
                 end
                 if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
-                    lsu_rready <= 1'b1;
+                    lsu_rready <= 1'b0;
                     lsu_valid <= 1'b1;
                     rresp <= lsu_rresp;
                     state <= IDLE;

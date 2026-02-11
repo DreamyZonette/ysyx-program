@@ -42,11 +42,21 @@ import "DPI-C" function void pmem_write(
 `endif
 
 reg [2:0] state;
+reg [7:0] burst_count;
+wire [31:0] read_addr = slave_araddr + 4 * burst_count;
+
 localparam IDLE = 3'd0;
 localparam READ = 3'd1;
 localparam READ_WAIT = 3'd2;
 localparam WRITE = 3'd3;
 localparam WRITE_WAIT = 3'd4;
+
+always @(posedge clock) begin
+   if (slave_rlast)
+        burst_count <= 0;
+    else if (slave_rvalid && state == READ)
+        burst_count <= burst_count + 1;
+end
 
 always @(posedge clock) begin
     case (state)
@@ -71,16 +81,20 @@ always @(posedge clock) begin
             end
         end
         READ: begin
-            // if (slave_arready) begin
-            //     slave_arready <= 1'b0;
-            // end
-            `ifdef VERILATOR
-            slave_rdata <= pmem_read(slave_araddr, 4);
-            `endif
-            slave_rvalid <= 1'b1;
-            slave_rlast <= 1'b1;
-            slave_rresp <= 2'b00;
-            state <= READ_WAIT;
+            if (slave_rready) begin
+                if (slave_rvalid == 0) begin
+                    `ifdef VERILATOR
+                    slave_rdata <= pmem_read(read_addr, 4);
+                    `endif
+                    slave_rvalid <= 1'b1;
+                end
+                slave_rvalid <= 1'b0;
+                if (slave_arlen == burst_count && slave_rvalid == 0) begin
+                    slave_rlast <= 1'b1;
+                    slave_rresp <= 2'b00;
+                    state <= READ_WAIT;
+                end
+            end
         end
         READ_WAIT: begin
             if (slave_rready) begin
