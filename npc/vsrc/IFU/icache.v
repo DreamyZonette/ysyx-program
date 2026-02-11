@@ -130,8 +130,8 @@ always @(posedge clock) begin
         io_icache_rready <= 1'b0;
         io_icache_arid <= 4'h0;
         io_icache_arsize <= 3'b010;
-        io_icache_arburst <= 2'b00;
-        io_icache_arlen <= 8'h0;
+        io_icache_arburst <= 2'b01; // INCR
+        io_icache_arlen <= 8'h3; // 4beat
     end
     else begin
         if (state == IDLE && !hit) begin
