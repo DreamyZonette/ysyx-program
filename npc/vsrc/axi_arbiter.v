@@ -154,7 +154,7 @@ module axi_arbiter (
                     end
                 end
                 ARB_LSU: begin
-                    if (io_lsu_rready & io_lsu_rvalid & io_rlast) begin
+                    if (io_lsu_rready & io_lsu_rvalid & (io_rlast | io_clint_rlast)) begin
                         state <= ARB_IDLE;
                     end
                     else if (io_lsu_bvalid & io_lsu_bready) begin
