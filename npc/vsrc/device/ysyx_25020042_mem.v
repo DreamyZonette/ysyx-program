@@ -64,6 +64,7 @@ always @(posedge clock) begin
                 slave_arready <= 1'b1;
                 slave_awready <= 1'b1;
                 slave_wready <= 1'b1;
+                slave_rlast <= 1'b0;
 
             if (slave_arvalid) begin
                 state <= READ;
@@ -109,6 +110,7 @@ always @(posedge clock) begin
                 slave_rvalid <= 1'b0;
                 slave_rresp <= 2'b00;
                 slave_rdata <= 32'b0;
+                slave_rlast <= 1'b0;
                 state <= IDLE;
             end
         end
