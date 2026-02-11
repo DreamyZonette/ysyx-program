@@ -64,28 +64,12 @@ static long load_img() {
 
   FILE *fp = fopen(img_file, "rb");
   Assert(fp, "Can not open '%s'", img_file);
-
-  // 检查是否为ELF文件
-  uint32_t magic;
-  int ret = fread(&magic, sizeof(magic), 1, fp);
-  assert(ret == 1);
-  fseek(fp, 0, SEEK_SET); // 回到文件开头
   long size = 0;
 
-  if (magic == ELF_MAGIC) {
   if (img_file[0] == '\0') {
     Log("No image is given. Use the default build-in image.");
     return 4096; // built-in image size
   }
-
-  FILE *fp = fopen(img_file, "rb");
-  if(!fp) {
-    printf("Can not open '%s'\n", img_file);
-    assert(1); // 断言失败，程序退出
-  }
-
-    fseek(fp, 0, SEEK_SET); // 回到文件开头
-    long size = 0;
 
     // BIN文件处理逻辑（保持不变）
     fseek(fp, 0, SEEK_END);
@@ -96,7 +80,7 @@ static long load_img() {
     int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
     assert(ret == 1);
     fclose(fp);
-  }
+  
   
   return size;
 }
@@ -118,6 +102,7 @@ static int parse_args(int argc, char *argv[]) {
       case 'l': log_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
       case 1: 
+        // printf("test\n");
         img_file = optarg; 
         #ifdef CONFIG_FTRACE 
           printf("test\n");
