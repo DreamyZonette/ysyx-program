@@ -156,7 +156,7 @@ always @(posedge clock) begin
         io_icache_arid <= 4'h0;
         io_icache_arsize <= 3'b010;
         io_icache_arburst <= 2'b00; // INCR 01
-        io_icache_arlen <= 8'h1; // 4beat  3
+        io_icache_arlen <= 8'h0; // 4beat  3
     end
     else begin
         if (state == IDLE && !hit && pc_valid) begin
@@ -164,7 +164,7 @@ always @(posedge clock) begin
                 io_icache_araddr  <= pc_addr;
                 io_icache_arvalid <= 1'b1;
                 io_icache_arburst <= 2'b01; // INCR 01
-                io_icache_arlen   <= 8'h0; // 4beat  3
+                io_icache_arlen   <= 8'h1; // 4beat  3
             end
             else begin
                 io_icache_arburst <= 2'b00; // INCR 01
