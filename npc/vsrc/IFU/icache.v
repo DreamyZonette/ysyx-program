@@ -48,7 +48,8 @@ parameter SDRAM_SIZE        = 32'h20000000;
 `ifdef PLATFORM_NPC
 wire                          sdram_valid = 1;
 `else 
-wire                          sdram_valid = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
+wire                          sdram_valid = 0;
+// wire                          sdram_valid = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
 `endif
 wire [31:m+n]                 addr_tag    = pc_addr[31:m+n];
 wire [m+n-1:m]                index       = pc_addr[m+n-1:m];
