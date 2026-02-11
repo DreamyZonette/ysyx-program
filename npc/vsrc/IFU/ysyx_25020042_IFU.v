@@ -10,6 +10,9 @@ module ysyx_25020042_IFU(
     `ifdef VERILATOR
     // input                  i_ebreak_signal,
     output     [63:0]      o_performance_counter,
+    `ifdef ICACHE_ON
+    output     [63:0]      o_icache_hit_count,
+    `endif
     `endif
 
     output reg [31:0]      ifu_araddr,
@@ -131,6 +134,9 @@ icache #(
     .reset            (reset),
     .pc_valid         (pc_valid),
     .pc_addr          (i_pc),
+    `ifdef VERILATOR
+    .icache_hit_count (o_icache_hit_count),
+    `endif
     .instruction_ready(instruction_ready),
     .instruction      (instruction),
     .io_icache_arready(ifu_arready),

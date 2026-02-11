@@ -18,7 +18,7 @@
 #include <device/mmio.h>
 #include <isa.h>
 
-// #define YSYXSOC 1
+#define YSYXSOC 1
 
 
 

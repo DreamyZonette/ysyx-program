@@ -248,6 +248,7 @@
     wire  [31:0]    io_clint_rdata  ;
     wire            io_clint_rlast  ;
     wire  [3:0]     io_clint_rid    ;
+    `ifdef VERILATOR
     `ifdef PLATFORM_NPC
     wire            io_master_awready;
     wire            io_master_awvalid;
@@ -279,6 +280,7 @@
     wire            io_master_rlast  ;
     wire  [3:0]     io_master_rid    ;
     `endif
+    `endif
 //------------------------------------------
 // 性能计数器
 //------------------------------------------    
@@ -287,6 +289,9 @@
     wire [63:0] exu_performance_counter;
     wire [63:0] lsu_performance_counter;
     wire [63:0] csr_performance_counter;
+        `ifdef ICACHE_ON
+    wire [63:0]      icache_hit_count;
+    `endif
     `endif
 
 //------------------------------------------
@@ -435,13 +440,15 @@ ipc_counter ipc_counter_u(
     .ifu_performance_counter(ifu_performance_counter),
     .lsu_performance_counter(lsu_performance_counter),
     .exu_performance_counter(exu_performance_counter),
-    .csr_performance_counter(csr_performance_counter)
+    .csr_performance_counter(csr_performance_counter),
+    .icache_hit_counter(icache_hit_count)
 );
 `endif
 
 //------------------------------------------
 // clint实例化
 //------------------------------------------
+`ifdef VERILATOR
 `ifdef PLATFORM_NPC
 ysyx_25020042_mem ysyx_25020042_mem_u (
     .clock(clock),
@@ -480,6 +487,7 @@ ysyx_25020042_mem ysyx_25020042_mem_u (
     .slave_bresp(io_master_bresp),
     .slave_bid(io_master_bid)
 );
+`endif
 `endif
 
 //------------------------------------------
@@ -551,6 +559,9 @@ ysyx_25020042_IFU IFU_u (
     .o_instruction(instruction),
     `ifdef VERILATOR
     .o_performance_counter(ifu_performance_counter),
+    `ifdef ICACHE_ON
+    .o_icache_hit_count(icache_hit_count),
+    `endif
     `endif
 
     .ifu_araddr(io_ifu_araddr),
