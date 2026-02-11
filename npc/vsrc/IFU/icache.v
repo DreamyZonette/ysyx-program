@@ -52,14 +52,14 @@ wire [m+n-1:m]                index       = pc_addr[m+n-1:m];
 wire [m-1:0]                  offset      = pc_addr[m-1:0];
 wire [31:m+n]                 icache_tag  = icache_addr[index][31:m+n];
 wire                          hit         = (icache_tag == addr_tag) && (icache_valid[index]);
-wire [31:0]                   burst_addr  = pc_addr + 4 * brust_count;
+wire [31:0]                   burst_addr  = pc_addr + 4 * burst_count;
 wire [m+n-1:m]                burst_index = burst_addr[m+n-1:m];
 
 reg [CACHE_BLOCK_SIZE*8-1:0] icache_data[0:CACHE_BLOCK_BANK-1];
 reg [CACHE_BLOCK_SIZE*8-1:0] icache_addr[0:CACHE_BLOCK_BANK-1];
 reg                          icache_valid[0:CACHE_BLOCK_BANK-1];
 reg                          state;
-reg [n-1:0]                  brust_count;
+reg [n-1:0]                  burst_count;
 
 localparam IDLE = 1'b0;
 localparam READ = 1'b1;
@@ -97,15 +97,13 @@ end
 
 always @(posedge clock) begin
     if (reset) begin
-        brust_count <= 0;
+        burst_count <= 0;
     end
     else begin
-        if (io_icache_rvalid & sdram_valid) begin
-            brust_count <= brust_count + 1;
-        end
-        else begin
-            brust_count <= 0;
-        end
+        if (io_icache_rlast & sdram_valid)
+            burst_count <= 0;
+        else if (io_icache_rvalid & sdram_valid) 
+            burst_count <= burst_count + 1;        
     end
 end
 
