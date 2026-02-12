@@ -39,8 +39,9 @@ end
 
 `endif
 
-parameter CACHE_BLOCK_SIZE  = 4;
-parameter CACHE_BLOCK_BANK  = 16;
+parameter CACHE_BLOCK_SIZE  = 16;
+parameter CACHE_BLOCK_BANK  = 4;
+parameter CACHE_BLOCK_COUNT = CACHE_BLOCK_SIZE / 4;
 parameter m                 = $clog2(CACHE_BLOCK_SIZE);
 parameter n                 = $clog2(CACHE_BLOCK_BANK);
 parameter SDRAM_BASE_ADDR   = 32'ha0000000;
@@ -49,21 +50,26 @@ parameter SDRAM_SIZE        = 32'h20000000;
 wire                          sdram_valid = 1;
 `else 
 // wire                          sdram_valid = 0;
-wire                          sdram_valid = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
+wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
 `endif
-wire [31:m+n]                 addr_tag    = pc_addr[31:m+n];
-wire [m+n-1:m]                index       = pc_addr[m+n-1:m];
-wire [m-1:0]                  offset      = pc_addr[m-1:0];
-wire [31:m+n]                 icache_tag  = icache_addr[index][31:m+n];
-wire                          hit         = (icache_tag == addr_tag) && (icache_valid[index]);
-wire [31:0]                   burst_addr  = pc_addr + 4 * burst_count;
-wire [m+n-1:m]                burst_index = burst_addr[m+n-1:m];
+wire [31:m+n]                 addr_tag       = pc_addr[31:m+n];
+wire [m+n-1:m]                index          = pc_addr[m+n-1:m];
+wire [m-1:0]                  offset         = pc_addr[m-1:0];
+wire [31:m+n]                 icache_tag     = icache_addr[index][31:m+n];
+// wire [m-1:0]                  icache_offset  = icache_addr[index][m-1:0];
+// wire [m-1:0]                  offset         = pc_offset - icache_offset;
+// wire [m*8-1:0]                data_offset0   = offset * 8;
+// wire [m*8-1:0]                data_offset1   = data_offset0 + 31;
+wire                          hit            = (icache_tag == addr_tag) && (icache_valid[index]);
+wire [31:0]                   burst_addr     = pc_addr;
+wire [m+n-1:m]                burst_index    = burst_addr[m+n-1:m];
+wire [m-1:0]                  burst_offset   = burst_addr[m-1:0] + {burst_count, 2'b00};
 
-reg [CACHE_BLOCK_SIZE*8-1:0] icache_data[0:CACHE_BLOCK_BANK-1];
-reg [CACHE_BLOCK_SIZE*8-1:0] icache_addr[0:CACHE_BLOCK_BANK-1];
+reg [32-1:0]                 icache_data[0:CACHE_BLOCK_BANK-1][0:CACHE_BLOCK_COUNT-1];
+reg [32-1:0]                 icache_addr[0:CACHE_BLOCK_BANK-1];
 reg                          icache_valid[0:CACHE_BLOCK_BANK-1];
 reg                          state;
-reg [n-1:0]                  burst_count;
+reg [m-1:2]                  burst_count;
 
 localparam IDLE = 1'b0;
 localparam READ = 1'b1;
@@ -113,34 +119,44 @@ end
 
 
 integer i;
+integer j;
 
 always @(posedge clock) begin
     if (reset) begin
         for (i = 0; i < CACHE_BLOCK_BANK; i = i + 1) begin
             icache_valid[i] <= 1'b0;
             icache_addr[i]  <= 0;
-            icache_data[i]  <= 0;
+            for (j = 0; j < CACHE_BLOCK_COUNT; j = j + 1) begin
+                icache_data[i][j]  <= 0;
+            end
         end
         instruction <= 0;
     end
     else begin
         if (state == READ) begin
             if (io_icache_rvalid && io_icache_rid == io_icache_arid) begin
-                icache_valid[burst_index]          <= 1'b1;
-                icache_addr[burst_index][31:m+n]   <= burst_addr[31:m+n];
-                icache_addr[burst_index][m+n-1:m]  <= burst_addr[m+n-1:m];
-                icache_addr[burst_index][m-1:0]    <= burst_addr[m-1:0];
-                icache_data[burst_index]           <= io_icache_rdata;
+                if (sdram_valid) begin
+                    icache_valid[burst_index]                               <= 1'b1;
+                    icache_addr[burst_index][31:m+n]                        <= burst_addr[31:m+n];
+                    icache_addr[burst_index][m+n-1:m]                       <= burst_addr[m+n-1:m];
+                    icache_addr[burst_index][m-1:0]                         <= {m{1'b0}};
+                    icache_data[burst_index][burst_offset[m-1:2]]           <= io_icache_rdata;
+                end
                 if (io_icache_rlast) begin
                     instruction_ready            <= 1'b1;
-                    instruction                  <= (sdram_valid && io_icache_arlen != 0) ? icache_data[index] : io_icache_rdata;
+                    if (sdram_valid) begin
+                        instruction <= offset[m-1:2] == {(m-2){1'b1}}? io_icache_rdata : icache_data[burst_index][burst_offset[m-1:2]];
+                    end
+                    else begin
+                        instruction <= io_icache_rdata;
+                    end
                 end
             end
         end
         if (state == IDLE) begin
             if (hit & pc_valid) begin
                 instruction_ready <= 1'b1;
-                instruction       <= icache_data[index];
+                instruction       <= icache_data[index][offset[m-1:2]];
             end
             if (instruction_ready)
                 instruction_ready <= 1'b0;
@@ -155,28 +171,26 @@ always @(posedge clock) begin
         io_icache_rready <= 1'b0;
         io_icache_arid <= 4'h0;
         io_icache_arsize <= 3'b010;
-        io_icache_arburst <= 2'b00; // INCR 01
-        io_icache_arlen <= 8'h0; // 4beat  3
+        io_icache_arburst <= 2'b00; 
+        io_icache_arlen <= 8'h0;
     end
     else begin
         if (state == IDLE && !hit && pc_valid) begin
             if (sdram_valid) begin
-                io_icache_araddr  <= pc_addr;
+                io_icache_araddr  <= {pc_addr[31:m], {m{1'b0}}};
                 io_icache_arvalid <= 1'b1;
                 io_icache_arburst <= 2'b01; // INCR 01
                 io_icache_arlen   <= 8'h3; // 4beat  3
             end
             else begin
-                io_icache_arburst <= 2'b00; // INCR 01
-                io_icache_arlen   <= 8'h0; // 4beat  3
+                io_icache_arburst <= 2'b00;
+                io_icache_arlen   <= 8'h0;
                 io_icache_araddr  <= pc_addr;
                 io_icache_arvalid <= 1'b1;
             end
         end
 
         if (io_icache_arvalid & io_icache_arready) begin
-            // io_icache_arburst <= 2'b00; 
-            // io_icache_arlen   <= 8'h0; 
             io_icache_arvalid <= 1'b0;
             io_icache_rready <= 1'b1;
         end
@@ -184,9 +198,6 @@ always @(posedge clock) begin
         if (io_icache_rlast && io_icache_rvalid && io_icache_rid == io_icache_arid) begin
             io_icache_rready <= 1'b0;
         end
-
-        // if (io_icache_rready)
-        //     io_icache_rready <= 1'b0;
     end
 end
 
