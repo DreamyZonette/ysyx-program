@@ -145,7 +145,7 @@ always @(posedge clock) begin
                 if (io_icache_rlast) begin
                     instruction_ready            <= 1'b1;
                     if (sdram_valid) begin
-                        instruction <= offset[m-1:2] == {(m-2){1'b1}}? io_icache_rdata : icache_data[burst_index][burst_offset[m-1:2]];
+                        instruction <= (offset[m-1:2] == {(m-2){1'b1}})? io_icache_rdata : icache_data[index][offset[m-1:2]];
                     end
                     else begin
                         instruction <= io_icache_rdata;
