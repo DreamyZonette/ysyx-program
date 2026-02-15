@@ -201,6 +201,7 @@ config DIFFTEST
     Note that this will significantly reduce the performance of NEMU.
 
 config CACHESIM
+  depends on ITRACE
   bool "Enable cachesim testing"
   default n
 
