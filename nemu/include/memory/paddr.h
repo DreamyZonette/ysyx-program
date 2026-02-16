@@ -29,7 +29,10 @@
 #define SDRAM_BASE 0xa0000000
 #define UART16550_BASE 0x10000000
 #define UART16550_SIZE 0x10000
-uint8_t* mrom_guest_to_host(paddr_t paddr);
+uint8_t* flash_guest_to_host(paddr_t paddr);
+#define FLASH_LEFT  ((paddr_t)FLASH_BASE)
+#define FLASH_RIGHT ((paddr_t)FLASH_BASE + FLASH_SIZE - 1)
+#define FLASH_RESET_VECTOR (FLASH_LEFT + CONFIG_PC_RESET_OFFSET)
 
 #define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
 #define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
@@ -44,24 +47,26 @@ static inline bool in_pmem(paddr_t addr) {
   if(addr >= CONFIG_MBASE && addr < CONFIG_MBASE + CONFIG_MSIZE){
     return addr - CONFIG_MBASE < CONFIG_MSIZE;
   }
-  // else if(addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE){
-  //   return addr - MROM_BASE < MROM_SIZE;
-  // }
-  // else if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE){
-  //   return addr - SRAM_BASE < SRAM_SIZE;
-  // }
-  // else if (addr >= FLASH_BASE && addr < FLASH_BASE + FLASH_SIZE){
-  //   return addr - FLASH_BASE < FLASH_SIZE;
-  // }
-  // else if (addr >= PSRAM_BASE && addr < PSRAM_BASE + PSRAM_SIZE){
-  //   return addr - PSRAM_BASE < PSRAM_SIZE;
-  // }
-  // else if (addr >= SDRAM_BASE && addr < SDRAM_BASE + SDRAM_SIZE){
-  //   return addr - SDRAM_BASE < SDRAM_SIZE;
-  // }
-  // else if (addr >= UART16550_BASE && addr < UART16550_BASE + UART16550_SIZE){
-  //   return addr - UART16550_BASE < UART16550_SIZE;
-  // }
+  #ifdef CONFIG_YSYXSOC
+  else if(addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE){
+    return addr - MROM_BASE < MROM_SIZE;
+  }
+  else if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE){
+    return addr - SRAM_BASE < SRAM_SIZE;
+  }
+  else if (addr >= FLASH_BASE && addr < FLASH_BASE + FLASH_SIZE){
+    return addr - FLASH_BASE < FLASH_SIZE;
+  }
+  else if (addr >= PSRAM_BASE && addr < PSRAM_BASE + PSRAM_SIZE){
+    return addr - PSRAM_BASE < PSRAM_SIZE;
+  }
+  else if (addr >= SDRAM_BASE && addr < SDRAM_BASE + SDRAM_SIZE){
+    return addr - SDRAM_BASE < SDRAM_SIZE;
+  }
+  else if (addr >= UART16550_BASE && addr < UART16550_BASE + UART16550_SIZE){
+    return addr - UART16550_BASE < UART16550_SIZE;
+  }
+  #endif
   else{
     return addr - CONFIG_MBASE < CONFIG_MSIZE;
   }
