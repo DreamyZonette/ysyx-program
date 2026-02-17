@@ -1,42 +1,84 @@
-// #include <cpu/cpu.h>
-// #include <cpu/decode.h>
-// #include <cpu/difftest.h>
-// #include <locale.h>
-// #include <memory/vaddr.h>
+#include <cpu/cpu.h>
+#include <locale.h>
+#include <memory/vaddr.h>
 
-// #define  CACHE_BLOCK_SIZE   16
-// #define  CACHE_BLOCK_BANK   4
-// #define  CACHE_BLOCK_COUNT  (CACHE_BLOCK_SIZE / 4)
-// #define  m                  4 // $clog2(CACHE_BLOCK_SIZE);
-// #define  n                  2 // $clog2(CACHE_BLOCK_BANK)
-// #define  SDRAM_BASE_ADDR    0xa0000000
-// #define  SDRAM_SIZE         0x20000000
-// static char *cache_img_file = "/home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-ysyxsoc.bin";
-// // #define icache_access_time  1
-// // #define icache_miss_penalty  19 // 36 apb delay_on dram // 19 axiburst
+#define  CACHE_BLOCK_SIZE   16
+#define  CACHE_BLOCK_BANK   4
+#define  CACHE_BLOCK_COUNT  (CACHE_BLOCK_SIZE / 4)
+#define  m                  4 // $clog2(CACHE_BLOCK_SIZE);
+#define  n                  2 // $clog2(CACHE_BLOCK_BANK)
+#define  SDRAM_BASE_ADDR    0xa0000000
+#define  SDRAM_SIZE         0x20000000
+#define icache_access_time  1
+#define icache_miss_penalty  19 // 36 apb delay_on dram // 19 axiburst
+#define MAX_LINE_LENGTH 20
 
-// static uint32_t cache_addr[CACHE_BLOCK_BANK];
-// static uint32_t cache_valid[CACHE_BLOCK_BANK];
-// static uint32_t cache_pc = 0;
-// static uint32_t cache_dnpc = 0;
-// static uint32_t cache_snpc = 0;
+static uint32_t cache_addr[CACHE_BLOCK_BANK];
+static uint32_t cache_valid[CACHE_BLOCK_BANK];
+static uint64_t total_count = 0;
+static uint64_t hit_count = 0;
 
 
-// void cache_init() {
-//     for (int i = 0; i < CACHE_BLOCK_BANK; i++) {
-//         cache_addr[i] = 0;
-//         cache_valid[i] = 0;
-//     }
-//     cache_pc = 0x30000000; // flash
-//     cache_snpc = 0x30000004; 
-//     cache_dnpc = cache_snpc; 
-// }
+void cachesim_init() {
+    for (int i = 0; i < CACHE_BLOCK_BANK; i++) {
+        cache_addr[i] = 0;
+        cache_valid[i] = 0;
+    }
+    total_count = 0;
+    hit_count = 0;
+}
 
-// void cachesim_mainloop() {
+int cache_hit(uint32_t addr_tag, uint32_t index) {
+    if (cache_valid[index] && (cache_addr[index] >> (m + n)) == addr_tag) {
+        return 1;
+    }
+    return 0;
+}
 
-// }
+void cachesim_process(uint32_t pc) {
+    total_count++;
+    uint32_t addr_tag = pc >> (m + n);
+    uint32_t index    = (pc >> m) % CACHE_BLOCK_BANK;
+    if (cache_hit(addr_tag, index)) {
+        hit_count++;
+    } 
+    else {
+        cache_addr[index] = addr_tag << (m + n);
+        cache_valid[index] = 1;
+    }
+}
 
-// void cache_trace() {
+void cachesim_statistics() {
+    double hit_rate = (double)hit_count / total_count;
+    printf("\033[1;33mcachesim hit rate: %.5lf\n\033[0m", hit_rate);
+    printf("\033[1;33mAMAT: %.5lf\n\033[0m", hit_rate * icache_access_time + (1 - hit_rate) * icache_miss_penalty);
+}
 
-// }
+void cachesim_mainloop() {
+
+    cachesim_init();
+
+    const char *filename = "/home/long/ysyx-workbench/nemu/build/addresses.txt";
+    FILE *file = fopen(filename, "r");
+    
+    // 检查文件是否成功打开
+    if (file == NULL) {
+        perror("文件打开失败");
+        return ;
+    }
+
+    char line[MAX_LINE_LENGTH]; 
+    while (fgets(line, sizeof(line), file) != NULL) {
+        line[strcspn(line, "\n")] = '\0';
+        
+        uint32_t hex_value = strtoul(line, NULL, 16);
+        cachesim_process(hex_value);
+    }
+
+    // 关闭文件
+    fclose(file);
+
+    cachesim_statistics();
+}
+
 

@@ -176,6 +176,11 @@ static int cmd_d (char* args){
 	delete_watchpoint(NO);
 	return 0;
 }
+void cachesim_mainloop();
+static int cmd_cachesim (char* args){
+	cachesim_mainloop();
+	return 0;
+}
 
 static struct {
   const char *name;
@@ -192,6 +197,7 @@ static struct {
 	{ "x", "Display memory" , cmd_x },
 	{"p", "Do math", cmd_p},
 	{"w", "Create watchpoint", cmd_w},
+	{"cachesim", "cache simulator", cmd_cachesim},
 	{"d", "Delete watchpoint", cmd_d}
 };
 
