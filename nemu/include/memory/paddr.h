@@ -29,6 +29,8 @@
 #define SDRAM_BASE 0xa0000000
 #define UART16550_BASE 0x10000000
 #define UART16550_SIZE 0x10000
+#define CLINT_BASE 0x02000000
+#define CLINT_SIZE 0x10000
 uint8_t* flash_guest_to_host(paddr_t paddr);
 #define FLASH_LEFT  ((paddr_t)FLASH_BASE)
 #define FLASH_RIGHT ((paddr_t)FLASH_BASE + FLASH_SIZE - 1)
@@ -65,6 +67,9 @@ static inline bool in_pmem(paddr_t addr) {
   }
   else if (addr >= UART16550_BASE && addr < UART16550_BASE + UART16550_SIZE){
     return addr - UART16550_BASE < UART16550_SIZE;
+  } 
+  else if (addr >= CLINT_BASE && addr < CLINT_BASE + CLINT_SIZE){
+    return addr - CLINT_BASE < CLINT_SIZE;
   }
   #endif
   else{
