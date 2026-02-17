@@ -37,6 +37,7 @@ int cache_hit(uint32_t addr_tag, uint32_t index) {
 
 void cachesim_process(uint32_t pc) {
     total_count++;
+    if (pc < SDRAM_BASE_ADDR || pc >= SDRAM_BASE_ADDR + SDRAM_SIZE) return;
     uint32_t addr_tag = pc >> (m + n);
     uint32_t index    = (pc >> m) % CACHE_BLOCK_BANK;
     if (cache_hit(addr_tag, index)) {
