@@ -56,7 +56,27 @@ static int difftest_port = 1234;
 
 
 static long load_img() {
-  // printf("load_img %s\n", img_file);
+  long size = 0;
+  #ifdef CONFIG_YSYXSOC
+  char *cache_img_file = "/home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv32e-ysyxsoc.bin";
+
+    FILE *fp = fopen(cache_img_file, "rb");
+    Assert(fp, "Can not open '%s'", cache_img_file);
+
+    if (cache_img_file[0] == '\0') {
+      Log("No image is given. Use the default build-in image.");
+      return 4096; // built-in image size
+    }
+
+      // BIN文件处理逻辑（保持不变）
+      fseek(fp, 0, SEEK_END);
+      size = ftell(fp);
+      Log("The image is %s, size = %ld", cache_img_file, size);
+      fseek(fp, 0, SEEK_SET);
+      int ret = fread(flash_guest_to_host(FLASH_RESET_VECTOR), size, 1, fp);
+      assert(ret == 1);
+      fclose(fp);
+  #else
   if (img_file == NULL) {
     Log("No image is given. Use the default build-in image.");
     return 4096; // built-in image size
@@ -64,7 +84,6 @@ static long load_img() {
 
   FILE *fp = fopen(img_file, "rb");
   Assert(fp, "Can not open '%s'", img_file);
-  long size = 0;
 
   if (img_file[0] == '\0') {
     Log("No image is given. Use the default build-in image.");
@@ -76,13 +95,10 @@ static long load_img() {
     size = ftell(fp);
     Log("The image is %s, size = %ld", img_file, size);
     fseek(fp, 0, SEEK_SET);
-    #ifdef CONFIG_YSYXSOC
-    int ret = fread(flash_guest_to_host(FLASH_RESET_VECTOR), size, 1, fp);
-    #else 
     int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
-    #endif
     assert(ret == 1);
     fclose(fp);
+    #endif
   
   
   return size;
