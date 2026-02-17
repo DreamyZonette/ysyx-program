@@ -52,7 +52,7 @@ void cachesim_process(uint32_t pc) {
 void cachesim_statistics() {
     double hit_rate = (double)hit_count / total_count;
     printf("\033[1;33mcachesim hit rate: %.5lf\n\033[0m", hit_rate);
-    printf("\033[1;33mAMAT: %.5lf\n\033[0m", hit_rate * icache_access_time + (1 - hit_rate) * icache_miss_penalty);
+    printf("\033[1;33mAMAT: %.5lf\n\033[0m", icache_access_time + (1 - hit_rate) * icache_miss_penalty);
 }
 
 void cachesim_mainloop() {
