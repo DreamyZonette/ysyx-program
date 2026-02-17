@@ -29,6 +29,8 @@ static inline int check_csr_idx(int idx) {
     case 0x305: return idx; // MTVEC
     case 0x341: return idx; // mepc
     case 0x342: return idx; // mcause
+    case 0xF11: return idx; // mvendorid
+    case 0xF12: return idx; // marchid
     default: panic("Unknown csr");
   }
 }
@@ -41,6 +43,8 @@ static inline int check_csr_idx(int idx) {
     __idx == 0x305 ? &cpu.mtvec : \
     __idx == 0x341 ? &cpu.mepc : \
     __idx == 0x342 ? &cpu.mcause : \
+    __idx == 0xF11 ? &cpu.mvendorid : \
+    __idx == 0xF12 ? &cpu.marchid : \
     (assert(0 && "Invalid CSR index"), &cpu.mstatus); \
 })
 
