@@ -206,6 +206,7 @@ word_t paddr_read(paddr_t addr, int len) {
     if (addr >= FLASH_BASE && addr < FLASH_BASE + FLASH_SIZE) return flash_read(addr, len);
     if (addr >= PSRAM_BASE && addr < PSRAM_BASE + PSRAM_SIZE) return psram_read(addr, len);
     if (addr >= SDRAM_BASE && addr < SDRAM_BASE + SDRAM_SIZE) return sdram_read(addr, len);
+    printf("paddr_read addr:%x\n", addr);
     if (addr == 0x10000005) return 1;
  
     // if (addr == 0x10000005) return 0x20;// uart lsr return 0x20 
