@@ -33,8 +33,8 @@ CPU_state cpu = {
   .mepc = 0,
   .mcause = 0,
   .mtvec = 0,
-  .mvendorid = 0,
-  .marchid = 0,
+  .mvendorid = 0x79737978,
+  .marchid = 0x017DC68A,
 };
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
