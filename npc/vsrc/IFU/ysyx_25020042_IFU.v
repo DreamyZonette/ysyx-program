@@ -5,6 +5,7 @@ module ysyx_25020042_IFU(
     input                  pc_valid,
     input                  lsu_ready,
     input                  wbu_ready,
+    input                  fencei_signal,
     output reg             ifu_valid,
     output reg [31:0]      o_instruction,
     `ifdef VERILATOR
@@ -134,6 +135,7 @@ icache #(
     .reset            (reset),
     .pc_valid         (pc_valid),
     .pc_addr          (i_pc),
+    .fencei_signal    (fencei_signal),
     `ifdef VERILATOR
     .icache_hit_count (o_icache_hit_count),
     `endif

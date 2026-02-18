@@ -131,6 +131,7 @@
     wire csrrw_signal;
     wire ecall_signal;
     wire mret_signal;
+    wire fencei_signal;
     /* verilator lint_off UNUSEDSIGNAL */
     wire unknown_signal;
     /* verilator lint_on UNUSEDSIGNAL */
@@ -556,6 +557,7 @@ ysyx_25020042_IFU IFU_u (
     .lsu_ready(lsu_ready),
     .wbu_ready(wbu_ready),
     .ifu_valid(ifu_valid),
+    .fencei_signal(fencei_signal),
     .o_instruction(instruction),
     `ifdef VERILATOR
     .o_performance_counter(ifu_performance_counter),
@@ -638,6 +640,7 @@ ysyx_25020042_IDU IDU_u (
     .o_csrrw_signal(csrrw_signal),
     .o_ecall_signal(ecall_signal),
     .o_mret_signal(mret_signal),
+    .o_fencei_signal(fencei_signal),
     .o_unknown_signal(unknown_signal),
     .rs1(rs1),
     .rs2(rs2),

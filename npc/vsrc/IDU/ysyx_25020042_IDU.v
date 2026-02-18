@@ -53,6 +53,7 @@ module ysyx_25020042_IDU (
     output  o_csrrw_signal,
     output  o_ecall_signal,
     output  o_mret_signal,
+    output  o_fencei_signal,
     output  o_unknown_signal,
     output reg [4:0] rd,
     output reg [4:0] rs1,
@@ -289,6 +290,7 @@ end
         .o_csrrw_signal(o_csrrw_signal),
         .o_ecall_signal(o_ecall_signal),
         .o_mret_signal(o_mret_signal), // 原本是Rtype_u的输出
+        .o_fencei_signal(o_fencei_signal),
         .o_halt_signal(I_halt_signal)
     );
     ysyx_25020042_Utype Utype_u(

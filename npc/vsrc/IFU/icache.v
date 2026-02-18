@@ -10,6 +10,7 @@ module icache(
     `endif
 
     input              io_icache_arready,
+    input              fencei_signal    ,
     output reg         io_icache_arvalid,
     output reg [31:0]  io_icache_araddr ,
     output reg [3:0]   io_icache_arid   ,
@@ -133,7 +134,12 @@ always @(posedge clock) begin
         instruction <= 0;
     end
     else begin
-        if (state == READ) begin
+        if (fencei_signal) begin
+            for (i = 0; i < CACHE_BLOCK_BANK; i = i + 1) begin
+            icache_valid[i] <= 1'b0;
+            end
+        end
+        else if (state == READ) begin
             if (io_icache_rvalid && io_icache_rid == io_icache_arid) begin
                 if (sdram_valid) begin
                     icache_valid[burst_index]                               <= 1'b1;
