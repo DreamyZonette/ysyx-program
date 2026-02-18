@@ -31,8 +31,6 @@ static int clog2(uint32_t x);
 
 void cachesim_mainloop(int SIZE, int BANK) {
 
-    // uint32_t cache_addr[CACHE_BLOCK_BANK];
-    // uint32_t cache_valid[CACHE_BLOCK_BANK];
     CACHE_BLOCK_SIZE = SIZE;
     CACHE_BLOCK_BANK = BANK;
     m = clog2(CACHE_BLOCK_SIZE);

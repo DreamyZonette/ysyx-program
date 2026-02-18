@@ -182,6 +182,13 @@ static int cmd_cachesim (char* args){
 
 	int CACHE_BLOCK_SIZE = 16; // default
 	int CACHE_BLOCK_BANK = 4;
+
+	if (args == NULL) {
+		printf("Please input: cachesim [cache_block_size] [cache_block_bank].\n");
+		// return 0;
+		printf("Use default cache_block_size: %d\tcache_block_bank: %d.\n", CACHE_BLOCK_SIZE, CACHE_BLOCK_BANK);
+
+	}
 	cachesim_mainloop(CACHE_BLOCK_SIZE, CACHE_BLOCK_BANK);
 	return 0;
 }
