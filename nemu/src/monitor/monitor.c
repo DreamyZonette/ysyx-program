@@ -58,7 +58,7 @@ static int difftest_port = 1234;
 static long load_img() {
   long size = 0;
   #ifdef CONFIG_YSYXSOC
-  char *cache_img_file = "/home/long/ysyx-workbench/am-kernels/benchmarks/microbench/build/microbench-riscv32e-ysyxsoc.bin";
+  char *cache_img_file = "/home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/recursion-riscv32e-npc.elf";
 
     FILE *fp = fopen(cache_img_file, "rb");
     Assert(fp, "Can not open '%s'", cache_img_file);
