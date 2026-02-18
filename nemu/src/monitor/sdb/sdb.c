@@ -176,9 +176,13 @@ static int cmd_d (char* args){
 	delete_watchpoint(NO);
 	return 0;
 }
-void cachesim_mainloop();
+
+void cachesim_mainloop(int SIZE, int BANK);
 static int cmd_cachesim (char* args){
-	cachesim_mainloop();
+
+	int CACHE_BLOCK_SIZE = 16; // default
+	int CACHE_BLOCK_BANK = 4;
+	cachesim_mainloop(CACHE_BLOCK_SIZE, CACHE_BLOCK_BANK);
 	return 0;
 }
 
