@@ -26,6 +26,7 @@ FSBL_done:
     li      a0, 1
     lui     t0, 0x70000  # PSRAM
     add     ra, ra, t0 
+    fence.i
     ret
 
 SSBL_entry:

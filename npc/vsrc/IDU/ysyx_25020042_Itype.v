@@ -35,8 +35,6 @@ module ysyx_25020042_Itype (
     wire [4:0] rd;
     wire [6:0] shamt_detect;
     wire [11:0] csr_addr;
-    // reg sign_extended;
-    // reg zero_extended;
     reg [4:0] jalr_rd;
     reg shamt_signal;
     reg unknown_intstruction;
