@@ -3,10 +3,10 @@
 #include <memory/vaddr.h>
 
 #define  CACHE_BLOCK_SIZE   32
-#define  CACHE_BLOCK_BANK   8
+#define  CACHE_BLOCK_BANK   2
 #define  CACHE_BLOCK_COUNT  (CACHE_BLOCK_SIZE / 4)
 #define  m                  5 // $clog2(CACHE_BLOCK_SIZE);
-#define  n                  3 // $clog2(CACHE_BLOCK_BANK)
+#define  n                  1 // $clog2(CACHE_BLOCK_BANK)
 #define  SDRAM_BASE_ADDR    0xa0000000
 #define  SDRAM_SIZE         0x20000000
 #define icache_access_time  1
