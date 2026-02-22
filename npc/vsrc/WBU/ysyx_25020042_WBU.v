@@ -53,9 +53,12 @@ always @(posedge clock) begin
                     wbu_valid <= 1'b1;
                     case(i_inst[7:5])
                         JUMP_INST: begin
-                            if (i_B_jump_signal == 1'b1 || i_inst[4:0] == 5'b00001 || i_inst[4:0] == 5'b00010) begin
+                            if (i_B_jump_signal == 1'b1) begin
                                 jump_pc <= i_data;
                                 jump_valid <= 1'b1;
+                            end
+                            else if (i_inst[4:0] == 5'b00001 || i_inst[4:0] == 5'b00010) begin
+                                reg_wdata <= i_pc_data + 4;
                             end
                         end
 
