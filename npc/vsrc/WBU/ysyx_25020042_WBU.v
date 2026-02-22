@@ -58,6 +58,8 @@ always @(posedge clock) begin
                                 jump_valid <= 1'b1;
                             end
                             else if (i_inst[4:0] == 5'b00001 || i_inst[4:0] == 5'b00010) begin
+                                jump_pc <= i_data;
+                                jump_valid <= 1'b1;
                                 reg_wdata <= i_pc_data + 4;
                             end
                         end
