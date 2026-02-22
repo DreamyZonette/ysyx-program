@@ -213,9 +213,9 @@ module ysyx_25020042_IDU (
                             o_instruction_out[7:5] <= CSR_INST;
                             case (funct3) 
                             3'b000: begin
-                                if ({funct7, rs2} == 12'b000000000000) 
+                                if ({funct7, rs2} == 12'b000000000001) 
                                     o_instruction_out[4:0] <= 5'b00101;//ebreak                              
-                                else if ({funct7, rs2} == 12'b000000000001) 
+                                else if ({funct7, rs2} == 12'b000000000000) 
                                     o_instruction_out[4:0] <= 5'b00011;//ecall  
                                 else if ({funct7, rs2} == 12'b001100000010) 
                                     o_instruction_out[4:0] <= 5'b00100;//mret                              
