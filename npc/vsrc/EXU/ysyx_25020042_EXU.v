@@ -194,7 +194,7 @@ module ysyx_25020042_EXU(
                     5'b10000: begin // xor
                         alu_data1 = i_src1;
                         alu_data2 = i_src2;
-                        alu_ctrl = 4'b0110;
+                        alu_ctrl = 4'b0100;
                     end
                     5'b10001: begin // sub
                         alu_data1 = i_src1;
