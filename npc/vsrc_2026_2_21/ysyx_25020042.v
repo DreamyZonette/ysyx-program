@@ -72,7 +72,7 @@
     import "DPI-C" function void dpi_ebreak();
 
     always @(posedge clock) begin
-            if (ebreak_signal) begin
+            if (ebreak_signal == 1'b1) begin
                 dpi_ebreak();
             end
     end
@@ -80,24 +80,61 @@
 //------------------------------------------
 // 模块间握手信号
 //------------------------------------------
-    wire pc_valid;
-    wire ifu_valid;
-    wire ifu_ready;
-    wire idu_valid;
-    wire idu_ready;
-    wire exu_valid;
-    wire exu_ready;
-    wire lsu_valid;
-    wire lsu_ready;
     wire wbu_valid;
+    wire pc_valid;
+    wire lsu_ready;
     wire wbu_ready;
+    wire ifu_valid;
+    wire lsu_valid;
 //------------------------------------------
 // 指令信号
 //------------------------------------------
-    wire [7:0] idu_inst;
-    wire fencei_signal = idu_inst == 8'b10100001;
-    wire ecall_signal  = idu_inst == 8'b10000011;
-    wire ebreak_signal = idu_inst == 8'b10000101;
+    wire addi_signal;
+    wire andi_signal;
+    wire slti_signal;
+    wire xori_signal;
+    wire ori_signal;
+    wire ebreak_signal;
+    wire jalr_signal;
+    wire lbu_signal;
+    wire lw_signal;
+    wire auipc_signal;
+    wire lui_signal;
+    wire lb_signal;
+    wire lh_signal;
+    wire lhu_signal;
+    wire srai_signal;
+    wire slli_signal;
+    wire sb_signal;
+    wire sltiu_signal;
+    wire srli_signal;
+    wire sll_signal;
+    wire jal_signal;
+    wire sw_signal;
+    wire add_signal;
+    wire and_signal;
+    wire or_signal;
+    wire xor_signal;
+    wire sub_signal;
+    wire slt_signal;
+    wire sltu_signal;
+    wire sra_signal;
+    wire srl_signal;
+    wire beq_signal;
+    wire bne_signal;
+    wire bge_signal;
+    wire bgeu_signal;
+    wire blt_signal;
+    wire bltu_signal;
+    wire sh_signal;
+    wire csrrs_signal;
+    wire csrrw_signal;
+    wire ecall_signal;
+    wire mret_signal;
+    wire fencei_signal;
+    /* verilator lint_off UNUSEDSIGNAL */
+    wire unknown_signal;
+    /* verilator lint_on UNUSEDSIGNAL */
 //------------------------------------------
 // 数据通路信号
 //------------------------------------------
@@ -107,12 +144,12 @@
     wire [31:0] src2;
     wire [31:0] offset;
     wire [5:0] shamt;
-    wire [31:0] jump_pc;
+    wire [31:0] next_pc;
     wire [31:0] pc;
     wire [31:0] instruction;
     wire [3:0] wmask;
     wire [31:0] exu_data;
-    wire [31:0] lsu_data;
+    wire [31:0] rdata;
     wire o_B_jump_signal;
     wire lsu_busy;
     wire [11:0] csr_addr;
@@ -122,15 +159,14 @@
     wire [31:0] mepc;
     wire [31:0] mcause;
     wire [31:0] mcause_wdata;
-    wire [31:0] mstatus_wdata = 32'h0;
-    wire [31:0] mtvec_wdata = 32'h0;
+    wire [31:0] mstatus_wdata;
+    wire [31:0] mtvec_wdata;
     wire [31:0] mepc_wdata;
     wire [31:0] csr_wdata;
     wire [4:0]  rs1;
     wire [4:0]  rs2;
     wire [4:0]  rd;
     wire        fault;
-    wire        jump_valid;
 //------------------------------------------
 // AXI 总线
 //------------------------------------------
@@ -400,7 +436,7 @@ ipc_counter ipc_counter_u(
     .clk(clock),
     .rst(reset),
     .pc(pc),
-    .nepc(jump_pc),
+    .nepc(next_pc),
     .ebreak(ebreak_signal),
     .ifu_performance_counter(ifu_performance_counter),
     .lsu_performance_counter(lsu_performance_counter),
@@ -502,9 +538,7 @@ clint clint_u (
 ysyx_25020042_PC PC_u(
     .clock(clock),
     .reset(reset),
-    .ifu_ready(ifu_ready),
-    .i_jump_pc(jump_pc),
-    .i_jump_valid(jump_valid),
+    .i_next_pc(next_pc),
     .wbu_valid(wbu_valid),
     .fault(fault),
     .pc_valid(pc_valid),
@@ -518,14 +552,13 @@ ysyx_25020042_PC PC_u(
 ysyx_25020042_IFU IFU_u (
     .clock(clock),
     .reset(reset),
-    .pc_valid(pc_valid),
-    .idu_ready(idu_ready),
-    .ifu_valid(ifu_valid),
-    .ifu_ready(ifu_ready),
     .i_pc(pc),
+    .pc_valid(pc_valid),
+    .lsu_ready(lsu_ready),
+    .wbu_ready(wbu_ready),
+    .ifu_valid(ifu_valid),
     .fencei_signal(fencei_signal),
     .o_instruction(instruction),
-
     `ifdef VERILATOR
     .o_performance_counter(ifu_performance_counter),
     `ifdef ICACHE_ON
@@ -555,21 +588,63 @@ ysyx_25020042_IFU IFU_u (
 ysyx_25020042_IDU IDU_u (
     .clock(clock),
     .reset(reset),
-    .ifu_valid(ifu_valid),
-    .exu_ready(exu_ready),
-    .idu_ready(idu_ready),
-    .idu_valid(idu_valid),
     `ifdef VERILATOR
+    .inst_valid(ifu_valid & (wbu_ready | lsu_ready)),
     .csr_perfomance_counter(csr_performance_counter),
     `endif
     .i_inst(instruction),
-    .o_instruction_out(idu_inst),
     .o_imm(imm),
-    .o_csr_addr(csr_addr),
+    .o_offset(offset),
     .o_shamt(shamt),
-    .o_rd(rd),
-    .o_rs1(rs1),
-    .o_rs2(rs2)
+    .o_wmask(wmask),
+    .o_csr_addr(csr_addr),
+    .o_addi_signal(addi_signal),
+    .o_andi_signal(andi_signal),
+    .o_slti_signal(slti_signal),
+    .o_xori_signal(xori_signal),
+    .o_ori_signal(ori_signal),
+    .o_ebreak_signal(ebreak_signal),
+    .o_jalr_signal(jalr_signal),
+    .o_lbu_signal(lbu_signal),
+    .o_lw_signal(lw_signal),
+    .o_auipc_signal(auipc_signal),
+    .o_lui_signal(lui_signal),
+    .o_lb_signal(lb_signal),
+    .o_lh_signal(lh_signal),
+    .o_lhu_signal(lhu_signal),
+    .o_srai_signal(srai_signal),
+    .o_slli_signal(slli_signal),
+    .o_sb_signal(sb_signal),
+    .o_sltiu_signal(sltiu_signal),
+    .o_srli_signal(srli_signal),
+    .o_sll_signal(sll_signal),
+    .o_jal_signal(jal_signal),
+    .o_sw_signal(sw_signal),
+    .o_add_signal(add_signal),
+    .o_and_signal(and_signal),
+    .o_or_signal(or_signal),
+    .o_xor_signal(xor_signal),
+    .o_sub_signal(sub_signal),
+    .o_slt_signal(slt_signal),
+    .o_sltu_signal(sltu_signal),
+    .o_sra_signal(sra_signal),
+    .o_srl_signal(srl_signal),
+    .o_beq_signal(beq_signal),
+    .o_bne_signal(bne_signal),
+    .o_bge_signal(bge_signal),
+    .o_bgeu_signal(bgeu_signal),
+    .o_blt_signal(blt_signal),
+    .o_bltu_signal(bltu_signal),
+    .o_sh_signal(sh_signal),
+    .o_csrrs_signal(csrrs_signal),
+    .o_csrrw_signal(csrrw_signal),
+    .o_ecall_signal(ecall_signal),
+    .o_mret_signal(mret_signal),
+    .o_fencei_signal(fencei_signal),
+    .o_unknown_signal(unknown_signal),
+    .rs1(rs1),
+    .rs2(rs2),
+    .rd(rd)
     );
 //------------------------------------------
 // EXU实例化
@@ -577,46 +652,123 @@ ysyx_25020042_IDU IDU_u (
 ysyx_25020042_EXU EXU_u (
     .clock(clock),
     .reset(reset),
-    .idu_valid(idu_valid),
-    .lsu_ready(lsu_ready),
-    .exu_valid(exu_valid),
-    .exu_ready(exu_ready),
-
     `ifdef VERILATOR
+    .ifu_valid(ifu_valid),
+    .slave_ready(wbu_ready | lsu_ready),
     .performance_counter(exu_performance_counter),
     `endif
-
-    .i_inst(idu_inst),
     .i_src1(src1),
     .i_src2(src2),
     .i_imm(imm),
+    .i_offset(offset),
     .i_pc_data(pc),
     .i_shamt(shamt),
     .i_csr_data(csr_data),
+    .i_addi_signal(addi_signal),
+    .i_jalr_signal(jalr_signal),
+    .i_lb_signal(lb_signal),
+    .i_lh_signal(lh_signal),
+    .i_lw_signal(lw_signal),
+    .i_lbu_signal(lbu_signal),
+    .i_lhu_signal(lhu_signal),
+    .i_xori_signal(xori_signal),
+    .i_ori_signal(ori_signal),
+    .i_andi_signal(andi_signal),
+    .i_slli_signal(slli_signal),
+    .i_srli_signal(srli_signal),
+    .i_srai_signal(srai_signal),
+    .i_slti_signal(slti_signal),
+    .i_sltiu_signal(sltiu_signal),
+    .i_beq_signal(beq_signal),
+    .i_bne_signal(bne_signal),
+    .i_blt_signal(blt_signal),
+    .i_bge_signal(bge_signal),
+    .i_bltu_signal(bltu_signal),
+    .i_bgeu_signal(bgeu_signal),
+    .i_jal_signal(jal_signal),
+    .i_sw_signal(sw_signal),
+    .i_sh_signal(sh_signal),
+    .i_sb_signal(sb_signal),
+    .i_and_signal(and_signal),
+    .i_or_signal(or_signal),
+    .i_xor_signal(xor_signal),
+    .i_srl_signal(srl_signal),
+    .i_sra_signal(sra_signal),
+    .i_auipc_signal(auipc_signal),
+    .i_lui_signal(lui_signal),
+    .i_add_signal(add_signal),
+    .i_sub_signal(sub_signal),
+    .i_sll_signal(sll_signal),
+    .i_slt_signal(slt_signal),
+    .i_sltu_signal(sltu_signal),
+    .i_ebreak_signal(ebreak_signal),
+    .i_csrrs_signal(csrrs_signal),
+    .i_csrrw_signal(csrrw_signal),
+    .i_ecall_signal(ecall_signal),
+    .i_mret_signal(mret_signal),
     .o_B_jump_signal(o_B_jump_signal),
     .o_data(exu_data)
     );
-
+//------------------------------------------
+// WBU实例化
+//------------------------------------------
+ysyx_25020042_WBU WBU_u (
+    .clock(clock),
+    .reset(reset),
+    .i_exu_data(exu_data),
+    .i_cur_pc(pc),
+    .i_B_jump_signal(o_B_jump_signal),
+    .i_jal_signal(jal_signal),
+    .i_jalr_signal(jalr_signal),
+    .i_lsu_busy(lsu_busy),
+    .i_csrrw_signal(csrrw_signal),
+    .i_csrrs_signal(csrrs_signal),
+    .i_mret_signal(mret_signal),
+    .i_ecall_signal(ecall_signal),
+    .i_load_wdata(rdata),
+    .i_csr_rdata(csr_data),
+    .i_mstatus_rdata(mstatus),
+    .i_mtvec_rdata(mtvec),
+    .i_mepc_rdata(mepc),
+    .i_mcause_rdata(mcause),
+    .ifu_valid(ifu_valid),
+    .lsu_valid(lsu_valid),
+    .wbu_ready(wbu_ready),
+    .wbu_valid(wbu_valid),
+    .csr_wdata(csr_wdata),
+    .reg_wdata(wdata),
+    .o_mstatus_wdata(mstatus_wdata),
+    .o_mtvec_wdata(mtvec_wdata),
+    .o_mepc_wdata(mepc_wdata),
+    .o_mcause_wdata(mcause_wdata),
+    .next_pc(next_pc)
+    );
 //------------------------------------------
 // LSU实例化
 //------------------------------------------
 ysyx_25020042_LSU LSU_u (
     .clock(clock),
     .reset(reset),
-    .exu_valid(exu_valid),
+    .i_lbu_signal(lbu_signal),
+    .i_lhu_signal(lhu_signal),
+    .i_lb_signal(lb_signal),
+    .i_lh_signal(lh_signal),
+    .i_lw_signal(lw_signal),
+    .i_sb_signal(sb_signal),
+    .i_sh_signal(sh_signal),
+    .i_sw_signal(sw_signal),
+    .i_src2(src2),
+    .i_data(exu_data),
+    .i_wmask(wmask),
+    .ifu_valid(ifu_valid),
     .wbu_ready(wbu_ready),
     .lsu_valid(lsu_valid),
     .lsu_ready(lsu_ready),
-
-    .i_inst(idu_inst),
-    .i_src2(src2),
-    .i_data(exu_data),
-    .o_rdata(lsu_data),
-
-    `ifdef VERILATOR
+    .o_lsu_busy(lsu_busy),
+    .o_rdata(rdata),
+        `ifdef VERILATOR
     .performance_counter(lsu_performance_counter),
     `endif
-
     // axi 握手信号
     .lsu_araddr(io_lsu_araddr),
     .lsu_arvalid(io_lsu_arvalid),
@@ -653,33 +805,6 @@ ysyx_25020042_LSU LSU_u (
     .lsu_bid(io_lsu_bid)
 );
 
-//------------------------------------------
-// WBU实例化
-//------------------------------------------
-ysyx_25020042_WBU WBU_u (
-    .clock(clock),
-    .reset(reset),
-    .lsu_valid(lsu_valid),
-    .wbu_ready(wbu_ready),
-    .wbu_valid(wbu_valid),
-
-    .i_data(exu_data),
-    .i_pc_data(pc),
-    .i_B_jump_signal(o_B_jump_signal),
-    .i_inst(idu_inst),
-    .i_load_wdata(lsu_data),
-    .i_csr_rdata(csr_data),
-    .i_mtvec_rdata(mtvec),
-    .i_mepc_rdata(mepc),
-    .csr_wdata(csr_wdata),
-    .reg_wdata(wdata),
-    .o_mepc_wdata(mepc_wdata),
-    .o_mcause_wdata(mcause_wdata),
-    .jump_pc(jump_pc),
-    .jump_valid(jump_valid)
-    );
-
-
 
 //------------------------------------------
 // CSR实例化
@@ -690,15 +815,15 @@ ysyx_25020042_csr csr_u (
     .i_ecall_signal(ecall_signal),
     .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),
-    .i_mstatus_wdata(mstatus_wdata),
     .i_mcause_wdata(mcause_wdata),
+    .i_mstatus_wdata(mstatus_wdata),
     .i_mtvec_wdata(mtvec_wdata),
     .i_mepc_wdata(mepc_wdata),
     .wbu_valid(wbu_valid),
+    .o_mstatus(mstatus),
     .o_mtvec(mtvec),
     .o_mepc(mepc),
-    .o_mstatus(),
-    .o_mcause(),
+    .o_mcause(mcause),
     .o_csr_rdata(csr_data)
 );
 //------------------------------------------

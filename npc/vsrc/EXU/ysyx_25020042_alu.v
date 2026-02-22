@@ -1,252 +1,66 @@
 
-/* verilator lint_off DECLFILENAME */
-// Modified by Long for NPC
+
 module ysyx_25020042_alu (
-    input [31:0] i_src1,
-    input [31:0] i_src2,
-    input [31:0] i_imm ,
-    input [31:0] i_offset,
-    input [31:0] i_pc_data,
-    input [5:0]       i_shamt,
-    input [31:0]      i_csr_data,
-    input             i_addi_signal,
-    input             i_jalr_signal,
-    input             i_lb_signal,
-    input             i_lh_signal,
-    input             i_lw_signal,
-    input             i_lbu_signal,
-    input             i_lhu_signal,
-    input             i_xori_signal,
-    input             i_ori_signal,
-    input             i_andi_signal,
-    input             i_slli_signal,
-    input             i_srli_signal,
-    input             i_srai_signal,
-    input             i_slti_signal,
-    input             i_sltiu_signal,
-    input             i_beq_signal,
-    input             i_bne_signal,
-    input             i_blt_signal,
-    input             i_bge_signal,
-    input             i_bltu_signal,
-    input             i_bgeu_signal,
-    input             i_jal_signal,
-    input             i_sw_signal,
-    input             i_sh_signal,
-    input             i_sb_signal,
-    input             i_and_signal,
-    input             i_or_signal,
-    input             i_xor_signal,
-    input             i_srl_signal,
-    input             i_sra_signal,
-    input             i_auipc_signal,
-    input             i_lui_signal,
-    input             i_add_signal,
-    input             i_sub_signal,
-    input             i_sll_signal,
-    input             i_slt_signal,
-    input             i_sltu_signal,
-    input             i_ebreak_signal,
-    input             i_csrrs_signal,
-    input             i_csrrw_signal,
-    input             i_ecall_signal,
-    input             i_mret_signal,
-    output wire       o_B_jump_signal,
-    output wire [31:0] o_data
-    );
+    input [31:0] data1,
+    input [31:0] data2,
+    input [3:0] ALUctrl,
+    output reg [31:0] o_data
+);
 
-    wire [2:0] ALUctrl;
-    wire [31:0] adder_out;
-    wire [31:0] signed_shift_out;
-    wire [31:0] unsigned_shift_out;
-    wire [31:0] slt_out;
-    wire [31:0] B_out;
-    wire [31:0] XOR_out;
-    wire [31:0] AND_out;
-    wire [31:0] OR_out;
-    wire [31:0] data1, data2;
-    wire Add;
-    wire Logic;
-    wire Right;
-    /* verilator lint_off UNUSEDSIGNAL */
-    wire unsigned_less_than;
-    wire signed_less_than;
-    wire unsigned_greater_than;
-    wire signed_greater_than;
-    wire signed_equal;
-    wire unsigned_equal;
-    /* verilator lint_on UNUSEDSIGNAL */
+wire [31:0] adder_out;
+wire [31:0] shift_out;
+wire [31:0] less_out;
 
+always @(*) begin
+    case (ALUctrl[2:0])
+        3'b000: o_data = adder_out;
+        3'b001: o_data = shift_out;
+        3'b010: o_data = less_out;
+        3'b011: o_data = data2;
+        3'b100: o_data = data1 ^ data2;
+        3'b101: o_data = shift_out;
+        3'b110: o_data = data1 | data2;
+        3'b111: o_data = data1 & data2;
+    endcase
+end
 
-    assign ALUctrl = (i_addi_signal | i_jalr_signal | i_lb_signal | i_lh_signal |
-                    i_lw_signal | i_lbu_signal | i_lhu_signal | i_auipc_signal |
-                    i_add_signal | i_sub_signal | i_jal_signal | i_sw_signal |
-                    i_sh_signal | i_sb_signal) ? 3'b000 :
-                    (i_srai_signal | i_sra_signal) ? 3'b001 :
-                    (i_slli_signal | i_srli_signal | i_sll_signal | i_srl_signal ) ? 3'b010 :
-                    (i_slti_signal | i_sltiu_signal | i_slt_signal | i_sltu_signal) ? 3'b011 :
-                    (i_beq_signal | i_bne_signal | i_blt_signal | i_bge_signal |
-                    i_bltu_signal | i_bgeu_signal) ? 3'b100 :
-                    (i_xori_signal | i_xor_signal) ? 3'b101 :
-                    (i_andi_signal | i_and_signal | i_lui_signal | i_csrrw_signal |
-                    i_csrrs_signal | i_ecall_signal | i_mret_signal | i_ebreak_signal) ? 3'b110 :
-                    (i_ori_signal | i_or_signal) ? 3'b111 : 
-                         3'b000;
-
-    ysyx_25020042_MuxKeyWithDefault #(8, 3, 32) ALU_out (o_data, ALUctrl, 32'b0, {
-    3'b000, adder_out,
-    3'b001, signed_shift_out,
-    3'b010, unsigned_shift_out,
-    3'b011, slt_out,
-    3'b100, B_out,
-    3'b101, XOR_out,
-    3'b110, AND_out,
-    3'b111, OR_out
-  });
-  // adder 控制信号
-  assign Add = (i_slt_signal | i_sltu_signal | i_slti_signal | i_sltiu_signal |
-              i_sub_signal) ? 1'b0 : 1'b1;
-
-  assign data1 = (i_auipc_signal | i_jal_signal | i_beq_signal |i_bne_signal |
-                 i_blt_signal | i_bge_signal | i_bltu_signal | i_bgeu_signal) ? i_pc_data : 
-                 i_lui_signal ? i_imm : i_src1;
-  assign data2 = (i_lui_signal | i_csrrw_signal) ? 32'hffffffff :
-                 (i_ecall_signal | i_mret_signal | i_ebreak_signal) ? 32'h0 :
-                 (i_csrrs_signal) ? i_csr_data : 
-                 (i_beq_signal | i_bne_signal | i_blt_signal | i_bge_signal |
-                 i_bltu_signal | i_bgeu_signal | i_jal_signal) ? i_offset :
-                 (i_add_signal | i_sub_signal | i_and_signal | i_or_signal |
-                 i_xor_signal | i_slt_signal | i_sltu_signal | i_sll_signal |
-                 i_srl_signal | i_sra_signal) ? i_src2 : 
-                 (i_slli_signal | i_srli_signal | i_srai_signal)? {26'b0 ,i_shamt}: i_imm;
-  assign Logic = (i_sra_signal | i_srai_signal) ? 1'b0 : 1'b1;
-  assign Right = (i_srl_signal | i_srli_signal | i_srai_signal | i_sra_signal) ? 1'b1 : 1'b0;
-
-  assign XOR_out = data1 ^ data2;
-  assign AND_out = data1 & data2;
-  assign OR_out  = data1 | data2;
-  assign slt_out[0] = (i_sltiu_signal & unsigned_less_than) | (i_slti_signal & signed_less_than) |
-                      (i_sltu_signal & unsigned_less_than) | (i_slt_signal & signed_less_than);
-  assign slt_out[31:1] = 31'b0;
-  assign B_out = (i_beq_signal | i_bne_signal | i_blt_signal | i_bge_signal |
-                 i_bltu_signal | i_bgeu_signal) ? adder_out : 32'b0;
-  assign o_B_jump_signal = (i_beq_signal & B_unsigned_equal) |
-                          (i_bne_signal & ~B_unsigned_equal) |
-                          (i_blt_signal & B_signed_less_than) |
-                          (i_bge_signal & (B_signed_greater_than | B_signed_equal)) |
-                          (i_bltu_signal & B_unsigned_less_than) |
-                          (i_bgeu_signal & (B_unsigned_greater_than | B_unsigned_equal));
-
-  wire overflow;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-  adder adder_u (
-    .Add(Add),
+adder u_adder (
+    .Add(~ALUctrl[3]),
     .x(data1),
     .y(data2),
-    .sum(adder_out),
-    .cout_carry(overflow)
-  );
+    .sum(adder_out)
+);
 
-assign unsigned_shift_out = signed_shift_out;
- barrel_shifter_param barrel_shifter_param_u(
-    .Logic(Logic),
-    .Right(Right),
+barrel_shifter_param u_shift (
+    .Logic(~ALUctrl[3]),
+    .Right(ALUctrl[2:0] == 3'b101),
     .data_i(data1),   
     .shift_amt(data2[4:0]), 
-    .data_o(signed_shift_out)     
+    .data_o(shift_out)  
 );
 
-assign unsigned_less_than = ~overflow;
-assign unsigned_equal = ~(|adder_out[31:0]);
-assign unsigned_greater_than = overflow & (|adder_out);
-
-wire signs_different, sign_x_result_sign_diff;
-wire sign_x, sign_y, result_sign, signed_overflow;
-assign sign_x = data1[31];
-assign sign_y = data2[31];
-assign result_sign = adder_out[31];
-assign signs_different = sign_x ^ sign_y;
-assign sign_x_result_sign_diff = sign_x ^ result_sign;
-assign signed_overflow = signs_different & sign_x_result_sign_diff;
-
-assign signed_equal = ~(|adder_out[31:0]);
-assign signed_less_than = result_sign ^ signed_overflow;
-assign signed_greater_than = ~signed_less_than & ~signed_equal;
-
-// 实例化第二个加法器，用于计算B指令
-    wire [31:0] cp_result;
-    wire B_overflow;
-    wire B_unsigned_less_than;
-    wire B_signed_less_than;
-    wire B_unsigned_greater_than;
-    wire B_signed_greater_than;
-    wire B_signed_equal;
-    wire B_unsigned_equal;
-  adder adder_u_2 (
-    .Add(1'b0),
-    .x(i_src1),
-    .y(i_src2),
-    .sum(cp_result),
-    .cout_carry(B_overflow)
-  );
-
-assign B_unsigned_less_than = ~B_overflow;
-assign B_unsigned_equal = ~(|cp_result[31:0]);
-assign B_unsigned_greater_than = B_overflow & (|cp_result);
-
-wire   B_signs_different, B_sign_x_result_sign_diff;
-wire   B_sign_x, B_sign_y, B_result_sign, B_signed_overflow;
-assign B_sign_x = i_src1[31];
-assign B_sign_y = i_src2[31];
-assign B_result_sign = cp_result[31];
-assign B_signs_different = B_sign_x ^ B_sign_y;
-assign B_sign_x_result_sign_diff = B_sign_x ^ B_result_sign;
-assign B_signed_overflow = B_signs_different & B_sign_x_result_sign_diff;
-
-assign B_signed_equal = ~(|cp_result[31:0]);
-assign B_signed_less_than = B_result_sign ^ B_signed_overflow;
-assign B_signed_greater_than = ~B_signed_less_than & ~B_signed_equal;
-
-
-
+comparer u_comparer (
+    .sign(~ALUctrl[3]),
+    .x(data1),
+    .y(data2),
+    .less_out(less_out)
+);
 
 endmodule
 
-
-module full_1_adder (
-    input x,
-    input y,
-    input cin,
-    output sum,
-    output cout
-);
-
-    assign sum = x ^ y ^ cin;
-    assign cout = (x & y) | (cin & (x ^ y));
-
-endmodule
-
-module adder_32 (
+module comparer (
+    input sign,
     input [31:0] x,
     input [31:0] y,
-    input cin,
-    output [31:0] sum,
-    output cout_carry
+    output reg [31:0]less_out
 );
-    wire [31:0] cout;
-    assign cout_carry = cout[31];
-
-    genvar i;
-    generate
-        for (i = 0; i < 32; i = i + 1) begin : adder_32_gen
-            full_1_adder adder_i (
-               .x(x[i]),
-               .y(y[i]),
-               .cin(i == 0 ? cin : cout[i-1]),
-               .sum(sum[i]),
-               .cout(cout[i])
-            );
-        end
-    endgenerate
+always @(*) begin
+    if (sign) begin
+        less_out = $signed(x) < $signed(y) ? 32'h00000001 : 32'h00000000;
+    end else begin
+        less_out = x < y ? 32'h00000001 : 32'h00000000;
+    end
+end
 
 endmodule
 
@@ -254,22 +68,15 @@ module adder (
     input Add,
     input [31:0] x,
     input [31:0] y,
-    output [31:0] sum,
-    output cout_carry
+    output reg [31:0] sum
 );
 
-wire cin;
-wire [31:0] processed_y;
-assign cin = Add ? 1'b0 : 1'b1;
-assign processed_y = Add ? y : ~y;
-
-adder_32 adder_32_u (
-   .x(x),
-   .y(processed_y),
-   .cin(cin),
-   .sum(sum),
-   .cout_carry(cout_carry)
-);
+always @(*) begin
+    if (Add)
+        sum = x + y;
+    else
+        sum = x + ~y + 1;
+end
 
 endmodule
 
@@ -310,4 +117,3 @@ assign Lstage4 = shift_amt[4] ? {Lstage3[15:0], 16'b0} : Lstage3;
 assign data_o = Right ? stage4 : Lstage4; 
 /* verilator lint_on UNUSEDSIGNAL */
 endmodule
-/* verilator lint_on DECLFILENAME */
