@@ -21,20 +21,22 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
             `endif
             pc_valid <= 1'b1;
         end 
-        else if (fault)begin
-            o_pc <= 0;
-        end
-        else if (i_jump_valid) begin
-            o_pc <= i_jump_pc;
-            pc_valid <= 1'b1;
-        end
-        else if (ifu_ready)begin
-            pc_valid <= 1'b1;
-            o_pc <= o_pc + 4;
-        end
+        else begin
+            if (fault)begin
+                o_pc <= 0;
+            end
+            else if (i_jump_valid) begin
+                o_pc <= i_jump_pc;
+                pc_valid <= 1'b1;
+            end
+            else if (ifu_ready)begin
+                pc_valid <= 1'b1;
+                o_pc <= o_pc + 4;
+            end
 
-        if (ifu_ready & pc_valid) begin
-            pc_valid <= 1'b0;
+            if (ifu_ready & pc_valid) begin
+                pc_valid <= 1'b0;
+            end
         end
 
     end
