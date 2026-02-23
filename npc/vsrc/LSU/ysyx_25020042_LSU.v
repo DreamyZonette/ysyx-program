@@ -125,11 +125,11 @@ always @(*) begin
             end
             5'b00111: begin // sh
                 wen = 1'b1;
-                wmask = 4'b0001;
+                wmask = 4'b0011;
             end
             5'b01000: begin // sb
                 wen = 1'b1;
-                wmask = 4'b0011;
+                wmask = 4'b0001;
             end
             default: begin
                 ren = 1'b1;
