@@ -5,7 +5,7 @@
 #define CONFIG_DTRACE 0
 #define CONFIG_TRACE 1
 #define CONFIG_DIFFTEST 1
-#define CONFIG_DEVICE 0
+#define CONFIG_DEVICE 1
 #define CONFIG_LOG 1
 // #define PLATFORM_YSYXSOC
 // #define CONFIG_NVBOARD 1
