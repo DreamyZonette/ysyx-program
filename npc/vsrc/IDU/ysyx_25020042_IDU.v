@@ -16,6 +16,9 @@ module ysyx_25020042_IDU (
     input  wire [4:0]    i_prev_rd_1           ,
     input  wire [4:0]    i_prev_rd_2           ,
     output reg  [7:0]    o_instruction_out     ,
+    `ifdef VERILATOR
+    output reg [31:0]    o_instruction_data    ,
+    `endif
     output reg  [31:0]   o_imm                 ,
     output reg  [31:0]   o_pc_data             ,
     output reg  [11:0]   o_csr_addr            ,
@@ -173,10 +176,17 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
+        if (reset) begin
             o_pc_data <= 32'b0;
+            `ifdef VERILATOR
+                o_instruction_data <= 32'b0;
+            `endif
+        end
         else if (ifu_valid & idu_ready) begin
-                o_pc_data <= i_pc_data;
+            o_pc_data <= i_pc_data;
+                `ifdef VERILATOR
+                    o_instruction_data <= i_inst;
+                `endif
         end
     end
 

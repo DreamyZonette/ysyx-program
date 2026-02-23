@@ -54,6 +54,7 @@ extern VerilatedFstC* tfp;
 extern VysyxSoCFull* top;
 #else
 extern Vysyx_25020042* top;
+#define __pc_data__ top->rootp->ysyx_25020042__DOT__lsu_to_wbu_pc_data
 #endif
 
 #endif

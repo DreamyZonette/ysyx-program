@@ -150,6 +150,11 @@
     wire [11:0] exu_to_lsu_csr_addr;
     wire [11:0] lsu_to_wbu_csr_addr;
     wire [11:0] wbu_csr_addr;
+     `ifdef VERILATOR
+    wire [31:0] idu_to_exu_instrction_data;
+    wire [31:0] exu_to_lsu_instrction_data;
+    wire [31:0] lsu_to_wbu_instrction_data;
+    `endif
 //------------------------------------------
 // AXI 总线
 //------------------------------------------
@@ -268,7 +273,7 @@
 //------------------------------------------
 // 性能计数器
 //------------------------------------------    
-        `ifdef VERILATOR
+    `ifdef VERILATOR
     wire [63:0] ifu_performance_counter;
     wire [63:0] exu_performance_counter;
     wire [63:0] lsu_performance_counter;
@@ -582,6 +587,7 @@ ysyx_25020042_IDU IDU_u (
     .idu_valid(idu_valid),
     `ifdef VERILATOR
     .csr_perfomance_counter(csr_performance_counter),
+    .o_instruction_data(idu_to_exu_instrction_data),
     `endif
 
     .i_jump_valid(jump_valid),
@@ -612,6 +618,8 @@ ysyx_25020042_EXU EXU_u (
 
     `ifdef VERILATOR
     .performance_counter(exu_performance_counter),
+    .i_instruction_data(idu_to_exu_instrction_data),
+    .o_instruction_data(exu_to_lsu_instrction_data),
     `endif
 
     .i_inst(idu_inst),
@@ -664,6 +672,8 @@ ysyx_25020042_LSU LSU_u (
 
     `ifdef VERILATOR
     .performance_counter(lsu_performance_counter),
+    .i_instruction_data(exu_to_lsu_instrction_data),
+    .o_instruction_data(lsu_to_wbu_instrction_data),
     `endif
 
     // axi 握手信号
@@ -711,6 +721,10 @@ ysyx_25020042_WBU WBU_u (
     .lsu_valid(lsu_valid),
     .wbu_ready(wbu_ready),
     .wbu_valid(wbu_valid),
+
+    `ifdef VERILATOR
+    .i_instruction_data(lsu_to_wbu_instrction_data),
+    `endif
 
     .i_data(lsu_data),
     .i_pc_data(exu_to_lsu_pc_data),

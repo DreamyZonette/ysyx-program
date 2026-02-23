@@ -15,10 +15,16 @@ module ysyx_25020042_LSU(
     input [31:0]                    i_csr_data,
     input [11:0]                    i_csr_addr,
     input [4:0]                     i_rd,
+    `ifdef VERILATOR
+    input  [31:0]                   i_instruction_data,
+    `endif
 
     output reg [7:0]                o_inst,
     output reg [31:0]               o_data,
     output reg [31:0]               o_pc_data,
+    `ifdef VERILATOR
+    output reg [31:0]               o_instruction_data,
+    `endif
     output reg [31:0]               o_csr_data,
     output reg [11:0]               o_csr_addr,
     output reg [4:0]                o_rd,
@@ -126,6 +132,9 @@ always @(posedge clock) begin
         o_rd <= 5'b0;
         o_csr_data <= 32'b0;
         o_csr_addr <= 12'b0;
+        `ifdef VERILATOR
+            o_instruction_data <= 32'b0;
+        `endif
     end
     else if(exu_valid & lsu_ready) begin
         o_inst <= i_inst;
@@ -133,6 +142,9 @@ always @(posedge clock) begin
         o_rd <= i_rd;
         o_csr_data <= i_csr_data;
         o_csr_addr <= i_csr_addr;
+        `ifdef VERILATOR
+            o_instruction_data <= i_instruction_data;
+        `endif
     end
     else if (lsu_valid & wbu_ready ) 
         o_rd <= 5'b0;

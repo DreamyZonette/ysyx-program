@@ -20,11 +20,17 @@ module ysyx_25020042_EXU(
     input wire [11:0] i_csr_addr,
     input wire [31:0] i_mepc_rdata,
     input wire [31:0] i_mtvec_rdata,
+    `ifdef VERILATOR
+    input  [31:0]     i_instruction_data,
+    `endif
     input wire [4:0]  i_rd,
     output reg [31:0]  o_csr_data,
     output reg [11:0]  o_csr_addr,
     output reg  [7:0]  o_idu_inst,
     output reg  [31:0] o_pc_data,
+    `ifdef VERILATOR
+    output reg [31:0] o_instruction_data,
+    `endif
     output reg  [31:0] o_src2,
     output reg  [4:0] o_rd,
     output reg [31:0] jump_pc,
@@ -115,6 +121,9 @@ end
             o_src2     <= 0;
             o_rd       <= 0;
             o_csr_addr <= 0;
+            `ifdef VERILATOR
+                o_instruction_data <= 32'b0;
+            `endif
         end
         else if (idu_valid & exu_ready) begin
             o_data <= alu_out;
@@ -124,6 +133,9 @@ end
             o_src2     <= i_src2;
             o_rd       <= i_rd;
             o_csr_addr <= i_csr_addr;
+            `ifdef VERILATOR
+                o_instruction_data <= i_instruction_data;
+            `endif
         end
         else if (lsu_ready & exu_valid)
             o_rd <= 0;
