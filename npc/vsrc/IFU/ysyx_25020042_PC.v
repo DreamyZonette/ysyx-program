@@ -3,6 +3,7 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
     input              clock,
     input              reset,
     input              ifu_ready,
+    input              ifu_valid,
     input              fault,
     output reg         pc_valid,
 
@@ -15,9 +16,9 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
     always @(posedge clock) begin
         if (reset)begin
             `ifndef PLATFORM_NPC
-            o_pc <= 32'h3000_0000 - 4;
+            o_pc <= 32'h3000_0000;
             `else
-            o_pc <= 32'h8000_0000 - 4;
+            o_pc <= 32'h8000_0000;
             `endif
             pc_valid <= 1'b1;
         end 
@@ -27,16 +28,15 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
             end
             else if (i_jump_valid) begin
                 o_pc <= i_jump_pc;
-                pc_valid <= 1'b1;
             end
             else if (ifu_ready)begin
-                pc_valid <= 1'b1;
                 o_pc <= o_pc + 4;
             end
-
-            if (ifu_ready & pc_valid) begin
+            if (ifu_valid) 
+                pc_valid <= 1'b1;
+            else if (ifu_ready & pc_valid) 
                 pc_valid <= 1'b0;
-            end
+            
         end
 
     end

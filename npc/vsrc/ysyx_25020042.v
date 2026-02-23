@@ -527,6 +527,7 @@ ysyx_25020042_PC PC_u(
     .clock(clock),
     .reset(reset),
     .ifu_ready(ifu_ready),
+    .ifu_valid(ifu_valid),
     .fault(fault),
     .pc_valid(pc_valid),
     .i_jump_pc(jump_pc),
