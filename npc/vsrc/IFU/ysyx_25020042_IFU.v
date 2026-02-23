@@ -115,7 +115,7 @@ always @(posedge clock) begin
         Control_Hazard <= 1'b0;
     end
     else begin
-        if((i_jump_valid && state == READY) || (pc_valid & ifu_ready)) begin
+        if(i_jump_valid && ((state == READY) || (pc_valid & ifu_ready))) begin
             Control_Hazard <= 1'b1;
         end
         if (Control_Hazard & instruction_ready)
