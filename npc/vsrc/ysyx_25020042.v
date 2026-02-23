@@ -150,6 +150,7 @@
     wire [11:0] exu_to_lsu_csr_addr;
     wire [11:0] lsu_to_wbu_csr_addr;
     wire [11:0] wbu_csr_addr;
+    wire    pc_update;
      `ifdef VERILATOR
     wire [31:0] idu_to_exu_instrction_data;
     wire [31:0] exu_to_lsu_instrction_data;
@@ -527,7 +528,7 @@ ysyx_25020042_PC PC_u(
     .clock(clock),
     .reset(reset),
     .ifu_ready(ifu_ready),
-    .ifu_valid(ifu_valid),
+    .pc_update(pc_update),
     .fault(fault),
     .pc_valid(pc_valid),
     .i_jump_pc(jump_pc),
@@ -546,6 +547,7 @@ ysyx_25020042_IFU IFU_u (
     .idu_ready(idu_ready),
     .ifu_valid(ifu_valid),
     .ifu_ready(ifu_ready),
+    .pc_update(pc_update),
 
     .i_jump_valid(jump_valid),
     .i_pc(pc),
