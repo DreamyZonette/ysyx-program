@@ -51,3 +51,6 @@ clean-all: clean distclean clean-tools
 
 count:
 	find . \( -name "*.c" -o -name "*.h" \) -exec cat {} + | grep -c '.*'
+	
+cachesim:
+	grep -oP '^0x[0-9a-f]{8}(?=:)' $(NEMU_HOME)/build/nemu-log.txt > $(NEMU_HOME)/build/addresses.txt

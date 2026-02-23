@@ -177,6 +177,54 @@ static int cmd_d (char* args){
 	return 0;
 }
 
+void cachesim_mainloop(int SIZE, int BANK);
+static int cmd_cachesim (char* args){
+
+	int CACHE_BLOCK_SIZE = 16; // default
+	int CACHE_BLOCK_BANK = 4;
+
+	if (args == NULL) {
+		printf("Use default cache_block_size: %d\tcache_block_bank: %d.\n", CACHE_BLOCK_SIZE, CACHE_BLOCK_BANK);
+	}
+	else {
+		char args_buf[128];
+        strncpy(args_buf, args, sizeof(args_buf) - 1);
+        args_buf[sizeof(args_buf) - 1] = '\0'; // 确保字符串结束
+        
+        // 步骤2：分割第一个参数（CACHE_BLOCK_SIZE）
+        char *token = strtok(args_buf, " \t"); // 按空格/制表符分割
+        if (token != NULL) {
+            long size_val = atol(token); // 用atol更安全，避免int溢出
+            // 合法性检查：必须是正数，且合理范围
+            if (size_val % 4 == 0) {
+                CACHE_BLOCK_SIZE = (int)size_val;
+            } else {
+                printf("Invalid cache_block_size: %s, use default: %d.\n", token, CACHE_BLOCK_SIZE);
+            }
+
+            // 步骤3：分割第二个参数（CACHE_BLOCK_BANK）
+            token = strtok(NULL, " \t");
+            if (token != NULL) {
+                long bank_val = atol(token);
+                if (bank_val % 4 == 0) {
+                    CACHE_BLOCK_BANK = (int)bank_val;
+                } else {
+                    printf("Invalid cache_block_bank: %s, use default: %d.\n", token, CACHE_BLOCK_BANK);
+                }
+            } else {
+                printf("No cache_block_bank provided, use default: %d.\n", CACHE_BLOCK_BANK);
+            }
+        } else {
+            printf("Invalid argument format, use default values.\n");
+        }
+
+        // 打印最终使用的参数值
+        printf("Use cache_block_size: %d\tcache_block_bank: %d.\n", CACHE_BLOCK_SIZE, CACHE_BLOCK_BANK);
+	}
+	cachesim_mainloop(CACHE_BLOCK_SIZE, CACHE_BLOCK_BANK);
+	return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -192,6 +240,7 @@ static struct {
 	{ "x", "Display memory" , cmd_x },
 	{"p", "Do math", cmd_p},
 	{"w", "Create watchpoint", cmd_w},
+	{"cachesim", "cache simulator", cmd_cachesim},
 	{"d", "Delete watchpoint", cmd_d}
 };
 

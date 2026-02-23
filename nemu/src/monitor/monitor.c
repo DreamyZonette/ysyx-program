@@ -56,6 +56,27 @@ static int difftest_port = 1234;
 
 
 static long load_img() {
+  long size = 0;
+  #ifdef CONFIG_YSYXSOC
+  char *cache_img_file = "/home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/recursion-riscv32e-ysyxsoc.bin";
+
+    FILE *fp = fopen(cache_img_file, "rb");
+    Assert(fp, "Can not open '%s'", cache_img_file);
+
+    if (cache_img_file[0] == '\0') {
+      Log("No image is given. Use the default build-in image.");
+      return 4096; // built-in image size
+    }
+
+      // BIN文件处理逻辑（保持不变）
+      fseek(fp, 0, SEEK_END);
+      size = ftell(fp);
+      Log("The image is %s, size = %ld", cache_img_file, size);
+      fseek(fp, 0, SEEK_SET);
+      int ret = fread(flash_guest_to_host(FLASH_RESET_VECTOR), size, 1, fp);
+      assert(ret == 1);
+      fclose(fp);
+  #else
   if (img_file == NULL) {
     Log("No image is given. Use the default build-in image.");
     return 4096; // built-in image size
@@ -64,38 +85,21 @@ static long load_img() {
   FILE *fp = fopen(img_file, "rb");
   Assert(fp, "Can not open '%s'", img_file);
 
-  // 检查是否为ELF文件
-  uint32_t magic;
-  int ret = fread(&magic, sizeof(magic), 1, fp);
-  assert(ret == 1);
-  fseek(fp, 0, SEEK_SET); // 回到文件开头
-  long size = 0;
-
-  if (magic == ELF_MAGIC) {
   if (img_file[0] == '\0') {
     Log("No image is given. Use the default build-in image.");
     return 4096; // built-in image size
   }
-
-  FILE *fp = fopen(img_file, "rb");
-  if(!fp) {
-    printf("Can not open '%s'\n", img_file);
-    assert(1); // 断言失败，程序退出
-  }
-
-    fseek(fp, 0, SEEK_SET); // 回到文件开头
-    long size = 0;
 
     // BIN文件处理逻辑（保持不变）
     fseek(fp, 0, SEEK_END);
     size = ftell(fp);
     Log("The image is %s, size = %ld", img_file, size);
     fseek(fp, 0, SEEK_SET);
-    // int ret = fread(mrom_guest_to_host(MROM_RESET_VECTOR), size, 1, fp);
     int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
     assert(ret == 1);
     fclose(fp);
-  }
+    #endif
+  
   
   return size;
 }
@@ -117,6 +121,7 @@ static int parse_args(int argc, char *argv[]) {
       case 'l': log_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
       case 1: 
+        // printf("test\n");
         img_file = optarg; 
         #ifdef CONFIG_FTRACE 
           printf("test\n");
@@ -157,7 +162,6 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Perform ISA dependent initialization. */
   init_isa();
-
   /* Load the image to memory. This will overwrite the built-in image. */
   long img_size = load_img();
 

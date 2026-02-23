@@ -3,28 +3,21 @@
 module ysyx_25020042_LSU(
     input                           clock,
     input                           reset,
-    input                           i_lbu_signal,
-    input                           i_lhu_signal,
-    input                           i_lb_signal,
-    input                           i_lh_signal,
-    input                           i_lw_signal,
-    input                           i_sb_signal,
-    input                           i_sh_signal,
-    input                           i_sw_signal,
+    input                           exu_valid,
+    input                           wbu_ready,
+    output reg                      lsu_valid,
+    output reg                      lsu_ready,
+
+    input [7:0]                     i_inst,
     input [31:0]                    i_src2,
-    input [31:0]                    i_data,
+    input [31:0]                    i_data, // exu data
+    output reg [31:0]               o_rdata,
     /* verilator lint_off UNUSEDSIGNAL */
-    input [3:0]                     i_wmask,//表示写哪些位
     `ifdef VERILATOR
     output reg [63:0]               performance_counter,
     `endif
     /* verilator lint_on UNUSEDSIGNAL */
-    input                           ifu_valid,
-    input                           wbu_ready,
-    output reg                      lsu_valid,
-    output reg                      lsu_ready,
-    output                          o_lsu_busy,
-    output reg [31:0]               o_rdata,
+    // output                          o_lsu_busy,
 
     // axi 握手信号
     output reg [31:0]               lsu_araddr,
@@ -85,11 +78,10 @@ import "DPI-C" function void difftest_device_skip();
             performance_counter <= 0;
         else if ((lsu_bvalid | lsu_rvalid) & lsu_valid_signal)
             performance_counter <= performance_counter + 1;
-        // else if (i_ebreak_signal)
-        //     $display("\033[1;33mLSU Performance Counter: %8d\033[0m", performance_counter);
     end
 `endif
 
+localparam  MEM_INST     = 3'b011;
 // 状态定义
 localparam IDLE = 2'b00;
 localparam WAIT = 2'b01;
@@ -101,36 +93,59 @@ reg [1:0] state;
 reg [1:0] rresp;
 reg [1:0] bresp;
 /* verilator lint_on UNUSEDSIGNAL */
-wire [7:0] wstrb;
-wire [63:0] wdata;
+wire [3:0] wstrb;
+wire [31:0] wdata;
 wire        twice_signal;
-
-/* verilator lint_off WIDTHEXPAND */
-assign wdata = i_src2 << (i_data[1:0] * 8);
-assign wstrb = i_wmask << i_data[1:0];
-/* verilator lint_on WIDTHEXPAND */
 
 // 记得修改回来
 `ifdef PLATFORM_NPC
-// wire [31:0] shifted_rdata = (lsu_araddr >= 32'h8000_0000 && lsu_araddr < 32'h9000_0000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
 wire [31:0] shifted_rdata = lsu_rdata >> (lsu_araddr[1:0] * 8);
 
 `else 
 wire [31:0] shifted_rdata = (lsu_araddr >= 32'h3000_0000 && lsu_araddr < 32'h4000_0000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
 `endif
-// wire [31:0] shifted_rdata = (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
-wire wen = i_sb_signal | i_sh_signal | i_sw_signal;
-wire ren = i_lbu_signal | i_lhu_signal | i_lb_signal | i_lh_signal | i_lw_signal;
-assign o_lsu_busy = ren | wen;
+reg wen;
+reg ren;
+reg [3:0] wmask;
+
+/* verilator lint_off WIDTHEXPAND */
+assign wdata = i_src2 << (i_data[1:0] * 8);
+assign wstrb = wmask << i_data[1:0];
+/* verilator lint_on WIDTHEXPAND */
+
+always @(*) begin
+    wen = 1'b0;
+    ren = 1'b0;
+    wmask = 4'b0000;
+    if(i_inst[7:5] == MEM_INST) begin
+        case (i_inst[4:0])
+            5'b00110: begin // sw
+                wen = 1'b1;
+                wmask = 4'b1111;
+            end
+            5'b00111: begin // sh
+                wen = 1'b1;
+                wmask = 4'b0011;
+            end
+            5'b01000: begin // sb
+                wen = 1'b1;
+                wmask = 4'b0001;
+            end
+            default: begin
+                ren = 1'b1;
+            end
+    endcase
+    end
+end
 
 always @(posedge clock) begin
     if(reset) begin
         state <= IDLE;
-        lsu_ready <= 1'b0;
+        o_rdata <= 32'b0;
+        lsu_ready <= 1'b1;
         lsu_valid <= 1'b0;
         lsu_arvalid <= 1'b0;
         lsu_awvalid <= 1'b0;
-        o_rdata <= 32'b0;
         lsu_araddr <= 32'b0;
         lsu_awaddr <= 32'b0;
         lsu_rready <= 1'b0;
@@ -151,85 +166,75 @@ always @(posedge clock) begin
     else begin
         case (state)
             IDLE: begin
-                if (lsu_rready) begin
-                    lsu_rready <= 1'b0;
-                end
-                if (lsu_bready) begin
-                    lsu_bready <= 1'b0;
-                end
-                if((ifu_valid && (wen || ren))) begin
-                    state <= WAIT;
-                    lsu_ready <= 1'b1;
-                        lsu_wdata <= wdata[31:0];
-                        lsu_wstrb <= wstrb[3:0];
+                if(exu_valid) begin
+                    if (wen || ren) begin
+                        state <= WAIT;
+                        lsu_ready <= 1'b0;
+
+                        lsu_wdata <= wdata;
+                        lsu_wstrb <= wstrb;
                         lsu_araddr <= i_data;
-                        lsu_awaddr <= i_data;                    // end
-                    if (wen) begin
-                        lsu_awvalid <= 1'b1;
-                        lsu_wvalid <= 1'b1;
-                        lsu_wlast <= 1'b1;
-                        `ifdef LSU_MTRACE
-                            $display("LSU: write addr: %x data: %x", i_data, wdata[31:0]);
-                        `endif
+                        lsu_awaddr <= i_data;  
+                        case (i_inst[4:0])
+                            5'b00110: begin // sw
+                                lsu_arsize <= 3'b000;
+                                lsu_awsize <= 3'b010;
+                            end
+                            5'b00111: begin // sh
+                                lsu_arsize <= 3'b000;
+                                lsu_awsize <= 3'b001;
+                            end
+                            5'b00001: begin // lw
+                                lsu_arsize <= 3'b010;
+                                lsu_awsize <= 3'b000;
+                            end
+                            5'b00010: begin // lh
+                                lsu_arsize <= 3'b001;
+                                lsu_awsize <= 3'b000;
+                            end
+                            5'b00011: begin // lhu
+                                lsu_arsize <= 3'b001;
+                                lsu_awsize <= 3'b000;
+                            end
+                            default: begin
+                                lsu_arsize <= 3'b000;
+                                lsu_awsize <= 3'b000;
+                            end
+                        endcase
+                        if (wen) begin
+                            lsu_awvalid <= 1'b1;
+                            lsu_wvalid <= 1'b1;
+                            lsu_wlast <= 1'b1;
+                            `ifdef LSU_MTRACE
+                                $display("LSU: write addr: %x data: %x", i_data, wdata);
+                            `endif
+                        end
+                        else begin
+                            lsu_rready <= 1'b1;
+                            lsu_arvalid <= 1'b1;
+                        end
                     end
                     else begin
-                        lsu_rready <= 1'b1;
-                        lsu_arvalid <= 1'b1;
+                        lsu_ready <= 1'b0;
+                        lsu_valid <= 1'b1;
                     end
-                    case (1'b1)
-                        i_lw_signal: begin
-                            lsu_arsize <= 3'b010;
-                            lsu_awsize <= 3'b010;
-                            lsu_arlen <= 8'b0000_0000;
-                            lsu_awlen <= 8'b0000_0000;
-                        end
-                        i_lhu_signal: begin
-                            lsu_arsize <= 3'b001;
-                            lsu_awsize <= 3'b001;
-                            lsu_arlen <= 8'b0000_0000;
-                            lsu_awlen <= 8'b0000_0000;
-                        end
-                        i_lh_signal: begin
-                            lsu_arsize <= 3'b001;
-                            lsu_awsize <= 3'b001;
-                            lsu_arlen <= 8'b0000_0000;
-                            lsu_awlen <= 8'b0000_0000;
-                        end
-                        i_lb_signal: begin
-                            lsu_arsize <= 3'b000;
-                            lsu_awsize <= 3'b000;
-                            lsu_arlen <= 8'b0000_0000;
-                            lsu_awlen <= 8'b0000_0000;
-                        end
-                        i_lbu_signal: begin
-                            lsu_arsize <= 3'b000;
-                            lsu_awsize <= 3'b000;
-                            lsu_arlen <= 8'b0000_0000;
-                            lsu_awlen <= 8'b0000_0000;
-                        end
-                        i_sb_signal: begin
-                            lsu_arsize <= 3'b000;
-                            lsu_awsize <= 3'b000;
-                            lsu_arlen <= 8'b0000_0000;
-                            lsu_awlen <= 8'b0000_0000;
-                        end
-                        i_sh_signal: begin
-                            lsu_arsize <= 3'b001;
-                            lsu_awsize <= 3'b001;
-                            lsu_arlen <= 8'b0000_0000;
-                            lsu_awlen <= 8'b0000_0000;
-                        end
-                        i_sw_signal: begin
-                            lsu_arsize <= 3'b010;
-                            lsu_awsize <= 3'b010;
-                            lsu_arlen <= 8'b0000_0000;
-                            lsu_awlen <= 8'b0000_0000;
-                        end
-                    endcase
                 end
                 else begin
                     state <= IDLE;
                     if (lsu_valid && wbu_ready) begin
+                        lsu_valid <= 1'b0;
+                    end
+
+                    if (lsu_rready) begin
+                        lsu_rready <= 1'b0;
+                    end
+
+                    if (lsu_bready) begin
+                        lsu_bready <= 1'b0;
+                    end
+
+                    if(lsu_valid & wbu_ready ) begin
+                        lsu_ready <= 1'b1;
                         lsu_valid <= 1'b0;
                     end
                 end
@@ -252,25 +257,17 @@ always @(posedge clock) begin
                     lsu_wvalid <= 1'b0;
                 end
 
-                if(lsu_ready ) begin
-                    lsu_ready <= 1'b0;
-                end
                 if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
                     lsu_rready <= 1'b0;
                     lsu_valid <= 1'b1;
                     rresp <= lsu_rresp;
                     state <= IDLE;
-                    case (1'b1)
-                        i_lw_signal: o_rdata <= shifted_rdata[31:0];
-                        i_lhu_signal: o_rdata <= {16'b0, shifted_rdata[15:0]};
-                        i_lh_signal: o_rdata <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
-                        i_lbu_signal: o_rdata <= {24'b0, shifted_rdata[7:0]};
-                        i_lb_signal: o_rdata <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
-                        // i_lw_signal: o_rdata <= lsu_rdata;
-                        // i_lhu_signal: o_rdata <= {16'b0, lsu_rdata[15:0]};
-                        // i_lh_signal: o_rdata <= {{16{lsu_rdata[15]}}, lsu_rdata[15:0]};
-                        // i_lbu_signal: o_rdata <= {24'b0, lsu_rdata[7:0]};
-                        // i_lb_signal: o_rdata <= {{24{lsu_rdata[7]}}, lsu_rdata[7:0]};
+                    case (i_inst[4:0])
+                        5'b00001: o_rdata <= shifted_rdata[31:0];
+                        5'b00011: o_rdata <= {16'b0, shifted_rdata[15:0]};
+                        5'b00010: o_rdata <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
+                        5'b00101: o_rdata <= {24'b0, shifted_rdata[7:0]};
+                        5'b00100: o_rdata <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
                         default: o_rdata <= 0;
                     endcase
                 end

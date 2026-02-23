@@ -1,16 +1,15 @@
 module ysyx_25020042_IFU(
     input                  clock,
     input                  reset,
-    input                  pc_valid,
-    input                  idu_ready,
-    output reg             ifu_valid,
-    output reg             ifu_ready,
-
     input      [31:0]      i_pc,
+    input                  pc_valid,
+    input                  lsu_ready,
+    input                  wbu_ready,
     input                  fencei_signal,
+    output reg             ifu_valid,
     output reg [31:0]      o_instruction,
-
     `ifdef VERILATOR
+    // input                  i_ebreak_signal,
     output     [63:0]      o_performance_counter,
     `ifdef ICACHE_ON
     output     [63:0]      o_icache_hit_count,
@@ -79,6 +78,7 @@ export "DPI-C" function get_instruction;
 
 `endif
 
+`ifdef ICACHE_ON
 
 wire instruction_ready;
 wire [31:0] instruction;
@@ -114,31 +114,16 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
-        ifu_ready <= 1'b1;
-        ifu_valid <= 1'b0;
-    end
-    else begin
-        if(ifu_ready & pc_valid) 
-            ifu_ready <= 1'b0;
-        
-        if(state == READY && instruction_ready) 
-            ifu_valid <= 1'b1;
-
-        if (idu_ready & ifu_valid) begin
-            ifu_valid <= 1'b0;
-            ifu_ready <= 1'b1;
-        end
-    end
-end
-
-always @(posedge clock) begin
-    if(reset) begin
         o_instruction <= 32'h0;
+        ifu_valid <= 1'b0;
     end
     else begin
         if(state == READY && instruction_ready) begin
             o_instruction <= instruction;
+            ifu_valid <= 1'b1;
         end
+        if(wbu_ready || lsu_ready) 
+            ifu_valid <= 1'b0;
     end
 end
 
@@ -170,5 +155,94 @@ icache #(
     .io_icache_rlast  (ifu_rlast),
     .io_icache_rid    (ifu_rid)
 );
+
+`else
+
+localparam RIDLE = 1'b0;
+localparam RWAIT_READY = 1'b1;
+localparam ARIDLE = 1'b0;
+localparam ARWAIT_READY = 1'b1;
+
+reg Rstate;
+reg ARstate;
+/* verilator lint_off UNUSEDSIGNAL */
+reg [1:0] rresp;
+/* verilator lint_on UNUSEDSIGNAL */
+
+always @(posedge clock) begin
+    if(reset) begin
+        Rstate <= RIDLE;
+        ARstate <= ARIDLE;
+        ifu_valid <= 1'b0;
+        ifu_araddr <= 32'h0;
+        ifu_arvalid <= 1'b0;
+        o_instruction <= 32'h0;
+        ifu_rready <= 1'b0;
+        rresp <= 2'b00;
+        ifu_arid <= 4'h0;
+        ifu_arsize <= 3'b010;
+        ifu_arburst <= 2'b00;
+        ifu_arlen <= 8'h0;
+    end
+    else begin
+        // 地址通道
+        case (ARstate)
+            ARIDLE: begin
+                if(pc_valid) begin
+                    ifu_araddr <= i_pc;
+                    ifu_arvalid <= 1'b1;
+                    ARstate <= ARWAIT_READY;
+                end
+                else begin
+                    ARstate <= ARIDLE;
+                end
+            end
+            ARWAIT_READY: begin
+                if(ifu_arready) begin
+                    ifu_arvalid <= 1'b0;
+                    ARstate <= ARIDLE;
+                    
+                end
+                else begin 
+                    ARstate <= ARWAIT_READY;
+                end
+            end
+
+        endcase
+
+        case(Rstate)
+            RIDLE: begin
+                if(ifu_arready && ifu_arvalid) begin
+                    Rstate <= RWAIT_READY;
+                end
+                else begin
+                    Rstate <= RIDLE;
+                end  
+                
+                if (ifu_rready) begin
+                    ifu_rready <= 1'b0;
+                end
+                if((wbu_ready || lsu_ready) && ifu_valid) begin
+                    ifu_valid <= 1'b0;
+                end 
+            end
+            RWAIT_READY: begin
+                if (ifu_rvalid & ifu_rlast & ifu_rid == ifu_arid) begin
+                    ifu_rready <= 1'b1;
+                    Rstate <= RIDLE;
+                    ifu_valid <= 1'b1;
+                    o_instruction <= ifu_rdata;
+                    rresp <= ifu_rresp;
+                end
+                else begin
+                    Rstate <= RWAIT_READY;
+                end
+            end
+        endcase
+        
+    end
+end
+
+`endif
 
 endmodule

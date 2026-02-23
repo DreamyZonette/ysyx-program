@@ -3,6 +3,7 @@ module ipc_counter(
     input clk,
     input rst,
     input [31:0] pc,
+    input [31:0] nepc,
     input        ebreak,
     input [63:0] ifu_performance_counter,
     input [63:0] exu_performance_counter,
@@ -18,7 +19,6 @@ module ipc_counter(
     wire [63:0] CSR_instructions = csr_performance_counter;
     wire [63:0] LSU_instructions = lsu_performance_counter;
 
-    reg [31:0] prev_pc;
     reg [63:0] counter;
     reg [63:0] cycle_counter;
     reg [63:0] exu_cycle_counter;
@@ -29,10 +29,6 @@ module ipc_counter(
     reg [63:0] EXU_instructions_prev;
     reg [63:0] CSR_instructions_prev;
     reg [63:0] LSU_instructions_prev;
-
-    always @(posedge clk) begin
-        prev_pc <= pc;
-    end
 
     always @(posedge clk) begin
         if (rst) begin
@@ -71,7 +67,7 @@ module ipc_counter(
             cycle_counter <= 0;
         end else begin
             cycle_counter <= cycle_counter + 1;
-            if (pc != prev_pc)
+            if (pc != nepc)
                 counter <= counter + 1;
             if (ebreak) begin
                 $display("\033[1;33mIFU Performance Counter: %16d\033[0m", ifu_performance_counter);

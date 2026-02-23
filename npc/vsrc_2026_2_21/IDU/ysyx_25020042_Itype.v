@@ -25,6 +25,7 @@ module ysyx_25020042_Itype (
     output reg o_csrrw_signal,
     output reg o_ecall_signal,
     output reg o_mret_signal,
+    output reg o_fencei_signal,
     output o_halt_signal
 );
 
@@ -34,8 +35,6 @@ module ysyx_25020042_Itype (
     wire [4:0] rd;
     wire [6:0] shamt_detect;
     wire [11:0] csr_addr;
-    // reg sign_extended;
-    // reg zero_extended;
     reg [4:0] jalr_rd;
     reg shamt_signal;
     reg unknown_intstruction;
@@ -78,6 +77,7 @@ module ysyx_25020042_Itype (
         o_csrrw_signal  = 1'b0;
         o_ecall_signal  = 1'b0;
         o_mret_signal   = 1'b0;
+        o_fencei_signal = 1'b0;
         unknown_intstruction = 1'b0;
         jalr_rd = 5'b0;
         
@@ -129,6 +129,9 @@ module ysyx_25020042_Itype (
             o_lh_signal   = (fun1 == 3'b001) ? 1'b1 : 1'b0;
             o_lbu_signal  = (fun1 == 3'b100) ? 1'b1 : 1'b0;
             o_lhu_signal  = (fun1 == 3'b101) ? 1'b1 : 1'b0;
+        end
+        7'b0001111: begin  // fence
+            o_fencei_signal = (fun1 == 3'b001) ? 1'b1 : 1'b0;
         end
         default: begin
             unknown_intstruction = 1'b1;

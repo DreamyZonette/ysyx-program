@@ -1,15 +1,11 @@
 // Modified by Long for NPC project.
 module ysyx_25020042_PC #(PC_LEN = 32)(
-    input              clock,
-    input              reset,
-    input              ifu_ready,
-    input              wbu_valid,
-    input              fault,
-    output reg         pc_valid,
-
-
-    input [PC_LEN-1:0] i_jump_pc,
-    input              i_jump_valid,
+    input clock,
+    input reset,
+    input [PC_LEN-1:0] i_next_pc,
+    input wbu_valid,
+    input fault,
+    output reg pc_valid,
     output reg [PC_LEN-1:0] o_pc
     );
     
@@ -26,13 +22,10 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
             o_pc <= 0;
         end
         else if (wbu_valid)begin
+            o_pc <= i_next_pc;
             pc_valid <= 1'b1;
-            if (i_jump_valid)
-                o_pc <= i_jump_pc;
-            else 
-                o_pc <= o_pc + 4;
         end
-        else if (ifu_ready) begin
+        else if (pc_valid) begin
             pc_valid <= 1'b0;
         end
 

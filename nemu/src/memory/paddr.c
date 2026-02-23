@@ -18,7 +18,7 @@
 #include <device/mmio.h>
 #include <isa.h>
 
-#define YSYXSOC 1
+// #define CONFIG_YSYXSOC 1
 
 
 
@@ -29,13 +29,15 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
-#ifdef YSYXSOC
+#ifdef CONFIG_YSYXSOC
+
 uint8_t sram[SRAM_SIZE] PG_ALIGN = {};
 uint8_t mrom[MROM_SIZE] PG_ALIGN = {};
 uint8_t flash[FLASH_SIZE] PG_ALIGN = {};
 uint8_t psram[PSRAM_SIZE] PG_ALIGN = {};
 uint8_t sdram[SDRAM_SIZE] PG_ALIGN = {};
 
+uint8_t* flash_guest_to_host(paddr_t paddr) { return flash + paddr - FLASH_BASE; };
 
 static word_t mrom_read(paddr_t addr, int len) {
   word_t ret = 0;
@@ -181,7 +183,7 @@ void init_mem() {
   pmem = malloc(CONFIG_MSIZE);
   assert(pmem);
 #endif
-#ifdef YSYXSOC
+#ifdef CONFIG_YSYXSOC
   memset(mrom, rand(), MROM_SIZE);
   #endif
 
@@ -198,12 +200,15 @@ word_t paddr_read(paddr_t addr, int len) {
   #endif
   
   if (likely(in_pmem(addr))) {
-    #ifdef YSYXSOC
+    #ifdef CONFIG_YSYXSOC
     if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) return mrom_read(addr, len);
     if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) return sram_read(addr, len);
     if (addr >= FLASH_BASE && addr < FLASH_BASE + FLASH_SIZE) return flash_read(addr, len);
     if (addr >= PSRAM_BASE && addr < PSRAM_BASE + PSRAM_SIZE) return psram_read(addr, len);
     if (addr >= SDRAM_BASE && addr < SDRAM_BASE + SDRAM_SIZE) return sdram_read(addr, len);
+    if (addr == 0x10000005) return 0x21;
+    if (addr >= CLINT_BASE && addr < CLINT_BASE + CLINT_SIZE) return 0;
+    
  
     // if (addr == 0x10000005) return 0x20;// uart lsr return 0x20 
     return 0;
@@ -223,12 +228,12 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     p[127] = '\0';
     log_write("%s\n", p);
   #endif
-  // #ifdef YSYXSOC
+  // #ifdef CONFIG_YSYXSOC
   //   if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) {mrom_write(addr - MROM_BASE, len, data);return;}
   //   if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) {sram_write(addr - SRAM_BASE, len, data);return;}
   // #endif
   if (likely(in_pmem(addr))) { 
-    #ifdef YSYXSOC
+    #ifdef CONFIG_YSYXSOC
     if (addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE) {mrom_write(addr, len, data);return;}
     if (addr >= SRAM_BASE && addr < SRAM_BASE + SRAM_SIZE) {sram_write(addr, len, data);return;}
     if (addr >= FLASH_BASE && addr < FLASH_BASE + FLASH_SIZE) {flash_write(addr, len, data);return;}
