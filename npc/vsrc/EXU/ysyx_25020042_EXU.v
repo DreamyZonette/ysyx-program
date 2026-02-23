@@ -214,12 +214,12 @@ module ysyx_25020042_EXU(
                     5'b10100: begin // sra
                         alu_data1 = i_src1;
                         alu_data2 = i_src2;
-                        alu_ctrl = 4'b0101;
+                        alu_ctrl = 4'b1101;
                     end
                     5'b10101: begin // srl
                         alu_data1 = i_src1;
                         alu_data2 = i_src2;
-                        alu_ctrl = 4'b1101;
+                        alu_ctrl = 4'b0101;
                     end
                     default: begin
                         alu_data1 = 0;
