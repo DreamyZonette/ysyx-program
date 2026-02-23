@@ -400,7 +400,6 @@ ipc_counter ipc_counter_u(
     .clk(clock),
     .rst(reset),
     .pc(pc),
-    .nepc(jump_pc),
     .ebreak(ebreak_signal),
     .ifu_performance_counter(ifu_performance_counter),
     .lsu_performance_counter(lsu_performance_counter),
