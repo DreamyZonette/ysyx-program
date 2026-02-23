@@ -8,6 +8,7 @@
 
 #ifdef PLATFORM_YSYXSOC
 #include "verilated.h"
+#include "VysyxSoCFull___024root.h"
 #include "VysyxSoCFull.h"
 // #include "verilated_vcd_c.h"
 #include "svdpi.h"
@@ -16,6 +17,7 @@
 #include <nvboard.h> 
 #else 
 #include "verilated.h"
+#include "Vysyx_25020042___024root.h"
 #include "Vysyx_25020042.h"
 // #include "verilated_vcd_c.h"
 #include "svdpi.h"
@@ -54,7 +56,11 @@ extern VerilatedFstC* tfp;
 extern VysyxSoCFull* top;
 #else
 extern Vysyx_25020042* top;
-#define __pc_data__ top->rootp->ysyx_25020042__DOT__lsu_to_wbu_pc_data
+#define _pc_data_ top->rootp->ysyx_25020042__DOT__WBU_u__DOT__pc
+#define _lsu_pc_data_ top->rootp->ysyx_25020042__DOT__exu_to_lsu_pc_data
+#define _instruction_data_ top->rootp->ysyx_25020042__DOT__WBU_u__DOT__instruction_data
+#define _single_inst_done_ top->rootp->ysyx_25020042__DOT__WBU_u__DOT__instruction_done
+#define _a0_data_ top->rootp->ysyx_25020042__DOT__gpr_u__DOT__a0
 #endif
 
 #endif

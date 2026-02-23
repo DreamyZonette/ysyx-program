@@ -141,18 +141,18 @@ static void execute(uint64_t n) {
     uint32_t prev_pc = dut.next_pc;
     while(!sim_finish){
       single_cycle();
-      if(prev_pc != get_pc()) break;
+      if(_single_inst_done_) break;
     }
 
       dut.pc = dut.next_pc;
-      dut.next_pc = get_pc();
+      dut.next_pc = _pc_data_;
     g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
     if (dut.pc != dut.next_pc){
       uint32_t ilen = 4;
       uint32_t cur_pc = dut.pc;
-      uint32_t cur_inst = get_instruction();
+      uint32_t cur_inst = _instruction_data_;
       char* s = p;
       s += snprintf(s, sizeof(p), "%08x:", cur_pc);
       int space_len = 2;
@@ -172,7 +172,7 @@ static void execute(uint64_t n) {
     if(print_on){
       print_on = 0;
       printf("0x%08x: %08x\n", 
-         dut.pc, get_instruction());
+         dut.pc, _instruction_data_);
     }
   }
   #endif
@@ -192,8 +192,8 @@ static void execute(uint64_t n) {
     #endif
 
     if(sim_finish) {
-      npc_state.halt_pc = get_pc();
-      npc_state.halt_ret = _gpr(10); // 寄存器返回值
+      npc_state.halt_pc = _pc_data_;
+      npc_state.halt_ret = _a0_data_; // 寄存器返回值
       npc_state.state = NPC_END;
     }
     if (npc_state.state != NPC_RUNNING) break;

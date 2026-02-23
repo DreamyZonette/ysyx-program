@@ -34,15 +34,15 @@ module ysyx_25020042_IFU(
     input      [3:0]       ifu_rid
 );
 `ifdef VERILATOR
-export "DPI-C" function get_pc;
-export "DPI-C" function get_instruction;
+// export "DPI-C" function get_pc;
+// export "DPI-C" function get_instruction;
 
-    function int unsigned get_pc();   
-        return i_pc;
-    endfunction
-    function int unsigned get_instruction();   
-        return o_instruction;
-    endfunction
+//     function int unsigned get_pc();   
+//         return i_pc;
+//     endfunction
+//     function int unsigned get_instruction();   
+//         return o_instruction;
+//     endfunction
 
     // reg ifu_valid_signal;
     // always @(posedge clock) begin
