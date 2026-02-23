@@ -6,9 +6,11 @@ module ysyx_25020042_IFU(
     output reg             ifu_valid,
     output reg             ifu_ready,
 
+    input                  i_jump_valid,
     input      [31:0]      i_pc,
     input                  fencei_signal,
     output reg [31:0]      o_instruction,
+    output wire [31:0]     o_pc_data    ,
 
     `ifdef VERILATOR
     output     [63:0]      o_performance_counter,
@@ -42,39 +44,32 @@ export "DPI-C" function get_instruction;
         return o_instruction;
     endfunction
 
-    reg ifu_valid_signal;
-    always @(posedge clock) begin
-        if(reset) begin
-            ifu_valid_signal <= 1'b0;
-        end
-        else if (pc_valid)begin
-            ifu_valid_signal <= 1'b1;
-        end
-        `ifdef ICACHE_ON
-        else if (instruction_ready) begin
-            ifu_valid_signal <= 1'b0;
-        end
-        `else
-        else if (ifu_rvalid) begin
-            ifu_valid_signal <= 1'b0;
-        end
-        `endif
-    end
+    // reg ifu_valid_signal;
+    // always @(posedge clock) begin
+    //     if(reset) begin
+    //         ifu_valid_signal <= 1'b0;
+    //     end
+    //     else if (pc_valid)begin
+    //         ifu_valid_signal <= 1'b1;
+    //     end
+    //     `ifdef ICACHE_ON
+    //     else if (instruction_ready) begin
+    //         ifu_valid_signal <= 1'b0;
+    //     end
+    //     `else
+    //     else if (ifu_rvalid) begin
+    //         ifu_valid_signal <= 1'b0;
+    //     end
+    //     `endif
+    // end
 
     reg [63:0] performance_counter;
     assign o_performance_counter = performance_counter;
     always @(posedge clock) begin
         if(reset) 
             performance_counter <= 0;
-        `ifdef ICACHE_ON
-        else if (instruction_ready)
+        else if (idu_ready & ifu_valid)
             performance_counter <= performance_counter + 1;
-        `else
-        else if (ifu_rvalid & ifu_valid_signal)
-            performance_counter <= performance_counter + 1;
-        `endif
-        // else if (i_ebreak_signal)
-        //     $display("\033[1;33mIFU Performance Counter: %d\033[0m", performance_counter);
     end
 
 `endif
@@ -83,8 +78,11 @@ export "DPI-C" function get_instruction;
 wire instruction_ready;
 wire [31:0] instruction;
 reg state ;
+reg Control_Hazard;
 localparam IDLE  = 1'b0;
 localparam READY = 1'b1;
+
+assign o_pc_data = i_pc;
 
 always @(posedge clock) begin
     if(reset) begin
@@ -93,7 +91,7 @@ always @(posedge clock) begin
     else begin
         case(state)
             IDLE: begin
-                if(pc_valid) begin
+                if(pc_valid & ifu_ready) begin
                     state <= READY;
                 end
                 else begin
@@ -114,17 +112,42 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
+        Control_Hazard <= 1'b0;
+    end
+    else begin
+        if((i_jump_valid && state == READY) || (pc_valid & ifu_ready)) begin
+            Control_Hazard <= 1'b1;
+        end
+        if (Control_Hazard & instruction_ready)
+            Control_Hazard <= 1'b0;
+    end
+end
+
+always @(posedge clock) begin
+    if(reset) begin
         ifu_ready <= 1'b1;
         ifu_valid <= 1'b0;
     end
     else begin
-        if(ifu_ready & pc_valid) 
+        if(i_jump_valid) begin
+            ifu_ready <= (state == IDLE && !(pc_valid && ifu_ready)) ? 1'b1 : 1'b0;
+            ifu_valid <= 1'b0;
+        end
+        else if(ifu_ready & pc_valid) begin
             ifu_ready <= 1'b0;
-        
-        if(state == READY && instruction_ready) 
-            ifu_valid <= 1'b1;
-
-        if (idu_ready & ifu_valid) begin
+            ifu_valid <= 1'b0;
+        end
+        else if(state == READY && instruction_ready) begin
+            if(Control_Hazard) begin
+                ifu_valid <= 1'b0;
+                ifu_ready <= 1'b1;
+            end
+            else begin
+                ifu_valid <= 1'b1;
+                ifu_ready <= 1'b0;
+            end
+        end
+        else if (idu_ready & ifu_valid) begin
             ifu_valid <= 1'b0;
             ifu_ready <= 1'b1;
         end
@@ -148,7 +171,7 @@ icache #(
 ) u_icache(
     .clock            (clock),
     .reset            (reset),
-    .pc_valid         (pc_valid),
+    .pc_valid         (pc_valid & ifu_ready),
     .pc_addr          (i_pc),
     .fencei_signal    (fencei_signal),
     `ifdef VERILATOR
