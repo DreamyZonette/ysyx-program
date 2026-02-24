@@ -35,34 +35,6 @@ module ysyx_25020042_IFU(
     input      [3:0]       ifu_rid
 );
 `ifdef VERILATOR
-// export "DPI-C" function get_pc;
-// export "DPI-C" function get_instruction;
-
-//     function int unsigned get_pc();   
-//         return i_pc;
-//     endfunction
-//     function int unsigned get_instruction();   
-//         return o_instruction;
-//     endfunction
-
-    // reg ifu_valid_signal;
-    // always @(posedge clock) begin
-    //     if(reset) begin
-    //         ifu_valid_signal <= 1'b0;
-    //     end
-    //     else if (pc_valid)begin
-    //         ifu_valid_signal <= 1'b1;
-    //     end
-    //     `ifdef ICACHE_ON
-    //     else if (instruction_ready) begin
-    //         ifu_valid_signal <= 1'b0;
-    //     end
-    //     `else
-    //     else if (ifu_rvalid) begin
-    //         ifu_valid_signal <= 1'b0;
-    //     end
-    //     `endif
-    // end
 
     reg [63:0] performance_counter;
     assign o_performance_counter = performance_counter;
@@ -119,6 +91,9 @@ always @(posedge clock) begin
     else begin
         if(i_jump_valid && ((state == READY) || (pc_valid & ifu_ready))) begin
             Control_Hazard <= 1'b1;
+            if (instruction_ready) begin
+                Control_Hazard <= 1'b0;
+            end
         end
         if (Control_Hazard & instruction_ready)
             Control_Hazard <= 1'b0;
@@ -132,7 +107,15 @@ always @(posedge clock) begin
     end
     else begin
         if(i_jump_valid) begin
-            ifu_ready <= (state == IDLE && !(pc_valid && ifu_ready)) ? 1'b1 : 1'b0;
+            if (state == IDLE && !(pc_valid && ifu_ready)) begin
+                ifu_ready <= 1'b1;
+            end
+            else if (state == READY && instruction_ready) begin
+                ifu_ready <= 1'b1;
+            end
+            else begin
+                ifu_ready <= 1'b0;
+            end
             ifu_valid <= 1'b0;
         end
         else if(ifu_ready & pc_valid) begin
