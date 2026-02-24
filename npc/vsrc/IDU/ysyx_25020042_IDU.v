@@ -5,6 +5,7 @@ module ysyx_25020042_IDU (
     input   wire         exu_ready             ,
     output  reg          idu_ready             ,
     output  reg          idu_valid             ,
+    output  reg          raw_hit               ,
     `ifdef VERILATOR
     output reg  [63:0]   csr_perfomance_counter,
     `endif
@@ -68,31 +69,7 @@ module ysyx_25020042_IDU (
     wire j_type_signal = (opcode == 7'b1101111);
     wire r_type_signal = (opcode == 7'b0110011);
 
-    reg  raw_hit;
-    // reg  [4:0] prev_rd_0;
-    // reg  [4:0] prev_rd_1;
-    // reg  [4:0] prev_rd_2;
-
- // RAW check
-    // always @(posedge clock) begin
-    //     if (reset) begin
-    //         prev_rd_0 <= 5'b0;
-    //         prev_rd_1 <= 5'b0;
-    //         prev_rd_2 <= 5'b0;
-    //     end
-    //     else begin
-    //         if (exu_ready & idu_valid & !raw_hit) begin
-    //             prev_rd_1 <= prev_rd_0;
-    //             prev_rd_2 <= prev_rd_1;
-    //             prev_rd_0 <= (r_type_signal | i_type_signal | u_type_signal | j_type_signal) ? rd : 5'b0;
-    //         end
-    //         else if (wbu_valid & raw_hit) begin
-    //             prev_rd_1 <= prev_rd_0;
-    //             prev_rd_2 <= prev_rd_1;
-    //             prev_rd_0 <= 5'b0;
-    //         end
-    //     end
-    // end
+    // reg  raw_hit;
 
     always @(*) begin
         raw_hit = 1'b0;
@@ -151,7 +128,7 @@ module ysyx_25020042_IDU (
     always @ (posedge clock) begin
         if (reset) 
             o_imm <= 32'b0;
-        else if (ifu_valid & idu_ready) begin
+        else if (ifu_valid & idu_ready & !raw_hit) begin
             case (1'b1)
                 u_type_signal: o_imm <= u_imm;
                 i_type_signal: o_imm <= i_imm;
@@ -166,7 +143,7 @@ module ysyx_25020042_IDU (
     always @ (posedge clock) begin
         if (reset)
             o_rs1 <= 5'b0;
-        else if (ifu_valid & idu_ready) begin
+        else if (ifu_valid & idu_ready & !raw_hit) begin
             if (r_type_signal | i_type_signal | j_type_signal | b_type_signal | s_type_signal)
                 o_rs1 <= rs1;
             else 
@@ -177,7 +154,7 @@ module ysyx_25020042_IDU (
     always @ (posedge clock) begin
         if (reset)
             o_rs2 <= 5'b0;
-        else if (ifu_valid & idu_ready) begin
+        else if (ifu_valid & idu_ready & !raw_hit) begin
             if (b_type_signal | s_type_signal | r_type_signal)
                 o_rs2 <= rs2;
             else
@@ -192,7 +169,7 @@ module ysyx_25020042_IDU (
                 o_instruction_data <= 32'b0;
             `endif
         end
-        else if (ifu_valid & idu_ready) begin
+        else if (ifu_valid & idu_ready & !raw_hit) begin
             o_pc_data <= i_pc_data;
                 `ifdef VERILATOR
                     o_instruction_data <= i_inst;
@@ -203,7 +180,7 @@ module ysyx_25020042_IDU (
     always @ (posedge clock) begin
         if (reset)
             o_rd <= 5'b0;
-        else if (ifu_valid & idu_ready) begin
+        else if (ifu_valid & idu_ready & !raw_hit) begin
             if (r_type_signal | i_type_signal | u_type_signal | j_type_signal) 
                 o_rd <= rd;
             else
@@ -214,7 +191,7 @@ module ysyx_25020042_IDU (
     always @ (posedge clock) begin
         if (reset)
             o_csr_addr <= 12'b0;
-        else if (ifu_valid & idu_ready) begin
+        else if (ifu_valid & idu_ready & !raw_hit) begin
             if (csr_valid)
                 o_csr_addr <= csr_addr;
             else 
@@ -225,7 +202,7 @@ module ysyx_25020042_IDU (
     always @ (posedge clock) begin
         if (reset)
             o_shamt <= 6'b0;
-        else if (ifu_valid & idu_ready) begin
+        else if (ifu_valid & idu_ready & !raw_hit) begin
             o_shamt <= {1'b0, shamt};
         end
     end
@@ -235,7 +212,7 @@ module ysyx_25020042_IDU (
             o_instruction_out     <= 8'b0;
         end
         else begin
-            if (ifu_valid & idu_ready) begin
+            if (ifu_valid & idu_ready & !raw_hit) begin
                 case (1'b1)
                     u_type_signal: begin
                             o_instruction_out[7:5] <= EXU_INST;
