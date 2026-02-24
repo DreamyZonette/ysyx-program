@@ -744,6 +744,25 @@ ysyx_25020042_WBU WBU_u (
     .o_mcause_wdata(mcause_wdata)
     );
 
+`ifdef VERILATOR
+    reg [31:0] wbu_next_pc;
+    always @(posedge clock) begin
+        if (reset) begin
+            wbu_next_pc <= 32'h80000000;
+        end 
+        else if (wbu_valid) begin
+            if (lsu_to_wbu_pc_data != exu_to_lsu_pc_data) begin
+                wbu_next_pc <= exu_to_lsu_pc_data;
+            end
+            else if (exu_to_lsu_pc_data != idu_to_exu_pc_data) begin
+                wbu_next_pc <= idu_to_exu_pc_data;
+            end
+            else if (idu_to_exu_pc_data != ifu_to_idu_pc_data) begin
+                wbu_next_pc <= ifu_to_idu_pc_data;
+            end
+        end
+    end
+    `endif
 
 
 //------------------------------------------
