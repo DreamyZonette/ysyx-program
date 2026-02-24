@@ -107,11 +107,11 @@ module ysyx_25020042_IDU (
         end
         else begin
             if (raw_hit_itype) begin
-                raw_hit_reg <= (i_prev_rd_0 == o_rs1) | (i_prev_rd_1 == o_rs1) | (i_prev_rd_2 == o_rs1) ? 1'b1 : 1'b0;
+                raw_hit_reg <= (i_prev_rd_0 == o_rs1) | (i_prev_rd_1 == o_rs1) | (i_prev_rd_2 == o_rs1) && o_rs1 != 0 ? 1'b1 : 1'b0;
             end
             else begin
-                raw_hit_reg <= (i_prev_rd_0 == o_rs1) | (i_prev_rd_1 == o_rs1) | (i_prev_rd_2 == o_rs1) 
-                            | (i_prev_rd_0 == o_rs2) | (i_prev_rd_1 == o_rs2) | (i_prev_rd_2 == o_rs2) ? 1'b1 : 1'b0;
+                raw_hit_reg <= ((i_prev_rd_0 == o_rs1) | (i_prev_rd_1 == o_rs1) | (i_prev_rd_2 == o_rs1) && o_rs1 != 0)
+                            | ((i_prev_rd_0 == o_rs2) | (i_prev_rd_1 == o_rs2) | (i_prev_rd_2 == o_rs2)  && o_rs2 != 0) ? 1'b1 : 1'b0;
             end
         end
     end
