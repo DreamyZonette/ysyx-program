@@ -12,6 +12,7 @@ module ysyx_25020042_IFU(
     input                  fencei_signal,
     output reg [31:0]      o_instruction,
     output wire [31:0]     o_pc_data    ,
+    output                 icache_busy,
 
     `ifdef VERILATOR
     output     [63:0]      o_performance_counter,
@@ -57,6 +58,7 @@ localparam READY = 1'b1;
 
 // assign pc_update = instruction_ready & !Control_Hazard;
 assign o_pc_data = i_pc;
+assign icache_busy = state == READY;
 
 always @(posedge clock) begin
     if(reset) begin
