@@ -141,8 +141,8 @@ module ysyx_25020042_IDU (
             idu_valid <= 1'b0;
         end
         else if (!idu_ready & !idu_valid & !raw_hit) begin
-            idu_ready <= 1'b1;
-            idu_valid <= 1'b0;
+            idu_ready <= 1'b0;
+            idu_valid <= 1'b1;
         end
     end
 
