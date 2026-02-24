@@ -167,7 +167,7 @@ module ysyx_25020042_IDU (
         if (reset)
             o_rs1 <= 5'b0;
         else if (ifu_valid & idu_ready) begin
-            if (r_type_signal | i_type_signal | j_type_signal | b_type_signal)
+            if (r_type_signal | i_type_signal | j_type_signal | b_type_signal | s_type_signal)
                 o_rs1 <= rs1;
             else 
                 o_rs1 <= 5'b0;
