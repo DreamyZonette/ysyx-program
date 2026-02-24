@@ -101,6 +101,17 @@
 //------------------------------------------
 // 数据通路信号
 //------------------------------------------
+    wire [4:0] branch_rs1;
+    wire [4:0] branch_rs2;
+    wire [4:0] branch_rd;
+    wire [31:0] branch_exu_data;
+    wire [31:0] branch_lsu_data;
+    wire [31:0] branch_wbu_data;
+    wire [31:0] rs1_data;
+    wire [31:0] rs2_data;
+    wire        rs1_data_ready;
+    wire        rs2_data_ready;
+    wire        load_valid;
     wire [31:0] wdata;
     wire [31:0] imm;
     wire [31:0] src1;
@@ -135,8 +146,8 @@
     wire [31:0] idu_to_exu_pc_data;
     wire [31:0] exu_to_lsu_pc_data;
     wire [31:0] lsu_to_wbu_pc_data;
-    wire [4:0]  exu_to_lsu_rd;
-    wire [4:0]  lsu_to_wbu_rd;
+    // wire [4:0]  exu_to_lsu_rd;
+    // wire [4:0]  lsu_to_wbu_rd;
     wire [4:0]  wbu_rd;
     wire [31:0] exu_to_lsu_data;
     wire [31:0] lsu_to_exu_data;
@@ -600,18 +611,51 @@ ysyx_25020042_IDU IDU_u (
     .i_jump_valid(jump_valid),
     .i_inst(instruction),
     .i_pc_data(ifu_to_idu_pc_data),
-    .i_prev_rd_0(exu_to_lsu_rd),
-    .i_prev_rd_1(lsu_to_wbu_rd),
-    .i_prev_rd_2(wbu_rd),
+    // .i_prev_rd_0(exu_to_lsu_rd),
+    // .i_prev_rd_1(lsu_to_wbu_rd),
+    // .i_prev_rd_2(wbu_rd),
     .o_instruction_out(idu_inst),
     .o_imm(imm),
     .o_pc_data(idu_to_exu_pc_data),
     .o_csr_addr(csr_addr),
     .o_shamt(shamt),
-    .o_rd(rd),
-    .o_rs1(rs1),
-    .o_rs2(rs2)
+    .o_rd(branch_rd),
+    .o_rs1(branch_rs1),
+    .o_rs2(branch_rs2)
     );
+//------------------------------------------
+// data branch实例化
+//------------------------------------------
+data_branch data_branch_u(
+    .clock(clock),
+    .reset(reset),
+    .i_rs1(branch_rs1),
+    .i_rs2(branch_rs2),
+    .i_rd(branch_rd),
+    .i_exu_to_lsu_inst(exu_to_lsu_inst[7:5]),
+    .i_idu_to_exu_inst(idu_inst[7:5]),
+    .idu_exu_handshake(idu_valid & exu_ready),
+    .exu_lsu_handshake(exu_valid & lsu_ready),
+    .lsu_wbu_handshake(lsu_valid & wbu_ready),
+    .load_valid(load_valid),
+    .i_exu_rd_data(exu_data),
+    .i_lsu_rd_data(lsu_data),
+    .i_src1(src1),
+    .i_src2(src2),
+    .rs1_data_ready(rs1_data_ready),
+    .rs2_data_ready(rs2_data_ready),
+    .rs1_data(rs1_data),
+    .rs2_data(rs2_data),
+    .o_rs1(rs1),
+    .o_rs2(rs2),
+    .o_exu_rd_data(branch_exu_data),
+    .o_lsu_rd_data(branch_lsu_data),
+    .o_wbu_rd_data(branch_wbu_data),
+    // .o_exu_rd(exu_rd),
+    // .o_lsu_rd(lsu_rd),
+    .o_wbu_rd(wbu_rd)
+);
+
 //------------------------------------------
 // EXU实例化
 //------------------------------------------
@@ -630,8 +674,8 @@ ysyx_25020042_EXU EXU_u (
     `endif
 
     .i_inst(idu_inst),
-    .i_src1(src1),
-    .i_src2(src2),
+    .i_src1(rs1_data),
+    .i_src2(rs2_data),
     .i_imm(imm),
     .i_pc_data(idu_to_exu_pc_data),
     .i_shamt(shamt),
@@ -639,13 +683,15 @@ ysyx_25020042_EXU EXU_u (
     .i_csr_addr(csr_addr),
     .i_mepc_rdata(mepc),
     .i_mtvec_rdata(mtvec),
-    .i_rd(rd),
+    .i_src1_valid(rs1_data_ready),
+    .i_src2_valid(rs2_data_ready),
+    // .i_rd(rd),
     .o_csr_data(exu_to_lsu_csr_data),
     .o_csr_addr(exu_to_lsu_csr_addr),
     .o_idu_inst(exu_to_lsu_inst),
     .o_pc_data(exu_to_lsu_pc_data),
     .o_src2(exu_to_lsu_src2),
-    .o_rd(exu_to_lsu_rd),
+    // .o_rd(exu_to_lsu_rd),
     .jump_pc(jump_pc),
     .jump_valid(jump_valid),
     .o_data(exu_data)
@@ -664,18 +710,19 @@ ysyx_25020042_LSU LSU_u (
 
     .i_inst(exu_to_lsu_inst),
     .i_src2(exu_to_lsu_src2),
-    .i_data(exu_data),
+    .i_data(branch_exu_data),
     .i_pc_data(exu_to_lsu_pc_data),
     .i_csr_data(exu_to_lsu_csr_data),
     .i_csr_addr(exu_to_lsu_csr_addr),
-    .i_rd(exu_to_lsu_rd),
+    // .i_rd(exu_to_lsu_rd),
 
     .o_inst(lsu_to_wbu_inst),
     .o_data(lsu_data),
     .o_pc_data(lsu_to_wbu_pc_data),
     .o_csr_data(lsu_to_wbu_csr_data),
     .o_csr_addr(lsu_to_wbu_csr_addr),
-    .o_rd(lsu_to_wbu_rd),
+    .load_valid(load_valid),
+    // .o_rd(lsu_to_wbu_rd),
 
     `ifdef VERILATOR
     .performance_counter(lsu_performance_counter),
@@ -733,13 +780,13 @@ ysyx_25020042_WBU WBU_u (
     .i_instruction_data(lsu_to_wbu_instrction_data),
     `endif
 
-    .i_data(lsu_data),
+    .i_data(branch_lsu_data),
     .i_pc_data(lsu_to_wbu_pc_data),
     .i_inst(lsu_to_wbu_inst),
-    .i_rd(lsu_to_wbu_rd),
+    // .i_rd(lsu_to_wbu_rd),
     .i_csr_rdata(lsu_to_wbu_csr_data),
     .i_csr_addr(lsu_to_wbu_csr_addr),
-    .o_rd(wbu_rd),
+    // .o_rd(wbu_rd),
     .csr_wdata(csr_wdata),
     .csr_addr(wbu_csr_addr),
     .reg_wdata(wdata),

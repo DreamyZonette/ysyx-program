@@ -8,13 +8,13 @@ module ysyx_25020042_WBU(
     input [31:0]      i_data,
     input [31:0]      i_pc_data,
     input  [7:0]      i_inst,
-    input  [4:0]      i_rd,
+    // input  [4:0]      i_rd,
     input  [31:0]     i_csr_rdata,
     `ifdef VERILATOR
     input  [31:0]     i_instruction_data,
     `endif
     input  [11:0]     i_csr_addr,
-    output reg [4:0]  o_rd,
+    // output reg [4:0]  o_rd,
     output reg [31:0] csr_wdata,
     output reg [11:0] csr_addr,
     output reg [31:0] reg_wdata,
@@ -22,12 +22,9 @@ module ysyx_25020042_WBU(
     output reg [31:0] o_mcause_wdata
 );
 
-    localparam  NOP_INST     = 3'b000;
-    localparam  EXU_INST     = 3'b001;
     localparam  JUMP_INST    = 3'b010;
     localparam  MEM_INST     = 3'b011;
     localparam  CSR_INST     = 3'b100;
-    localparam  SPECIAL_INST = 3'b101;
 
     localparam IDLE = 1'b0;
     localparam WAIT = 1'b1;
@@ -60,7 +57,7 @@ always @(posedge clock) begin
         csr_wdata <= 32'b0;
         wbu_ready <= 1'b1;
         wbu_valid <= 1'b0;
-        o_rd <= 5'b0;
+        // o_rd <= 5'b0;
         o_mepc_wdata <= 32'b0;
         o_mcause_wdata <= 32'b0;
         csr_addr <= 12'b0;
@@ -72,7 +69,7 @@ always @(posedge clock) begin
                     state <= WAIT;
                     wbu_ready <= 1'b0;
                     wbu_valid <= 1'b1;
-                    o_rd <= i_rd;
+                    // o_rd <= i_rd;
                     case(i_inst[7:5])
                         JUMP_INST: begin
                             if (i_inst[4:0] == 5'b00001 || i_inst[4:0] == 5'b00010) begin
@@ -117,7 +114,7 @@ always @(posedge clock) begin
             WAIT: begin
                 wbu_valid <= 1'b0;
                 wbu_ready <= 1'b1;
-                o_rd <= 5'b0;
+                // o_rd <= 5'b0;
                 csr_addr <= 12'b0;
                 state <= IDLE;
             end

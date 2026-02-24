@@ -14,7 +14,7 @@ module ysyx_25020042_LSU(
     input [31:0]                    i_pc_data,
     input [31:0]                    i_csr_data,
     input [11:0]                    i_csr_addr,
-    input [4:0]                     i_rd,
+    // input [4:0]                     i_rd,
     `ifdef VERILATOR
     input  [31:0]                   i_instruction_data,
     `endif
@@ -27,7 +27,8 @@ module ysyx_25020042_LSU(
     `endif
     output reg [31:0]               o_csr_data,
     output reg [11:0]               o_csr_addr,
-    output reg [4:0]                o_rd,
+    // output reg [4:0]                o_rd,
+    output                          load_valid,
 
     /* verilator lint_off UNUSEDSIGNAL */
     `ifdef VERILATOR
@@ -127,7 +128,7 @@ always @(posedge clock) begin
     if(reset) begin
         o_inst <= 8'b0;
         o_pc_data <= 32'b0;
-        o_rd <= 5'b0;
+        // o_rd <= 5'b0;
         o_csr_data <= 32'b0;
         o_csr_addr <= 12'b0;
         `ifdef VERILATOR
@@ -137,15 +138,15 @@ always @(posedge clock) begin
     else if(exu_valid & lsu_ready) begin
         o_inst <= i_inst;
         o_pc_data <= i_pc_data;
-        o_rd <= i_rd;
+        // o_rd <= i_rd;
         o_csr_data <= i_csr_data;
         o_csr_addr <= i_csr_addr;
         `ifdef VERILATOR
             o_instruction_data <= i_instruction_data;
         `endif
     end
-    else if (lsu_valid & wbu_ready ) 
-        o_rd <= 5'b0;
+    // else if (lsu_valid & wbu_ready ) 
+    //     o_rd <= 5'b0;
 end
 
 /* verilator lint_off WIDTHEXPAND */
@@ -178,10 +179,23 @@ always @(*) begin
     end
 end
 
+assign load_valid = lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid;
+
+always @(*) begin
+    case (o_inst[4:0])
+        5'b00001: o_data = shifted_rdata[31:0];
+        5'b00011: o_data = {16'b0, shifted_rdata[15:0]};
+        5'b00010: o_data = {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
+        5'b00101: o_data = {24'b0, shifted_rdata[7:0]};
+        5'b00100: o_data = {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
+        default:  o_data = 0;
+    endcase
+end
+
 always @(posedge clock) begin
     if(reset) begin
         state <= IDLE;
-        o_data <= 32'b0;
+        // o_data <= 32'b0;
         lsu_ready <= 1'b1;
         lsu_valid <= 1'b0;
         lsu_arvalid <= 1'b0;
@@ -255,7 +269,7 @@ always @(posedge clock) begin
                         end
                     end
                     else begin
-                        o_data <= i_data;
+                        // o_data <= i_data;
                         lsu_ready <= 1'b0;
                         lsu_valid <= 1'b1;
                     end
@@ -300,14 +314,14 @@ always @(posedge clock) begin
                     lsu_valid <= 1'b1;
                     rresp <= lsu_rresp;
                     state <= IDLE;
-                    case (o_inst[4:0])
-                        5'b00001: o_data <= shifted_rdata[31:0];
-                        5'b00011: o_data <= {16'b0, shifted_rdata[15:0]};
-                        5'b00010: o_data <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
-                        5'b00101: o_data <= {24'b0, shifted_rdata[7:0]};
-                        5'b00100: o_data <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
-                        default: o_data <= 0;
-                    endcase
+                    // case (o_inst[4:0])
+                    //     5'b00001: o_data <= shifted_rdata[31:0];
+                    //     5'b00011: o_data <= {16'b0, shifted_rdata[15:0]};
+                    //     5'b00010: o_data <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
+                    //     5'b00101: o_data <= {24'b0, shifted_rdata[7:0]};
+                    //     5'b00100: o_data <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
+                    //     default: o_data <= 0;
+                    // endcase
                 end
                 else if (lsu_bvalid & lsu_bid == lsu_awid) begin
                     lsu_bready <= 1'b1;

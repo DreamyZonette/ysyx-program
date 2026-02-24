@@ -20,10 +20,12 @@ module ysyx_25020042_EXU(
     input wire [11:0] i_csr_addr,
     input wire [31:0] i_mepc_rdata,
     input wire [31:0] i_mtvec_rdata,
+    input wire        i_src1_valid,
+    input wire        i_src2_valid,
     `ifdef VERILATOR
     input  [31:0]     i_instruction_data,
     `endif
-    input wire [4:0]  i_rd,
+    // input wire [4:0]  i_rd,
     output reg [31:0]  o_csr_data,
     output reg [11:0]  o_csr_addr,
     output reg  [7:0]  o_idu_inst,
@@ -32,13 +34,13 @@ module ysyx_25020042_EXU(
     output reg [31:0] o_instruction_data,
     `endif
     output reg  [31:0] o_src2,
-    output reg  [4:0] o_rd,
+    // output reg  [4:0] o_rd,
     output reg [31:0] jump_pc,
     output wire        jump_valid,
-    output reg [31:0] o_data
+    // output reg [31:0] o_data
+    output wire  [31:0]  o_data
 );
 
-    localparam  NOP_INST     = 3'b000;
     localparam  EXU_INST     = 3'b001;
     localparam  JUMP_INST    = 3'b010;
     localparam  MEM_INST     = 3'b011;
@@ -55,8 +57,23 @@ module ysyx_25020042_EXU(
     wire sign_less   = $signed(i_src1) < $signed(i_src2) ? 1'b1 : 1'b0;
     wire unsign_less = (i_src1 < i_src2);
 
-    // assign o_data = alu_out;
-
+    always @(posedge clock) begin
+        if (reset) begin
+            exu_ready <= 0;
+            exu_valid <= 0;
+        end
+        else if (idu_valid & i_src1_valid & i_src2_valid) begin
+            exu_ready <= 1;
+        end
+        else if (idu_valid & exu_ready) begin
+            exu_ready <= 0;
+            exu_valid <= 1;
+        end
+        else if (lsu_ready & exu_valid) begin
+            exu_ready <= 0;
+            exu_valid <= 0;
+        end
+    end
     `ifdef VERILATOR
     // reg [63:0] performance_counter;
     always @(posedge clock) begin
@@ -112,48 +129,35 @@ always @(posedge clock) begin
     end
 end
 
+    assign o_data = alu_out;
+
     always @(posedge clock) begin
         if (reset) begin
-            o_data <= 0;
+            // o_data <= 0;
             o_pc_data <= 0;
             o_idu_inst <= 0;
             o_csr_data <= 0;
             o_src2     <= 0;
-            o_rd       <= 0;
+            // o_rd       <= 0;
             o_csr_addr <= 0;
             `ifdef VERILATOR
                 o_instruction_data <= 32'b0;
             `endif
         end
         else if (idu_valid & exu_ready) begin
-            o_data <= alu_out;
+            // o_data <= alu_out;
             o_pc_data <= i_pc_data;
             o_idu_inst <= i_inst;
             o_csr_data <= i_csr_data;
             o_src2     <= i_src2;
-            o_rd       <= i_rd;
+            // o_rd       <= i_rd;
             o_csr_addr <= i_csr_addr;
             `ifdef VERILATOR
                 o_instruction_data <= i_instruction_data;
             `endif
         end
-        else if (lsu_ready & exu_valid)
-            o_rd <= 0;
-    end
-
-    always @(posedge clock) begin
-        if (reset) begin
-            exu_ready <= 1;
-            exu_valid <= 0;
-        end
-        else if (idu_valid & exu_ready) begin
-            exu_ready <= 0;
-            exu_valid <= 1;
-        end
-        else if (lsu_ready & exu_valid) begin
-            exu_ready <= 1;
-            exu_valid <= 0;
-        end
+        // else if (lsu_ready & exu_valid)
+        //     o_rd <= 0;
     end
 
     always @(*) begin
