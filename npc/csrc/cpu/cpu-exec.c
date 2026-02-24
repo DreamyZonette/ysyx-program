@@ -48,7 +48,7 @@ void step_and_dump_wave(){
 static void trace_and_difftest() {
 
   #if CONFIG_DIFFTEST
-    // printf("DIFFTEST:pc:0x%08x next_pc:0x%08x\n", dut.pc, dut.next_pc);
+    printf("DIFFTEST:pc:0x%08x next_pc:0x%08x\n", dut.pc, dut.next_pc);
     difftest_step(dut.pc, dut.next_pc);
   #endif
 
