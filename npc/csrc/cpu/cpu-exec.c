@@ -172,7 +172,7 @@ static void execute(uint64_t n) {
     if(print_on){
       print_on = 0;
       printf("0x%08x: %08x\n", 
-         dut.pc, _instruction_data_);
+         _pc_data_, _instruction_data_);
     }
   }
   #endif
