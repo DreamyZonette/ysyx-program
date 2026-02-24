@@ -233,7 +233,7 @@ module ysyx_25020042_IDU (
             o_instruction_out     <= 8'b0;
         end
         else begin
-            if (idu_valid & exu_ready) begin
+            if (ifu_valid & idu_ready) begin
                 case (1'b1)
                     u_type_signal: begin
                             o_instruction_out[7:5] <= EXU_INST;
