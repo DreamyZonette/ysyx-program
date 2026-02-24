@@ -529,7 +529,7 @@ ysyx_25020042_PC PC_u(
     .reset(reset),
     .ifu_ready(ifu_ready),
     // .pc_update(pc_update),
-    .ifu_valid(ifu_valid),
+    .ifu_handsake(ifu_valid & idu_ready),
     .fault(fault),
     .pc_valid(pc_valid),
     .i_jump_pc(jump_pc),

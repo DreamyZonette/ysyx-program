@@ -4,7 +4,7 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
     input              reset,
     input              ifu_ready,
     // input              pc_update,
-    input              ifu_valid,
+    input              ifu_handsake,
     input              fault,
     output reg         pc_valid,
 
@@ -45,11 +45,11 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
             if (fault)begin
                 o_pc <= 0;
             end
-            else if (ifu_valid)begin
+            else if (ifu_handsake)begin
                 o_pc <= next_pc;
             end
 
-            if (ifu_valid) 
+            if (ifu_handsake) 
                 pc_valid <= 1'b1;
             else if (ifu_ready & pc_valid) 
                 pc_valid <= 1'b0;
