@@ -108,7 +108,7 @@ module ysyx_25020042_IDU (
         else if (raw_hit) begin
             raw_hit_itype <= i_type_signal;
         end
-        else if (o_rs1_hit) begin
+        else if (~o_rs1_hit) begin
             raw_hit_itype <= 1'b0;
         end
     end
