@@ -179,7 +179,7 @@ always @(*) begin
     end
 end
 
-assign load_valid = lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid;
+assign load_valid = lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid & state == WAIT;
 
 always @(*) begin
     case (o_inst[4:0])
