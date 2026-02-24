@@ -25,7 +25,7 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
             `endif
         end
         else if (i_jump_valid) begin
-            next_pc <= i_jump_pc;
+            next_pc <= i_jump_pc + 4;
         end
         else if (ifu_ready & pc_valid) begin
             next_pc <= o_pc + 4;
@@ -44,6 +44,9 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
         else begin
             if (fault)begin
                 o_pc <= 0;
+            end
+            else if (i_jump_valid)begin
+                o_pc <= i_jump_pc;
             end
             else if (ifu_handsake)begin
                 o_pc <= next_pc;
