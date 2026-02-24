@@ -69,50 +69,47 @@ module ysyx_25020042_IDU (
     wire r_type_signal = (opcode == 7'b0110011);
 
     reg  raw_hit;
-    reg  raw_hit_reg;
+    // reg  raw_hit_reg;
     reg  raw_hit_itype;
-
+    wire o_rs1_hit = (i_prev_rd_0 == o_rs1) | (i_prev_rd_1 == o_rs1) | (i_prev_rd_2 == o_rs1) && o_rs1 != 0;
+    wire o_rs2_hit = (i_prev_rd_0 == o_rs2) | (i_prev_rd_1 == o_rs2) | (i_prev_rd_2 == o_rs2) && o_rs2 != 0;
+    wire rs1_hit = (i_prev_rd_0 == rs1) | (i_prev_rd_1 == rs1) | (i_prev_rd_2 == rs1) && rs1 != 0;
+    wire rs2_hit = (i_prev_rd_0 == rs2) | (i_prev_rd_1 == rs2) | (i_prev_rd_2 == rs2) && rs2 != 0;
     always @(*) begin
         raw_hit = 1'b0;
-        if ((rd != 0) && (rs1 != 0 || rs2 != 0)) begin
-            case (1'b1)
-                i_type_signal:  begin
-                    raw_hit = (i_prev_rd_0 == rs1) | (i_prev_rd_1 == rs1) | (i_prev_rd_2 == rs1) ? 1'b1 : 1'b0;
-                end
-                s_type_signal:  begin
-                    raw_hit = (i_prev_rd_0 == rs1) | (i_prev_rd_1 == rs1) | (i_prev_rd_2 == rs1) 
-                            | (i_prev_rd_0 == rs2) | (i_prev_rd_1 == rs2) | (i_prev_rd_2 == rs2) ? 1'b1 : 1'b0;
-                end
-                b_type_signal:  begin
-                    raw_hit = (i_prev_rd_0 == rs1) | (i_prev_rd_1 == rs1) | (i_prev_rd_2 == rs1) 
-                            | (i_prev_rd_0 == rs2) | (i_prev_rd_1 == rs2) | (i_prev_rd_2 == rs2) ? 1'b1 : 1'b0;
-                end
-                r_type_signal:  begin
-                    raw_hit = (i_prev_rd_0 == rs1) | (i_prev_rd_1 == rs1) | (i_prev_rd_2 == rs1) 
-                            | (i_prev_rd_0 == rs2) | (i_prev_rd_1 == rs2) | (i_prev_rd_2 == rs2) ? 1'b1 : 1'b0;
-                end
-                default: raw_hit = 1'b0;
-            endcase
+        if (rd != 0) begin
+            if (i_type_signal | raw_hit_itype)
+                raw_hit = rs1_hit | rs2_hit ? 1'b1 : 1'b0;
+            else 
+                raw_hit = rs1_hit | rs2_hit | o_rs1_hit | o_rs2_hit ? 1'b1 : 1'b0;
+
+            // case (1'b1)
+            //     i_type_signal:  begin
+            //         raw_hit = rs1_hit | o_rs1_hit ? 1'b1 : 1'b0;
+            //     end
+            //     s_type_signal:  begin
+            //         raw_hit = rs1_hit | rs2_hit | o_rs1_hit | o_rs2_hit ? 1'b1 : 1'b0;
+            //     end
+            //     b_type_signal:  begin
+            //         raw_hit = rs1_hit | rs2_hit | o_rs1_hit | o_rs2_hit ? 1'b1 : 1'b0;
+            //     end
+            //     r_type_signal:  begin
+            //         raw_hit = rs1_hit | rs2_hit | o_rs1_hit | o_rs2_hit ? 1'b1 : 1'b0;
+            //     end
+            //     default: raw_hit = 1'b0;
+            // endcase
         end
     end
 
     always @(posedge clock) begin
         if (reset) begin
-            raw_hit_reg <= 1'b0;
             raw_hit_itype <= 1'b0;
         end
-        else if (raw_hit_reg ==1'b0) begin
-            raw_hit_reg <= raw_hit;
-            raw_hit_itype <= raw_hit ? i_type_signal : 1'b0;
+        else if (raw_hit) begin
+            raw_hit_itype <= i_type_signal;
         end
-        else begin
-            if (raw_hit_itype) begin
-                raw_hit_reg <= (i_prev_rd_0 == o_rs1) | (i_prev_rd_1 == o_rs1) | (i_prev_rd_2 == o_rs1) && o_rs1 != 0 ? 1'b1 : 1'b0;
-            end
-            else begin
-                raw_hit_reg <= ((i_prev_rd_0 == o_rs1) | (i_prev_rd_1 == o_rs1) | (i_prev_rd_2 == o_rs1) && o_rs1 != 0)
-                            | ((i_prev_rd_0 == o_rs2) | (i_prev_rd_1 == o_rs2) | (i_prev_rd_2 == o_rs2)  && o_rs2 != 0) ? 1'b1 : 1'b0;
-            end
+        else if (o_rs1_hit) begin
+            raw_hit_itype <= 1'b0;
         end
     end
 
@@ -135,11 +132,11 @@ module ysyx_25020042_IDU (
                 idu_valid <= 1'b1;
             end
         end
-        else if (exu_ready & idu_valid & !raw_hit_reg) begin
+        else if (exu_ready & idu_valid & !raw_hit) begin
             idu_ready <= 1'b1;
             idu_valid <= 1'b0;
         end
-        else if (!idu_ready & !idu_valid & !raw_hit_reg) begin
+        else if (!idu_ready & !idu_valid & !raw_hit) begin
             idu_ready <= 1'b0;
             idu_valid <= 1'b1;
         end
