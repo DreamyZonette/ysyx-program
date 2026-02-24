@@ -104,6 +104,7 @@ always @(posedge clock) begin
         // end
 
         if (idu_exu_handshake) begin
+            $display("exu_rd_data_buffer: %08h", i_exu_rd_data);
             exu_rd_buffer <= i_rd;
             exu_rd_data_buffer <= i_exu_rd_data;
             if (i_idu_to_exu_inst == 3'b011)
