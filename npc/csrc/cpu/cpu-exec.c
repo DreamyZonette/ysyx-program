@@ -173,6 +173,7 @@ static void execute(uint64_t n) {
       print_on = 0;
       printf("0x%08x: %08x\n", 
          _pc_data_, _instruction_data_);
+         printf("next pc = 0x%08x\n", _next_pc_data_);
     }
   }
   #endif
