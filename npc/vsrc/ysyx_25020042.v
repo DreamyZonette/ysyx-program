@@ -528,7 +528,8 @@ ysyx_25020042_PC PC_u(
     .clock(clock),
     .reset(reset),
     .ifu_ready(ifu_ready),
-    .pc_update(pc_update),
+    // .pc_update(pc_update),
+    .ifu_valid(ifu_valid),
     .fault(fault),
     .pc_valid(pc_valid),
     .i_jump_pc(jump_pc),
@@ -547,7 +548,7 @@ ysyx_25020042_IFU IFU_u (
     .idu_ready(idu_ready),
     .ifu_valid(ifu_valid),
     .ifu_ready(ifu_ready),
-    .pc_update(pc_update),
+    // .pc_update(pc_update),
 
     .i_jump_valid(jump_valid),
     .i_pc(pc),

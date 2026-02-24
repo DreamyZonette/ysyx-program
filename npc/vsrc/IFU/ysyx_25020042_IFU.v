@@ -5,7 +5,7 @@ module ysyx_25020042_IFU(
     input                  idu_ready,
     output reg             ifu_valid,
     output reg             ifu_ready,
-    output                 pc_update,
+    // output                 pc_update,
 
     input                  i_jump_valid,
     input      [31:0]      i_pc,
@@ -83,7 +83,7 @@ reg Control_Hazard;
 localparam IDLE  = 1'b0;
 localparam READY = 1'b1;
 
-assign pc_update = instruction_ready & !Control_Hazard;
+// assign pc_update = instruction_ready & !Control_Hazard;
 assign o_pc_data = i_pc;
 
 always @(posedge clock) begin
