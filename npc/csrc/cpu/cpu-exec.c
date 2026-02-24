@@ -144,8 +144,8 @@ static void execute(uint64_t n) {
       if(_single_inst_done_) break;
     }
 
-      dut.pc = dut.next_pc;
-      dut.next_pc = _pc_data_;
+      dut.pc = _pc_data_;
+      dut.next_pc = _next_pc_data_;
     g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
