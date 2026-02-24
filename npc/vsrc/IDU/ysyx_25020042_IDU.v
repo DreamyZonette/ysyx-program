@@ -79,7 +79,7 @@ module ysyx_25020042_IDU (
         raw_hit = 1'b0;
         if (rd != 0) begin
             if (i_type_signal | raw_hit_itype)
-                raw_hit = rs1_hit | rs2_hit ? 1'b1 : 1'b0;
+                raw_hit = rs1_hit | o_rs1_hit ? 1'b1 : 1'b0;
             else 
                 raw_hit = rs1_hit | rs2_hit | o_rs1_hit | o_rs2_hit ? 1'b1 : 1'b0;
 
