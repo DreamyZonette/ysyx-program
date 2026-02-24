@@ -27,8 +27,8 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
         else if (i_jump_valid) begin
             next_pc <= i_jump_pc;
         end
-        else if (pc_valid) begin
-            next_pc <= o_pc + 4;
+        else if (ifu_ready & pc_valid) begin
+            next_pc <= next_pc + 4;
         end
     end
     
@@ -50,6 +50,8 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
             end
 
             if (ifu_handsake) 
+                pc_valid <= 1'b1;
+            else if (i_jump_valid)
                 pc_valid <= 1'b1;
             else if (ifu_ready & pc_valid) 
                 pc_valid <= 1'b0;
