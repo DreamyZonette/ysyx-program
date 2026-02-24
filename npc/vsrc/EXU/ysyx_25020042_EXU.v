@@ -63,10 +63,12 @@ module ysyx_25020042_EXU(
             exu_valid <= 0;
         end
         else if (idu_valid & i_src1_valid & i_src2_valid) begin
+            $display("1");
             exu_ready <= 1;
         end
         else if (idu_valid & exu_ready) begin
             exu_ready <= 0;
+            $display("2");
             exu_valid <= 1;
         end
         else if (lsu_ready & exu_valid) begin
