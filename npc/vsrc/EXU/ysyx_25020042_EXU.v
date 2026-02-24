@@ -63,12 +63,12 @@ module ysyx_25020042_EXU(
             exu_valid <= 0;
         end
         else if (idu_valid & i_src1_valid & i_src2_valid) begin
-            $display("1");
+            $display("idu_valid = %d, i_src1_valid = %d, i_src2_valid = %d", idu_valid, i_src1_valid, i_src2_valid);
             exu_ready <= 1;
         end
         else if (idu_valid & exu_ready) begin
             exu_ready <= 0;
-            $display("2");
+            $display("idu_valid = %d, exu_ready = %d", idu_valid, exu_ready);
             exu_valid <= 1;
         end
         else if (lsu_ready & exu_valid) begin
@@ -76,6 +76,7 @@ module ysyx_25020042_EXU(
             exu_valid <= 0;
         end
     end
+
     `ifdef VERILATOR
     // reg [63:0] performance_counter;
     always @(posedge clock) begin
