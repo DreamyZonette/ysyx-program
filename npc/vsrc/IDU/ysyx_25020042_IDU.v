@@ -135,6 +135,7 @@ module ysyx_25020042_IDU (
         else if (exu_ready & idu_valid) begin
             idu_ready <= 1'b1;
             idu_valid <= 1'b0;
+            $display("idu inst: %08b", o_instruction_out);
         end
         // else if (!idu_ready & !idu_valid) begin
         //     idu_ready <= 1'b0;
