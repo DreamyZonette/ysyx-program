@@ -731,7 +731,7 @@ ysyx_25020042_WBU WBU_u (
     `endif
 
     .i_data(lsu_data),
-    .i_pc_data(exu_to_lsu_pc_data),
+    .i_pc_data(lsu_to_wbu_pc_data),
     .i_inst(lsu_to_wbu_inst),
     .i_rd(lsu_to_wbu_rd),
     .i_csr_rdata(lsu_to_wbu_csr_data),
