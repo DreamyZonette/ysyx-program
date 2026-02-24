@@ -300,7 +300,7 @@ always @(posedge clock) begin
                     lsu_valid <= 1'b1;
                     rresp <= lsu_rresp;
                     state <= IDLE;
-                    case (i_inst[4:0])
+                    case (o_inst[4:0])
                         5'b00001: o_data <= shifted_rdata[31:0];
                         5'b00011: o_data <= {16'b0, shifted_rdata[15:0]};
                         5'b00010: o_data <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
