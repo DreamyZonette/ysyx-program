@@ -100,19 +100,17 @@ import "DPI-C" function void difftest_device_skip();
 
 localparam  MEM_INST     = 3'b011;
 // 状态定义
-localparam IDLE = 2'b00;
-localparam WAIT = 2'b01;
-localparam WAIT_READY = 2'b10;
+localparam IDLE = 1'b0;
+localparam WAIT = 1'b1;
 
 
-reg [1:0] state;
+reg       state;
 /* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
 reg [1:0] bresp;
 /* verilator lint_on UNUSEDSIGNAL */
 wire [3:0] wstrb;
 wire [31:0] wdata;
-wire        twice_signal;
 
 // 记得修改回来
 `ifdef PLATFORM_NPC
