@@ -149,9 +149,9 @@ static void execute(uint64_t n) {
     g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
-    if (dut.pc != dut.next_pc){
+    // if (dut.pc != dut.next_pc){
       uint32_t ilen = 4;
-      uint32_t cur_pc = dut.pc;
+      uint32_t cur_pc = _pc_data_;
       uint32_t cur_inst = _instruction_data_;
       char* s = p;
       s += snprintf(s, sizeof(p), "%08x:", cur_pc);
@@ -165,7 +165,7 @@ static void execute(uint64_t n) {
       printf("%s\n", str);
       log_write("%s\n", str);
       p[0] = '\0';
-    }
+    // }
   }
   #else
   if(!sim_finish){
