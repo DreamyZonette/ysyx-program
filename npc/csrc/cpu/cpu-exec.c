@@ -93,7 +93,7 @@ static void trace_and_difftest() {
       blank[j] = ' ';
     }
     blank[count] = '\0';
-    printf("0x%08x:%s ret [0x%08x]\n", dut.pc, blank, _gpr(1));
+    printf("0x%08x:%s ret [0x%08x]\n", dut.pc, blank, gpr(1));
     //log_write("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
   }
 // }
@@ -179,7 +179,7 @@ static void execute(uint64_t n) {
 
   #if CONFIG_DIFFTEST
       for(int i = 0; i < 16; i++){
-      dut.gpr[i] = _gpr(i);
+      dut.gpr[i] = gpr(i);
   }
   #endif
     
