@@ -150,7 +150,6 @@ always @(posedge clock) begin
     else begin
         if(state == READY && instruction_ready) begin
             o_instruction <= instruction;
-            $display("Instruction: 0x%08h", instruction);
         end
     end
 end

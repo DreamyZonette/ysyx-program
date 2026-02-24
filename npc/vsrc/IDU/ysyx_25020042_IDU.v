@@ -123,24 +123,14 @@ module ysyx_25020042_IDU (
             idu_valid <= 1'b0;
         end
         else if (ifu_valid & idu_ready) begin
-            // if (raw_hit) begin
-            //     idu_ready <= 1'b0;
-            //     idu_valid <= 1'b0;
-            // end
-            // else begin
                 idu_ready <= 1'b0;
                 idu_valid <= 1'b1;
-            // end
         end
         else if (exu_ready & idu_valid) begin
             idu_ready <= 1'b1;
             idu_valid <= 1'b0;
-            $display("idu inst: %08b", o_instruction_out);
+            $display("exu_ready = %b idu_valid = 5bidu inst: %08b", exu_ready, idu_valid, o_instruction_out);
         end
-        // else if (!idu_ready & !idu_valid) begin
-        //     idu_ready <= 1'b0;
-        //     idu_valid <= 1'b1;
-        // end
     end
 
     always @ (posedge clock) begin
