@@ -71,6 +71,7 @@ always @(*) begin
             rs1_data = wbu_rd_data_buffer;
         end
         else begin
+            rs1_data = 0;
             rs1_data_ready = 0;
         end
     end
@@ -90,6 +91,7 @@ always @(*) begin
             rs2_data = wbu_rd_data_buffer;
         end
         else begin
+            rs2_data = 0;
             rs2_data_ready = 0;
         end
     end
@@ -111,7 +113,7 @@ always @(posedge clock) begin
             // $display("exu_rd_data_buffer: %08h", i_exu_rd_data);
             exu_rd_buffer <= i_rd;
             exu_rd_data_buffer <= i_exu_rd_data;
-            if (i_idu_to_exu_inst == 3'b011 && i_idu_to_exu_inst == 3'b010)
+            if (i_idu_to_exu_inst == 3'b011 || i_idu_to_exu_inst == 3'b010)
                 exu_rd_valid <= 0;
             else 
                 exu_rd_valid <= 1;
