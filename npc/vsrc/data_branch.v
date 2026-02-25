@@ -157,15 +157,8 @@ always @(posedge clock) begin
         wbu_rd_valid <= 0;
     end
     else begin
-        if (idu_exu_handshake) begin
-            if (i_rd == wbu_rd_buffer)
-                wbu_rd_valid <= 0;
-        end
-        else if (exu_lsu_handshake) begin
-            if (exu_rd_buffer == wbu_rd_buffer)
-                wbu_rd_valid <= 0;
-        end
-        else if (lsu_wbu_handshake) begin
+        
+        if (lsu_wbu_handshake) begin
             wbu_rd_buffer <= lsu_rd_buffer;
             wbu_rd_valid <= 1;
             case (i_lsu_to_wbu_inst)
@@ -184,6 +177,14 @@ always @(posedge clock) begin
             wbu_rd_valid <= 0;
             wbu_rd_data_buffer <= 0;
             wbu_rd_buffer <= 0;
+        end
+        else if (idu_exu_handshake) begin
+            if (i_rd == wbu_rd_buffer)
+                wbu_rd_valid <= 0;
+        end
+        else if (exu_lsu_handshake) begin
+            if (exu_rd_buffer == wbu_rd_buffer)
+                wbu_rd_valid <= 0;
         end
     end
 end
