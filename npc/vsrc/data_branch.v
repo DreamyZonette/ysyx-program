@@ -127,8 +127,8 @@ always @(posedge clock) begin
     else begin
         if (exu_lsu_handshake) begin
             lsu_rd_buffer <= exu_rd_buffer;
-            if (i_exu_to_lsu_inst != 3'b011 && i_idu_to_exu_inst == 3'b010) begin
                 lsu_rd_data_buffer <= exu_rd_data_buffer;
+            if (i_exu_to_lsu_inst != 3'b011 && i_idu_to_exu_inst != 3'b010) begin
                 lsu_rd_valid <= 1;
             end
             else 
