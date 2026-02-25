@@ -12,6 +12,7 @@ module data_branch(
     input                idu_exu_handshake,
     input                exu_lsu_handshake,
     input                lsu_wbu_handshake,
+    input                wbu_valid,
     input                load_valid,
     input  [31:0]        i_pc_data,
     input  [31:0]        i_csr_rdata,
@@ -115,6 +116,9 @@ always @(posedge clock) begin
             else 
                 exu_rd_valid <= 1;
         end
+        else if (exu_lsu_handshake) begin
+            exu_rd_buffer <= 0;
+        end
     end
 end
 
@@ -140,9 +144,9 @@ always @(posedge clock) begin
             lsu_rd_valid <= 1;
         end
 
-        // if (lsu_wbu_handshake) begin
-        //     lsu_rd_valid <= 0;
-        // end
+        if (lsu_wbu_handshake) begin
+            lsu_rd_buffer <= 0;
+        end
     end
 end
 
@@ -175,6 +179,11 @@ always @(posedge clock) begin
                     wbu_rd_data_buffer <= lsu_rd_data_buffer;
                 end
             endcase
+        end
+        else if (wbu_valid) begin
+            wbu_rd_valid <= 0;
+            wbu_rd_data_buffer <= 0;
+            wbu_rd_buffer <= 0;
         end
     end
 end

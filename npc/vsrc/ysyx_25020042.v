@@ -638,6 +638,7 @@ data_branch data_branch_u(
     .idu_exu_handshake(idu_valid & exu_ready),
     .exu_lsu_handshake(exu_valid & lsu_ready),
     .lsu_wbu_handshake(lsu_valid & wbu_ready),
+    .wbu_valid(wbu_valid),
     .load_valid(load_valid),
     .i_pc_data(lsu_to_wbu_pc_data),
     .i_csr_rdata(lsu_to_wbu_csr_data),
