@@ -72,7 +72,7 @@
     import "DPI-C" function void dpi_ebreak();
 
     always @(posedge clock) begin
-            if (ebreak_signal) begin
+            if (ebreak_signal & wbu_valid) begin
                 dpi_ebreak();
             end
     end
@@ -97,7 +97,7 @@
     wire [7:0] idu_inst;
     wire fencei_signal = idu_inst == 8'b10100001;
     wire ecall_signal  = idu_inst == 8'b10000011;
-    wire ebreak_signal = idu_inst == 8'b10000101;
+    wire ebreak_signal = lsu_to_wbu_inst == 8'b10000101;
 //------------------------------------------
 // 数据通路信号
 //------------------------------------------
