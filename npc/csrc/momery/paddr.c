@@ -112,7 +112,7 @@ extern "C" int pmem_read(int addr, int len) {
   else{
     ret = internal_pmem_read(addr, len);
     #if CONFIG_MTRACE
-    if (addr > 0x80000110) {
+    if (addr > 0x80000164) {
         char s[128];
         sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
         log_write("%s\n", s);
