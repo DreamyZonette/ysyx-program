@@ -74,7 +74,7 @@ module ipc_counter(
             cycle_counter <= cycle_counter + 1;
             if (wbu_valid)
                 counter <= counter + 1;
-            if (ebreak) begin
+            if (ebreak & wbu_valid) begin
                 $display("\033[1;33mIFU Performance Counter: %16d\033[0m", ifu_performance_counter);
                 $display("\033[1;33mEXU Performance Counter: %16d\033[0m", exu_performance_counter);
                 $display("\033[1;33mLSU Performance Counter: %16d\033[0m", lsu_performance_counter);
