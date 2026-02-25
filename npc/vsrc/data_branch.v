@@ -6,12 +6,15 @@ module data_branch(
     input [4:0]          i_rd,
     input [2:0]          i_exu_to_lsu_inst,
     input [2:0]          i_idu_to_exu_inst,
+    input [2:0]          i_lsu_to_wbu_inst,
     // input [4:0]          lsu_rd,
     // input [4:0]          wbu_rd,
     input                idu_exu_handshake,
     input                exu_lsu_handshake,
     input                lsu_wbu_handshake,
     input                load_valid,
+    input  [31:0]        i_pc_data,
+    input  [31:0]        i_csr_rdata,
     input  [31:0]        i_exu_rd_data,
     input  [31:0]        i_lsu_rd_data,
     input  [31:0]        i_src1,
@@ -107,7 +110,7 @@ always @(posedge clock) begin
             // $display("exu_rd_data_buffer: %08h", i_exu_rd_data);
             exu_rd_buffer <= i_rd;
             exu_rd_data_buffer <= i_exu_rd_data;
-            if (i_idu_to_exu_inst == 3'b011)
+            if (i_idu_to_exu_inst == 3'b011 && i_idu_to_exu_inst == 3'b010)
                 exu_rd_valid <= 0;
             else 
                 exu_rd_valid <= 1;
@@ -124,7 +127,7 @@ always @(posedge clock) begin
     else begin
         if (exu_lsu_handshake) begin
             lsu_rd_buffer <= exu_rd_buffer;
-            if (i_exu_to_lsu_inst != 3'b011) begin
+            if (i_exu_to_lsu_inst != 3'b011 && i_idu_to_exu_inst == 3'b010) begin
                 lsu_rd_data_buffer <= exu_rd_data_buffer;
                 lsu_rd_valid <= 1;
             end
@@ -160,8 +163,18 @@ always @(posedge clock) begin
         end
         else if (lsu_wbu_handshake) begin
             wbu_rd_buffer <= lsu_rd_buffer;
-            wbu_rd_data_buffer <= lsu_rd_data_buffer;
             wbu_rd_valid <= 1;
+            case (i_lsu_to_wbu_inst)
+                3'b010: begin
+                    wbu_rd_data_buffer <= i_pc_data + 4;
+                end
+                3'b100: begin
+                    wbu_rd_data_buffer <= i_csr_rdata;
+                end
+                default: begin
+                    wbu_rd_data_buffer <= lsu_rd_data_buffer;
+                end
+            endcase
         end
     end
 end
