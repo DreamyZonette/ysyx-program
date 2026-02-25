@@ -62,7 +62,7 @@ module ysyx_25020042_EXU(
             exu_ready <= 0;
             exu_valid <= 0;
         end
-        else if (!exu_ready & idu_valid & i_src1_valid & i_src2_valid) begin
+        else if (!exu_valid & !exu_ready & idu_valid & i_src1_valid & i_src2_valid) begin
             // $display("idu_valid = %d, i_src1_valid = %d, i_src2_valid = %d", idu_valid, i_src1_valid, i_src2_valid);
             exu_ready <= 1;
         end
