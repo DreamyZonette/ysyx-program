@@ -72,7 +72,7 @@
     import "DPI-C" function void dpi_ebreak();
 
     always @(posedge clock) begin
-            if (ebreak_signal) begin
+            if (ebreak_signal & wbu_valid) begin
                 dpi_ebreak();
             end
     end
@@ -95,12 +95,23 @@
 // 指令信号
 //------------------------------------------
     wire [7:0] idu_inst;
-    wire fencei_signal = idu_inst == 8'b10100001;
-    wire ecall_signal  = idu_inst == 8'b10000011;
-    wire ebreak_signal = idu_inst == 8'b10000101;
+    wire fencei_signal = lsu_to_wbu_inst == 8'b10100001;
+    wire ecall_signal  = lsu_to_wbu_inst == 8'b10000011;
+    wire ebreak_signal = lsu_to_wbu_inst == 8'b10000101;
 //------------------------------------------
 // 数据通路信号
 //------------------------------------------
+    wire [4:0] branch_rs1;
+    wire [4:0] branch_rs2;
+    wire [4:0] branch_rd;
+    wire [31:0] branch_exu_data;
+    wire [31:0] branch_lsu_data;
+    wire [31:0] branch_wbu_data;
+    wire [31:0] rs1_data;
+    wire [31:0] rs2_data;
+    wire        rs1_data_ready;
+    wire        rs2_data_ready;
+    wire        load_valid;
     wire [31:0] wdata;
     wire [31:0] imm;
     wire [31:0] src1;
@@ -131,6 +142,32 @@
     wire [4:0]  rd;
     wire        fault;
     wire        jump_valid;
+    wire [31:0] ifu_to_idu_pc_data;
+    wire [31:0] idu_to_exu_pc_data;
+    wire [31:0] exu_to_lsu_pc_data;
+    wire [31:0] lsu_to_wbu_pc_data;
+    // wire [4:0]  exu_to_lsu_rd;
+    // wire [4:0]  lsu_to_wbu_rd;
+    wire [4:0]  wbu_rd;
+    wire [31:0] exu_to_lsu_data;
+    wire [31:0] lsu_to_exu_data;
+    wire [31:0] exu_to_lsu_csr_data;
+    wire [31:0] lsu_to_wbu_csr_data;
+    wire [7:0] exu_to_lsu_inst;
+    wire [7:0] lsu_to_wbu_inst;
+    wire [31:0] exu_to_lsu_src2;
+    wire [31:0] wbu_to_exu_data;
+    wire [31:0] exu_to_wbu_data;
+    wire [11:0] exu_to_lsu_csr_addr;
+    wire [11:0] lsu_to_wbu_csr_addr;
+    wire [11:0] wbu_csr_addr;
+    wire    pc_update;
+    wire    icache_busy;
+     `ifdef VERILATOR
+    wire [31:0] idu_to_exu_instrction_data;
+    wire [31:0] exu_to_lsu_instrction_data;
+    wire [31:0] lsu_to_wbu_instrction_data;
+    `endif
 //------------------------------------------
 // AXI 总线
 //------------------------------------------
@@ -249,7 +286,7 @@
 //------------------------------------------
 // 性能计数器
 //------------------------------------------    
-        `ifdef VERILATOR
+    `ifdef VERILATOR
     wire [63:0] ifu_performance_counter;
     wire [63:0] exu_performance_counter;
     wire [63:0] lsu_performance_counter;
@@ -399,7 +436,8 @@ axi_arbiter axi_arbiter_u (
 ipc_counter ipc_counter_u(
     .clk(clock),
     .rst(reset),
-    .pc(pc),
+    // .pc(pc),
+    .wbu_valid(wbu_valid),
     .ebreak(ebreak_signal),
     .ifu_performance_counter(ifu_performance_counter),
     .lsu_performance_counter(lsu_performance_counter),
@@ -502,11 +540,13 @@ ysyx_25020042_PC PC_u(
     .clock(clock),
     .reset(reset),
     .ifu_ready(ifu_ready),
-    .i_jump_pc(jump_pc),
-    .i_jump_valid(jump_valid),
-    .wbu_valid(wbu_valid),
+    // .pc_update(pc_update),
+    .ifu_handsake(ifu_valid & idu_ready),
+    .icache_busy(icache_busy),
     .fault(fault),
     .pc_valid(pc_valid),
+    .i_jump_pc(jump_pc),
+    .i_jump_valid(jump_valid),
     .o_pc(pc)
 );
 //------------------------------------------
@@ -521,9 +561,14 @@ ysyx_25020042_IFU IFU_u (
     .idu_ready(idu_ready),
     .ifu_valid(ifu_valid),
     .ifu_ready(ifu_ready),
+    // .pc_update(pc_update),
+    .icache_busy(icache_busy),
+
+    .i_jump_valid(jump_valid),
     .i_pc(pc),
     .fencei_signal(fencei_signal),
     .o_instruction(instruction),
+    .o_pc_data(ifu_to_idu_pc_data),
 
     `ifdef VERILATOR
     .o_performance_counter(ifu_performance_counter),
@@ -560,16 +605,61 @@ ysyx_25020042_IDU IDU_u (
     .idu_valid(idu_valid),
     `ifdef VERILATOR
     .csr_perfomance_counter(csr_performance_counter),
+    .o_instruction_data(idu_to_exu_instrction_data),
     `endif
+
+    .i_jump_valid(jump_valid),
     .i_inst(instruction),
+    .i_pc_data(ifu_to_idu_pc_data),
+    // .i_prev_rd_0(exu_to_lsu_rd),
+    // .i_prev_rd_1(lsu_to_wbu_rd),
+    // .i_prev_rd_2(wbu_rd),
     .o_instruction_out(idu_inst),
     .o_imm(imm),
+    .o_pc_data(idu_to_exu_pc_data),
     .o_csr_addr(csr_addr),
     .o_shamt(shamt),
-    .o_rd(rd),
-    .o_rs1(rs1),
-    .o_rs2(rs2)
+    .o_rd(branch_rd),
+    .o_rs1(branch_rs1),
+    .o_rs2(branch_rs2)
     );
+//------------------------------------------
+// data branch实例化
+//------------------------------------------
+data_branch data_branch_u(
+    .clock(clock),
+    .reset(reset),
+    .i_rs1(branch_rs1),
+    .i_rs2(branch_rs2),
+    .i_rd(branch_rd),
+    .i_exu_to_lsu_inst(exu_to_lsu_inst[7:5]),
+    .i_idu_to_exu_inst(idu_inst[7:5]),
+    .i_lsu_to_wbu_inst(lsu_to_wbu_inst[7:5]),
+    .idu_exu_handshake(idu_valid & exu_ready),
+    .exu_lsu_handshake(exu_valid & lsu_ready),
+    .lsu_wbu_handshake(lsu_valid & wbu_ready),
+    .wbu_valid(wbu_valid),
+    .load_valid(load_valid),
+    .i_pc_data(lsu_to_wbu_pc_data),
+    .i_csr_rdata(lsu_to_wbu_csr_data),
+    .i_exu_rd_data(exu_data),
+    .i_lsu_rd_data(lsu_data),
+    .i_src1(src1),
+    .i_src2(src2),
+    .rs1_data_ready(rs1_data_ready),
+    .rs2_data_ready(rs2_data_ready),
+    .rs1_data(rs1_data),
+    .rs2_data(rs2_data),
+    .o_rs1(rs1),
+    .o_rs2(rs2),
+    .o_exu_rd_data(branch_exu_data),
+    .o_lsu_rd_data(branch_lsu_data),
+    .o_wbu_rd_data(wdata),
+    // .o_exu_rd(exu_rd),
+    // .o_lsu_rd(lsu_rd),
+    .o_wbu_rd(wbu_rd)
+);
+
 //------------------------------------------
 // EXU实例化
 //------------------------------------------
@@ -583,16 +673,31 @@ ysyx_25020042_EXU EXU_u (
 
     `ifdef VERILATOR
     .performance_counter(exu_performance_counter),
+    .i_instruction_data(idu_to_exu_instrction_data),
+    .o_instruction_data(exu_to_lsu_instrction_data),
     `endif
 
     .i_inst(idu_inst),
-    .i_src1(src1),
-    .i_src2(src2),
+    .i_src1(rs1_data),
+    .i_src2(rs2_data),
     .i_imm(imm),
-    .i_pc_data(pc),
+    .i_pc_data(idu_to_exu_pc_data),
     .i_shamt(shamt),
     .i_csr_data(csr_data),
-    .o_B_jump_signal(o_B_jump_signal),
+    .i_csr_addr(csr_addr),
+    .i_mepc_rdata(mepc),
+    .i_mtvec_rdata(mtvec),
+    .i_src1_valid(rs1_data_ready),
+    .i_src2_valid(rs2_data_ready),
+    // .i_rd(rd),
+    .o_csr_data(exu_to_lsu_csr_data),
+    .o_csr_addr(exu_to_lsu_csr_addr),
+    .o_idu_inst(exu_to_lsu_inst),
+    .o_pc_data(exu_to_lsu_pc_data),
+    .o_src2(exu_to_lsu_src2),
+    // .o_rd(exu_to_lsu_rd),
+    .jump_pc(jump_pc),
+    .jump_valid(jump_valid),
     .o_data(exu_data)
     );
 
@@ -607,13 +712,26 @@ ysyx_25020042_LSU LSU_u (
     .lsu_valid(lsu_valid),
     .lsu_ready(lsu_ready),
 
-    .i_inst(idu_inst),
-    .i_src2(src2),
-    .i_data(exu_data),
-    .o_rdata(lsu_data),
+    .i_inst(exu_to_lsu_inst),
+    .i_src2(exu_to_lsu_src2),
+    .i_data(branch_exu_data),
+    .i_pc_data(exu_to_lsu_pc_data),
+    .i_csr_data(exu_to_lsu_csr_data),
+    .i_csr_addr(exu_to_lsu_csr_addr),
+    // .i_rd(exu_to_lsu_rd),
+
+    .o_inst(lsu_to_wbu_inst),
+    .o_data(lsu_data),
+    .o_pc_data(lsu_to_wbu_pc_data),
+    .o_csr_data(lsu_to_wbu_csr_data),
+    .o_csr_addr(lsu_to_wbu_csr_addr),
+    .load_valid(load_valid),
+    // .o_rd(lsu_to_wbu_rd),
 
     `ifdef VERILATOR
     .performance_counter(lsu_performance_counter),
+    .i_instruction_data(exu_to_lsu_instrction_data),
+    .o_instruction_data(lsu_to_wbu_instrction_data),
     `endif
 
     // axi 握手信号
@@ -662,22 +780,43 @@ ysyx_25020042_WBU WBU_u (
     .wbu_ready(wbu_ready),
     .wbu_valid(wbu_valid),
 
-    .i_data(exu_data),
-    .i_pc_data(pc),
-    .i_B_jump_signal(o_B_jump_signal),
-    .i_inst(idu_inst),
-    .i_load_wdata(lsu_data),
-    .i_csr_rdata(csr_data),
-    .i_mtvec_rdata(mtvec),
-    .i_mepc_rdata(mepc),
+    `ifdef VERILATOR
+    .i_instruction_data(lsu_to_wbu_instrction_data),
+    `endif
+
+    .i_data(branch_lsu_data),
+    .i_pc_data(lsu_to_wbu_pc_data),
+    .i_inst(lsu_to_wbu_inst),
+    // .i_rd(lsu_to_wbu_rd),
+    // .i_csr_rdata(lsu_to_wbu_csr_data),
+    .i_csr_addr(lsu_to_wbu_csr_addr),
+    // .o_rd(wbu_rd),
     .csr_wdata(csr_wdata),
-    .reg_wdata(wdata),
+    .csr_addr(wbu_csr_addr),
+    // .reg_wdata(wdata),
     .o_mepc_wdata(mepc_wdata),
-    .o_mcause_wdata(mcause_wdata),
-    .jump_pc(jump_pc),
-    .jump_valid(jump_valid)
+    .o_mcause_wdata(mcause_wdata)
     );
 
+`ifdef VERILATOR
+    reg [31:0] wbu_next_pc;
+    always @(posedge clock) begin
+        if (reset) begin
+            wbu_next_pc <= 32'h80000000;
+        end 
+        else if (wbu_valid) begin
+            if (lsu_to_wbu_pc_data != exu_to_lsu_pc_data) begin
+                wbu_next_pc <= exu_to_lsu_pc_data;
+            end
+            else if (exu_to_lsu_pc_data != idu_to_exu_pc_data) begin
+                wbu_next_pc <= idu_to_exu_pc_data;
+            end
+            else if (idu_to_exu_pc_data != ifu_to_idu_pc_data) begin
+                wbu_next_pc <= ifu_to_idu_pc_data;
+            end
+        end
+    end
+    `endif
 
 
 //------------------------------------------
@@ -689,6 +828,7 @@ ysyx_25020042_csr csr_u (
     .i_ecall_signal(ecall_signal),
     .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),
+    .i_wbu_csr_addr(wbu_csr_addr),
     .i_mstatus_wdata(mstatus_wdata),
     .i_mcause_wdata(mcause_wdata),
     .i_mtvec_wdata(mtvec_wdata),
@@ -708,7 +848,7 @@ ysyx_25020042_gpr gpr_u(
     .reset(reset), 
     .i_rs1(rs1),
     .i_rs2(rs2),
-    .i_rd(rd),
+    .i_rd(wbu_rd),
     .i_data(wdata),
     .wbu_valid(wbu_valid),
     .o_src1(src1),

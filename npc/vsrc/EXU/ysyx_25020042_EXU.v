@@ -17,12 +17,30 @@ module ysyx_25020042_EXU(
     input wire [31:0] i_pc_data,
     input wire [5:0]  i_shamt,
     input wire [31:0] i_csr_data,
-    // output reg [7:0] o_instruction_out,
-    output reg        o_B_jump_signal,
-    output wire [31:0] o_data
+    input wire [11:0] i_csr_addr,
+    input wire [31:0] i_mepc_rdata,
+    input wire [31:0] i_mtvec_rdata,
+    input wire        i_src1_valid,
+    input wire        i_src2_valid,
+    `ifdef VERILATOR
+    input  [31:0]     i_instruction_data,
+    `endif
+    // input wire [4:0]  i_rd,
+    output reg [31:0]  o_csr_data,
+    output reg [11:0]  o_csr_addr,
+    output reg  [7:0]  o_idu_inst,
+    output reg  [31:0] o_pc_data,
+    `ifdef VERILATOR
+    output reg [31:0] o_instruction_data,
+    `endif
+    output reg  [31:0] o_src2,
+    // output reg  [4:0] o_rd,
+    output reg [31:0] jump_pc,
+    output wire        jump_valid,
+    // output reg [31:0] o_data
+    output wire  [31:0]  o_data
 );
 
-    localparam  NOP_INST     = 3'b000;
     localparam  EXU_INST     = 3'b001;
     localparam  JUMP_INST    = 3'b010;
     localparam  MEM_INST     = 3'b011;
@@ -31,13 +49,33 @@ module ysyx_25020042_EXU(
 
     reg [31:0] alu_data1;
     reg [31:0] alu_data2;
-    reg [3:0] alu_ctrl;
+    reg [3:0]  alu_ctrl;
+    reg        B_jump_signal;
+    reg        jump_valid_signal;
     wire [31:0] alu_out;
     wire equal       = (i_src1 == i_src2);
     wire sign_less   = $signed(i_src1) < $signed(i_src2) ? 1'b1 : 1'b0;
     wire unsign_less = (i_src1 < i_src2);
 
-    assign o_data = alu_out;
+    always @(posedge clock) begin
+        if (reset) begin
+            exu_ready <= 0;
+            exu_valid <= 0;
+        end
+        else if (!exu_valid & !exu_ready & idu_valid & i_src1_valid & i_src2_valid) begin
+            // $display("idu_valid = %d, i_src1_valid = %d, i_src2_valid = %d", idu_valid, i_src1_valid, i_src2_valid);
+            exu_ready <= 1;
+        end
+        else if (idu_valid & exu_ready) begin
+            exu_ready <= 0;
+            // $display("idu_valid = %d, exu_ready = %d", idu_valid, exu_ready);
+            exu_valid <= 1;
+        end
+        else if (lsu_ready & exu_valid) begin
+            exu_ready <= 0;
+            exu_valid <= 0;
+        end
+    end
 
     `ifdef VERILATOR
     // reg [63:0] performance_counter;
@@ -49,52 +87,104 @@ module ysyx_25020042_EXU(
     end
     `endif
 
+assign jump_valid = jump_valid_signal & exu_valid;
+
+always @(posedge clock) begin
+    if(reset) begin
+        jump_pc <= 32'h0;
+        jump_valid_signal <= 1'b0;
+    end
+    else if (idu_valid & exu_ready) begin
+        case(i_inst[7:5])
+            JUMP_INST: begin
+                if (B_jump_signal == 1'b1) begin
+                    jump_pc <= alu_out;
+                    jump_valid_signal <= 1'b1;
+                end
+                else if (i_inst[4:0] == 5'b00001 || i_inst[4:0] == 5'b00010) begin
+                    jump_pc <= alu_out;
+                    jump_valid_signal <= 1'b1;
+                end
+            end
+        
+            CSR_INST: begin
+                case (i_inst[4:0])
+                    5'b00100: begin // mret
+                        jump_pc <= i_mepc_rdata;
+                        jump_valid_signal <= 1'b1;
+                    end
+                    5'b00011: begin // ecall
+                        jump_pc <= i_mtvec_rdata;
+                        jump_valid_signal <= 1'b1;
+                    end
+                    default: begin
+                        jump_valid_signal <= 1'b0;
+                    end
+                endcase
+            end
+            default: begin
+                jump_valid_signal <= 1'b0;
+            end
+        endcase
+    end
+    else if (exu_valid)begin
+        jump_valid_signal <= 1'b0;
+    end
+end
+
+    assign o_data = alu_out;
+
     always @(posedge clock) begin
         if (reset) begin
-            exu_ready <= 1;
-            exu_valid <= 0;
+            // o_data <= 0;
+            o_pc_data <= 0;
+            o_idu_inst <= 0;
+            o_csr_data <= 0;
+            o_src2     <= 0;
+            // o_rd       <= 0;
+            o_csr_addr <= 0;
+            `ifdef VERILATOR
+                o_instruction_data <= 32'b0;
+            `endif
         end
         else if (idu_valid & exu_ready) begin
-            exu_ready <= 0;
-            exu_valid <= 1;
+            // o_data <= alu_out;
+            o_pc_data <= i_pc_data;
+            o_idu_inst <= i_inst;
+            o_csr_data <= i_csr_data;
+            o_src2     <= i_src2;
+            // o_rd       <= i_rd;
+            o_csr_addr <= i_csr_addr;
+            `ifdef VERILATOR
+                o_instruction_data <= i_instruction_data;
+            `endif
         end
-        else if (lsu_ready & exu_valid) begin
-            exu_ready <= 1;
-            exu_valid <= 0;
-        end
+        // else if (lsu_ready & exu_valid)
+        //     o_rd <= 0;
     end
 
-    // always @(posedge clock) begin
-    //     if (reset) begin
-    //         o_instruction_out <= 0;
-    //     end
-    //     else if (idu_valid & exu_ready) begin
-    //         o_instruction_out <= i_inst;
-    //     end
-    // end
-
     always @(*) begin
-        o_B_jump_signal = 1'b0;
+        B_jump_signal = 1'b0;
         if(i_inst[7:5] == JUMP_INST) begin
             case(i_inst[4:0])
             5'b00001:  // jalr
-                o_B_jump_signal = 1'b0;
+                B_jump_signal = 1'b0;
             5'b00010:  // jal
-                o_B_jump_signal = 1'b0;
+                B_jump_signal = 1'b0;
             5'b00011:  // beq
-                o_B_jump_signal = equal ? 1'b1 : 1'b0;
+                B_jump_signal = equal ? 1'b1 : 1'b0;
             5'b00100:  // bne
-                o_B_jump_signal = equal ? 1'b0 : 1'b1;
+                B_jump_signal = equal ? 1'b0 : 1'b1;
             5'b00101:  // bge
-                o_B_jump_signal = sign_less ? 1'b0 : 1'b1;
+                B_jump_signal = sign_less ? 1'b0 : 1'b1;
             5'b00110:  // bgeu
-                o_B_jump_signal = unsign_less ? 1'b0 : 1'b1;   
+                B_jump_signal = unsign_less ? 1'b0 : 1'b1;   
             5'b00111:  // blt
-                o_B_jump_signal = sign_less ? 1'b1 : 1'b0;          
+                B_jump_signal = sign_less ? 1'b1 : 1'b0;          
             5'b01000:  // bltu
-                o_B_jump_signal = unsign_less ? 1'b1 : 1'b0;           
+                B_jump_signal = unsign_less ? 1'b1 : 1'b0;           
             default: 
-                o_B_jump_signal = 1'b0;
+                B_jump_signal = 1'b0;
             endcase
         end
     end

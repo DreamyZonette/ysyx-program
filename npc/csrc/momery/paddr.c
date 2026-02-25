@@ -93,7 +93,7 @@ static void internal_pmem_write(paddr_t addr, int len, word_t data) {
 
 static void out_of_bound(paddr_t addr) {
   panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-      addr, PMEM_LEFT, PMEM_RIGHT, get_pc());
+      addr, PMEM_LEFT, PMEM_RIGHT, _pc_data_);
 }
 
 extern "C" int pmem_read(int addr, int len) {
@@ -112,10 +112,12 @@ extern "C" int pmem_read(int addr, int len) {
   else{
     ret = internal_pmem_read(addr, len);
     #if CONFIG_MTRACE
+    if (addr > 0x80000190) {
         char s[128];
         sprintf(s, "DPI-RET: pmem_read(0x%08x, %d) = 0x%08x\n", addr, len, ret);
         log_write("%s\n", s);
         printf("DPI-CALL: pmem_read(0x%08x, %d, 0x%08x)\n", addr, len, ret);
+    }
 
     #endif
   }

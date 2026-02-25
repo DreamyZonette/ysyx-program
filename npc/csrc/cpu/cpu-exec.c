@@ -93,7 +93,7 @@ static void trace_and_difftest() {
       blank[j] = ' ';
     }
     blank[count] = '\0';
-    printf("0x%08x:%s ret [0x%08x]\n", dut.pc, blank, _gpr(1));
+    printf("0x%08x:%s ret [0x%08x]\n", dut.pc, blank, gpr(1));
     //log_write("0x%08x:%s ret [0x%08x]\n", top->de_pc, blank, top->reg_data[1]);
   }
 // }
@@ -141,18 +141,18 @@ static void execute(uint64_t n) {
     uint32_t prev_pc = dut.next_pc;
     while(!sim_finish){
       single_cycle();
-      if(prev_pc != get_pc()) break;
+      if(_single_inst_done_) break;
     }
 
-      dut.pc = dut.next_pc;
-      dut.next_pc = get_pc();
+      dut.pc = _pc_data_;
+      dut.next_pc = _next_pc_data_;
     g_nr_guest_inst ++;
     #if CONFIG_ITRACE
   if(!sim_finish){
-    if (dut.pc != dut.next_pc){
+    // if (dut.pc != dut.next_pc){
       uint32_t ilen = 4;
-      uint32_t cur_pc = dut.pc;
-      uint32_t cur_inst = get_instruction();
+      uint32_t cur_pc = _pc_data_;
+      uint32_t cur_inst = _instruction_data_;
       char* s = p;
       s += snprintf(s, sizeof(p), "%08x:", cur_pc);
       int space_len = 2;
@@ -165,21 +165,21 @@ static void execute(uint64_t n) {
       printf("%s\n", str);
       log_write("%s\n", str);
       p[0] = '\0';
-    }
+    // }
   }
   #else
   if(!sim_finish){
     if(print_on){
       print_on = 0;
       printf("0x%08x: %08x\n", 
-         dut.pc, get_instruction());
+         _pc_data_, _instruction_data_);
     }
   }
   #endif
 
   #if CONFIG_DIFFTEST
       for(int i = 0; i < 16; i++){
-      dut.gpr[i] = _gpr(i);
+      dut.gpr[i] = gpr(i);
   }
   #endif
     
@@ -192,8 +192,8 @@ static void execute(uint64_t n) {
     #endif
 
     if(sim_finish) {
-      npc_state.halt_pc = get_pc();
-      npc_state.halt_ret = _gpr(10); // 寄存器返回值
+      npc_state.halt_pc = _pc_data_;
+      npc_state.halt_ret = _a0_data_; // 寄存器返回值
       npc_state.state = NPC_END;
     }
     if (npc_state.state != NPC_RUNNING) break;

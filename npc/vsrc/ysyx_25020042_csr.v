@@ -4,6 +4,7 @@ module ysyx_25020042_csr (
     input i_ecall_signal,
     input [31:0] i_csr_wdata,
     input [11:0] i_csr_addr,
+    input [11:0] i_wbu_csr_addr,
     input [31:0] i_mstatus_wdata,
     input [31:0] i_mtvec_wdata,
     input [31:0] i_mepc_wdata,
@@ -65,17 +66,17 @@ always @(*) begin
     if (wbu_valid) begin
         if(i_ecall_signal == 1'b1 ) begin
             wen = 6'b001100;
-        end else if(i_csr_addr == 12'h300) begin
+        end else if(i_wbu_csr_addr == 12'h300) begin
             wen[0] = 1'b1;
-        end else if(i_csr_addr == 12'h305) begin
+        end else if(i_wbu_csr_addr == 12'h305) begin
             wen[1] = 1'b1;
-        end else if(i_csr_addr == 12'h341) begin
+        end else if(i_wbu_csr_addr == 12'h341) begin
             wen[2] = 1'b1;
-        end else if(i_csr_addr == 12'h342) begin
+        end else if(i_wbu_csr_addr == 12'h342) begin
             wen[3] = 1'b1;
-        end else if(i_csr_addr == 12'hB00) begin
+        end else if(i_wbu_csr_addr == 12'hB00) begin
             wen[4] = 1'b1;
-        end else if(i_csr_addr == 12'hB80) begin
+        end else if(i_wbu_csr_addr == 12'hB80) begin
             wen[5] = 1'b1;
         end else begin
             wen = 6'b0;

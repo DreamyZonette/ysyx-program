@@ -11,7 +11,25 @@ module ysyx_25020042_LSU(
     input [7:0]                     i_inst,
     input [31:0]                    i_src2,
     input [31:0]                    i_data, // exu data
-    output reg [31:0]               o_rdata,
+    input [31:0]                    i_pc_data,
+    input [31:0]                    i_csr_data,
+    input [11:0]                    i_csr_addr,
+    // input [4:0]                     i_rd,
+    `ifdef VERILATOR
+    input  [31:0]                   i_instruction_data,
+    `endif
+
+    output reg [7:0]                o_inst,
+    output reg [31:0]               o_data,
+    output reg [31:0]               o_pc_data,
+    `ifdef VERILATOR
+    output reg [31:0]               o_instruction_data,
+    `endif
+    output reg [31:0]               o_csr_data,
+    output reg [11:0]               o_csr_addr,
+    // output reg [4:0]                o_rd,
+    output                          load_valid,
+
     /* verilator lint_off UNUSEDSIGNAL */
     `ifdef VERILATOR
     output reg [63:0]               performance_counter,
@@ -83,19 +101,17 @@ import "DPI-C" function void difftest_device_skip();
 
 localparam  MEM_INST     = 3'b011;
 // 状态定义
-localparam IDLE = 2'b00;
-localparam WAIT = 2'b01;
-localparam WAIT_READY = 2'b10;
+localparam IDLE = 1'b0;
+localparam WAIT = 1'b1;
 
 
-reg [1:0] state;
+reg       state;
 /* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
 reg [1:0] bresp;
 /* verilator lint_on UNUSEDSIGNAL */
 wire [3:0] wstrb;
 wire [31:0] wdata;
-wire        twice_signal;
 
 // 记得修改回来
 `ifdef PLATFORM_NPC
@@ -107,6 +123,31 @@ wire [31:0] shifted_rdata = (lsu_araddr >= 32'h3000_0000 && lsu_araddr < 32'h400
 reg wen;
 reg ren;
 reg [3:0] wmask;
+
+always @(posedge clock) begin
+    if(reset) begin
+        o_inst <= 8'b0;
+        o_pc_data <= 32'b0;
+        // o_rd <= 5'b0;
+        o_csr_data <= 32'b0;
+        o_csr_addr <= 12'b0;
+        `ifdef VERILATOR
+            o_instruction_data <= 32'b0;
+        `endif
+    end
+    else if(exu_valid & lsu_ready) begin
+        o_inst <= i_inst;
+        o_pc_data <= i_pc_data;
+        // o_rd <= i_rd;
+        o_csr_data <= i_csr_data;
+        o_csr_addr <= i_csr_addr;
+        `ifdef VERILATOR
+            o_instruction_data <= i_instruction_data;
+        `endif
+    end
+    // else if (lsu_valid & wbu_ready ) 
+    //     o_rd <= 5'b0;
+end
 
 /* verilator lint_off WIDTHEXPAND */
 assign wdata = i_src2 << (i_data[1:0] * 8);
@@ -138,10 +179,23 @@ always @(*) begin
     end
 end
 
+assign load_valid = lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid & state == WAIT;
+
+always @(*) begin
+    case (o_inst[4:0])
+        5'b00001: o_data = shifted_rdata[31:0];
+        5'b00011: o_data = {16'b0, shifted_rdata[15:0]};
+        5'b00010: o_data = {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
+        5'b00101: o_data = {24'b0, shifted_rdata[7:0]};
+        5'b00100: o_data = {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
+        default:  o_data = 0;
+    endcase
+end
+
 always @(posedge clock) begin
     if(reset) begin
         state <= IDLE;
-        o_rdata <= 32'b0;
+        // o_data <= 32'b0;
         lsu_ready <= 1'b1;
         lsu_valid <= 1'b0;
         lsu_arvalid <= 1'b0;
@@ -166,7 +220,7 @@ always @(posedge clock) begin
     else begin
         case (state)
             IDLE: begin
-                if(exu_valid) begin
+                if(exu_valid & lsu_ready) begin
                     if (wen || ren) begin
                         state <= WAIT;
                         lsu_ready <= 1'b0;
@@ -215,15 +269,13 @@ always @(posedge clock) begin
                         end
                     end
                     else begin
+                        // o_data <= i_data;
                         lsu_ready <= 1'b0;
                         lsu_valid <= 1'b1;
                     end
                 end
                 else begin
                     state <= IDLE;
-                    if (lsu_valid && wbu_ready) begin
-                        lsu_valid <= 1'b0;
-                    end
 
                     if (lsu_rready) begin
                         lsu_rready <= 1'b0;
@@ -262,14 +314,14 @@ always @(posedge clock) begin
                     lsu_valid <= 1'b1;
                     rresp <= lsu_rresp;
                     state <= IDLE;
-                    case (i_inst[4:0])
-                        5'b00001: o_rdata <= shifted_rdata[31:0];
-                        5'b00011: o_rdata <= {16'b0, shifted_rdata[15:0]};
-                        5'b00010: o_rdata <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
-                        5'b00101: o_rdata <= {24'b0, shifted_rdata[7:0]};
-                        5'b00100: o_rdata <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
-                        default: o_rdata <= 0;
-                    endcase
+                    // case (o_inst[4:0])
+                    //     5'b00001: o_data <= shifted_rdata[31:0];
+                    //     5'b00011: o_data <= {16'b0, shifted_rdata[15:0]};
+                    //     5'b00010: o_data <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
+                    //     5'b00101: o_data <= {24'b0, shifted_rdata[7:0]};
+                    //     5'b00100: o_data <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
+                    //     default: o_data <= 0;
+                    // endcase
                 end
                 else if (lsu_bvalid & lsu_bid == lsu_awid) begin
                     lsu_bready <= 1'b1;
