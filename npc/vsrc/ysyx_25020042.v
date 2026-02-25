@@ -95,8 +95,8 @@
 // 指令信号
 //------------------------------------------
     wire [7:0] idu_inst;
-    wire fencei_signal = idu_inst == 8'b10100001;
-    wire ecall_signal  = idu_inst == 8'b10000011;
+    wire fencei_signal = lsu_to_wbu_inst == 8'b10100001;
+    wire ecall_signal  = lsu_to_wbu_inst == 8'b10000011;
     wire ebreak_signal = lsu_to_wbu_inst == 8'b10000101;
 //------------------------------------------
 // 数据通路信号
