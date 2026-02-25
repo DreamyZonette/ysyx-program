@@ -24,6 +24,21 @@ module ysyx_25020042_WBU(
     localparam WAIT = 1'b1;
     reg  state;
 
+    localparam Instruction_address_misaligned = 32'd0;
+    localparam Instruction_access_fault       = 32'd1;
+    localparam Illegal_instruction            = 32'd2;
+    localparam Breakpoint                     = 32'd3;
+    localparam Load_address_misaligned        = 32'd4;
+    localparam Load_access_fault              = 32'd5;
+    localparam Store_address_misaligned       = 32'd6;
+    localparam Store_access_fault             = 32'd7;
+    localparam Environment_call_from_U_mode   = 32'd8;
+    localparam Environment_call_from_S_mode   = 32'd9;
+    localparam Environment_call_from_M_mode   = 32'd11;
+    localparam Instruction_page_fault         = 32'd12;
+    localparam Load_page_fault                = 32'd13;
+    localparam Store_page_fault               = 32'd15;
+
 `ifdef VERILATOR
     reg [31:0] pc;
     reg [31:0] instruction_data;

@@ -122,6 +122,10 @@ always @(posedge clock) begin
                     end
                 endcase
             end
+            SPECIAL_INST: begin
+                jump_pc <= i_pc_data + 4;
+                jump_valid_signal <= 1'b1;
+            end 
             default: begin
                 jump_valid_signal <= 1'b0;
             end
