@@ -71,9 +71,9 @@ module ysyx_25020042_EXU(
         end
         else if (lsu_ready & exu_valid) begin
             exu_valid <= 0;
-            // if (idu_valid & i_src1_valid & i_src2_valid)
-            //     exu_ready <= 1;
-            // else 
+            if (idu_valid & i_src1_valid & i_src2_valid)
+                exu_ready <= 1;
+            else 
                 exu_ready <= 0;
         end
     end
