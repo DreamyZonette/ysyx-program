@@ -1,4 +1,4 @@
-#define CONFIG_WAVE 0
+#define CONFIG_WAVE 1
 #define CONFIG_ITRACE 0
 #define CONFIG_MTRACE 0
 #define CONFIG_FTRACE 0
@@ -12,7 +12,7 @@
 
 #define CONFIG_HAS_SERIAL 1
 #define CONFIG_HAS_TIMER 1
-#define CONFIG_HAS_VGA 1
+#define CONFIG_HAS_VGA 0
 #define CONFIG_HAS_KEYBOARD 0
 #define CONFIG_HAS_AUDIO 0
 #define CONFIG_HAS_DISK 0
