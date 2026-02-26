@@ -10,7 +10,11 @@ module ipc_counter(
     input [63:0] exu_performance_counter,
     input [63:0] lsu_performance_counter,
     input [63:0] wbu_performance_counter,
-    input [63:0] csr_performance_counter,
+    input [63:0] csr_hit_counter,
+    input [63:0] exu_hit_counter,
+    input [63:0] jump_hit_counter,
+    input [63:0] mem_hit_counter,
+    input [63:0] fence_hit_counter,
     input [63:0] ifu_cycles_counter,
     input [63:0] idu_cycles_counter,
     input [63:0] exu_cycles_counter,
@@ -20,11 +24,13 @@ module ipc_counter(
 );
 
     parameter icache_access_time = 1;
-    parameter icache_miss_penalty = 30; // 36 apb delay_on dram // 19 axiburst
+    parameter icache_miss_penalty = 30; // 36 apb delay_on dram // 30 axiburst
 
-    wire [63:0] EXU_instructions = exu_performance_counter - csr_performance_counter - lsu_performance_counter;
-    wire [63:0] CSR_instructions = csr_performance_counter;
-    wire [63:0] LSU_instructions = lsu_performance_counter;
+    wire [63:0] EXU_instructions = exu_hit_counter;
+    wire [63:0] CSR_instructions = csr_hit_counter;
+    wire [63:0] MEM_instructions = mem_hit_counter;
+    wire [63:0] JUMP_instructions = jump_hit_counter;
+    wire [63:0] FENCE_instructions = fence_hit_counter;
 
     // reg [31:0] prev_pc;
     reg [63:0] counter;
@@ -36,7 +42,7 @@ module ipc_counter(
     reg [63:0] ifu_performance_counter_prev;
     reg [63:0] EXU_instructions_prev;
     reg [63:0] CSR_instructions_prev;
-    reg [63:0] LSU_instructions_prev;
+    reg [63:0] MEM_instructions_prev;
 
     // always @(posedge clk) begin
     //     prev_pc <= pc;
@@ -49,16 +55,16 @@ module ipc_counter(
             csr_cycle_counter <= 0;
             single_cycle_counter <= 0;
             ifu_performance_counter_prev <= 0;
-            LSU_instructions_prev <= 0;
+            MEM_instructions_prev <= 0;
             CSR_instructions_prev <= 0;
             EXU_instructions_prev <= 0;
         end else begin
             single_cycle_counter <= single_cycle_counter + 1;
             ifu_performance_counter_prev <= ifu_performance_counter;
             if (ifu_performance_counter_prev != ifu_performance_counter) begin
-                if(LSU_instructions_prev != LSU_instructions) begin
+                if(MEM_instructions_prev != MEM_instructions) begin
                     lsu_cycle_counter <= lsu_cycle_counter + single_cycle_counter;
-                    LSU_instructions_prev <= LSU_instructions;
+                    MEM_instructions_prev <= MEM_instructions;
                 end
                 else if(CSR_instructions_prev != CSR_instructions) begin
                     csr_cycle_counter <= csr_cycle_counter + single_cycle_counter;
@@ -92,8 +98,12 @@ module ipc_counter(
                         EXU_instructions, $itor(EXU_instructions) / $itor(idu_performance_counter), exu_cycle_counter);
                 $display("\033[1;94mCSR instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
                         CSR_instructions, $itor(CSR_instructions) / $itor(idu_performance_counter), csr_cycle_counter);
-                $display("\033[1;94mLSU instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
-                        LSU_instructions, $itor(LSU_instructions) / $itor(idu_performance_counter), lsu_cycle_counter);
+                $display("\033[1;94mMEM instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
+                        MEM_instructions, $itor(MEM_instructions) / $itor(idu_performance_counter), lsu_cycle_counter);
+                $display("\033[1;94mJUMP instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
+                        JUMP_instructions, $itor(JUMP_instructions) / $itor(idu_performance_counter), 0);
+                $display("\033[1;94mFENCE instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
+                        FENCE_instructions, $itor(FENCE_instructions) / $itor(idu_performance_counter), 0);
                 $display("\033[1;94micache hit rate = %f AMAT = %f\033[0m",  
                         $itor(icache_hit_counter) / $itor(ifu_performance_counter), $itor(icache_access_time) + (1 - $itor(icache_hit_counter) / $itor(ifu_performance_counter)) * icache_miss_penalty);
                 $display("\033[1;32mTotal instructions: %16d\t Total cycles: %16d\033[0m",  counter , cycle_counter);

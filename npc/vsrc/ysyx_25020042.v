@@ -292,12 +292,16 @@
     wire [63:0] exu_performance_counter;
     wire [63:0] lsu_performance_counter;
     wire [63:0] wbu_performance_counter;
-    wire [63:0] csr_performance_counter;
     wire [63:0] ifu_cycles_counter;
     wire [63:0] idu_cycles_counter;
     wire [63:0] exu_cycles_counter;
     wire [63:0] lsu_cycles_counter;
     wire [63:0] wbu_cycles_counter;
+    wire [63:0] csr_hit_counter;
+    wire [63:0] exu_hit_counter;
+    wire [63:0] jump_hit_counter;
+    wire [63:0] mem_hit_counter;
+    wire [63:0] fence_hit_counter;
         `ifdef ICACHE_ON
     wire [63:0]      icache_hit_count;
     `endif
@@ -451,7 +455,11 @@ ipc_counter ipc_counter_u(
     .lsu_performance_counter(lsu_performance_counter),
     .exu_performance_counter(exu_performance_counter),
     .wbu_performance_counter(wbu_performance_counter),
-    .csr_performance_counter(csr_performance_counter),
+    .csr_hit_counter(csr_hit_counter),
+    .exu_hit_counter(exu_hit_counter),
+    .jump_hit_counter(jump_hit_counter),
+    .mem_hit_counter(mem_hit_counter),
+    .fence_hit_counter(fence_hit_counter),
     .ifu_cycles_counter(ifu_cycles_counter),
     .idu_cycles_counter(idu_cycles_counter),
     .lsu_cycles_counter(lsu_cycles_counter),
@@ -617,7 +625,11 @@ ysyx_25020042_IDU IDU_u (
     .idu_ready(idu_ready),
     .idu_valid(idu_valid),
     `ifdef VERILATOR
-    .csr_performance_counter(csr_performance_counter),
+    .csr_hit_counter(csr_hit_counter),
+    .exu_hit_counter(exu_hit_counter),
+    .jump_hit_counter(jump_hit_counter),
+    .mem_hit_counter(mem_hit_counter),
+    .fence_hit_counter(fence_hit_counter),
     .performance_counter(idu_performance_counter),
     .cycles_counter(idu_cycles_counter),
     .o_instruction_data(idu_to_exu_instrction_data),

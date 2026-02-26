@@ -6,8 +6,12 @@ module ysyx_25020042_IDU (
     output  reg          idu_ready             ,
     output  reg          idu_valid             ,
     `ifdef VERILATOR
-    output reg  [63:0]   csr_performance_counter,
-    output reg  [63:0]   performance_counter    ,
+    output reg  [63:0]   csr_hit_counter       ,
+    output reg  [63:0]   exu_hit_counter       ,
+    output reg  [63:0]   jump_hit_counter      ,
+    output reg  [63:0]   mem_hit_counter       ,
+    output reg  [63:0]   fence_hit_counter     ,
+    output reg  [63:0]   performance_counter   ,
     output reg  [63:0]   cycles_counter        ,
     `endif
  
@@ -26,60 +30,6 @@ module ysyx_25020042_IDU (
     output reg  [4:0]    o_rs1                 ,
     output reg  [4:0]    o_rs2
 );
-
-    `ifdef VERILATOR
-    reg idu_busy_signal;
-    always @(posedge clock) begin
-        if (reset) begin
-            csr_performance_counter <= 0;
-        end
-        else if (exu_ready & idu_valid & csr_valid) begin
-            csr_performance_counter <= csr_performance_counter + 1;
-        end
-    end
-
-    always @(posedge clock) begin
-        if (reset) begin
-            performance_counter <= 0;
-        end
-        else if (exu_ready & idu_valid) begin
-            performance_counter <= performance_counter + 1;
-        end
-    end
-
-    always @(posedge clock) begin
-        if (reset) begin
-            csr_performance_counter <= 0;
-        end
-        else if (exu_ready & idu_valid & csr_valid) begin
-            csr_performance_counter <= csr_performance_counter + 1;
-        end
-    end
-    always @(posedge clock) begin
-        if (reset) begin
-            idu_busy_signal <= 0;
-        end 
-        else if (i_jump_valid) begin
-            idu_busy_signal <= 0;
-        end
-        else if (ifu_valid & idu_ready) begin
-            idu_busy_signal <= 1;
-        end
-        else if (idu_valid & exu_ready) begin
-            idu_busy_signal <= 0;
-        end
-    end
-
-    always @(posedge clock) begin
-        if (reset) begin
-            cycles_counter <= 0;
-        end
-        else if (idu_busy_signal) begin
-            cycles_counter <= cycles_counter + 1;
-        end
-    end
-
-    `endif
 
     localparam  NOP_INST     = 3'b000;
     localparam  EXU_INST     = 3'b001;
@@ -109,6 +59,65 @@ module ysyx_25020042_IDU (
     wire b_type_signal = (opcode == 7'b1100011);
     wire j_type_signal = (opcode == 7'b1101111);
     wire r_type_signal = (opcode == 7'b0110011);
+
+`ifdef VERILATOR
+    reg idu_busy_signal;
+    wire mem_valid;
+    wire fence_valid;
+    wire jump_valid;
+    always @(posedge clock) begin
+        if (reset) begin
+            csr_hit_counter <= 0;
+            exu_hit_counter <= 0;
+            jump_hit_counter <= 0;
+            mem_hit_counter <= 0;
+            fence_hit_counter <= 0;
+        end
+        else if (exu_ready & idu_valid) begin
+            case (o_instruction_out[7:5])
+            CSR_INST:  csr_hit_counter <= csr_hit_counter + 1;
+            MEM_INST:  mem_hit_counter <= mem_hit_counter + 1;
+            SPECIAL_INST:fence_hit_counter <= fence_hit_counter + 1;
+            JUMP_INST: jump_hit_counter <= jump_hit_counter + 1;
+            default:    exu_hit_counter <= exu_hit_counter + 1;
+            endcase
+        end
+    end
+
+    always @(posedge clock) begin
+        if (reset) begin
+            performance_counter <= 0;
+        end
+        else if (exu_ready & idu_valid) begin
+            performance_counter <= performance_counter + 1;
+        end
+    end
+
+    always @(posedge clock) begin
+        if (reset) begin
+            idu_busy_signal <= 0;
+        end 
+        else if (i_jump_valid) begin
+            idu_busy_signal <= 0;
+        end
+        else if (ifu_valid & idu_ready) begin
+            idu_busy_signal <= 1;
+        end
+        else if (idu_valid & exu_ready) begin
+            idu_busy_signal <= 0;
+        end
+    end
+
+    always @(posedge clock) begin
+        if (reset) begin
+            cycles_counter <= 0;
+        end
+        else if (idu_busy_signal) begin
+            cycles_counter <= cycles_counter + 1;
+        end
+    end
+
+`endif
 
     always @ (posedge clock) begin
         if (reset) begin
