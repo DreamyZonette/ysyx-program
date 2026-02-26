@@ -90,16 +90,16 @@ module ipc_counter(
                 $display("\033[1;33mLSU Performance Counter: %16d spent %16d cycles busy account for %f\033[0m", exu_performance_counter, lsu_cycles_counter, $itor(lsu_cycles_counter) / $itor(cycle_counter));
                 $display("\033[1;33mWBU Performance Counter: %16d spent %16d cycles busy account for %f\033[0m", wbu_performance_counter, wbu_cycles_counter, $itor(wbu_cycles_counter) / $itor(cycle_counter));
 
-                $display("\033[1;94mEXU   instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
-                        EXU_instructions, $itor(EXU_instructions) / $itor(idu_performance_counter), exu_cycle_counter);
-                $display("\033[1;94mCSR   instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
-                        CSR_instructions, $itor(CSR_instructions) / $itor(idu_performance_counter), csr_cycle_counter);
-                $display("\033[1;94mMEM   instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
-                        MEM_instructions, $itor(MEM_instructions) / $itor(idu_performance_counter), mem_cycle_counter);
-                $display("\033[1;94mJUMP  instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
-                        JUMP_instructions, $itor(JUMP_instructions) / $itor(idu_performance_counter), jump_cycle_counter);
-                $display("\033[1;94mFENCE instructions:%16d account for %02f%% spent %16d cycles\033[0m", 
-                        FENCE_instructions, $itor(FENCE_instructions) / $itor(idu_performance_counter), fence_cycle_counter);
+                $display("\033[1;94mEXU   instructions:%16d account for %02f%% average spent %f cycles\033[0m", 
+                        EXU_instructions, $itor(EXU_instructions) / $itor(idu_performance_counter), $itor(exu_cycle_counter) / $itor(EXU_instructions));
+                $display("\033[1;94mCSR   instructions:%16d account for %02f%% average spent %f cycles\033[0m", 
+                        CSR_instructions, $itor(CSR_instructions) / $itor(idu_performance_counter), $itor(csr_cycle_counter) / $itor(CSR_instructions));
+                $display("\033[1;94mMEM   instructions:%16d account for %02f%% average spent %f cycles\033[0m", 
+                        MEM_instructions, $itor(MEM_instructions) / $itor(idu_performance_counter), $itor(mem_cycle_counter) / $itor(MEM_instructions));
+                $display("\033[1;94mJUMP  instructions:%16d account for %02f%% average spent %f cycles\033[0m", 
+                        JUMP_instructions, $itor(JUMP_instructions) / $itor(idu_performance_counter), $itor(jump_cycle_counter) / $itor(JUMP_instructions));
+                $display("\033[1;94mFENCE instructions:%16d account for %02f%% average spent %f cycles\033[0m", 
+                        FENCE_instructions, $itor(FENCE_instructions) / $itor(idu_performance_counter), $itor(fence_cycle_counter) / $itor(FENCE_instructions));
                 $display("\033[1;94micache hit rate = %f AMAT = %f\033[0m",  
                         $itor(icache_hit_counter) / $itor(ifu_performance_counter), $itor(icache_access_time) + (1 - $itor(icache_hit_counter) / $itor(ifu_performance_counter)) * icache_miss_penalty);
                 $display("\033[1;32mTotal instructions: %16d\t Total cycles: %16d\033[0m",  counter , cycle_counter);
