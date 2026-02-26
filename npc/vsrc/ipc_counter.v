@@ -22,7 +22,7 @@ module ipc_counter(
     parameter icache_access_time = 1;
     parameter icache_miss_penalty = 30; // 36 apb delay_on dram // 19 axiburst
 
-    wire [63:0] EXU_instructions = ifu_performance_counter - csr_performance_counter - lsu_performance_counter;
+    wire [63:0] EXU_instructions = exu_performance_counter - csr_performance_counter - lsu_performance_counter;
     wire [63:0] CSR_instructions = csr_performance_counter;
     wire [63:0] LSU_instructions = lsu_performance_counter;
 
