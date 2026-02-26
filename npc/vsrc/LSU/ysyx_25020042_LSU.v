@@ -34,6 +34,8 @@ module ysyx_25020042_LSU(
     `ifdef VERILATOR
     output reg [63:0]               performance_counter,
     output reg [63:0]               cycles_counter,
+    input  wire [63:0]              i_single_cycles_counter,
+    output reg [63:0]               o_single_cycles_counter,
     `endif
     /* verilator lint_on UNUSEDSIGNAL */
     // output                          o_lsu_busy,
@@ -117,6 +119,18 @@ import "DPI-C" function void difftest_device_skip();
             cycles_counter <= 0;
         else if (lsu_busy_signal)
             cycles_counter <= cycles_counter + 1;
+    end
+
+        always @(posedge clock) begin
+        if (reset) begin
+            o_single_cycles_counter <= 0;
+        end
+        else if (exu_valid & lsu_ready) begin
+            o_single_cycles_counter <= i_single_cycles_counter;
+        end
+        else begin
+            o_single_cycles_counter <= o_single_cycles_counter + 1;
+        end
     end
 `endif
 

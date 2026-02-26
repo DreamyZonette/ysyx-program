@@ -9,6 +9,8 @@ module ysyx_25020042_EXU(
     `ifdef VERILATOR
     output reg [63:0] performance_counter,
     output reg [63:0] cycles_counter,
+    input  wire [63:0]   i_single_cycles_counter,
+    output reg  [63:0]   o_single_cycles_counter,
     `endif
 
     input wire [7:0] i_inst,
@@ -81,6 +83,18 @@ module ysyx_25020042_EXU(
 
     `ifdef VERILATOR
     // reg [63:0] performance_counter;
+    always @(posedge clock) begin
+        if (reset) begin
+            o_single_cycles_counter <= 0;
+        end
+        else if (idu_valid & exu_ready) begin
+            o_single_cycles_counter <= i_single_cycles_counter;
+        end
+        else begin
+            o_single_cycles_counter <= o_single_cycles_counter + 1;
+        end
+    end
+
     reg exu_busy_signal;
 
     always @(posedge clock) begin

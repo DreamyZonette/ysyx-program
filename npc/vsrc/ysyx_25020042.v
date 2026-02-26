@@ -302,6 +302,11 @@
     wire [63:0] jump_hit_counter;
     wire [63:0] mem_hit_counter;
     wire [63:0] fence_hit_counter;
+    wire [63:0] ifu_single_cycles_counter;
+    wire [63:0] idu_single_cycles_counter;
+    wire [63:0] exu_single_cycles_counter;
+    wire [63:0] lsu_single_cycles_counter;
+    wire [63:0] wbu_single_cycles_counter;
         `ifdef ICACHE_ON
     wire [63:0]      icache_hit_count;
     `endif
@@ -465,6 +470,8 @@ ipc_counter ipc_counter_u(
     .lsu_cycles_counter(lsu_cycles_counter),
     .exu_cycles_counter(exu_cycles_counter),
     .wbu_cycles_counter(wbu_cycles_counter),
+    .single_cycle_counter(wbu_single_cycles_counter),
+    .inst(lsu_to_wbu_inst),
     .icache_hit_counter(icache_hit_count)
 );
 `endif
@@ -593,6 +600,7 @@ ysyx_25020042_IFU IFU_u (
     `ifdef VERILATOR
     .o_performance_counter(ifu_performance_counter),
     .o_cycles_counter(ifu_cycles_counter),
+    .o_single_cycles_counter(ifu_single_cycles_counter),
     `ifdef ICACHE_ON
     .o_icache_hit_count(icache_hit_count),
     `endif
@@ -633,6 +641,8 @@ ysyx_25020042_IDU IDU_u (
     .performance_counter(idu_performance_counter),
     .cycles_counter(idu_cycles_counter),
     .o_instruction_data(idu_to_exu_instrction_data),
+    .i_single_cycles_counter(ifu_single_cycles_counter),
+    .o_single_cycles_counter(idu_single_cycles_counter),
     `endif
 
     .i_jump_valid(jump_valid),
@@ -698,6 +708,8 @@ ysyx_25020042_EXU EXU_u (
     .cycles_counter(exu_cycles_counter),
     .i_instruction_data(idu_to_exu_instrction_data),
     .o_instruction_data(exu_to_lsu_instrction_data),
+    .i_single_cycles_counter(idu_single_cycles_counter),
+    .o_single_cycles_counter(exu_single_cycles_counter),
     `endif
 
     .i_inst(idu_inst),
@@ -754,6 +766,8 @@ ysyx_25020042_LSU LSU_u (
     .cycles_counter(lsu_cycles_counter),
     .i_instruction_data(exu_to_lsu_instrction_data),
     .o_instruction_data(lsu_to_wbu_instrction_data),
+    .i_single_cycles_counter(exu_single_cycles_counter),
+    .o_single_cycles_counter(lsu_single_cycles_counter),
     `endif
 
     // axi 握手信号
@@ -806,6 +820,8 @@ ysyx_25020042_WBU WBU_u (
     .i_instruction_data(lsu_to_wbu_instrction_data),
     .performance_counter(wbu_performance_counter),
     .cycles_counter(wbu_cycles_counter),
+    .i_single_cycles_counter(lsu_single_cycles_counter),
+    .o_single_cycles_counter(wbu_single_cycles_counter),
     `endif
 
     .i_data(branch_lsu_data),

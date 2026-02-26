@@ -16,7 +16,8 @@ module ysyx_25020042_IFU(
 
     `ifdef VERILATOR
     output     [63:0]      o_performance_counter,
-    output     [63:0]      o_cycles_counter,
+    output reg [63:0]      o_cycles_counter,
+    output reg [63:0]      o_single_cycles_counter,
     `ifdef ICACHE_ON
     output     [63:0]      o_icache_hit_count,
     `endif
@@ -78,6 +79,17 @@ module ysyx_25020042_IFU(
         else if (ifu_busy_signal) begin
             o_cycles_counter <= o_cycles_counter + 1;
         end
+    end
+
+    always @(posedge clock) begin
+        if(reset) begin
+            o_single_cycles_counter <= 1;
+        end
+        else if (pc_valid && ifu_ready) begin
+            o_single_cycles_counter <= 1;
+        end
+        else 
+            o_single_cycles_counter <= o_single_cycles_counter + 1;
     end
 
 `endif

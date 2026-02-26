@@ -1,33 +1,35 @@
 module ysyx_25020042_IDU (
-    input   wire         clock                 ,  
-    input   wire         reset                 ,
-    input   wire         ifu_valid             ,
-    input   wire         exu_ready             ,
-    output  reg          idu_ready             ,
-    output  reg          idu_valid             ,
-    `ifdef VERILATOR
-    output reg  [63:0]   csr_hit_counter       ,
-    output reg  [63:0]   exu_hit_counter       ,
-    output reg  [63:0]   jump_hit_counter      ,
-    output reg  [63:0]   mem_hit_counter       ,
-    output reg  [63:0]   fence_hit_counter     ,
-    output reg  [63:0]   performance_counter   ,
-    output reg  [63:0]   cycles_counter        ,
+    input   wire         clock                  ,  
+    input   wire         reset                  ,
+    input   wire         ifu_valid              ,
+    input   wire         exu_ready              ,
+    output  reg          idu_ready              ,
+    output  reg          idu_valid              ,
+    `ifdef VERILATOR 
+    output reg  [63:0]   csr_hit_counter        ,
+    output reg  [63:0]   exu_hit_counter        ,
+    output reg  [63:0]   jump_hit_counter       ,
+    output reg  [63:0]   mem_hit_counter        ,
+    output reg  [63:0]   fence_hit_counter      ,
+    output reg  [63:0]   performance_counter    ,
+    output reg  [63:0]   cycles_counter         ,
+    input  wire [63:0]   i_single_cycles_counter,
+    output reg  [63:0]   o_single_cycles_counter,
     `endif
  
-    input  wire          i_jump_valid          ,
-    input  wire [31:0]   i_inst                ,
-    input  wire [31:0]   i_pc_data             ,
-    output reg  [7:0]    o_instruction_out     ,
-    `ifdef VERILATOR
-    output reg [31:0]    o_instruction_data    ,
-    `endif
-    output reg  [31:0]   o_imm                 ,
-    output reg  [31:0]   o_pc_data             ,
-    output reg  [11:0]   o_csr_addr            ,
-    output reg  [5:0]    o_shamt               ,
-    output reg  [4:0]    o_rd                  ,
-    output reg  [4:0]    o_rs1                 ,
+    input  wire          i_jump_valid           ,
+    input  wire [31:0]   i_inst                 ,
+    input  wire [31:0]   i_pc_data              ,
+    output reg  [7:0]    o_instruction_out      ,
+    `ifdef VERILATOR 
+    output reg [31:0]    o_instruction_data     ,
+    `endif 
+    output reg  [31:0]   o_imm                  ,
+    output reg  [31:0]   o_pc_data              ,
+    output reg  [11:0]   o_csr_addr             ,
+    output reg  [5:0]    o_shamt                ,
+    output reg  [4:0]    o_rd                   ,
+    output reg  [4:0]    o_rs1                  ,
     output reg  [4:0]    o_rs2
 );
 
@@ -81,6 +83,18 @@ module ysyx_25020042_IDU (
             JUMP_INST: jump_hit_counter <= jump_hit_counter + 1;
             default:    exu_hit_counter <= exu_hit_counter + 1;
             endcase
+        end
+    end
+
+    always @(posedge clock) begin
+        if (reset) begin
+            o_single_cycles_counter <= 0;
+        end
+        else if (ifu_valid & idu_ready) begin
+            o_single_cycles_counter <= i_single_cycles_counter;
+        end
+        else begin
+            o_single_cycles_counter <= o_single_cycles_counter + 1;
         end
     end
 
