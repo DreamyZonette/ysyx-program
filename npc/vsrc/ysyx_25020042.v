@@ -288,9 +288,16 @@
 //------------------------------------------    
     `ifdef VERILATOR
     wire [63:0] ifu_performance_counter;
+    wire [63:0] idu_performance_counter;
     wire [63:0] exu_performance_counter;
     wire [63:0] lsu_performance_counter;
+    wire [63:0] wbu_performance_counter;
     wire [63:0] csr_performance_counter;
+    wire [63:0] ifu_cycles_counter;
+    wire [63:0] idu_cycles_counter;
+    wire [63:0] exu_cycles_counter;
+    wire [63:0] lsu_cycles_counter;
+    wire [63:0] wbu_cycles_counter;
         `ifdef ICACHE_ON
     wire [63:0]      icache_hit_count;
     `endif
@@ -440,9 +447,16 @@ ipc_counter ipc_counter_u(
     .wbu_valid(wbu_valid),
     .ebreak(ebreak_signal),
     .ifu_performance_counter(ifu_performance_counter),
+    .idu_performance_counter(idu_performance_counter),
     .lsu_performance_counter(lsu_performance_counter),
     .exu_performance_counter(exu_performance_counter),
+    .wbu_performance_counter(wbu_performance_counter),
     .csr_performance_counter(csr_performance_counter),
+    .ifu_cycles_counter(ifu_cycles_counter),
+    .idu_cycles_counter(idu_cycles_counter),
+    .lsu_cycles_counter(lsu_cycles_counter),
+    .exu_cycles_counter(exu_cycles_counter),
+    .wbu_cycles_counter(wbu_cycles_counter),
     .icache_hit_counter(icache_hit_count)
 );
 `endif
@@ -540,7 +554,6 @@ ysyx_25020042_PC PC_u(
     .clock(clock),
     .reset(reset),
     .ifu_ready(ifu_ready),
-    // .pc_update(pc_update),
     .ifu_handsake(ifu_valid & idu_ready),
     .icache_busy(icache_busy),
     .fault(fault),
@@ -561,7 +574,6 @@ ysyx_25020042_IFU IFU_u (
     .idu_ready(idu_ready),
     .ifu_valid(ifu_valid),
     .ifu_ready(ifu_ready),
-    // .pc_update(pc_update),
     .icache_busy(icache_busy),
 
     .i_jump_valid(jump_valid),
@@ -572,6 +584,7 @@ ysyx_25020042_IFU IFU_u (
 
     `ifdef VERILATOR
     .o_performance_counter(ifu_performance_counter),
+    .o_cycles_counter(ifu_cycles_counter),
     `ifdef ICACHE_ON
     .o_icache_hit_count(icache_hit_count),
     `endif
@@ -604,16 +617,15 @@ ysyx_25020042_IDU IDU_u (
     .idu_ready(idu_ready),
     .idu_valid(idu_valid),
     `ifdef VERILATOR
-    .csr_perfomance_counter(csr_performance_counter),
+    .csr_performance_counter(csr_performance_counter),
+    .performance_counter(idu_performance_counter),
+    .cycles_counter(idu_cycles_counter),
     .o_instruction_data(idu_to_exu_instrction_data),
     `endif
 
     .i_jump_valid(jump_valid),
     .i_inst(instruction),
     .i_pc_data(ifu_to_idu_pc_data),
-    // .i_prev_rd_0(exu_to_lsu_rd),
-    // .i_prev_rd_1(lsu_to_wbu_rd),
-    // .i_prev_rd_2(wbu_rd),
     .o_instruction_out(idu_inst),
     .o_imm(imm),
     .o_pc_data(idu_to_exu_pc_data),
@@ -655,8 +667,6 @@ data_branch data_branch_u(
     .o_exu_rd_data(branch_exu_data),
     .o_lsu_rd_data(branch_lsu_data),
     .o_wbu_rd_data(wdata),
-    // .o_exu_rd(exu_rd),
-    // .o_lsu_rd(lsu_rd),
     .o_wbu_rd(wbu_rd)
 );
 
@@ -673,6 +683,7 @@ ysyx_25020042_EXU EXU_u (
 
     `ifdef VERILATOR
     .performance_counter(exu_performance_counter),
+    .cycles_counter(exu_cycles_counter),
     .i_instruction_data(idu_to_exu_instrction_data),
     .o_instruction_data(exu_to_lsu_instrction_data),
     `endif
@@ -689,13 +700,11 @@ ysyx_25020042_EXU EXU_u (
     .i_mtvec_rdata(mtvec),
     .i_src1_valid(rs1_data_ready),
     .i_src2_valid(rs2_data_ready),
-    // .i_rd(rd),
     .o_csr_data(exu_to_lsu_csr_data),
     .o_csr_addr(exu_to_lsu_csr_addr),
     .o_idu_inst(exu_to_lsu_inst),
     .o_pc_data(exu_to_lsu_pc_data),
     .o_src2(exu_to_lsu_src2),
-    // .o_rd(exu_to_lsu_rd),
     .jump_pc(jump_pc),
     .jump_valid(jump_valid),
     .o_data(exu_data)
@@ -730,6 +739,7 @@ ysyx_25020042_LSU LSU_u (
 
     `ifdef VERILATOR
     .performance_counter(lsu_performance_counter),
+    .cycles_counter(lsu_cycles_counter),
     .i_instruction_data(exu_to_lsu_instrction_data),
     .o_instruction_data(lsu_to_wbu_instrction_data),
     `endif
@@ -782,18 +792,16 @@ ysyx_25020042_WBU WBU_u (
 
     `ifdef VERILATOR
     .i_instruction_data(lsu_to_wbu_instrction_data),
+    .performance_counter(wbu_performance_counter),
+    .cycles_counter(wbu_cycles_counter),
     `endif
 
     .i_data(branch_lsu_data),
     .i_pc_data(lsu_to_wbu_pc_data),
     .i_inst(lsu_to_wbu_inst),
-    // .i_rd(lsu_to_wbu_rd),
-    // .i_csr_rdata(lsu_to_wbu_csr_data),
     .i_csr_addr(lsu_to_wbu_csr_addr),
-    // .o_rd(wbu_rd),
     .csr_wdata(csr_wdata),
     .csr_addr(wbu_csr_addr),
-    // .reg_wdata(wdata),
     .o_mepc_wdata(mepc_wdata),
     .o_mcause_wdata(mcause_wdata)
     );

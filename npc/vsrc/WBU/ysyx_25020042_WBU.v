@@ -10,6 +10,8 @@ module ysyx_25020042_WBU(
     input  [7:0]      i_inst,
     `ifdef VERILATOR
     input  [31:0]     i_instruction_data,
+    output reg [63:0] performance_counter,
+    output reg [63:0] cycles_counter,
     `endif
     input  [11:0]     i_csr_addr,
     output reg [31:0] csr_wdata,
@@ -55,6 +57,17 @@ module ysyx_25020042_WBU(
                 instruction_data <= i_instruction_data;
                 pc <= i_pc_data;
             end
+        end
+    end
+
+    always @(posedge clock) begin
+        if (reset) begin
+            performance_counter <= 0;
+            cycles_counter <= 0;
+        end
+        else if (lsu_valid & wbu_ready) begin
+            performance_counter <= performance_counter + 1;
+            cycles_counter <= cycles_counter + 1;
         end
     end
 `endif
