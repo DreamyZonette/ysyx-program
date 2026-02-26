@@ -79,23 +79,36 @@ module ysyx_25020042_LSU(
 import "DPI-C" function void difftest_device_skip();
 `endif
     // reg [63:0] performance_counter;
+    reg lsu_mem_hit_signal;
     reg lsu_busy_signal;
     always @(posedge clock) begin
         if(reset) begin
             lsu_busy_signal <= 1'b0;
         end
-        else if (lsu_arvalid | lsu_awvalid) begin
+        else if (exu_valid & lsu_ready) begin
             lsu_busy_signal <= 1;
         end
-        else if (lsu_rvalid | lsu_bvalid) begin
+        else if (lsu_valid & wbu_ready) begin
             lsu_busy_signal <= 0;
+        end
+    end
+
+    always @(posedge clock) begin
+        if(reset) begin
+            lsu_mem_hit_signal <= 1'b0;
+        end
+        else if (lsu_arvalid | lsu_awvalid) begin
+            lsu_mem_hit_signal <= 1;
+        end
+        else if (lsu_rvalid | lsu_bvalid) begin
+            lsu_mem_hit_signal <= 0;
         end
     end
 
     always @(posedge clock) begin
         if(reset) 
             performance_counter <= 0;
-        else if ((lsu_bvalid | lsu_rvalid) & lsu_busy_signal)
+        else if ((lsu_bvalid | lsu_rvalid) & lsu_mem_hit_signal)
             performance_counter <= performance_counter + 1;
     end
 
@@ -103,7 +116,7 @@ import "DPI-C" function void difftest_device_skip();
         if(reset) 
             cycles_counter <= 0;
         else if (lsu_busy_signal)
-            cycles_counter <= performance_counter + 1;
+            cycles_counter <= cycles_counter + 1;
     end
 `endif
 
