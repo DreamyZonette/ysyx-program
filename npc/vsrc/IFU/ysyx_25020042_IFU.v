@@ -83,10 +83,10 @@ module ysyx_25020042_IFU(
 
     always @(posedge clock) begin
         if(reset) begin
-            o_single_cycles_counter <= 1;
+            o_single_cycles_counter <= 0;
         end
         else if (pc_valid && ifu_ready) begin
-            o_single_cycles_counter <= 1;
+            o_single_cycles_counter <= 0;
         end
         else 
             o_single_cycles_counter <= o_single_cycles_counter + 1;
