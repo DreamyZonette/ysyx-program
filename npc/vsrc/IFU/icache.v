@@ -5,6 +5,7 @@ module icache(
     input   [31:0]     pc_addr          ,
     output reg         instruction_ready,
     output reg [31:0]  instruction      ,
+    output             Instruction_access_fault,
     `ifdef VERILATOR
     output reg [63:0]  icache_hit_count ,
     `endif
@@ -71,9 +72,12 @@ reg [32-1:0]                 icache_addr[0:CACHE_BLOCK_BANK-1];
 reg                          icache_valid[0:CACHE_BLOCK_BANK-1];
 reg                          state;
 reg [m-1:2]                  burst_count;
+reg [1:0]                    rresp;
 
 localparam IDLE = 1'b0;
 localparam READ = 1'b1;
+
+assign Instruction_access_fault = rresp[1] | rresp[0];
 
 always @(posedge clock) begin
     if (reset) begin
@@ -203,6 +207,7 @@ always @(posedge clock) begin
             
         if (io_icache_rlast && io_icache_rvalid && io_icache_rid == io_icache_arid) begin
             io_icache_rready <= 1'b0;
+            rresp <= io_icache_rresp;
         end
     end
 end

@@ -163,6 +163,10 @@
     wire [11:0] wbu_csr_addr;
     wire    pc_update;
     wire    icache_busy;
+    wire  [2:0] IFU_Exception_Handling;
+    // wire  [2:0] IDU_Exception_Handling;
+    // wire  [2:0] EXU_Exception_Handling;
+    // wire  [2:0] LSU_Exception_Handling;
      `ifdef VERILATOR
     wire [31:0] idu_to_exu_instrction_data;
     wire [31:0] exu_to_lsu_instrction_data;
@@ -596,6 +600,7 @@ ysyx_25020042_IFU IFU_u (
     .fencei_signal(fencei_signal),
     .o_instruction(instruction),
     .o_pc_data(ifu_to_idu_pc_data),
+    .Exception_Handling(IFU_Exception_Handling),
 
     `ifdef VERILATOR
     .o_performance_counter(ifu_performance_counter),
