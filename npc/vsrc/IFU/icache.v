@@ -63,7 +63,7 @@ wire [31:m+n]                 icache_tag     = icache_addr[index][31:m+n];
 // wire [m*8-1:0]                data_offset0   = offset * 8;
 // wire [m*8-1:0]                data_offset1   = data_offset0 + 31;
 wire                          hit            = (icache_tag == addr_tag) && (icache_valid[index]);
-wire [31:0]                   burst_addr     = pc_addr;
+wire [31:0]                   burst_addr     = io_icache_araddr;
 wire [m+n-1:m]                burst_index    = burst_addr[m+n-1:m];
 wire [m-1:0]                  burst_offset   = {burst_count, 2'b00};
 
