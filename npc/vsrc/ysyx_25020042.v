@@ -894,8 +894,8 @@ ysyx_25020042_csr csr_u (
     .wbu_valid(wbu_valid),
     .o_mtvec(mtvec),
     .o_mepc(mepc),
-    .o_mstatus(),
-    .o_mcause(),
+    .o_mstatus(mstatus),
+    .o_mcause(mcause),
     .o_csr_rdata(csr_data)
 );
 //------------------------------------------
