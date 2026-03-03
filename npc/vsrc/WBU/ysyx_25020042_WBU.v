@@ -136,8 +136,6 @@ always @(posedge clock) begin
         csr_wdata <= 32'b0;
         wbu_ready <= 1'b1;
         wbu_valid <= 1'b0;
-        // o_mepc_wdata <= 32'b0;
-        // o_mcause_wdata <= 32'b0;
         csr_addr <= 12'b0;
     end
     else begin
