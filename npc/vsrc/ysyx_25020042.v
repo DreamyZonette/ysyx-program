@@ -674,14 +674,14 @@ data_branch data_branch_u(
     .i_rd(branch_rd),
     .i_exu_to_lsu_inst(exu_to_lsu_inst[7:5]),
     .i_idu_to_exu_inst(idu_inst[7:5]),
-    .i_lsu_to_wbu_inst(lsu_to_wbu_inst[7:5]),
+    // .i_lsu_to_wbu_inst(lsu_to_wbu_inst[7:5]),
     .idu_exu_handshake(idu_valid & exu_ready),
     .exu_lsu_handshake(exu_valid & lsu_ready),
     .lsu_wbu_handshake(lsu_valid & wbu_ready),
-    .wbu_valid(wbu_valid),
+    // .wbu_valid(wbu_valid),
     .load_valid(load_valid),
-    .i_pc_data(lsu_to_wbu_pc_data),
-    .i_csr_rdata(lsu_to_wbu_csr_data),
+    // .i_pc_data(lsu_to_wbu_pc_data),
+    // .i_csr_rdata(lsu_to_wbu_csr_data),
     .i_exu_rd_data(exu_data),
     .i_lsu_rd_data(lsu_data),
     .i_src1(src1),
@@ -694,8 +694,9 @@ data_branch data_branch_u(
     .o_rs2(rs2),
     .o_exu_rd_data(branch_exu_data),
     .o_lsu_rd_data(branch_lsu_data),
-    .o_wbu_rd_data(wdata),
-    .o_wbu_rd(wbu_rd)
+    .o_lsu_rd(wbu_rd)
+    // .o_wbu_rd_data(wdata),
+    // .o_wbu_rd(wbu_rd)
 );
 
 //------------------------------------------
@@ -829,11 +830,6 @@ ysyx_25020042_WBU WBU_u (
     .lsu_valid(lsu_valid),
     .wbu_ready(wbu_ready),
     .wbu_valid(wbu_valid),
-    .i_mstatus(mstatus),
-    .i_IFU_Exception_Handling(IFU_Exception_Handling3),
-    .i_IDU_Exception_Handling(IDU_Exception_Handling2),
-    .i_LSU_Exception_Handling(LSU_Exception_Handling0),
-    .o_Exception_valid(Exception_valid),
 
     `ifdef VERILATOR
     .i_instruction_data(lsu_to_wbu_instrction_data),
@@ -846,9 +842,16 @@ ysyx_25020042_WBU WBU_u (
     .i_data(branch_lsu_data),
     .i_pc_data(lsu_to_wbu_pc_data),
     .i_inst(lsu_to_wbu_inst),
+    .i_mstatus(mstatus),
+    .i_IFU_Exception_Handling(IFU_Exception_Handling3),
+    .i_IDU_Exception_Handling(IDU_Exception_Handling2),
+    .i_LSU_Exception_Handling(LSU_Exception_Handling0),
+    .o_Exception_valid(Exception_valid),
     .i_csr_addr(lsu_to_wbu_csr_addr),
+    .i_csr_rdata(lsu_to_wbu_csr_data),
     .csr_wdata(csr_wdata),
     .csr_addr(wbu_csr_addr),
+    .reg_wdata(wdata),
     .o_mepc_wdata(mepc_wdata),
     .o_mcause_wdata(mcause_wdata)
     );

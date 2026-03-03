@@ -21,16 +21,18 @@ module ysyx_25020042_WBU(
     output reg [63:0] o_single_cycles_counter,
     `endif
     input  [11:0]     i_csr_addr,
+    input  [31:0]     i_csr_rdata,
     output reg [31:0] csr_wdata,
     output reg [11:0] csr_addr,
+    output reg [31:0] reg_wdata,
     output wire [31:0] o_mepc_wdata,
     output reg [31:0] o_mcause_wdata
 );
 
 
-    localparam IDLE = 1'b0;
-    localparam WAIT = 1'b1;
-    reg  state;
+    // localparam IDLE = 1'b0;
+    // localparam WAIT = 1'b1;
+    // reg  state;
     wire [11:0] Exception_Handling = {i_LSU_Exception_Handling, i_IDU_Exception_Handling, i_IFU_Exception_Handling};
     wire [1:0] MPP = i_mstatus[13:12];
     assign o_Exception_valid = |Exception_Handling;
@@ -130,47 +132,66 @@ always @(*) begin
     endcase
 end
 
-always @(posedge clock) begin
-    if(reset) begin
-        state <= IDLE;
-        csr_wdata <= 32'b0;
-        wbu_ready <= 1'b1;
-        wbu_valid <= 1'b0;
-        csr_addr <= 12'b0;
-    end
-    else begin
-        case(state)
-            IDLE: begin
-                if (lsu_valid & wbu_ready) begin
-                    state <= WAIT;
-                    wbu_ready <= 1'b0;
-                    wbu_valid <= 1'b1;
-                    csr_wdata <= i_data;
-                    csr_addr <= i_csr_addr;
+assign wbu_ready = 1'b1;
+assign wbu_valid = wbu_ready & lsu_valid;
+assign csr_wdata = i_data;
+assign csr_addr = i_csr_addr;
 
-
-                end
-                else begin
-                    state <= IDLE;
-                    if (wbu_valid) begin
-                        wbu_ready <= 1'b1;
-                        wbu_valid <= 1'b0;
-                    end
-                end
-            end
-
-            WAIT: begin
-                wbu_valid <= 1'b0;
-                wbu_ready <= 1'b1;
-                csr_addr <= 12'b0;
-                state <= IDLE;
-            end
-            default: begin
-                state <= IDLE;
-            end
-        endcase
-    end
+always @(*) begin
+    case (i_inst[7:5])
+        3'b010: begin
+            reg_wdata = i_pc_data + 4;
+        end
+        3'b100: begin
+            reg_wdata = i_csr_rdata;
+        end
+        default: begin
+            reg_wdata = i_data;
+        end
+    endcase
 end
+
+// always @(posedge clock) begin
+//     if(reset) begin
+//         state <= IDLE;
+//         csr_wdata <= 32'b0;
+//         wbu_ready <= 1'b1;
+//         wbu_valid <= 1'b0;
+//         csr_addr <= 12'b0;
+//     end
+//     else begin
+//         case(state)
+//             IDLE: begin
+//                 if (lsu_valid & wbu_ready) begin
+//                     state <= WAIT;
+//                     wbu_ready <= 1'b0;
+//                     wbu_valid <= 1'b1;
+//                     csr_wdata <= i_data;
+//                     csr_addr <= i_csr_addr;
+
+
+//                 end
+//                 else begin
+//                     state <= IDLE;
+//                     if (wbu_valid) begin
+//                         wbu_ready <= 1'b1;
+//                         wbu_valid <= 1'b0;
+//                     end
+//                 end
+//             end
+
+//             WAIT: begin
+//                 wbu_valid <= 1'b0;
+//                 wbu_ready <= 1'b1;
+//                 csr_addr <= 12'b0;
+//                 state <= IDLE;
+//             end
+//             default: begin
+//                 state <= IDLE;
+//             end
+//         endcase
+//     end
+// end
 
 
 
