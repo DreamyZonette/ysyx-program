@@ -68,15 +68,7 @@
     /* verilator lint_on UNDRIVEN */
     /* verilator lint_on UNUSEDSIGNAL */
     );
-`ifdef VERILATOR
-    import "DPI-C" function void dpi_ebreak();
 
-    always @(posedge clock) begin
-            if (ebreak_signal & wbu_valid) begin
-                dpi_ebreak();
-            end
-    end
-`endif
 //------------------------------------------
 // 模块间握手信号
 //------------------------------------------
@@ -97,7 +89,6 @@
     wire [7:0] idu_inst;
     wire fencei_signal = exu_to_lsu_inst == 8'b10100001;
     wire ecall_signal  = lsu_to_wbu_inst == 8'b10000011;
-    wire ebreak_signal = lsu_to_wbu_inst == 8'b10000101;
 //------------------------------------------
 // 数据通路信号
 //------------------------------------------
@@ -465,7 +456,7 @@ ipc_counter ipc_counter_u(
     .rst(reset),
     // .pc(pc),
     .wbu_valid(wbu_valid),
-    .ebreak(ebreak_signal),
+    .ebreak(IDU_Exception_Handling2[1]),
     .ifu_performance_counter(ifu_performance_counter),
     .idu_performance_counter(idu_performance_counter),
     .lsu_performance_counter(lsu_performance_counter),

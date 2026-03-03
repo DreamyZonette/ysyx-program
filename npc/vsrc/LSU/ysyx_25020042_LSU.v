@@ -169,7 +169,7 @@ reg wen;
 reg ren;
 reg [3:0] wmask;
 
-assign o_LSU_Exception_Handling = {Store_page_fault, Load_page_fault, Store_address_misaligned, Store_access_fault, Load_access_fault, Load_address_misaligned};
+assign o_LSU_Exception_Handling = {Store_page_fault, Load_page_fault, Store_access_fault, Store_address_misaligned, Load_access_fault, Load_address_misaligned};
 assign Store_page_fault = 1'b0;
 assign Load_page_fault = 1'b0;
 assign Store_access_fault = bresp[1];

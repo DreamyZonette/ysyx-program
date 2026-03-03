@@ -23,11 +23,10 @@ module ysyx_25020042_WBU(
     input  [11:0]     i_csr_addr,
     output reg [31:0] csr_wdata,
     output reg [11:0] csr_addr,
-    output reg [31:0] o_mepc_wdata,
+    output wire [31:0] o_mepc_wdata,
     output reg [31:0] o_mcause_wdata
 );
 
-    localparam  CSR_INST     = 3'b100;
 
     localparam IDLE = 1'b0;
     localparam WAIT = 1'b1;
@@ -52,6 +51,15 @@ module ysyx_25020042_WBU(
     localparam Store_page_fault               = 32'd15;
 
 `ifdef VERILATOR
+
+    import "DPI-C" function void dpi_ebreak();
+
+    always @(posedge clock) begin
+            if (Exception_Handling[4] & wbu_valid) begin
+                dpi_ebreak();
+            end
+    end
+
     reg [31:0] pc;
     reg [31:0] instruction_data;
     reg        instruction_done;
@@ -94,14 +102,42 @@ module ysyx_25020042_WBU(
     end
 `endif
 
+assign o_mepc_wdata = i_pc_data;
+always @(*) begin
+    o_mcause_wdata = 32'b0;
+    case (1'b1)
+        Exception_Handling[0]: o_mcause_wdata = Instruction_address_misaligned;
+        Exception_Handling[1]: o_mcause_wdata = Instruction_access_fault;
+        Exception_Handling[2]: o_mcause_wdata = Instruction_page_fault;
+
+        Exception_Handling[3]: o_mcause_wdata = Illegal_instruction;
+        Exception_Handling[4]: o_mcause_wdata = Breakpoint;
+        Exception_Handling[5]: begin 
+            case (MPP)
+                2'b00: o_mcause_wdata = Environment_call_from_U_mode;
+                2'b01: o_mcause_wdata = Environment_call_from_S_mode;
+                2'b11: o_mcause_wdata = Environment_call_from_M_mode;
+                default: o_mcause_wdata = Environment_call_from_M_mode;
+            endcase
+        end
+
+        Exception_Handling[6]: o_mcause_wdata = Load_address_misaligned;
+        Exception_Handling[7]: o_mcause_wdata = Load_access_fault;
+        Exception_Handling[8]: o_mcause_wdata = Store_address_misaligned;
+        Exception_Handling[9]: o_mcause_wdata = Store_access_fault;
+        Exception_Handling[10]: o_mcause_wdata = Load_page_fault;
+        Exception_Handling[11]: o_mcause_wdata = Store_page_fault;
+    endcase
+end
+
 always @(posedge clock) begin
     if(reset) begin
         state <= IDLE;
         csr_wdata <= 32'b0;
         wbu_ready <= 1'b1;
         wbu_valid <= 1'b0;
-        o_mepc_wdata <= 32'b0;
-        o_mcause_wdata <= 32'b0;
+        // o_mepc_wdata <= 32'b0;
+        // o_mcause_wdata <= 32'b0;
         csr_addr <= 12'b0;
     end
     else begin
@@ -111,23 +147,8 @@ always @(posedge clock) begin
                     state <= WAIT;
                     wbu_ready <= 1'b0;
                     wbu_valid <= 1'b1;
-                    case(i_inst[7:5])
-                        CSR_INST: begin
-                            case (i_inst[4:0])
-                                5'b00011: begin // ecall
-                                    o_mepc_wdata <= i_pc_data;
-                                    o_mcause_wdata <= 32'd11; // 没有实现特权级转换
-                                end
-                                default: begin
-                                    csr_wdata <= i_data;
-                                    csr_addr <= i_csr_addr;
-                                end
-                            endcase
-                        end
-
-                        default: begin
-                        end
-                    endcase
+                    csr_wdata <= i_data;
+                    csr_addr <= i_csr_addr;
 
 
                 end
