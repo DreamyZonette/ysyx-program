@@ -21,6 +21,9 @@ module ysyx_25020042_IDU (
     input  wire [31:0]   i_inst                 ,
     input  wire [31:0]   i_pc_data              ,
     output reg  [7:0]    o_instruction_out      ,
+    input  wire [2:0]    i_IFU_Exception_Handling,
+    output reg [2:0]     o_IFU_Exception_Handling,
+    output wire [2:0]    o_IDU_Exception_Handling,
     `ifdef VERILATOR 
     output reg [31:0]    o_instruction_data     ,
     `endif 
@@ -54,6 +57,9 @@ module ysyx_25020042_IDU (
     wire [31:0]  j_imm = {{11{i_inst[31]}}, i_inst[31], i_inst[19:12], i_inst[20], i_inst[30:21], 1'b0};
     wire [24:20] shamt = i_inst[24:20];
     wire [11:0] csr_addr = i_inst[31:20];
+    wire ebreak_signal  = (o_instruction_out == 8'b10000101);
+    wire ecall_signal   = (o_instruction_out  == 8'b10000011);
+    wire illegal_signal = (o_instruction_out[4:0]  == 5'b0);
 
     wire u_type_signal = (opcode == 7'b0110111 | opcode == 7'b0010111);
     wire i_type_signal = (opcode == 7'b1100111 | opcode == 7'b0000011 | opcode == 7'b0010011 | opcode == 7'b0001111 | opcode == 7'b1110011);
@@ -62,11 +68,10 @@ module ysyx_25020042_IDU (
     wire j_type_signal = (opcode == 7'b1101111);
     wire r_type_signal = (opcode == 7'b0110011);
 
+    assign o_IDU_Exception_Handling = {ecall_signal, ebreak_signal, illegal_signal};
+
 `ifdef VERILATOR
     reg idu_busy_signal;
-    wire mem_valid;
-    wire fence_valid;
-    wire jump_valid;
     always @(posedge clock) begin
         if (reset) begin
             csr_hit_counter <= 0;
@@ -180,6 +185,16 @@ module ysyx_25020042_IDU (
                 o_rs1 <= rs1;
             else 
                 o_rs1 <= 5'b0;
+        end
+    end
+
+    always @ (posedge clock) begin
+        if (reset)
+            o_IFU_Exception_Handling <= 3'b0;
+        else if (i_jump_valid)
+            o_IFU_Exception_Handling <= 3'b0;
+        else if (ifu_valid & idu_ready) begin
+                o_IFU_Exception_Handling <= i_IFU_Exception_Handling;
         end
     end
 

@@ -8,6 +8,11 @@ module ysyx_25020042_WBU(
     input [31:0]      i_data,
     input [31:0]      i_pc_data,
     input  [7:0]      i_inst,
+    input [31:0]      i_mstatus,
+    input  [2:0]      i_IFU_Exception_Handling,
+    input  [2:0]      i_IDU_Exception_Handling,
+    input  [5:0]      i_LSU_Exception_Handling,
+    output            o_Exception_valid,
     `ifdef VERILATOR
     input  [31:0]     i_instruction_data,
     output reg [63:0] performance_counter,
@@ -27,6 +32,9 @@ module ysyx_25020042_WBU(
     localparam IDLE = 1'b0;
     localparam WAIT = 1'b1;
     reg  state;
+    wire [11:0] Exception_Handling = {i_LSU_Exception_Handling, i_IDU_Exception_Handling, i_IFU_Exception_Handling};
+    wire [1:0] MPP = i_mstatus[13:12];
+    assign o_Exception_valid = |Exception_Handling;
 
     localparam Instruction_address_misaligned = 32'd0;
     localparam Instruction_access_fault       = 32'd1;
@@ -135,7 +143,6 @@ always @(posedge clock) begin
             WAIT: begin
                 wbu_valid <= 1'b0;
                 wbu_ready <= 1'b1;
-                // o_rd <= 5'b0;
                 csr_addr <= 12'b0;
                 state <= IDLE;
             end

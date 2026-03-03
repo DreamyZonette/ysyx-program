@@ -163,8 +163,15 @@
     wire [11:0] wbu_csr_addr;
     wire    pc_update;
     wire    icache_busy;
-    wire  [2:0] IFU_Exception_Handling;
-    // wire  [2:0] IDU_Exception_Handling;
+    wire  [2:0] IFU_Exception_Handling0;
+    wire  [2:0] IFU_Exception_Handling1;
+    wire  [2:0] IFU_Exception_Handling2;
+    wire  [2:0] IFU_Exception_Handling3;
+    wire  [2:0] IDU_Exception_Handling0;
+    wire  [2:0] IDU_Exception_Handling1;
+    wire  [2:0] IDU_Exception_Handling2;
+    wire  [5:0] LSU_Exception_Handling0;
+    wire        Exception_valid;
     // wire  [2:0] EXU_Exception_Handling;
     // wire  [2:0] LSU_Exception_Handling;
      `ifdef VERILATOR
@@ -600,7 +607,7 @@ ysyx_25020042_IFU IFU_u (
     .fencei_signal(fencei_signal),
     .o_instruction(instruction),
     .o_pc_data(ifu_to_idu_pc_data),
-    .Exception_Handling(IFU_Exception_Handling),
+    .o_IFU_Exception_Handling(IFU_Exception_Handling0),
 
     `ifdef VERILATOR
     .o_performance_counter(ifu_performance_counter),
@@ -653,6 +660,9 @@ ysyx_25020042_IDU IDU_u (
     .i_jump_valid(jump_valid),
     .i_inst(instruction),
     .i_pc_data(ifu_to_idu_pc_data),
+    .i_IFU_Exception_Handling(IFU_Exception_Handling0),
+    .o_IFU_Exception_Handling(IFU_Exception_Handling1),
+    .o_IDU_Exception_Handling(IDU_Exception_Handling0),
     .o_instruction_out(idu_inst),
     .o_imm(imm),
     .o_pc_data(idu_to_exu_pc_data),
@@ -729,6 +739,10 @@ ysyx_25020042_EXU EXU_u (
     .i_mtvec_rdata(mtvec),
     .i_src1_valid(rs1_data_ready),
     .i_src2_valid(rs2_data_ready),
+    .i_IFU_Exception_Handling(IFU_Exception_Handling1),
+    .o_IFU_Exception_Handling(IFU_Exception_Handling2),
+    .i_IDU_Exception_Handling(IDU_Exception_Handling0),
+    .o_IDU_Exception_Handling(IDU_Exception_Handling1),
     .o_csr_data(exu_to_lsu_csr_data),
     .o_csr_addr(exu_to_lsu_csr_addr),
     .o_idu_inst(exu_to_lsu_inst),
@@ -764,7 +778,11 @@ ysyx_25020042_LSU LSU_u (
     .o_csr_data(lsu_to_wbu_csr_data),
     .o_csr_addr(lsu_to_wbu_csr_addr),
     .load_valid(load_valid),
-    // .o_rd(lsu_to_wbu_rd),
+    .i_IFU_Exception_Handling(IFU_Exception_Handling2),
+    .o_IFU_Exception_Handling(IFU_Exception_Handling3),
+    .i_IDU_Exception_Handling(IDU_Exception_Handling1),
+    .o_IDU_Exception_Handling(IDU_Exception_Handling2),
+    .o_LSU_Exception_Handling(LSU_Exception_Handling0),
 
     `ifdef VERILATOR
     .performance_counter(lsu_performance_counter),
@@ -820,6 +838,11 @@ ysyx_25020042_WBU WBU_u (
     .lsu_valid(lsu_valid),
     .wbu_ready(wbu_ready),
     .wbu_valid(wbu_valid),
+    .i_mstatus(mstatus),
+    .i_IFU_Exception_Handling(IFU_Exception_Handling3),
+    .i_IDU_Exception_Handling(IDU_Exception_Handling2),
+    .i_LSU_Exception_Handling(LSU_Exception_Handling0),
+    .o_Exception_valid(Exception_valid),
 
     `ifdef VERILATOR
     .i_instruction_data(lsu_to_wbu_instrction_data),

@@ -27,8 +27,12 @@ module ysyx_25020042_LSU(
     `endif
     output reg [31:0]               o_csr_data,
     output reg [11:0]               o_csr_addr,
-    // output reg [4:0]                o_rd,
     output                          load_valid,
+    input  wire [2:0]    i_IFU_Exception_Handling,
+    output reg [2:0]     o_IFU_Exception_Handling,
+    input  wire [2:0]    i_IDU_Exception_Handling,
+    output reg [2:0]     o_IDU_Exception_Handling,
+    output wire [5:0]    o_LSU_Exception_Handling,
 
     /* verilator lint_off UNUSEDSIGNAL */
     `ifdef VERILATOR
@@ -147,6 +151,12 @@ reg [1:0] bresp;
 /* verilator lint_on UNUSEDSIGNAL */
 wire [3:0] wstrb;
 wire [31:0] wdata;
+reg Load_address_misaligned;
+reg Store_address_misaligned;
+wire Load_access_fault;
+wire Store_access_fault;
+wire Load_page_fault;
+wire Store_page_fault;
 
 // 记得修改回来
 `ifdef PLATFORM_NPC
@@ -159,13 +169,36 @@ reg wen;
 reg ren;
 reg [3:0] wmask;
 
+assign o_LSU_Exception_Handling = {Store_page_fault, Load_page_fault, Store_address_misaligned, Store_access_fault, Load_access_fault, Load_address_misaligned};
+assign Store_page_fault = 1'b0;
+assign Load_page_fault = 1'b0;
+assign Store_access_fault = bresp[1];
+assign Load_access_fault = rresp[1];
+
+always @(*) begin
+    case (lsu_arsize)
+        3'b010: Load_address_misaligned = |lsu_araddr[1:0];
+        3'b001: Load_address_misaligned = lsu_araddr[0];
+        3'b000: Load_address_misaligned = 1'b0;
+        default: Load_address_misaligned = 1'b0;
+    endcase
+
+    case (lsu_awsize)
+        3'b010: Store_address_misaligned = |lsu_awaddr[1:0];
+        3'b001: Store_address_misaligned = lsu_awaddr[0];
+        3'b000: Store_address_misaligned = 1'b0;
+        default: Store_address_misaligned = 1'b0;
+    endcase
+end
+
 always @(posedge clock) begin
     if(reset) begin
         o_inst <= 8'b0;
         o_pc_data <= 32'b0;
-        // o_rd <= 5'b0;
         o_csr_data <= 32'b0;
         o_csr_addr <= 12'b0;
+        o_IFU_Exception_Handling <= 3'b0;
+        o_IDU_Exception_Handling <= 3'b0;
         `ifdef VERILATOR
             o_instruction_data <= 32'b0;
         `endif
@@ -173,15 +206,14 @@ always @(posedge clock) begin
     else if(exu_valid & lsu_ready) begin
         o_inst <= i_inst;
         o_pc_data <= i_pc_data;
-        // o_rd <= i_rd;
         o_csr_data <= i_csr_data;
         o_csr_addr <= i_csr_addr;
+        o_IFU_Exception_Handling <= i_IFU_Exception_Handling;
+        o_IDU_Exception_Handling <= i_IDU_Exception_Handling;
         `ifdef VERILATOR
             o_instruction_data <= i_instruction_data;
         `endif
     end
-    // else if (lsu_valid & wbu_ready ) 
-    //     o_rd <= 5'b0;
 end
 
 /* verilator lint_off WIDTHEXPAND */
@@ -260,10 +292,6 @@ always @(posedge clock) begin
                         state <= WAIT;
                         lsu_ready <= 1'b0;
 
-                        lsu_wdata <= wdata;
-                        lsu_wstrb <= wstrb;
-                        lsu_araddr <= i_data;
-                        lsu_awaddr <= i_data;  
                         case (i_inst[4:0])
                             5'b00110: begin // sw
                                 lsu_arsize <= 3'b000;
@@ -294,11 +322,15 @@ always @(posedge clock) begin
                             lsu_awvalid <= 1'b1;
                             lsu_wvalid <= 1'b1;
                             lsu_wlast <= 1'b1;
+                            lsu_awaddr <= i_data; 
+                            lsu_wdata <= wdata;
+                            lsu_wstrb <= wstrb; 
                             `ifdef LSU_MTRACE
                                 $display("LSU: write addr: %x data: %x", i_data, wdata);
                             `endif
                         end
                         else begin
+                            lsu_araddr <= i_data;
                             lsu_rready <= 1'b1;
                             lsu_arvalid <= 1'b1;
                         end

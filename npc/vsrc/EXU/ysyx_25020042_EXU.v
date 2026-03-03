@@ -25,6 +25,10 @@ module ysyx_25020042_EXU(
     input wire [31:0] i_mtvec_rdata,
     input wire        i_src1_valid,
     input wire        i_src2_valid,
+    input  wire [2:0]    i_IFU_Exception_Handling,
+    output reg [2:0]     o_IFU_Exception_Handling,
+    input  wire [2:0]    i_IDU_Exception_Handling,
+    output reg [2:0]     o_IDU_Exception_Handling,
     `ifdef VERILATOR
     input  [31:0]     i_instruction_data,
     `endif
@@ -176,31 +180,29 @@ end
 
     always @(posedge clock) begin
         if (reset) begin
-            // o_data <= 0;
             o_pc_data <= 0;
             o_idu_inst <= 0;
             o_csr_data <= 0;
             o_src2     <= 0;
-            // o_rd       <= 0;
             o_csr_addr <= 0;
+            o_IFU_Exception_Handling <= 0;
+            o_IDU_Exception_Handling <= 0;
             `ifdef VERILATOR
                 o_instruction_data <= 32'b0;
             `endif
         end
         else if (idu_valid & exu_ready) begin
-            // o_data <= alu_out;
             o_pc_data <= i_pc_data;
             o_idu_inst <= i_inst;
             o_csr_data <= i_csr_data;
             o_src2     <= i_src2;
-            // o_rd       <= i_rd;
             o_csr_addr <= i_csr_addr;
+            o_IFU_Exception_Handling <= i_IFU_Exception_Handling;
+            o_IDU_Exception_Handling <= i_IDU_Exception_Handling;
             `ifdef VERILATOR
                 o_instruction_data <= i_instruction_data;
             `endif
         end
-        // else if (lsu_ready & exu_valid)
-        //     o_rd <= 0;
     end
 
     always @(*) begin
