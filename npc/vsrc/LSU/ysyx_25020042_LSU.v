@@ -291,6 +291,10 @@ always @(posedge clock) begin
                     if (wen || ren) begin
                         state <= WAIT;
                         lsu_ready <= 1'b0;
+                        lsu_wdata <= wdata;
+                        lsu_wstrb <= wstrb;
+                        lsu_araddr <= i_data;
+                        lsu_awaddr <= i_data;  
 
                         case (i_inst[4:0])
                             5'b00110: begin // sw
@@ -321,16 +325,12 @@ always @(posedge clock) begin
                         if (wen) begin
                             lsu_awvalid <= 1'b1;
                             lsu_wvalid <= 1'b1;
-                            lsu_wlast <= 1'b1;
-                            lsu_awaddr <= i_data; 
-                            lsu_wdata <= wdata;
-                            lsu_wstrb <= wstrb; 
+                            lsu_wlast <= 1'b1; 
                             `ifdef LSU_MTRACE
                                 $display("LSU: write addr: %x data: %x", i_data, wdata);
                             `endif
                         end
                         else begin
-                            lsu_araddr <= i_data;
                             lsu_rready <= 1'b1;
                             lsu_arvalid <= 1'b1;
                         end
