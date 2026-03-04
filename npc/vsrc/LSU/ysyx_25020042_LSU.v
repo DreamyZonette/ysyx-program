@@ -163,7 +163,8 @@ wire Store_page_fault;
 wire [31:0] shifted_rdata = lsu_rdata >> (lsu_araddr[1:0] * 8);
 
 `else 
-wire [31:0] shifted_rdata = (lsu_araddr >= 32'h3000_0000 && lsu_araddr < 32'h4000_0000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
+wire [31:0] shifted_rdata = lsu_rdata >> (lsu_araddr[1:0] * 8);
+// wire [31:0] shifted_rdata = (lsu_araddr >= 32'h3000_0000 && lsu_araddr < 32'h4000_0000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
 `endif
 reg wen;
 reg ren;

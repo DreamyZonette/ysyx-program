@@ -62,33 +62,33 @@ module ysyx_25020042_WBU(
             end
     end
 
-    always @(posedge clock) begin
-        if (o_Exception_valid) begin
-        case (1'b1)
-            Exception_Handling[0]: $display("Instruction_address_misaligned");
-            Exception_Handling[1]: $display("Instruction_access_fault");
-            Exception_Handling[2]: $display("Instruction_page_fault");
+    // always @(posedge clock) begin
+    //     if (o_Exception_valid) begin
+    //     case (1'b1)
+    //         Exception_Handling[0]: $display("Instruction_address_misaligned");
+    //         Exception_Handling[1]: $display("Instruction_access_fault");
+    //         Exception_Handling[2]: $display("Instruction_page_fault");
 
-            Exception_Handling[3]: $display("Illegal_instruction");
-            Exception_Handling[4]: $display("Breakpoint");
-            Exception_Handling[5]: begin 
-                case (MPP)
-                    2'b00: $display("Environment_call_from_U_mode");
-                    2'b01: $display("Environment_call_from_S_mode");
-                    2'b11: $display("Environment_call_from_M_mode");
-                    default: $display("Environment_call_from_M_mode");
-                endcase
-            end
+    //         Exception_Handling[3]: $display("Illegal_instruction");
+    //         Exception_Handling[4]: $display("Breakpoint");
+    //         Exception_Handling[5]: begin 
+    //             case (MPP)
+    //                 2'b00: $display("Environment_call_from_U_mode");
+    //                 2'b01: $display("Environment_call_from_S_mode");
+    //                 2'b11: $display("Environment_call_from_M_mode");
+    //                 default: $display("Environment_call_from_M_mode");
+    //             endcase
+    //         end
 
-            Exception_Handling[6]: $display("Load_address_misaligned");
-            Exception_Handling[7]: $display("Load_access_fault");
-            Exception_Handling[8]: $display("Store_address_misaligned");
-            Exception_Handling[9]: $display("Store_access_fault");
-            Exception_Handling[10]: $display("Load_page_fault");
-            Exception_Handling[11]: $display("Store_page_fault");
-        endcase
-        end
-    end
+    //         Exception_Handling[6]: $display("Load_address_misaligned");
+    //         Exception_Handling[7]: $display("Load_access_fault");
+    //         Exception_Handling[8]: $display("Store_address_misaligned");
+    //         Exception_Handling[9]: $display("Store_access_fault");
+    //         Exception_Handling[10]: $display("Load_page_fault");
+    //         Exception_Handling[11]: $display("Store_page_fault");
+    //     endcase
+    //     end
+    // end
 
     reg [31:0] pc;
     reg [31:0] instruction_data;
