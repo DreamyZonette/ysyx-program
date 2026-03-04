@@ -382,6 +382,9 @@ always @(posedge clock) begin
                     lsu_valid <= 1'b1;
                     rresp <= lsu_rresp;
                     state <= IDLE;
+                    `ifdef LSU_MTRACE
+                        $display("LSU: read addr: %x data: %x", lsu_araddr, shifted_rdata);
+                    `endif
                     // case (o_inst[4:0])
                     //     5'b00001: o_data <= shifted_rdata[31:0];
                     //     5'b00011: o_data <= {16'b0, shifted_rdata[15:0]};
