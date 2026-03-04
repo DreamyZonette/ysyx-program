@@ -18,7 +18,7 @@ module ysyx_25020042_WBU(
     output reg [63:0] performance_counter,
     output reg [63:0] cycles_counter,
     input  [63:0]     i_single_cycles_counter,
-    output reg [63:0] o_single_cycles_counter,
+    output wire [63:0] o_single_cycles_counter,
     `endif
     input  [11:0]     i_csr_addr,
     input  [31:0]     i_csr_rdata,
@@ -119,17 +119,7 @@ module ysyx_25020042_WBU(
         end
     end
 
-     always @(posedge clock) begin
-        if (reset) begin
-            o_single_cycles_counter <= 0;
-        end
-        else if (lsu_valid & wbu_ready) begin
-            o_single_cycles_counter <= i_single_cycles_counter;
-        end
-        else begin
-            o_single_cycles_counter <= o_single_cycles_counter + 1;
-        end
-    end
+    assign o_single_cycles_counter = i_single_cycles_counter;
 `endif
 
 assign o_mepc_wdata = i_pc_data;
