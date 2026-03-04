@@ -31,7 +31,7 @@ SECTIONS {
   boot_loader_lma_addr = entry_lma_addr - _entry_start + _boot_loader_start;
   text_lma_addr = entry_lma_addr - _entry_start + _boot_loader_end;
   sram_boot_loader_start = ORIGIN(sram);
-  sram_boot_loader_end = ORIGIN(sram) + _boot_loader_end - _boot_loader_start - _entry_start ;
+  sram_boot_loader_end = ORIGIN(sram) + (_boot_loader_end - _boot_loader_start);
 
   
   /* _boot_loader_end = _boot_loader_start + SIZEOF(.text.boot); */
