@@ -735,6 +735,7 @@ ysyx_25020042_EXU EXU_u (
     .o_IFU_Exception_Handling(IFU_Exception_Handling2),
     .i_IDU_Exception_Handling(IDU_Exception_Handling0),
     .o_IDU_Exception_Handling(IDU_Exception_Handling1),
+    .i_LSU_Exception_Handling(LSU_Exception_Handling0),
     .o_csr_data(exu_to_lsu_csr_data),
     .o_csr_addr(exu_to_lsu_csr_addr),
     .o_idu_inst(exu_to_lsu_inst),

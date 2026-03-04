@@ -29,6 +29,7 @@ module ysyx_25020042_EXU(
     output reg [2:0]     o_IFU_Exception_Handling,
     input  wire [2:0]    i_IDU_Exception_Handling,
     output reg [2:0]     o_IDU_Exception_Handling,
+    input  wire [5:0]    i_LSU_Exception_Handling,
     `ifdef VERILATOR
     input  [31:0]     i_instruction_data,
     `endif
@@ -60,10 +61,20 @@ module ysyx_25020042_EXU(
     reg [3:0]  alu_ctrl;
     reg        B_jump_signal;
     reg        jump_valid_signal;
+    reg        Exception_hit_reg;
+    wire Exception_valid0 = |{i_IFU_Exception_Handling, i_IDU_Exception_Handling};
+    wire Exception_valid1 = |i_LSU_Exception_Handling;
     wire [31:0] alu_out;
     wire equal       = (i_src1 == i_src2);
     wire sign_less   = $signed(i_src1) < $signed(i_src2) ? 1'b1 : 1'b0;
     wire unsign_less = (i_src1 < i_src2);
+
+    always @(posedge clock) begin
+        if (Exception_valid1) 
+            Exception_hit_reg <= 1'b1;
+        else 
+            Exception_hit_reg <= 1'b0;
+    end
 
     always @(posedge clock) begin
         if (reset) begin
@@ -77,7 +88,7 @@ module ysyx_25020042_EXU(
             exu_ready <= 0;
             exu_valid <= 1;
         end
-        else if (lsu_ready & exu_valid) begin
+        else if ((lsu_ready | (Exception_valid1 & !Exception_hit_reg)) & exu_valid) begin
             exu_valid <= 0;
             if (idu_valid & i_src1_valid & i_src2_valid)
                 exu_ready <= 1;
@@ -128,7 +139,7 @@ module ysyx_25020042_EXU(
 
     `endif
 
-assign jump_valid = jump_valid_signal & exu_valid;
+assign jump_valid = jump_valid_signal & (exu_valid | (Exception_valid1 & !Exception_hit_reg));
 assign o_fence_i_valid = i_inst == 8'b10100001;
 
 always @(posedge clock) begin
@@ -169,6 +180,11 @@ always @(posedge clock) begin
                 jump_valid_signal <= 1'b1;
             end 
             default: begin
+                if (Exception_valid0 | Exception_valid1) begin
+                    jump_valid_signal <= 1'b1;
+                    jump_pc <= i_mtvec_rdata;
+                end
+                else
                 jump_valid_signal <= 1'b0;
             end
         endcase
@@ -369,41 +385,6 @@ end
                         alu_data2 = i_imm;
                         alu_ctrl = 4'b0000;
                     end
-                    // 5'b00010: begin // jal
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b00011: begin // beq
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b00100: begin // bne
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b00101: begin // bge
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b00110: begin // bgeu
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b00111: begin // blt
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b01000: begin // bltu
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
                     default: begin
                         alu_data1 = i_pc_data;
                         alu_data2 = i_imm;
@@ -416,53 +397,6 @@ end
                 alu_data1 = i_src1;
                 alu_data2 = i_imm;
                 alu_ctrl = 4'b0000;
-                // case(i_inst[4:0])
-                //     5'b00001: begin // lw
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00010: begin // lh
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00011: begin // lhu
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00100: begin // lb
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00101: begin // lbu
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00110: begin // sw
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00111: begin // sh
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b01000: begin // sb
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     default: begin
-                //         alu_data1 = 0;
-                //         alu_data2 = 0;
-                //         alu_ctrl = 4'b0011;
-                //     end
-                // endcase
             end
 
             CSR_INST: begin

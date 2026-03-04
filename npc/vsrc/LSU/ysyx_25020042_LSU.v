@@ -356,6 +356,10 @@ always @(posedge clock) begin
                     if(lsu_valid & wbu_ready ) begin
                         lsu_ready <= 1'b1;
                         lsu_valid <= 1'b0;
+                        rresp <= 2'b00;
+                        bresp <= 2'b00;
+                        lsu_araddr <= 32'b0;
+                        lsu_awaddr <= 32'b0;
                     end
                 end
             end
