@@ -17,7 +17,6 @@ SECTIONS {
     _entry_start = .;
     *(entry) 
     _entry_end = .;
-    *(.text.fsbl)
     _boot_loader_start = .;
     *(.text.boot)
     _boot_loader_end = .;
@@ -113,8 +112,6 @@ SECTIONS {
   _stack_top = ORIGIN(sram) + LENGTH(sram);
   _stack_pointer = _stack_top;
   _stack_bottom = ORIGIN(sram);
-
-  _sram_start = ORIGIN(sram);
 
 
   
