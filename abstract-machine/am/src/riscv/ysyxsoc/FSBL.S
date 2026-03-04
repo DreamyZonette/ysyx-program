@@ -3,12 +3,12 @@
     .global FSBL_entry
 FSBL_entry:
 
-    lui a0, %hi(_sram_start)      # LMA 起始
-    addi a0, a0, %lo(_sram_start)
-    lui a1, %hi(_boot_loader_start)        # VMA 起始
-    addi a1, a1, %lo(_boot_loader_start)
-    lui a2, %hi(_boot_loader_end)        # VMA 结束
-    addi a2, a2, %lo(_boot_loader_end)   
+    lui a0, %hi(boot_loader_lma_addr)      # LMA 起始
+    addi a0, a0, %lo(boot_loader_lma_addr)
+    lui a1, %hi(sram_boot_loader_start)        # VMA 起始
+    addi a1, a1, %lo(sram_boot_loader_start)
+    lui a2, %hi(sram_boot_loader_end)        # VMA 结束
+    addi a2, a2, %lo(sram_boot_loader_end)   
 
 FSBL_loop:
     lw      t0, 0(a0)        
