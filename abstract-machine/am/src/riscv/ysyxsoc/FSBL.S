@@ -18,7 +18,7 @@ FSBL_loop:
     bne     a1, a2, FSBL_loop
 
 FSBL_done:
-    lui t0, %hi(0x0f000000)    # 加载高20位：0x0f000000的高20位是0x0f000
-    addi t0, t0, %lo(0x0f000000) # 加载低12位：0x0f000000的低12位是0x0
+    lui t0, %hi(_sram_start)    # 加载高20位：0x0f000000的高20位是0x0f000
+    addi t0, t0, %lo(_sram_start) # 加载低12位：0x0f000000的低12位是0x0
     jalr ra, t0, 0
              
