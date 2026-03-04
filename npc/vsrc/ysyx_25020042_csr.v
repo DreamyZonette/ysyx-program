@@ -1,7 +1,7 @@
 module ysyx_25020042_csr (
     input clock,
     input reset,
-    input i_ecall_signal,
+    input i_Exception_valid,
     input [31:0] i_csr_wdata,
     input [11:0] i_csr_addr,
     input [11:0] i_wbu_csr_addr,
@@ -52,10 +52,10 @@ export "DPI-C" function get_mcause_value;
     endfunction
 `endif
 
-assign mstatus_wdata = (i_ecall_signal == 1'b1) ? i_mstatus_wdata : i_csr_wdata;
-assign mtvec_wdata   = (i_ecall_signal == 1'b1) ? i_mtvec_wdata   : i_csr_wdata;
-assign mepc_wdata    = (i_ecall_signal == 1'b1) ? i_mepc_wdata    : i_csr_wdata;
-assign mcause_wdata  = (i_ecall_signal == 1'b1) ? i_mcause_wdata  : i_csr_wdata;
+assign mstatus_wdata = (i_Exception_valid == 1'b1) ? i_mstatus_wdata : i_csr_wdata;
+assign mtvec_wdata   = (i_Exception_valid == 1'b1) ? i_mtvec_wdata   : i_csr_wdata;
+assign mepc_wdata    = (i_Exception_valid == 1'b1) ? i_mepc_wdata    : i_csr_wdata;
+assign mcause_wdata  = (i_Exception_valid == 1'b1) ? i_mcause_wdata  : i_csr_wdata;
 assign mcycle_wdata  = (wen[4] == 1'b1) ? i_csr_wdata    : mcycle_val + 1;
 assign mcycleh_wdata = (wen[5] == 1'b1) ? i_csr_wdata    : mcycle_val == 32'hffffffff ? mcycleh_val + 1 : mcycleh_val;
 
@@ -64,7 +64,7 @@ always @(*) begin
     wen = 6'b0;
     o_csr_rdata = 32'b0;
     if (wbu_valid) begin
-        if(i_ecall_signal == 1'b1 ) begin
+        if(i_Exception_valid == 1'b1 ) begin
             wen = 6'b001100;
         end else if(i_wbu_csr_addr == 12'h300) begin
             wen[0] = 1'b1;
@@ -104,15 +104,6 @@ always @(*) begin
     end
     
 end
-
-// ysyx_25020042_Reg #(32, 32'h1800)     mstatus  (clock, reset, mstatus_wdata , o_mstatus     ,  wen[0]);
-// ysyx_25020042_Reg #(32, 32'h0)        mtvec    (clock, reset, mtvec_wdata   , o_mtvec       ,  wen[1]);
-// ysyx_25020042_Reg #(32, 32'h0)        mepc     (clock, reset, mepc_wdata    , o_mepc        ,  wen[2]);
-// ysyx_25020042_Reg #(32, 32'h0)        mcause   (clock, reset, mcause_wdata  , o_mcause      ,  wen[3]);
-// ysyx_25020042_Reg #(32, 32'h0)        mcycle   (clock, reset, mcycle_wdata  , mcycle_val    ,  1'b1  ); 
-// ysyx_25020042_Reg #(32, 32'h0)        mcycleh  (clock, reset, mcycleh_wdata , mcycleh_val   ,  1'b1  ); 
-// ysyx_25020042_Reg #(32, 32'h79737978) mvendorid(clock, reset, 32'h79737978  , mvendorid_val ,  1'b0  ); 
-// ysyx_25020042_Reg #(32, 32'h017DC68A) marchid  (clock, reset, 32'h017DC68A  , marchid_val   ,  1'b0  ); 
 
 reg [31:0] mstatus;  
 reg [31:0] mtvec;    

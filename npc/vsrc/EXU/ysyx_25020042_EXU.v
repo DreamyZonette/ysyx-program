@@ -37,6 +37,7 @@ module ysyx_25020042_EXU(
     output reg [11:0]  o_csr_addr,
     output reg  [7:0]  o_idu_inst,
     output reg  [31:0] o_pc_data,
+    output wire        o_fence_i_valid,
     `ifdef VERILATOR
     output reg [31:0] o_instruction_data,
     `endif
@@ -128,6 +129,7 @@ module ysyx_25020042_EXU(
     `endif
 
 assign jump_valid = jump_valid_signal & exu_valid;
+assign o_fence_i_valid = i_inst == 8'b10100001;
 
 always @(posedge clock) begin
     if(reset) begin

@@ -87,8 +87,7 @@
 // 指令信号
 //------------------------------------------
     wire [7:0] idu_inst;
-    wire fencei_signal = exu_to_lsu_inst == 8'b10100001;
-    wire ecall_signal  = lsu_to_wbu_inst == 8'b10000011;
+    wire fencei_signal;
 //------------------------------------------
 // 数据通路信号
 //------------------------------------------
@@ -731,6 +730,7 @@ ysyx_25020042_EXU EXU_u (
     .i_mtvec_rdata(mtvec),
     .i_src1_valid(rs1_data_ready),
     .i_src2_valid(rs2_data_ready),
+    .o_fence_i_valid(fencei_signal),
     .i_IFU_Exception_Handling(IFU_Exception_Handling1),
     .o_IFU_Exception_Handling(IFU_Exception_Handling2),
     .i_IDU_Exception_Handling(IDU_Exception_Handling0),
@@ -883,7 +883,7 @@ ysyx_25020042_WBU WBU_u (
 ysyx_25020042_csr csr_u (
     .clock(clock),
     .reset(reset),
-    .i_ecall_signal(ecall_signal),
+    .i_Exception_valid(Exception_valid),
     .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),
     .i_wbu_csr_addr(wbu_csr_addr),
