@@ -74,7 +74,6 @@ bss_loop:
     bne     a0, a1, bss_loop
 
 bss_done:
-    lui     t0, 0x70000  # SDRAM
-    add     ra, ra, t0 
-    addi    ra, ra, 4
+    lui ra, %hi(0xa0000114)    
+    addi ra, ra, %lo(0xa0000114) 
     ret                  
