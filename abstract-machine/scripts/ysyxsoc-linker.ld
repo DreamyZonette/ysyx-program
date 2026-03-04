@@ -19,7 +19,7 @@ SECTIONS {
     _entry_end = .;
     *(.text.fsbl)
     _boot_loader_start = .;
-    *(.text.boot)
+    KEEP(*(.text.boot))
     _boot_loader_end = .;
     _text_start = .;
     *(.text*)
