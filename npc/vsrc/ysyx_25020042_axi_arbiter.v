@@ -1,4 +1,4 @@
-module axi_arbiter (
+module ysyx_25020042_axi_arbiter (
     input              clock,
     input              reset,
     // lsu

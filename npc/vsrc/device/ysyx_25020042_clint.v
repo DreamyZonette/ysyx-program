@@ -1,4 +1,4 @@
-module clint(
+module ysyx_25020042_clint(
     input clock,
     input reset,
     // axi 握手信号

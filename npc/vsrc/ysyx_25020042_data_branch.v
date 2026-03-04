@@ -1,4 +1,4 @@
-module data_branch(
+module ysyx_25020042_data_branch(
     input                clock,
     input                reset,
     input [4:0]          i_rs1,

@@ -17,6 +17,9 @@ VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 SOC_HOME = /home/long/ysyx-workbench/ysyxSoC
 INC_PATH := $(WORK_DIR)/include 
+FILELIST = $(WORK_DIR)/sum/sum_filelist.txt
+OUTPUT_FILE = $(WORK_DIR)/sum/ysyx_25020042.v
+PYTHON_SCRIPT := $(WORK_DIR)/tools/merge_files.py
 
 
 VSRCS := $(shell find $(VPATH) -name *.v)
@@ -147,7 +150,13 @@ wave: $(BUILD_DIR)/wave.fst
 	
 	gtkwave $(BUILD_DIR)/wave.fst
 
-PHONY: clean test adapt cleanwave perf
+PHONY: clean test adapt cleanwave perf sum 
+
+sum: $(OUTPUT_FILE)
+
+$(OUTPUT_FILE): $(FILELIST)
+	@python3 $(PYTHON_SCRIPT) $(FILELIST) $(OUTPUT_FILE)
+
 
 adapt: sim
 	$(MAKE) -C $(CPU_TEST_HOME) ARCH=minirv-npc ALL=$(OBJ)
@@ -167,6 +176,9 @@ perf:
 
 clean:
 	-rm -rf  $(BUILD_DIR)
+
+cleansum:
+	-rm  $(OUTPUT_FILE)
 
 cleanwave:
 	-rm $(BUILD_DIR)/wave.fst

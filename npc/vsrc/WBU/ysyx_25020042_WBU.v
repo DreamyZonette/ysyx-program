@@ -169,48 +169,4 @@ always @(*) begin
     endcase
 end
 
-// always @(posedge clock) begin
-//     if(reset) begin
-//         state <= IDLE;
-//         csr_wdata <= 32'b0;
-//         wbu_ready <= 1'b1;
-//         wbu_valid <= 1'b0;
-//         csr_addr <= 12'b0;
-//     end
-//     else begin
-//         case(state)
-//             IDLE: begin
-//                 if (lsu_valid & wbu_ready) begin
-//                     state <= WAIT;
-//                     wbu_ready <= 1'b0;
-//                     wbu_valid <= 1'b1;
-//                     csr_wdata <= i_data;
-//                     csr_addr <= i_csr_addr;
-
-
-//                 end
-//                 else begin
-//                     state <= IDLE;
-//                     if (wbu_valid) begin
-//                         wbu_ready <= 1'b1;
-//                         wbu_valid <= 1'b0;
-//                     end
-//                 end
-//             end
-
-//             WAIT: begin
-//                 wbu_valid <= 1'b0;
-//                 wbu_ready <= 1'b1;
-//                 csr_addr <= 12'b0;
-//                 state <= IDLE;
-//             end
-//             default: begin
-//                 state <= IDLE;
-//             end
-//         endcase
-//     end
-// end
-
-
-
 endmodule

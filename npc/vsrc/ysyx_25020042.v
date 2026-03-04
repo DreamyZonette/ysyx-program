@@ -321,7 +321,7 @@ assign fault = (io_master_rresp == 2'b00) ? 1'b0 : 1'b1;
 //------------------------------------------
 // axi  仲裁器模块实例化
 //------------------------------------------
-axi_arbiter axi_arbiter_u (
+ysyx_25020042_axi_arbiter axi_arbiter_u (
     .clock(clock),
     .reset(reset),
 
@@ -525,7 +525,7 @@ ysyx_25020042_mem ysyx_25020042_mem_u (
 //------------------------------------------
 // clint实例化
 //------------------------------------------
-clint clint_u (
+ysyx_25020042_clint clint_u (
     .clock(clock),
     .reset(reset),
     // axi 握手信号
@@ -665,7 +665,7 @@ ysyx_25020042_IDU IDU_u (
 //------------------------------------------
 // data branch实例化
 //------------------------------------------
-data_branch data_branch_u(
+ysyx_25020042_data_branch data_branch_u(
     .clock(clock),
     .reset(reset),
     .i_rs1(branch_rs1),

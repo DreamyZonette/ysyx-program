@@ -206,7 +206,7 @@ always @(posedge clock) begin
     end
 end
 
-icache #(
+ysyx_25020042_icache #(
     .CACHE_BLOCK_SIZE(16), //4 * 8
     .CACHE_BLOCK_BANK(4) //2 ^ n
 ) u_icache(
