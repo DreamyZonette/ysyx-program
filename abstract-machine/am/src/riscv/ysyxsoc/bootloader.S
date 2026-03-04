@@ -76,4 +76,5 @@ bss_loop:
 bss_done:
     lui     t0, 0x70000  # SDRAM
     add     ra, ra, t0 
+    addi    ra, ra, 4
     ret                  
