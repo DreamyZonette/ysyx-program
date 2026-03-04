@@ -17,9 +17,8 @@ SECTIONS {
     _entry_start = .;
     *(entry) 
     _entry_end = .;
-    *(.text.fsbl)
     _boot_loader_start = .;
-    KEEP(*(.text.boot))
+    *(.text.boot)
     _boot_loader_end = .;
     _text_start = .;
     *(.text*)
@@ -28,10 +27,7 @@ SECTIONS {
   etext = .;
   _etext = .;
   entry_lma_addr = LOADADDR(.text);
-  boot_loader_lma_addr = entry_lma_addr - _entry_start + _boot_loader_start;
   text_lma_addr = entry_lma_addr - _entry_start + _boot_loader_end;
-  sram_boot_loader_start = ORIGIN(sram);
-  sram_boot_loader_end = ORIGIN(sram) + (_boot_loader_end - _boot_loader_start);
 
   
   /* _boot_loader_end = _boot_loader_start + SIZEOF(.text.boot); */
@@ -116,8 +112,6 @@ SECTIONS {
   _stack_top = ORIGIN(sram) + LENGTH(sram);
   _stack_pointer = _stack_top;
   _stack_bottom = ORIGIN(sram);
-
-  _sram_start = ORIGIN(sram);
 
 
   
