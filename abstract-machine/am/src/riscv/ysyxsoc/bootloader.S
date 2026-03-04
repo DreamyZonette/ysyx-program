@@ -74,6 +74,6 @@ bss_loop:
     bne     a0, a1, bss_loop
 
 bss_done:
-    lui ra, %hi(0xa0000114)    
-    addi ra, ra, %lo(0xa0000114) 
+    lui ra, %hi(0xa0000110)    
+    addi ra, ra, %lo(0xa0000110) 
     ret                  
