@@ -1,4 +1,4 @@
-// 自动合并生成：2026-03-05 14:21:08
+// 自动合并生成：2026-03-05 14:34:38
 // 合并源文件列表：/home/long/ysyx-workbench/npc/sum/sum_filelist.txt
 // ===========================================
 
@@ -124,7 +124,6 @@
     wire [31:0] mstatus;
     wire [31:0] mtvec;
     wire [31:0] mepc;
-    wire [31:0] mcause;
     wire [31:0] mcause_wdata;
     wire [31:0] mstatus_wdata = 32'h0;
     wire [31:0] mtvec_wdata = 32'h0;
@@ -142,7 +141,7 @@
     wire [31:0] exu_to_lsu_csr_data;
     wire [31:0] lsu_to_wbu_csr_data;
     wire [7:0] exu_to_lsu_inst;
-    wire [7:0] lsu_to_wbu_inst;
+    wire [7:5] lsu_to_wbu_inst;
     wire [31:0] exu_to_lsu_src2;
     wire [11:0] exu_to_lsu_csr_addr;
     wire [11:0] lsu_to_wbu_csr_addr;
@@ -878,7 +877,6 @@ ysyx_25020042_csr csr_u (
     .o_mtvec(mtvec),
     .o_mepc(mepc),
     .o_mstatus(mstatus),
-    .o_mcause(mcause),
     .o_csr_rdata(csr_data)
 );
 //------------------------------------------
@@ -2618,7 +2616,7 @@ module ysyx_25020042_LSU(
     input  [31:0]                   i_instruction_data,
     `endif
 
-    output reg [7:0]                o_inst,
+    output reg [7:5]                o_inst,
     output reg [31:0]               o_data,
     output reg [31:0]               o_pc_data,
     `ifdef VERILATOR
@@ -2744,10 +2742,12 @@ localparam  MEM_INST     = 3'b011;
 localparam IDLE = 1'b0;
 localparam WAIT = 1'b1;
 
-
+reg [7:0]                inst_reg;
 reg       state;
+/* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
 reg [1:0] bresp;
+/* verilator lint_on UNUSEDSIGNAL */
 wire [3:0] wstrb;
 wire [31:0] wdata;
 reg Load_address_misaligned;
@@ -2769,6 +2769,7 @@ assign Store_page_fault = 1'b0;
 assign Load_page_fault = 1'b0;
 assign Store_access_fault = bresp[1];
 assign Load_access_fault = rresp[1];
+assign o_inst = inst_reg[7:5];
 
 always @(*) begin
     case (lsu_arsize)
@@ -2788,7 +2789,7 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
-        o_inst <= 8'b0;
+        inst_reg <= 8'b0;
         o_pc_data <= 32'b0;
         o_csr_data <= 32'b0;
         o_csr_addr <= 12'b0;
@@ -2799,7 +2800,7 @@ always @(posedge clock) begin
         `endif
     end
     else if(exu_valid & lsu_ready) begin
-        o_inst <= i_inst;
+        inst_reg <= i_inst;
         o_pc_data <= i_pc_data;
         o_csr_data <= i_csr_data;
         o_csr_addr <= i_csr_addr;
@@ -2844,7 +2845,7 @@ end
 assign load_valid = lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid & state == WAIT;
 
 always @(*) begin
-    case (o_inst[4:0])
+    case (inst_reg[4:0])
         5'b00001: o_data = shifted_rdata[31:0];
         5'b00011: o_data = {16'b0, shifted_rdata[15:0]};
         5'b00010: o_data = {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
@@ -3017,8 +3018,10 @@ module ysyx_25020042_WBU(
     
     input [31:0]      i_data,
     input [31:0]      i_pc_data,
-    input  [7:0]      i_inst,
+    input  [7:5]      i_inst,
+    /* verilator lint_off UNUSEDSIGNAL */
     input [31:0]      i_mstatus,
+    /* verilator lint_on UNUSEDSIGNAL */
     input  [2:0]      i_IFU_Exception_Handling,
     input  [2:0]      i_IDU_Exception_Handling,
     input  [5:0]      i_LSU_Exception_Handling,
@@ -3518,7 +3521,6 @@ module ysyx_25020042_csr (
     output [31:0] o_mstatus,
     output [31:0] o_mtvec,
     output [31:0] o_mepc,
-    output [31:0] o_mcause,
     output reg [31:0] o_csr_rdata
 );
 
@@ -3533,29 +3535,6 @@ wire [31:0] mvendorid_val;
 wire [31:0] marchid_val;
 wire [31:0] mcycle_wdata;
 wire [31:0] mcycleh_wdata;
-
-// // always @(posedge clock ) begin
-// //          $display("当前模块的完整路径: %m");
-// //     end
-// `ifdef VERILATOR
-// export "DPI-C" function get_mstatus_value;
-// export "DPI-C" function get_mtvec_value;
-// export "DPI-C" function get_mepc_value;
-// export "DPI-C" function get_mcause_value;
-
-//     function int unsigned get_mstatus_value();   
-//         return o_mstatus;
-//     endfunction
-//     function int unsigned get_mtvec_value();   
-//         return o_mtvec;
-//     endfunction
-//     function int unsigned get_mepc_value();    
-//         return o_mepc;
-//     endfunction
-//     function int unsigned get_mcause_value();   
-//         return o_mcause;
-//     endfunction
-// `endif
 
 assign mstatus_wdata = (i_Exception_valid == 1'b1) ? i_mstatus_wdata : i_csr_wdata;
 assign mtvec_wdata   = (i_Exception_valid == 1'b1) ? i_mtvec_wdata   : i_csr_wdata;
@@ -3595,7 +3574,7 @@ always @(*) begin
     end else if(i_csr_addr == 12'h341) begin
         o_csr_rdata = o_mepc;
     end else if(i_csr_addr == 12'h342) begin
-        o_csr_rdata = o_mcause;
+        o_csr_rdata = mcause;
     end else if(i_csr_addr == 12'hB00) begin
         o_csr_rdata = mcycle_val;
     end else if(i_csr_addr == 12'hB80) begin
@@ -3621,7 +3600,6 @@ reg [31:0] marchid;
 assign o_mstatus = mstatus;
 assign o_mtvec   = mtvec;
 assign o_mepc    = mepc;
-assign o_mcause  = mcause;
 assign mcycle_val = mcycle;
 assign mcycleh_val = mcycleh;
 assign mvendorid_val = mvendorid;

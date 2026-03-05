@@ -13,7 +13,6 @@ module ysyx_25020042_csr (
     output [31:0] o_mstatus,
     output [31:0] o_mtvec,
     output [31:0] o_mepc,
-    output [31:0] o_mcause,
     output reg [31:0] o_csr_rdata
 );
 
@@ -28,29 +27,6 @@ wire [31:0] mvendorid_val;
 wire [31:0] marchid_val;
 wire [31:0] mcycle_wdata;
 wire [31:0] mcycleh_wdata;
-
-// // always @(posedge clock ) begin
-// //          $display("当前模块的完整路径: %m");
-// //     end
-// `ifdef VERILATOR
-// export "DPI-C" function get_mstatus_value;
-// export "DPI-C" function get_mtvec_value;
-// export "DPI-C" function get_mepc_value;
-// export "DPI-C" function get_mcause_value;
-
-//     function int unsigned get_mstatus_value();   
-//         return o_mstatus;
-//     endfunction
-//     function int unsigned get_mtvec_value();   
-//         return o_mtvec;
-//     endfunction
-//     function int unsigned get_mepc_value();    
-//         return o_mepc;
-//     endfunction
-//     function int unsigned get_mcause_value();   
-//         return o_mcause;
-//     endfunction
-// `endif
 
 assign mstatus_wdata = (i_Exception_valid == 1'b1) ? i_mstatus_wdata : i_csr_wdata;
 assign mtvec_wdata   = (i_Exception_valid == 1'b1) ? i_mtvec_wdata   : i_csr_wdata;
@@ -90,7 +66,7 @@ always @(*) begin
     end else if(i_csr_addr == 12'h341) begin
         o_csr_rdata = o_mepc;
     end else if(i_csr_addr == 12'h342) begin
-        o_csr_rdata = o_mcause;
+        o_csr_rdata = mcause;
     end else if(i_csr_addr == 12'hB00) begin
         o_csr_rdata = mcycle_val;
     end else if(i_csr_addr == 12'hB80) begin
@@ -116,7 +92,6 @@ reg [31:0] marchid;
 assign o_mstatus = mstatus;
 assign o_mtvec   = mtvec;
 assign o_mepc    = mepc;
-assign o_mcause  = mcause;
 assign mcycle_val = mcycle;
 assign mcycleh_val = mcycleh;
 assign mvendorid_val = mvendorid;

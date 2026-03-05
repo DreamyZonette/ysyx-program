@@ -119,9 +119,6 @@
     wire [31:0] mstatus;
     wire [31:0] mtvec;
     wire [31:0] mepc;
-    /* verilator lint_off UNUSEDSIGNAL */
-    wire [31:0] mcause;
-    /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] mcause_wdata;
     wire [31:0] mstatus_wdata = 32'h0;
     wire [31:0] mtvec_wdata = 32'h0;
@@ -875,7 +872,6 @@ ysyx_25020042_csr csr_u (
     .o_mtvec(mtvec),
     .o_mepc(mepc),
     .o_mstatus(mstatus),
-    .o_mcause(mcause),
     .o_csr_rdata(csr_data)
 );
 //------------------------------------------
