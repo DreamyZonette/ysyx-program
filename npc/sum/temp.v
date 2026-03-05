@@ -1,4 +1,4 @@
-// 自动合并生成：2026-03-05 14:34:38
+// 自动合并生成：2026-03-05 15:01:44
 // 合并源文件列表：/home/long/ysyx-workbench/npc/sum/sum_filelist.txt
 // ===========================================
 
@@ -42,7 +42,6 @@
         input             io_master_rlast  ,
         input   [3:0]     io_master_rid    ,
         `endif
-        /* verilator lint_off UNDRIVEN */
         /* verilator lint_off UNUSEDSIGNAL */
         output            io_slave_awready ,
         input             io_slave_awvalid ,
@@ -72,8 +71,7 @@
         output  [1:0]     io_slave_rresp   ,
         output  [31:0]    io_slave_rdata   ,
         output            io_slave_rlast   ,
-        output  [3:0]     io_slave_rid     
-    /* verilator lint_on UNDRIVEN */
+        output  [3:0]     io_slave_rid   
     /* verilator lint_on UNUSEDSIGNAL */
     );
 
@@ -807,8 +805,10 @@ ysyx_25020042_LSU LSU_u (
 // WBU实例化
 //------------------------------------------
 ysyx_25020042_WBU WBU_u (
+    `ifdef VERILATOR
     .clock(clock),
     .reset(reset),
+    `endif
     .lsu_valid(lsu_valid),
     .wbu_ready(wbu_ready),
     .wbu_valid(wbu_valid),
@@ -956,12 +956,12 @@ wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (
 `endif
 wire [31:m+n]                 addr_tag       = pc_addr[31:m+n];
 wire [m+n-1:m]                index          = pc_addr[m+n-1:m];
-wire [m-1:0]                  offset         = pc_addr[m-1:0];
+wire [m-1:2]                  offset         = pc_addr[m-1:2];
 wire [31:m+n]                 icache_tag     = icache_addr[index][31:m+n];
 wire                          hit            = (icache_tag == addr_tag) && (icache_valid[index]);
-wire [31:0]                   burst_addr     = io_icache_araddr;
+wire [31:m]                   burst_addr     = io_icache_araddr[31:m];
 wire [m+n-1:m]                burst_index    = burst_addr[m+n-1:m];
-wire [m-1:0]                  burst_offset   = {burst_count, 2'b00};
+wire [m-1:2]                  burst_offset   = burst_count;
 
 reg [32-1:0]                 icache_data[0:CACHE_BLOCK_BANK-1][0:CACHE_BLOCK_COUNT-1];
 reg [32-1:0]                 icache_addr[0:CACHE_BLOCK_BANK-1];
@@ -1041,12 +1041,12 @@ always @(posedge clock) begin
                     icache_addr[burst_index][31:m+n]                        <= burst_addr[31:m+n];
                     icache_addr[burst_index][m+n-1:m]                       <= burst_addr[m+n-1:m];
                     icache_addr[burst_index][m-1:0]                         <= {m{1'b0}};
-                    icache_data[burst_index][burst_offset[m-1:2]]           <= io_icache_rdata;
+                    icache_data[burst_index][burst_offset]           <= io_icache_rdata;
                 end
                 if (io_icache_rlast) begin
                     instruction_ready            <= 1'b1;
                     if (sdram_valid) begin
-                        instruction <= (offset[m-1:2] == {(m-2){1'b1}})? io_icache_rdata : icache_data[index][offset[m-1:2]];
+                        instruction <= (offset == {(m-2){1'b1}})? io_icache_rdata : icache_data[index][offset];
                     end
                     else begin
                         instruction <= io_icache_rdata;
@@ -1062,7 +1062,7 @@ always @(posedge clock) begin
         if (state == IDLE) begin
             if (hit & pc_valid) begin
                 instruction_ready <= 1'b1;
-                instruction       <= icache_data[index][offset[m-1:2]];
+                instruction       <= icache_data[index][offset];
             end
             if (instruction_ready)
                 instruction_ready <= 1'b0;
@@ -1912,11 +1912,9 @@ module ysyx_25020042_gpr  (
     output [31:0] o_src2
     );
     
-    /* verilator lint_off UNUSEDSIGNAL */
     wire [15:0] wen;
-    /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] reg_file [0:15];
-    assign wen = (i_rd != 5'b0) && wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
+    assign wen = wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
 
     reg [31:0] zero;
     reg [31:0] ra;  
@@ -1953,6 +1951,7 @@ module ysyx_25020042_gpr  (
             a4   <= 32'b0;
             a5   <= 32'b0;
         end else begin
+            if (wen[0]) zero   <= 0;
             if (wen[1]) ra   <= i_data;
             if (wen[2]) sp   <= i_data;
             if (wen[3]) gp   <= i_data;
@@ -1989,8 +1988,8 @@ module ysyx_25020042_gpr  (
 
 
 // 读取寄存器
-    assign o_src1 = (i_rs1 == 5'b0)? 32'b0 : reg_file[i_rs1[3:0]];
-    assign o_src2 = (i_rs2 == 5'b0)? 32'b0 : reg_file[i_rs2[3:0]];
+    assign o_src1 = reg_file[i_rs1[3:0]];
+    assign o_src2 = reg_file[i_rs2[3:0]];
 
 endmodule
 
@@ -2611,7 +2610,6 @@ module ysyx_25020042_LSU(
     input [31:0]                    i_pc_data,
     input [31:0]                    i_csr_data,
     input [11:0]                    i_csr_addr,
-    // input [4:0]                     i_rd,
     `ifdef VERILATOR
     input  [31:0]                   i_instruction_data,
     `endif
@@ -2744,10 +2742,8 @@ localparam WAIT = 1'b1;
 
 reg [7:0]                inst_reg;
 reg       state;
-/* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
 reg [1:0] bresp;
-/* verilator lint_on UNUSEDSIGNAL */
 wire [3:0] wstrb;
 wire [31:0] wdata;
 reg Load_address_misaligned;
@@ -2767,8 +2763,8 @@ reg [3:0] wmask;
 assign o_LSU_Exception_Handling = {Store_page_fault, Load_page_fault, Store_access_fault, Store_address_misaligned, Load_access_fault, Load_address_misaligned};
 assign Store_page_fault = 1'b0;
 assign Load_page_fault = 1'b0;
-assign Store_access_fault = bresp[1];
-assign Load_access_fault = rresp[1];
+assign Store_access_fault = bresp == 2'b10 | bresp == 2'b11;
+assign Load_access_fault = |rresp;
 assign o_inst = inst_reg[7:5];
 
 always @(*) begin
@@ -2812,10 +2808,8 @@ always @(posedge clock) begin
     end
 end
 
-/* verilator lint_off WIDTHEXPAND */
 assign wdata = i_src2 << (i_data[1:0] * 8);
 assign wstrb = wmask << i_data[1:0];
-/* verilator lint_on WIDTHEXPAND */
 
 always @(*) begin
     wen = 1'b0;
@@ -3010,8 +3004,10 @@ endmodule
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/WBU/ysyx_25020042_WBU.v ----------
 module ysyx_25020042_WBU(
+    `ifdef VERILATOR
     input             clock,
     input             reset,
+    `endif
     input             lsu_valid,
     output reg        wbu_ready,
     output reg        wbu_valid,
@@ -3775,7 +3771,6 @@ module ysyx_25020042_clint(
     input clock,
     input reset,
     // axi 握手信号
-    /* verilator lint_off UNUSEDSIGNAL */
     input [31:0]      slave_araddr    ,
     input             slave_arvalid   ,
     output reg        slave_arready   ,
@@ -3809,7 +3804,6 @@ module ysyx_25020042_clint(
     input             slave_bready    ,
     output reg [1:0]  slave_bresp     ,
     output reg [3:0]  slave_bid    
-    /* verilator lint_on UNUSEDSIGNAL */
 );
 
 
@@ -3828,6 +3822,12 @@ always @(posedge clock) begin
         mtimeh <= 32'b0;
     end
     else begin
+        if (state == WRITE && slave_awlen == 0 && slave_awsize == 3'b010 && slave_awburst == 2'b00 && slave_wlast == 1'b1 && slave_wstrb == 4'hf) begin
+            if (slave_awaddr == 32'h0200_0000) 
+                mtime <= slave_wdata;
+            else if (slave_awaddr == 32'h0200_0004) 
+                mtimeh <= slave_wdata;
+        end
         mtime <= mtime + 1;
         mtimeh <= mtime == 32'hffffffff ? mtimeh + 1 : mtimeh;
     end
@@ -3852,10 +3852,10 @@ always @(posedge clock) begin
             if (slave_arready) begin
                 slave_arready <= 1'b0;
             end
-            if (slave_araddr == 32'h0200_0000) begin
+            if (slave_araddr == 32'h0200_0000 && slave_arlen == 0 && slave_arsize == 3'b010 && slave_arburst == 2'b00) begin
                 slave_rdata <= mtime;
             end
-            else if (slave_araddr == 32'h0200_0004) begin
+            else if (slave_araddr == 32'h0200_0004 && slave_arlen == 0 && slave_arsize == 3'b010 && slave_arburst == 2'b00) begin
                 slave_rdata <= mtimeh;
             end
             else begin

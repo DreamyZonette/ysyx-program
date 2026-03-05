@@ -10,11 +10,9 @@ module ysyx_25020042_gpr  (
     output [31:0] o_src2
     );
     
-    /* verilator lint_off UNUSEDSIGNAL */
     wire [15:0] wen;
-    /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] reg_file [0:15];
-    assign wen = (i_rd != 5'b0) && wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
+    assign wen = wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
 
     reg [31:0] zero;
     reg [31:0] ra;  
@@ -51,6 +49,7 @@ module ysyx_25020042_gpr  (
             a4   <= 32'b0;
             a5   <= 32'b0;
         end else begin
+            if (wen[0]) zero   <= 0;
             if (wen[1]) ra   <= i_data;
             if (wen[2]) sp   <= i_data;
             if (wen[3]) gp   <= i_data;
@@ -87,8 +86,8 @@ module ysyx_25020042_gpr  (
 
 
 // 读取寄存器
-    assign o_src1 = (i_rs1 == 5'b0)? 32'b0 : reg_file[i_rs1[3:0]];
-    assign o_src2 = (i_rs2 == 5'b0)? 32'b0 : reg_file[i_rs2[3:0]];
+    assign o_src1 = reg_file[i_rs1[3:0]];
+    assign o_src2 = reg_file[i_rs2[3:0]];
 
 endmodule
 

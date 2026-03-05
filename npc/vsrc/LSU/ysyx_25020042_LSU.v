@@ -14,7 +14,6 @@ module ysyx_25020042_LSU(
     input [31:0]                    i_pc_data,
     input [31:0]                    i_csr_data,
     input [11:0]                    i_csr_addr,
-    // input [4:0]                     i_rd,
     `ifdef VERILATOR
     input  [31:0]                   i_instruction_data,
     `endif
@@ -147,10 +146,8 @@ localparam WAIT = 1'b1;
 
 reg [7:0]                inst_reg;
 reg       state;
-/* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
 reg [1:0] bresp;
-/* verilator lint_on UNUSEDSIGNAL */
 wire [3:0] wstrb;
 wire [31:0] wdata;
 reg Load_address_misaligned;
@@ -170,8 +167,8 @@ reg [3:0] wmask;
 assign o_LSU_Exception_Handling = {Store_page_fault, Load_page_fault, Store_access_fault, Store_address_misaligned, Load_access_fault, Load_address_misaligned};
 assign Store_page_fault = 1'b0;
 assign Load_page_fault = 1'b0;
-assign Store_access_fault = bresp[1];
-assign Load_access_fault = rresp[1];
+assign Store_access_fault = bresp == 2'b10 | bresp == 2'b11;
+assign Load_access_fault = |rresp;
 assign o_inst = inst_reg[7:5];
 
 always @(*) begin
@@ -215,10 +212,8 @@ always @(posedge clock) begin
     end
 end
 
-/* verilator lint_off WIDTHEXPAND */
 assign wdata = i_src2 << (i_data[1:0] * 8);
 assign wstrb = wmask << i_data[1:0];
-/* verilator lint_on WIDTHEXPAND */
 
 always @(*) begin
     wen = 1'b0;

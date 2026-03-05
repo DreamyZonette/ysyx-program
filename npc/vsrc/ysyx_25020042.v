@@ -37,7 +37,6 @@
         input             io_master_rlast  ,
         input   [3:0]     io_master_rid    ,
         `endif
-        /* verilator lint_off UNDRIVEN */
         /* verilator lint_off UNUSEDSIGNAL */
         output            io_slave_awready ,
         input             io_slave_awvalid ,
@@ -67,8 +66,7 @@
         output  [1:0]     io_slave_rresp   ,
         output  [31:0]    io_slave_rdata   ,
         output            io_slave_rlast   ,
-        output  [3:0]     io_slave_rid     
-    /* verilator lint_on UNDRIVEN */
+        output  [3:0]     io_slave_rid   
     /* verilator lint_on UNUSEDSIGNAL */
     );
 
@@ -802,8 +800,10 @@ ysyx_25020042_LSU LSU_u (
 // WBU实例化
 //------------------------------------------
 ysyx_25020042_WBU WBU_u (
+    `ifdef VERILATOR
     .clock(clock),
     .reset(reset),
+    `endif
     .lsu_valid(lsu_valid),
     .wbu_ready(wbu_ready),
     .wbu_valid(wbu_valid),

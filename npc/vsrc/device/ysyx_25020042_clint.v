@@ -2,7 +2,6 @@ module ysyx_25020042_clint(
     input clock,
     input reset,
     // axi 握手信号
-    /* verilator lint_off UNUSEDSIGNAL */
     input [31:0]      slave_araddr    ,
     input             slave_arvalid   ,
     output reg        slave_arready   ,
@@ -36,7 +35,6 @@ module ysyx_25020042_clint(
     input             slave_bready    ,
     output reg [1:0]  slave_bresp     ,
     output reg [3:0]  slave_bid    
-    /* verilator lint_on UNUSEDSIGNAL */
 );
 
 
@@ -55,6 +53,12 @@ always @(posedge clock) begin
         mtimeh <= 32'b0;
     end
     else begin
+        if (state == WRITE && slave_awlen == 0 && slave_awsize == 3'b010 && slave_awburst == 2'b00 && slave_wlast == 1'b1 && slave_wstrb == 4'hf) begin
+            if (slave_awaddr == 32'h0200_0000) 
+                mtime <= slave_wdata;
+            else if (slave_awaddr == 32'h0200_0004) 
+                mtimeh <= slave_wdata;
+        end
         mtime <= mtime + 1;
         mtimeh <= mtime == 32'hffffffff ? mtimeh + 1 : mtimeh;
     end
@@ -79,10 +83,10 @@ always @(posedge clock) begin
             if (slave_arready) begin
                 slave_arready <= 1'b0;
             end
-            if (slave_araddr == 32'h0200_0000) begin
+            if (slave_araddr == 32'h0200_0000 && slave_arlen == 0 && slave_arsize == 3'b010 && slave_arburst == 2'b00) begin
                 slave_rdata <= mtime;
             end
-            else if (slave_araddr == 32'h0200_0004) begin
+            else if (slave_araddr == 32'h0200_0004 && slave_arlen == 0 && slave_arsize == 3'b010 && slave_arburst == 2'b00) begin
                 slave_rdata <= mtimeh;
             end
             else begin
