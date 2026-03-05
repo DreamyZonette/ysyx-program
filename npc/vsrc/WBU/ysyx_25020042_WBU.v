@@ -1,6 +1,8 @@
 module ysyx_25020042_WBU(
+    `ifdef VERILATOR
     input             clock,
     input             reset,
+    `endif
     input             lsu_valid,
     output reg        wbu_ready,
     output reg        wbu_valid,

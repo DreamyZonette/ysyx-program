@@ -55,12 +55,12 @@ wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (
 `endif
 wire [31:m+n]                 addr_tag       = pc_addr[31:m+n];
 wire [m+n-1:m]                index          = pc_addr[m+n-1:m];
-wire [m-1:0]                  offset         = pc_addr[m-1:0];
+wire [m-1:2]                  offset         = pc_addr[m-1:2];
 wire [31:m+n]                 icache_tag     = icache_addr[index][31:m+n];
 wire                          hit            = (icache_tag == addr_tag) && (icache_valid[index]);
-wire [31:0]                   burst_addr     = io_icache_araddr;
+wire [31:m]                   burst_addr     = io_icache_araddr[31:m];
 wire [m+n-1:m]                burst_index    = burst_addr[m+n-1:m];
-wire [m-1:0]                  burst_offset   = {burst_count, 2'b00};
+wire [m-1:2]                  burst_offset   = burst_count;
 
 reg [32-1:0]                 icache_data[0:CACHE_BLOCK_BANK-1][0:CACHE_BLOCK_COUNT-1];
 reg [32-1:0]                 icache_addr[0:CACHE_BLOCK_BANK-1];
@@ -140,12 +140,12 @@ always @(posedge clock) begin
                     icache_addr[burst_index][31:m+n]                        <= burst_addr[31:m+n];
                     icache_addr[burst_index][m+n-1:m]                       <= burst_addr[m+n-1:m];
                     icache_addr[burst_index][m-1:0]                         <= {m{1'b0}};
-                    icache_data[burst_index][burst_offset[m-1:2]]           <= io_icache_rdata;
+                    icache_data[burst_index][burst_offset]           <= io_icache_rdata;
                 end
                 if (io_icache_rlast) begin
                     instruction_ready            <= 1'b1;
                     if (sdram_valid) begin
-                        instruction <= (offset[m-1:2] == {(m-2){1'b1}})? io_icache_rdata : icache_data[index][offset[m-1:2]];
+                        instruction <= (offset == {(m-2){1'b1}})? io_icache_rdata : icache_data[index][offset];
                     end
                     else begin
                         instruction <= io_icache_rdata;
@@ -161,7 +161,7 @@ always @(posedge clock) begin
         if (state == IDLE) begin
             if (hit & pc_valid) begin
                 instruction_ready <= 1'b1;
-                instruction       <= icache_data[index][offset[m-1:2]];
+                instruction       <= icache_data[index][offset];
             end
             if (instruction_ready)
                 instruction_ready <= 1'b0;
