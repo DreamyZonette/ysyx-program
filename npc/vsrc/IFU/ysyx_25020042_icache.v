@@ -27,7 +27,6 @@ module ysyx_25020042_icache(
 );
 
 `ifdef VERILATOR
-// reg [63:0] icache_hit_count;
 
 always @(posedge clock) begin
     if (reset) begin
@@ -58,10 +57,6 @@ wire [31:m+n]                 addr_tag       = pc_addr[31:m+n];
 wire [m+n-1:m]                index          = pc_addr[m+n-1:m];
 wire [m-1:0]                  offset         = pc_addr[m-1:0];
 wire [31:m+n]                 icache_tag     = icache_addr[index][31:m+n];
-// wire [m-1:0]                  icache_offset  = icache_addr[index][m-1:0];
-// wire [m-1:0]                  offset         = pc_offset - icache_offset;
-// wire [m*8-1:0]                data_offset0   = offset * 8;
-// wire [m*8-1:0]                data_offset1   = data_offset0 + 31;
 wire                          hit            = (icache_tag == addr_tag) && (icache_valid[index]);
 wire [31:0]                   burst_addr     = io_icache_araddr;
 wire [m+n-1:m]                burst_index    = burst_addr[m+n-1:m];

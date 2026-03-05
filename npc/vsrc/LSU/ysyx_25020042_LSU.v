@@ -159,13 +159,8 @@ wire Load_page_fault;
 wire Store_page_fault;
 
 // 记得修改回来
-`ifdef PLATFORM_NPC
-wire [31:0] shifted_rdata = lsu_rdata >> (lsu_araddr[1:0] * 8);
 
-`else 
 wire [31:0] shifted_rdata = lsu_rdata >> (lsu_araddr[1:0] * 8);
-// wire [31:0] shifted_rdata = (lsu_araddr >= 32'h3000_0000 && lsu_araddr < 32'h4000_0000) ? lsu_rdata : lsu_rdata >> (lsu_araddr[1:0] * 8);
-`endif
 reg wen;
 reg ren;
 reg [3:0] wmask;
@@ -389,14 +384,6 @@ always @(posedge clock) begin
                     `ifdef LSU_MTRACE
                         $display("LSU: read addr: %x data: %x", lsu_araddr, shifted_rdata);
                     `endif
-                    // case (o_inst[4:0])
-                    //     5'b00001: o_data <= shifted_rdata[31:0];
-                    //     5'b00011: o_data <= {16'b0, shifted_rdata[15:0]};
-                    //     5'b00010: o_data <= {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};
-                    //     5'b00101: o_data <= {24'b0, shifted_rdata[7:0]};
-                    //     5'b00100: o_data <= {{24{shifted_rdata[7]}}, shifted_rdata[7:0]};
-                    //     default: o_data <= 0;
-                    // endcase
                 end
                 else if (lsu_bvalid & lsu_bid == lsu_awid) begin
                     lsu_bready <= 1'b1;

@@ -5,14 +5,12 @@ module ysyx_25020042_IFU(
     input                  idu_ready,
     output reg             ifu_valid,
     output reg             ifu_ready,
-    // output                 pc_update,
 
     input                  i_jump_valid,
     input      [31:0]      i_pc,
     input                  fencei_signal,
     output reg [31:0]      o_instruction,
     output wire [31:0]     o_pc_data    ,
-    output                 icache_busy,
     output [2:0]           o_IFU_Exception_Handling,
 
     `ifdef VERILATOR
@@ -105,9 +103,7 @@ reg Control_Hazard;
 localparam IDLE  = 1'b0;
 localparam READY = 1'b1;
 
-// assign pc_update = instruction_ready & !Control_Hazard;
 assign o_pc_data = i_pc;
-assign icache_busy = state == READY;
 assign o_IFU_Exception_Handling = {Instruction_page_fault, Instruction_access_fault, Instruction_address_misaligned};
 assign Instruction_page_fault = 1'b0;
 assign Instruction_address_misaligned = |i_pc[1:0];

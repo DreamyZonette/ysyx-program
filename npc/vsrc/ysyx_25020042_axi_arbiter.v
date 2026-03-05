@@ -117,23 +117,13 @@ module ysyx_25020042_axi_arbiter (
     // arbiter
     reg [1:0] state;
     wire clint_active = (io_lsu_araddr >= 32'h0200_0000 && io_lsu_araddr < 32'h0201_0000);
-    // wire vga_active = (io_lsu_awaddr >= 32'h2100_0000 && io_lsu_awaddr < 32'h2120_0000);
-
-    // always @(posedge clock) begin
-    //     if (vga_active & io_lsu_awvalid)
-    //     $display("vga_active");
-    //     if (vga_active && io_bvalid)
-    //     $display("vga_active_bvalid");
-    // end
 
     parameter ARB_IDLE = 2'd0, ARB_LSU = 2'd1, ARB_IFU = 2'd2;
 
     reg io_lsu_arvalid_reg;
-    reg io_lsu_awvalid_reg;
 
     always @(posedge clock) begin
         io_lsu_arvalid_reg <= io_lsu_arvalid;
-        io_lsu_awvalid_reg <= io_lsu_awvalid;
     end
 
     always @ (posedge clock) begin
@@ -256,8 +246,6 @@ module ysyx_25020042_axi_arbiter (
         end
         else if (state == ARB_LSU) begin
             if (clint_active) begin
-                // $display("clint_active");
-                //  $display("io_lsu_arvalid_reg = %d", io_lsu_arvalid_reg);
                 io_clint_araddr =  io_lsu_araddr;
                 io_clint_arvalid = io_lsu_arvalid_reg;
                 io_clint_arid =    io_lsu_arid;

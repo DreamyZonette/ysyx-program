@@ -67,7 +67,6 @@ always @(posedge clock) begin
                 slave_arready <= 1'b1;
                 state <= READ;
                 slave_rid <= slave_arid;
-                // $display("CLINT: Read Address: %08x", slave_araddr);
             end
             else if (slave_awvalid && slave_wvalid) begin
                 slave_awready <= 1'b1;
@@ -82,11 +81,9 @@ always @(posedge clock) begin
             end
             if (slave_araddr == 32'h0200_0000) begin
                 slave_rdata <= mtime;
-                // $display("CLINT: Read MTIME: %08x", mtime);
             end
             else if (slave_araddr == 32'h0200_0004) begin
                 slave_rdata <= mtimeh;
-                // $display("CLINT: Read MTIMEH: %08x", mtimeh);
             end
             else begin
                 slave_rdata <= 32'b0;

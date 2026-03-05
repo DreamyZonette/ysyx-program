@@ -136,8 +136,6 @@
     wire [31:0] idu_to_exu_pc_data;
     wire [31:0] exu_to_lsu_pc_data;
     wire [31:0] lsu_to_wbu_pc_data;
-    // wire [4:0]  exu_to_lsu_rd;
-    // wire [4:0]  lsu_to_wbu_rd;
     wire [4:0]  wbu_rd;
     wire [31:0] exu_to_lsu_data;
     wire [31:0] lsu_to_exu_data;
@@ -152,7 +150,6 @@
     wire [11:0] lsu_to_wbu_csr_addr;
     wire [11:0] wbu_csr_addr;
     wire    pc_update;
-    wire    icache_busy;
     wire  [2:0] IFU_Exception_Handling0;
     wire  [2:0] IFU_Exception_Handling1;
     wire  [2:0] IFU_Exception_Handling2;
@@ -162,8 +159,6 @@
     wire  [2:0] IDU_Exception_Handling2;
     wire  [5:0] LSU_Exception_Handling0;
     wire        Exception_valid;
-    // wire  [2:0] EXU_Exception_Handling;
-    // wire  [2:0] LSU_Exception_Handling;
      `ifdef VERILATOR
     wire [31:0] idu_to_exu_instrction_data;
     wire [31:0] exu_to_lsu_instrction_data;
@@ -453,7 +448,6 @@ ysyx_25020042_axi_arbiter axi_arbiter_u (
 ipc_counter ipc_counter_u(
     .clk(clock),
     .rst(reset),
-    // .pc(pc),
     .wbu_valid(wbu_valid),
     .ebreak(IDU_Exception_Handling2[1]),
     .ifu_performance_counter(ifu_performance_counter),
@@ -571,7 +565,6 @@ ysyx_25020042_PC PC_u(
     .reset(reset),
     .ifu_ready(ifu_ready),
     .ifu_handsake(ifu_valid & idu_ready),
-    .icache_busy(icache_busy),
     .fault(fault),
     .pc_valid(pc_valid),
     .i_jump_pc(jump_pc),
@@ -590,7 +583,6 @@ ysyx_25020042_IFU IFU_u (
     .idu_ready(idu_ready),
     .ifu_valid(ifu_valid),
     .ifu_ready(ifu_ready),
-    .icache_busy(icache_busy),
 
     .i_jump_valid(jump_valid),
     .i_pc(pc),
@@ -673,14 +665,10 @@ ysyx_25020042_data_branch data_branch_u(
     .i_rd(branch_rd),
     .i_exu_to_lsu_inst(exu_to_lsu_inst[7:5]),
     .i_idu_to_exu_inst(idu_inst[7:5]),
-    // .i_lsu_to_wbu_inst(lsu_to_wbu_inst[7:5]),
     .idu_exu_handshake(idu_valid & exu_ready),
     .exu_lsu_handshake(exu_valid & lsu_ready),
     .lsu_wbu_handshake(lsu_valid & wbu_ready),
-    // .wbu_valid(wbu_valid),
     .load_valid(load_valid),
-    // .i_pc_data(lsu_to_wbu_pc_data),
-    // .i_csr_rdata(lsu_to_wbu_csr_data),
     .i_exu_rd_data(exu_data),
     .i_lsu_rd_data(lsu_data),
     .i_src1(src1),
@@ -694,8 +682,6 @@ ysyx_25020042_data_branch data_branch_u(
     .o_exu_rd_data(branch_exu_data),
     .o_lsu_rd_data(branch_lsu_data),
     .o_lsu_rd(wbu_rd)
-    // .o_wbu_rd_data(wdata),
-    // .o_wbu_rd(wbu_rd)
 );
 
 //------------------------------------------
@@ -763,7 +749,6 @@ ysyx_25020042_LSU LSU_u (
     .i_pc_data(exu_to_lsu_pc_data),
     .i_csr_data(exu_to_lsu_csr_data),
     .i_csr_addr(exu_to_lsu_csr_addr),
-    // .i_rd(exu_to_lsu_rd),
 
     .o_inst(lsu_to_wbu_inst),
     .o_data(lsu_data),
