@@ -1,4 +1,4 @@
-// 自动合并生成：2026-03-05 14:05:38
+// 自动合并生成：2026-03-05 14:13:48
 // 合并源文件列表：/home/long/ysyx-workbench/npc/sum/sum_filelist.txt
 // ===========================================
 
@@ -7,7 +7,9 @@
    module ysyx_25020042 (
         input             clock            ,
         input             reset            ,
+        /* verilator lint_off UNUSEDSIGNAL */
         input             io_interrupt     ,
+        /* verilator lint_on UNUSEDSIGNAL */
         `ifdef PLATFORM_NPC
         `else
         input             io_master_awready,
@@ -1558,7 +1560,9 @@ module ysyx_25020042_gpr  (
     output [31:0] o_src2
     );
     
+    /* verilator lint_off UNUSEDSIGNAL */
     wire [15:0] wen;
+    /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] reg_file [0:15];
     assign wen = (i_rd != 5'b0) && wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
 
@@ -2151,7 +2155,6 @@ module barrel_shifter_param (
 
 wire sign = Logic ? 1'b0 : data_i[31];
 
-/* verilator lint_off UNUSEDSIGNAL */
 wire [31:0] stage0, stage1, stage2, stage3, stage4;
 wire [31:0] Lstage0, Lstage1, Lstage2, Lstage3, Lstage4;
 // 右
@@ -2176,7 +2179,6 @@ assign Lstage3 = shift_amt[3] ? {Lstage2[23:0], 8'b0}: Lstage2;
 assign Lstage4 = shift_amt[4] ? {Lstage3[15:0], 16'b0} : Lstage3;
 
 assign data_o = Right ? stage4 : Lstage4; 
-/* verilator lint_on UNUSEDSIGNAL */
 endmodule
 
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/EXU/ysyx_25020042_alu.v ----------
@@ -2211,6 +2213,7 @@ module ysyx_25020042_LSU(
     input  wire [2:0]    i_IDU_Exception_Handling,
     output reg [2:0]     o_IDU_Exception_Handling,
     output wire [5:0]    o_LSU_Exception_Handling,
+
 
     // axi 握手信号
     output reg [31:0]               lsu_araddr,
@@ -2261,10 +2264,8 @@ localparam WAIT = 1'b1;
 
 
 reg       state;
-/* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
 reg [1:0] bresp;
-/* verilator lint_on UNUSEDSIGNAL */
 wire [3:0] wstrb;
 wire [31:0] wdata;
 reg Load_address_misaligned;
