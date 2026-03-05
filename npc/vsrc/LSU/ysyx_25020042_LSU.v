@@ -34,15 +34,14 @@ module ysyx_25020042_LSU(
     output reg [2:0]     o_IDU_Exception_Handling,
     output wire [5:0]    o_LSU_Exception_Handling,
 
-    /* verilator lint_off UNUSEDSIGNAL */
     `ifdef VERILATOR
+    /* verilator lint_off UNUSEDSIGNAL */
     output reg [63:0]               performance_counter,
     output reg [63:0]               cycles_counter,
     input  wire [63:0]              i_single_cycles_counter,
     output reg [63:0]               o_single_cycles_counter,
-    `endif
     /* verilator lint_on UNUSEDSIGNAL */
-    // output                          o_lsu_busy,
+    `endif
 
     // axi 握手信号
     output reg [31:0]               lsu_araddr,
@@ -80,10 +79,13 @@ module ysyx_25020042_LSU(
     input [3:0]                     lsu_bid
 );
 
-`ifdef VERILATOR
-`ifndef PLATFORM_NPC
+`ifdef PLATFORM_NPC
+`else
 import "DPI-C" function void difftest_device_skip();
 `endif
+
+`ifdef VERILATOR
+
     // reg [63:0] performance_counter;
     reg lsu_mem_hit_signal;
     reg lsu_busy_signal;
@@ -145,10 +147,8 @@ localparam WAIT = 1'b1;
 
 
 reg       state;
-/* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
 reg [1:0] bresp;
-/* verilator lint_on UNUSEDSIGNAL */
 wire [3:0] wstrb;
 wire [31:0] wdata;
 reg Load_address_misaligned;
@@ -258,7 +258,6 @@ end
 always @(posedge clock) begin
     if(reset) begin
         state <= IDLE;
-        // o_data <= 32'b0;
         lsu_ready <= 1'b1;
         lsu_valid <= 1'b0;
         lsu_arvalid <= 1'b0;
@@ -359,8 +358,9 @@ always @(posedge clock) begin
                 end
             end
             WAIT: begin
-                `ifndef PLATFORM_NPC
                 `ifdef VERILATOR 
+                `ifdef PLATFORM_NPC
+                `else
                     if (lsu_araddr >= 32'h1000_0000 && lsu_araddr < 32'h1000_1000 && lsu_arvalid && lsu_arready || 
                         lsu_araddr >= 32'h1000_1000 && lsu_araddr < 32'h1000_2000 && lsu_arvalid && lsu_arready) begin
                         difftest_device_skip();

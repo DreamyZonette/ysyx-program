@@ -2,8 +2,11 @@
    module ysyx_25020042 (
         input             clock            ,
         input             reset            ,
+        /* verilator lint_off UNUSEDSIGNAL */
         input             io_interrupt     ,
-        `ifndef PLATFORM_NPC
+        /* verilator lint_on UNUSEDSIGNAL */
+        `ifdef PLATFORM_NPC
+        `else
         input             io_master_awready,
         output            io_master_awvalid,
         output  [31:0]    io_master_awaddr,

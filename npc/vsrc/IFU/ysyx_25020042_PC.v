@@ -17,10 +17,10 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
 
     always @(posedge clock) begin
         if (reset) begin
-            `ifndef PLATFORM_NPC
-            next_pc <= 32'h3000_0004;
-            `else
+            `ifdef PLATFORM_NPC
             next_pc <= 32'h8000_0004;
+            `else
+            next_pc <= 32'h3000_0004;
             `endif
         end
         else if (i_jump_valid) begin
@@ -33,10 +33,10 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
     
     always @(posedge clock) begin
         if (reset)begin
-            `ifndef PLATFORM_NPC
-            o_pc <= 32'h3000_0000;
-            `else
+            `ifdef PLATFORM_NPC
             o_pc <= 32'h8000_0000;
+            `else
+            o_pc <= 32'h3000_0000;
             `endif
             pc_valid <= 1'b1;
         end 

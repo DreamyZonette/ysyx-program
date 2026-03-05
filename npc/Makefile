@@ -155,6 +155,7 @@ wave: $(BUILD_DIR)/wave.fst
 PHONY: clean test adapt cleanwave perf sum 
 
 sum: $(FIXED_FILE)
+	$(VERILATOR) --lint-only -Wall -Wno-DECLFILENAME $(FIXED_FILE)
 
 $(OUTPUT_FILE): $(FILELIST)
 	@python3 $(PYTHON_SUM_SCRIPT) $(FILELIST) $(OUTPUT_FILE)
