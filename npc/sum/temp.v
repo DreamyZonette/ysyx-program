@@ -1,4 +1,4 @@
-// 自动合并生成：2026-03-05 15:01:44
+// 自动合并生成：2026-03-05 15:02:58
 // 合并源文件列表：/home/long/ysyx-workbench/npc/sum/sum_filelist.txt
 // ===========================================
 
@@ -43,6 +43,7 @@
         input   [3:0]     io_master_rid    ,
         `endif
         /* verilator lint_off UNUSEDSIGNAL */
+        /* verilator lint_off UNDRIVEN */
         output            io_slave_awready ,
         input             io_slave_awvalid ,
         input   [31:0]    io_slave_awaddr  ,
@@ -72,6 +73,7 @@
         output  [31:0]    io_slave_rdata   ,
         output            io_slave_rlast   ,
         output  [3:0]     io_slave_rid   
+    /* verilator lint_on UNDRIVEN */
     /* verilator lint_on UNUSEDSIGNAL */
     );
 
