@@ -46,6 +46,8 @@ localparam WRITE = 3'd3;
 localparam WRITE_WAIT = 3'd4;
 reg [31:0] mtime;
 reg [31:0] mtimeh;
+wire read_valid = ~|slave_arlen && slave_arsize == 3'b010 && ~|slave_arburst;
+wire write_valid =  ~|slave_awlen && slave_awsize == 3'b010 && ~|slave_awburst && slave_wlast == 1'b1 && slave_wstrb == 4'hf;
 
 always @(posedge clock) begin
     if (reset) begin
@@ -53,7 +55,7 @@ always @(posedge clock) begin
         mtimeh <= 32'b0;
     end
     else begin
-        if (state == WRITE && slave_awlen == 0 && slave_awsize == 3'b010 && slave_awburst == 2'b00 && slave_wlast == 1'b1 && slave_wstrb == 4'hf) begin
+        if (state == WRITE && write_valid) begin
             if (slave_awaddr == 32'h0200_0000) 
                 mtime <= slave_wdata;
             else if (slave_awaddr == 32'h0200_0004) 
@@ -83,10 +85,10 @@ always @(posedge clock) begin
             if (slave_arready) begin
                 slave_arready <= 1'b0;
             end
-            if (slave_araddr == 32'h0200_0000 && slave_arlen == 0 && slave_arsize == 3'b010 && slave_arburst == 2'b00) begin
+            if (slave_araddr == 32'h0200_0000 && read_valid) begin
                 slave_rdata <= mtime;
             end
-            else if (slave_araddr == 32'h0200_0004 && slave_arlen == 0 && slave_arsize == 3'b010 && slave_arburst == 2'b00) begin
+            else if (slave_araddr == 32'h0200_0004 && read_valid) begin
                 slave_rdata <= mtimeh;
             end
             else begin
