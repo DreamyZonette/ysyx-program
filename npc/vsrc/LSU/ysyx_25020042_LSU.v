@@ -19,7 +19,7 @@ module ysyx_25020042_LSU(
     input  [31:0]                   i_instruction_data,
     `endif
 
-    output reg [7:0]                o_inst,
+    output reg [7:5]                o_inst,
     output reg [31:0]               o_data,
     output reg [31:0]               o_pc_data,
     `ifdef VERILATOR
@@ -145,10 +145,12 @@ localparam  MEM_INST     = 3'b011;
 localparam IDLE = 1'b0;
 localparam WAIT = 1'b1;
 
-
+reg [7:0]                inst_reg;
 reg       state;
+/* verilator lint_off UNUSEDSIGNAL */
 reg [1:0] rresp;
 reg [1:0] bresp;
+/* verilator lint_on UNUSEDSIGNAL */
 wire [3:0] wstrb;
 wire [31:0] wdata;
 reg Load_address_misaligned;
@@ -170,6 +172,7 @@ assign Store_page_fault = 1'b0;
 assign Load_page_fault = 1'b0;
 assign Store_access_fault = bresp[1];
 assign Load_access_fault = rresp[1];
+assign o_inst = inst_reg[7:5];
 
 always @(*) begin
     case (lsu_arsize)
@@ -189,7 +192,7 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
-        o_inst <= 8'b0;
+        inst_reg <= 8'b0;
         o_pc_data <= 32'b0;
         o_csr_data <= 32'b0;
         o_csr_addr <= 12'b0;
@@ -200,7 +203,7 @@ always @(posedge clock) begin
         `endif
     end
     else if(exu_valid & lsu_ready) begin
-        o_inst <= i_inst;
+        inst_reg <= i_inst;
         o_pc_data <= i_pc_data;
         o_csr_data <= i_csr_data;
         o_csr_addr <= i_csr_addr;
@@ -245,7 +248,7 @@ end
 assign load_valid = lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid & state == WAIT;
 
 always @(*) begin
-    case (o_inst[4:0])
+    case (inst_reg[4:0])
         5'b00001: o_data = shifted_rdata[31:0];
         5'b00011: o_data = {16'b0, shifted_rdata[15:0]};
         5'b00010: o_data = {{16{shifted_rdata[15]}}, shifted_rdata[15:0]};

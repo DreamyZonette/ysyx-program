@@ -119,7 +119,9 @@
     wire [31:0] mstatus;
     wire [31:0] mtvec;
     wire [31:0] mepc;
+    /* verilator lint_off UNUSEDSIGNAL */
     wire [31:0] mcause;
+    /* verilator lint_on UNUSEDSIGNAL */
     wire [31:0] mcause_wdata;
     wire [31:0] mstatus_wdata = 32'h0;
     wire [31:0] mtvec_wdata = 32'h0;
@@ -137,10 +139,8 @@
     wire [31:0] exu_to_lsu_csr_data;
     wire [31:0] lsu_to_wbu_csr_data;
     wire [7:0] exu_to_lsu_inst;
-    wire [7:0] lsu_to_wbu_inst;
+    wire [7:5] lsu_to_wbu_inst;
     wire [31:0] exu_to_lsu_src2;
-    wire [31:0] wbu_to_exu_data;
-    wire [31:0] exu_to_wbu_data;
     wire [11:0] exu_to_lsu_csr_addr;
     wire [11:0] lsu_to_wbu_csr_addr;
     wire [11:0] wbu_csr_addr;

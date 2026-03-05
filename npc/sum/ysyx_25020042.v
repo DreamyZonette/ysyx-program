@@ -1,4 +1,4 @@
-// 自动合并生成：2026-03-05 14:13:48
+// 自动合并生成：2026-03-05 14:21:08
 // 合并源文件列表：/home/long/ysyx-workbench/npc/sum/sum_filelist.txt
 // ===========================================
 
@@ -104,7 +104,6 @@
     wire [4:0] branch_rd;
     wire [31:0] branch_exu_data;
     wire [31:0] branch_lsu_data;
-    wire [31:0] branch_wbu_data;
     wire [31:0] rs1_data;
     wire [31:0] rs2_data;
     wire        rs1_data_ready;
@@ -114,16 +113,12 @@
     wire [31:0] imm;
     wire [31:0] src1;
     wire [31:0] src2;
-    wire [31:0] offset;
     wire [5:0] shamt;
     wire [31:0] jump_pc;
     wire [31:0] pc;
     wire [31:0] instruction;
-    wire [3:0] wmask;
     wire [31:0] exu_data;
     wire [31:0] lsu_data;
-    wire o_B_jump_signal;
-    wire lsu_busy;
     wire [11:0] csr_addr;
     wire [31:0] csr_data;
     wire [31:0] mstatus;
@@ -137,7 +132,6 @@
     wire [31:0] csr_wdata;
     wire [4:0]  rs1;
     wire [4:0]  rs2;
-    wire [4:0]  rd;
     wire        fault;
     wire        jump_valid;
     wire [31:0] ifu_to_idu_pc_data;
@@ -145,19 +139,14 @@
     wire [31:0] exu_to_lsu_pc_data;
     wire [31:0] lsu_to_wbu_pc_data;
     wire [4:0]  wbu_rd;
-    wire [31:0] exu_to_lsu_data;
-    wire [31:0] lsu_to_exu_data;
     wire [31:0] exu_to_lsu_csr_data;
     wire [31:0] lsu_to_wbu_csr_data;
     wire [7:0] exu_to_lsu_inst;
     wire [7:0] lsu_to_wbu_inst;
     wire [31:0] exu_to_lsu_src2;
-    wire [31:0] wbu_to_exu_data;
-    wire [31:0] exu_to_wbu_data;
     wire [11:0] exu_to_lsu_csr_addr;
     wire [11:0] lsu_to_wbu_csr_addr;
     wire [11:0] wbu_csr_addr;
-    wire    pc_update;
     wire  [2:0] IFU_Exception_Handling0;
     wire  [2:0] IFU_Exception_Handling1;
     wire  [2:0] IFU_Exception_Handling2;

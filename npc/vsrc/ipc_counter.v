@@ -21,7 +21,7 @@ module ipc_counter(
     input [63:0] lsu_cycles_counter,
     input [63:0] wbu_cycles_counter,
     input [63:0] single_cycle_counter,
-    input [7:0]  inst,
+    input [7:5]  inst,
     input [63:0] icache_hit_counter
 );
 
@@ -65,7 +65,7 @@ module ipc_counter(
             jump_cycle_counter <= 0;
             fence_cycle_counter <= 0;
         end else if (wbu_valid) begin
-            case (inst[7:5])
+            case (inst)
             CSR_INST:     csr_cycle_counter <= csr_cycle_counter + single_cycle_counter;
             MEM_INST:     mem_cycle_counter <= mem_cycle_counter + single_cycle_counter;
             SPECIAL_INST: fence_cycle_counter <= fence_cycle_counter + single_cycle_counter;

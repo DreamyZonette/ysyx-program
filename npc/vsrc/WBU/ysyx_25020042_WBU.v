@@ -7,8 +7,10 @@ module ysyx_25020042_WBU(
     
     input [31:0]      i_data,
     input [31:0]      i_pc_data,
-    input  [7:0]      i_inst,
+    input  [7:5]      i_inst,
+    /* verilator lint_off UNUSEDSIGNAL */
     input [31:0]      i_mstatus,
+    /* verilator lint_on UNUSEDSIGNAL */
     input  [2:0]      i_IFU_Exception_Handling,
     input  [2:0]      i_IDU_Exception_Handling,
     input  [5:0]      i_LSU_Exception_Handling,
