@@ -1,4 +1,4 @@
-
+`timescale 1ns/1ns 
    module ysyx_25020042 (
         input             clock            ,
         input             reset            ,
@@ -239,8 +239,8 @@
     wire  [31:0]    io_clint_rdata  ;
     wire            io_clint_rlast  ;
     wire  [3:0]     io_clint_rid    ;
-    `ifdef VERILATOR
     `ifdef PLATFORM_NPC
+    // `ifdef VERILATOR
     wire            io_master_awready;
     wire            io_master_awvalid;
     wire  [31:0]    io_master_awaddr ;
@@ -270,7 +270,7 @@
     wire  [31:0]    io_master_rdata  ;
     wire            io_master_rlast  ;
     wire  [3:0]     io_master_rid    ;
-    `endif
+    // `endif
     `endif
 //------------------------------------------
 // 性能计数器
@@ -465,12 +465,13 @@ ipc_counter ipc_counter_u(
 `endif
 
 //------------------------------------------
-// clint实例化
+// mem实例化
 //------------------------------------------
-`ifdef VERILATOR
+// `ifdef VERILATOR
 `ifdef PLATFORM_NPC
-ysyx_25020042_mem ysyx_25020042_mem_u (
+ysyx_25020042_mem mem_u (
     .clock(clock),
+    .reset(reset),
     // axi 握手信号
     .slave_araddr(io_master_araddr),
     .slave_arvalid(io_master_arvalid),
@@ -507,7 +508,7 @@ ysyx_25020042_mem ysyx_25020042_mem_u (
     .slave_bid(io_master_bid)
 );
 `endif
-`endif
+// `endif
 
 //------------------------------------------
 // clint实例化

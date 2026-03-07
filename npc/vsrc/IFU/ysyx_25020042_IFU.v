@@ -1,3 +1,4 @@
+`timescale 1ns/1ns 
 module ysyx_25020042_IFU(
     input                  clock,
     input                  reset,
@@ -22,16 +23,16 @@ module ysyx_25020042_IFU(
     `endif
     `endif
 
-    output reg [31:0]      ifu_araddr,
-    output reg             ifu_arvalid,
+    output wire [31:0]     ifu_araddr,
+    output wire            ifu_arvalid,
     input                  ifu_arready,
-    output reg [7:0]       ifu_arlen,
-    output reg [3:0]       ifu_arid,
-    output reg [1:0]       ifu_arburst,
-    output reg [2:0]       ifu_arsize,
+    output wire [7:0]      ifu_arlen,
+    output wire [3:0]      ifu_arid,
+    output wire [1:0]      ifu_arburst,
+    output wire [2:0]      ifu_arsize,
     input      [31:0]      ifu_rdata,
     input                  ifu_rvalid,
-    output reg             ifu_rready,
+    output wire            ifu_rready,
     input      [1:0]       ifu_rresp,
     input                  ifu_rlast,
     input      [3:0]       ifu_rid

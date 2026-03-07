@@ -1,4 +1,4 @@
-
+`timescale 1ns/1ns 
 
 module ysyx_25020042_alu (
     input [31:0] data1,

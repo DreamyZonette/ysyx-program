@@ -1,5 +1,4 @@
-// `define LSU_MTRACE
-
+`timescale 1ns/1ns 
 module ysyx_25020042_LSU(
     input                           clock,
     input                           reset,
@@ -18,7 +17,7 @@ module ysyx_25020042_LSU(
     input  [31:0]                   i_instruction_data,
     `endif
 
-    output reg [7:5]                o_inst,
+    output wire [7:5]                o_inst,
     output reg [31:0]               o_data,
     output reg [31:0]               o_pc_data,
     `ifdef VERILATOR

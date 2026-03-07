@@ -1,11 +1,12 @@
+`timescale 1ns/1ns 
 module ysyx_25020042_WBU(
     `ifdef VERILATOR
     input             clock,
     input             reset,
     `endif
     input             lsu_valid,
-    output reg        wbu_ready,
-    output reg        wbu_valid,
+    output wire       wbu_ready,
+    output wire       wbu_valid,
     
     input [31:0]      i_data,
     input [31:0]      i_pc_data,
@@ -26,8 +27,8 @@ module ysyx_25020042_WBU(
     `endif
     input  [11:0]     i_csr_addr,
     input  [31:0]     i_csr_rdata,
-    output reg [31:0] csr_wdata,
-    output reg [11:0] csr_addr,
+    output wire [31:0] csr_wdata,
+    output wire [11:0] csr_addr,
     output reg [31:0] reg_wdata,
     output wire [31:0] o_mepc_wdata,
     output reg [31:0] o_mcause_wdata

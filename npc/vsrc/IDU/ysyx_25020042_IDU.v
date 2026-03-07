@@ -1,3 +1,4 @@
+`timescale 1ns/1ns 
 module ysyx_25020042_IDU (
     input   wire         clock                  ,  
     input   wire         reset                  ,

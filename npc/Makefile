@@ -17,11 +17,6 @@ VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
 SOC_HOME = /home/long/ysyx-workbench/ysyxSoC
 INC_PATH := $(WORK_DIR)/include 
-FILELIST = $(WORK_DIR)/sum/sum_filelist.txt
-OUTPUT_FILE = $(WORK_DIR)/sum/temp.v
-FIXED_FILE = $(WORK_DIR)/sum/ysyx_25020042.v
-PYTHON_SUM_SCRIPT := $(WORK_DIR)/tools/merge_files.py
-PYTHON_FIX_SCRIPT := $(WORK_DIR)/tools/clean_verilator.py
 
 
 VSRCS := $(shell find $(VPATH) -name *.v)
@@ -123,6 +118,9 @@ endif
 
 $(shell mkdir -p $(BUILD_DIR))
 
+include $(WORK_DIR)/scripts/iverilog.mk
+include $(WORK_DIR)/scripts/summary.mk
+
 BIN = $(BUILD_DIR)/$(TOP_NAME)
 
 all:run wave
@@ -154,14 +152,6 @@ wave: $(BUILD_DIR)/wave.fst
 
 PHONY: clean test adapt cleanwave perf sum 
 
-sum: $(FIXED_FILE)
-	$(VERILATOR) --lint-only -Wall -Wno-DECLFILENAME $(FIXED_FILE)
-
-$(OUTPUT_FILE): $(FILELIST)
-	@python3 $(PYTHON_SUM_SCRIPT) $(FILELIST) $(OUTPUT_FILE)
-
-$(FIXED_FILE): $(OUTPUT_FILE)
-	@python3 $(PYTHON_FIX_SCRIPT) $(OUTPUT_FILE) $(FIXED_FILE)
 
 adapt: sim
 	$(MAKE) -C $(CPU_TEST_HOME) ARCH=minirv-npc ALL=$(OBJ)
@@ -182,8 +172,6 @@ perf:
 clean:
 	-rm -rf  $(BUILD_DIR)
 
-cleansum:
-	-rm  $(OUTPUT_FILE) $(FIXED_FILE)
 
 cleanwave:
 	-rm $(BUILD_DIR)/wave.fst

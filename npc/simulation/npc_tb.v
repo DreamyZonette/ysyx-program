@@ -1,0 +1,193 @@
+`timescale 1ns/1ns
+`define PLATFORM_NPC  // 匹配顶层模块的PLATFORM_NPC宏
+
+module npc_tb;
+
+// ==============================================
+// 1. 信号定义（包含所有需要驱动的端口）
+// ==============================================
+reg             clock;
+reg             reset;
+reg             io_interrupt;
+
+// 新增：slave输入端口信号（消除悬空警告）
+reg             io_slave_awvalid;
+reg [31:0]      io_slave_awaddr;
+reg [3:0]       io_slave_awid;
+reg [7:0]       io_slave_awlen;
+reg [2:0]       io_slave_awsize;
+reg [1:0]       io_slave_awburst;
+reg             io_slave_wvalid;
+reg [31:0]      io_slave_wdata;
+reg [3:0]       io_slave_wstrb;
+reg             io_slave_wlast;
+reg             io_slave_bready;
+reg             io_slave_arvalid;
+reg [31:0]      io_slave_araddr;
+reg [3:0]       io_slave_arid;
+reg [7:0]       io_slave_arlen;
+reg [2:0]       io_slave_arsize;
+reg [1:0]       io_slave_arburst;
+reg             io_slave_rready;
+
+// 全局定义cycle_cnt（解决绑定失败）
+reg [31:0]      cycle_cnt;
+
+// ==============================================
+// 2. 信号初始化
+// ==============================================
+initial begin
+    // 基础信号初始化
+    clock = 1'b0;
+    reset = 1'b1;
+    io_interrupt = 1'b0;
+    cycle_cnt = 32'd0;
+
+    // slave信号初始化（全部置0）
+    io_slave_awvalid = 1'b0;
+    io_slave_awaddr  = 32'd0;
+    io_slave_awid    = 4'd0;
+    io_slave_awlen   = 8'd0;
+    io_slave_awsize  = 3'd0;
+    io_slave_awburst = 2'd0;
+    io_slave_wvalid  = 1'b0;
+    io_slave_wdata   = 32'd0;
+    io_slave_wstrb   = 4'd0;
+    io_slave_wlast   = 1'b0;
+    io_slave_bready  = 1'b0;
+    io_slave_arvalid = 1'b0;
+    io_slave_araddr  = 32'd0;
+    io_slave_arid    = 4'd0;
+    io_slave_arlen   = 8'd0;
+    io_slave_arsize  = 3'd0;
+    io_slave_arburst = 2'd0;
+    io_slave_rready  = 1'b0;
+
+    // 复位50ns后释放
+    #4;
+    reset = 1'b0;
+
+    // 仿真时长（1ms）
+    #1000000;
+    $display("Simulation finished: Timeout!");
+    $finish;
+end
+
+// ==============================================
+// 3. 时钟生成（500MHz）
+// ==============================================
+always #1 clock = ~clock;
+
+// ==============================================
+// 4. 存储器初始化（修复绑定失败）
+// ==============================================
+`ifdef __ICARUS__
+initial begin
+    // 直接初始化存储器模块的mem数组（最稳定）
+    $readmemh("/home/long/ysyx-workbench/npc/simulation/build/iverilog_npc.bin", ysyx_25020042_inst.mem_u.mem);
+    $display("mem[0] = 0x%08x", ysyx_25020042_inst.mem_u.mem[0]);
+    $display("Memory initialized from: /home/long/ysyx-workbench/npc/simulation/build/iverilog_npc.bin");
+end
+`endif
+
+// ==============================================
+// 5. 顶层模块实例化（连接所有slave输入）
+// ==============================================
+ysyx_25020042 ysyx_25020042_inst (
+    .clock(clock),
+    .reset(reset),
+    .io_interrupt(io_interrupt),
+
+    // slave输入端口（消除悬空警告）
+    .io_slave_awvalid(io_slave_awvalid),
+    .io_slave_awaddr(io_slave_awaddr),
+    .io_slave_awid(io_slave_awid),
+    .io_slave_awlen(io_slave_awlen),
+    .io_slave_awsize(io_slave_awsize),
+    .io_slave_awburst(io_slave_awburst),
+    .io_slave_wvalid(io_slave_wvalid),
+    .io_slave_wdata(io_slave_wdata),
+    .io_slave_wstrb(io_slave_wstrb),
+    .io_slave_wlast(io_slave_wlast),
+    .io_slave_bready(io_slave_bready),
+    .io_slave_arvalid(io_slave_arvalid),
+    .io_slave_araddr(io_slave_araddr),
+    .io_slave_arid(io_slave_arid),
+    .io_slave_arlen(io_slave_arlen),
+    .io_slave_arsize(io_slave_arsize),
+    .io_slave_arburst(io_slave_arburst),
+    .io_slave_rready(io_slave_rready),
+
+    // 其他端口悬空（master端口在PLATFORM_NPC下屏蔽）
+    // .io_master_awready(),
+    // .io_master_awvalid(),
+    // .io_master_awaddr(),
+    // .io_master_awid(),
+    // .io_master_awlen(),
+    // .io_master_awsize(),
+    // .io_master_awburst(),
+    // .io_master_wready(),
+    // .io_master_wvalid(),
+    // .io_master_wdata(),
+    // .io_master_wstrb(),
+    // .io_master_wlast(),
+    // .io_master_bready(),
+    // .io_master_bvalid(),
+    // .io_master_bresp(),
+    // .io_master_bid(),
+    // .io_master_arready(),
+    // .io_master_arvalid(),
+    // .io_master_araddr(),
+    // .io_master_arid(),
+    // .io_master_arlen(),
+    // .io_master_arsize(),
+    // .io_master_arburst(),
+    // .io_master_rready(),
+    // .io_master_rvalid(),
+    // .io_master_rresp(),
+    // .io_master_rdata(),
+    // .io_master_rlast(),
+    // .io_master_rid(),
+
+    // slave输出端口悬空（无外部接收）
+    .io_slave_awready(),
+    .io_slave_wready(),
+    .io_slave_bvalid(),
+    .io_slave_bresp(),
+    .io_slave_bid(),
+    .io_slave_arready(),
+    .io_slave_rvalid(),
+    .io_slave_rresp(),
+    .io_slave_rdata(),
+    .io_slave_rlast(),
+    .io_slave_rid()
+);
+
+// ==============================================
+// 6. 波形导出
+// ==============================================
+initial begin
+    $dumpfile("/home/long/ysyx-workbench/npc/simulation/build/npc_wave.vcd");
+    $dumpvars(0, npc_tb);
+end
+
+// ==============================================
+// 7. 仿真日志（修复cycle_cnt绑定）
+// ==============================================
+always @(posedge clock) begin
+    if (!reset) begin
+        cycle_cnt <= cycle_cnt + 1'b1;
+        if (cycle_cnt % 10000 == 0) begin
+            $display("Cycle: %0d, PC: 0x%08x", cycle_cnt, ysyx_25020042_inst.PC_u.o_pc);
+        end
+        // 检测ebreak
+        if (ysyx_25020042_inst.IDU_Exception_Handling2[1]) begin
+            $display("EBREAK detected! Cycle: %0d", cycle_cnt);
+            $finish;
+        end
+    end else begin
+        cycle_cnt <= 32'd0;
+    end
+end
+
+endmodule

@@ -1,9 +1,11 @@
+`timescale 1ns/1ns 
 module ysyx_25020042_EXU(
     input wire clock,
     input wire reset,
     input wire idu_valid,
     input wire lsu_ready,
-    output reg exu_ready,
+    output wire exu_ready,
+    // output reg exu_ready,
     output reg exu_valid,
 
     `ifdef VERILATOR
@@ -76,26 +78,39 @@ module ysyx_25020042_EXU(
             Exception_hit_reg <= 1'b0;
     end
 
+    assign exu_ready = idu_valid & !exu_valid & i_src1_valid & i_src2_valid;
     always @(posedge clock) begin
         if (reset) begin
-            exu_ready <= 0;
             exu_valid <= 0;
         end
-        else if (!exu_valid & !exu_ready & idu_valid & i_src1_valid & i_src2_valid) begin
-            exu_ready <= 1;
-        end
         else if (idu_valid & exu_ready) begin
-            exu_ready <= 0;
             exu_valid <= 1;
         end
         else if ((lsu_ready | (Exception_valid1 & !Exception_hit_reg)) & exu_valid) begin
             exu_valid <= 0;
-            if (idu_valid & i_src1_valid & i_src2_valid)
-                exu_ready <= 1;
-            else 
-                exu_ready <= 0;
         end
     end
+
+    // always @(posedge clock) begin
+    //     if (reset) begin
+    //         exu_ready <= 0;
+    //         exu_valid <= 0;
+    //     end
+    //     else if (!exu_valid & !exu_ready & idu_valid & i_src1_valid & i_src2_valid) begin
+    //         exu_ready <= 1;
+    //     end
+    //     else if (idu_valid & exu_ready) begin
+    //         exu_ready <= 0;
+    //         exu_valid <= 1;
+    //     end
+    //     else if ((lsu_ready | (Exception_valid1 & !Exception_hit_reg)) & exu_valid) begin
+    //         exu_valid <= 0;
+    //         if (idu_valid & i_src1_valid & i_src2_valid)
+    //             exu_ready <= 1;
+    //         else 
+    //             exu_ready <= 0;
+    //     end
+    // end
 
     `ifdef VERILATOR
     // reg [63:0] performance_counter;

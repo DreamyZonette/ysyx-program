@@ -1,5 +1,5 @@
-// Modified by Long for NPC project.
-module ysyx_25020042_PC #(PC_LEN = 32)(
+`timescale 1ns/1ns 
+module ysyx_25020042_PC (
     input              clock,
     input              reset,
     input              ifu_ready,
@@ -8,11 +8,11 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
     output reg         pc_valid,
 
 
-    input [PC_LEN-1:0] i_jump_pc,
+    input [32-1:0] i_jump_pc,
     input              i_jump_valid,
-    input [PC_LEN-1:0] i_fast_jump_pc,
+    input [32-1:0] i_fast_jump_pc,
     input              i_fast_jump_valid,
-    output reg [PC_LEN-1:0] o_pc
+    output reg [32-1:0] o_pc
     );
 
     reg [31:0] next_pc;

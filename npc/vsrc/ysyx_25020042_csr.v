@@ -1,3 +1,4 @@
+`timescale 1ns/1ns 
 module ysyx_25020042_csr (
     input clock,
     input reset,
