@@ -150,6 +150,8 @@
     wire  [2:0] IDU_Exception_Handling2;
     wire  [5:0] LSU_Exception_Handling0;
     wire        Exception_valid;
+    wire [31:0] fast_jump_pc;
+    wire        fast_jump_valid;
      `ifdef VERILATOR
     wire [31:0] idu_to_exu_instrction_data;
     wire [31:0] exu_to_lsu_instrction_data;
@@ -558,6 +560,8 @@ ysyx_25020042_PC PC_u(
     .ifu_handsake(ifu_valid & idu_ready),
     .fault(fault),
     .pc_valid(pc_valid),
+    .i_fast_jump_valid(fast_jump_valid),
+    .i_fast_jump_pc(fast_jump_pc),
     .i_jump_pc(jump_pc),
     .i_jump_valid(jump_valid),
     .o_pc(pc)
@@ -636,6 +640,8 @@ ysyx_25020042_IDU IDU_u (
     .i_IFU_Exception_Handling(IFU_Exception_Handling0),
     .o_IFU_Exception_Handling(IFU_Exception_Handling1),
     .o_IDU_Exception_Handling(IDU_Exception_Handling0),
+    .o_fast_jump_pc(fast_jump_pc),
+    .o_fast_jump_valid(fast_jump_valid),
     .o_instruction_out(idu_inst),
     .o_imm(imm),
     .o_pc_data(idu_to_exu_pc_data),

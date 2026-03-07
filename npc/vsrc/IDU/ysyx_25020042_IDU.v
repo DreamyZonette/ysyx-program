@@ -27,6 +27,8 @@ module ysyx_25020042_IDU (
     `ifdef VERILATOR 
     output reg [31:0]    o_instruction_data     ,
     `endif 
+    output wire          o_fast_jump_valid      ,
+    output wire [31:0]   o_fast_jump_pc         ,
     output reg  [31:0]   o_imm                  ,
     output reg  [31:0]   o_pc_data              ,
     output reg  [11:0]   o_csr_addr             ,
@@ -69,6 +71,8 @@ module ysyx_25020042_IDU (
     wire r_type_signal = (opcode == 7'b0110011);
 
     assign o_IDU_Exception_Handling = {ecall_signal, ebreak_signal, illegal_signal};
+    assign o_fast_jump_valid = j_type_signal & ifu_valid & idu_ready;
+    assign o_fast_jump_pc    = i_pc_data + j_imm;
 
 `ifdef VERILATOR
     reg idu_busy_signal;

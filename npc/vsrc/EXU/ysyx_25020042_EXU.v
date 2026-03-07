@@ -154,7 +154,7 @@ always @(posedge clock) begin
                     jump_pc <= alu_out;
                     jump_valid_signal <= 1'b1;
                 end
-                else if (i_inst[4:0] == 5'b00001 || i_inst[4:0] == 5'b00010) begin
+                else if (i_inst[4:0] == 5'b00001) begin
                     jump_pc <= alu_out;
                     jump_valid_signal <= 1'b1;
                 end

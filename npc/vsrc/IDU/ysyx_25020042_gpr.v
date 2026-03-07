@@ -1,8 +1,10 @@
 module ysyx_25020042_gpr  (
     input clock,
     input reset,   
+    /* verilator lint_off UNUSEDSIGNAL */
     input  [4:0] i_rs1,
     input  [4:0] i_rs2,
+    /* verilator lint_on UNUSEDSIGNAL */
     input  [4:0] i_rd,
     input  [31:0] i_data,
     input  wbu_valid,

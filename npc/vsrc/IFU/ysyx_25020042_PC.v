@@ -10,6 +10,8 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
 
     input [PC_LEN-1:0] i_jump_pc,
     input              i_jump_valid,
+    input [PC_LEN-1:0] i_fast_jump_pc,
+    input              i_fast_jump_valid,
     output reg [PC_LEN-1:0] o_pc
     );
 
@@ -25,6 +27,9 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
         end
         else if (i_jump_valid) begin
             next_pc <= i_jump_pc + 4;
+        end
+        else if (i_fast_jump_valid) begin
+            next_pc <= i_fast_jump_pc + 4;
         end
         else if (ifu_ready & pc_valid) begin
             next_pc <= o_pc + 4;
@@ -46,6 +51,9 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
             end
             else if (i_jump_valid) begin
                 o_pc <= i_jump_pc;
+            end
+            else if (i_fast_jump_valid) begin
+                o_pc <= i_fast_jump_pc;
             end
             else if (ifu_handsake)begin
                 o_pc <= next_pc;
