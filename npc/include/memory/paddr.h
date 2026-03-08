@@ -37,6 +37,10 @@ extern "C" {
 }
 #ifdef PLATFORM_NPC
 static inline bool in_pmem(paddr_t addr) {
+
+  // if (addr >= CLINT_BASE && addr < CLINT_BASE + CLINT_SIZE){
+  //   return addr - CLINT_BASE < CLINT_SIZE;
+  // }
   return addr - CONFIG_MBASE < CONFIG_MSIZE;
 }
 
