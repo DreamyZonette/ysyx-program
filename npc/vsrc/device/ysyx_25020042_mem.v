@@ -44,16 +44,16 @@ import "DPI-C" function void pmem_write(
 `endif
 
 `ifdef __ICARUS__
-    reg [31:0] mem[0:1024*100];
+    reg [31:0] mem[0:1024*1024];
 
     wire [31:0] waddr = (slave_awaddr - 32'h80000000) >> 2;
     wire [31:0] raddr = (read_addr - 32'h80000000) >> 2;
+    wire [31:0] raddr_test = mem[raddr];
 `endif 
 
 reg [2:0] state;
 reg [7:0] burst_count;
 wire [31:0] read_addr = slave_araddr + 4 * burst_count;
-wire [31:0] raddr_test = mem[raddr];
 
 localparam IDLE = 3'd0;
 localparam READ = 3'd1;

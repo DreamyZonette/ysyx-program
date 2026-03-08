@@ -83,6 +83,8 @@ always #1 clock = ~clock;
 // ==============================================
 `ifdef __ICARUS__
 initial begin
+
+    
     // 直接初始化存储器模块的mem数组（最稳定）
     $readmemh("/home/long/ysyx-workbench/npc/simulation/build/iverilog_npc.bin", ysyx_25020042_inst.mem_u.mem);
     $display("mem[0] = 0x%08x", ysyx_25020042_inst.mem_u.mem[0]);
@@ -181,8 +183,14 @@ always @(posedge clock) begin
             $display("Cycle: %0d, PC: 0x%08x", cycle_cnt, ysyx_25020042_inst.PC_u.o_pc);
         end
         // 检测ebreak
-        if (ysyx_25020042_inst.IDU_Exception_Handling2[1]) begin
+        if (ysyx_25020042_inst.WBU_u.i_IDU_Exception_Handling[1]) begin
             $display("EBREAK detected! Cycle: %0d", cycle_cnt);
+            if(ysyx_25020042_inst.gpr_u.a0 == 0) begin
+                $display("Good Trap!");
+            end
+            else begin
+                $display("Bad Trap!");
+            end
             $finish;
         end
     end else begin

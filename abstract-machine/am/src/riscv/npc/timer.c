@@ -1,8 +1,9 @@
 #include <am.h>
 #include <riscv/riscv.h>
 
-#define DEVICE_BASE 0xa0000000
-#define RTC_ADDR  (DEVICE_BASE + 0x0000048)
+// #define DEVICE_BASE 0xa0000000
+// #define RTC_ADDR  (DEVICE_BASE + 0x0000048)
+#define RTC_ADDR  (0x02000000)
 
 static uint64_t base_time = 0;
 static uint64_t base_rtc = 0;
@@ -22,7 +23,7 @@ void __am_timer_init() {
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint64_t now = am_get_time();
-  uint64_t elapsed_seconds = (now - base_time) / 2;
+  uint64_t elapsed_seconds = (now - base_time) * 3;
   uptime->us = elapsed_seconds;// (μs)
   // uptime->us = now - base_time;// (μs)
 }
