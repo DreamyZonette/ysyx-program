@@ -17,8 +17,10 @@ SIM_VSRCS := $(filter-out $(EXCLUDE_FILES), $(VSRCS))
 
 IVERILOG_FLAGS ?= -Wall -o $(TARGET) 
 
-iwave:iverilog
+iwave: $(WORK_DIR)/simulation/build/npc_wave.vcd
 	gtkwave $(WORK_DIR)/simulation/build/npc_wave.vcd
+
+$(WORK_DIR)/simulation/build/npc_wave.vcd: iverilog
 
 iverilog: $(SIM_BIN) $(TARGET)
 	vvp $(TARGET)
