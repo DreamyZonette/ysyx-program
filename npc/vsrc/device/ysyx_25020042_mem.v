@@ -44,11 +44,11 @@ import "DPI-C" function void pmem_write(
 `endif
 
 `ifdef __ICARUS__
-    reg [31:0] mem[0:1024*1024];
+    reg [31:0] mem[0:1024*1024*8-1];
 
-    wire [31:0] waddr = (slave_awaddr - 32'h80000000) >> 2;
-    wire [31:0] raddr = (read_addr - 32'h80000000) >> 2;
-    wire [31:0] raddr_test = mem[raddr];
+    wire [31:0] waddr = slave_awaddr >= 32'h80000000 && slave_awaddr < 32'h90000000 ?(slave_awaddr - 32'h80000000) >> 2 : 0;
+    wire [31:0] raddr = read_addr >= 32'h80000000 && read_addr <= 32'h90000000 ? (read_addr - 32'h80000000) >> 2 : 0;
+    wire [31:0] rdata_test = mem[raddr];
 `endif 
 
 reg [2:0] state;
@@ -83,6 +83,7 @@ always @(posedge clock) begin
         slave_rlast <= 1'b0;
         slave_rid <= 4'b0;
         slave_bid <= 0;
+        slave_bresp <= 2'b00;
     end
     else begin
         case (state)

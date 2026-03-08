@@ -374,6 +374,7 @@ always @(posedge clock) begin
                 if(lsu_awready & lsu_wready) begin
                     lsu_awvalid <= 1'b0;
                     lsu_wvalid <= 1'b0;
+                    lsu_wlast <= 1'b0;
                 end
 
                 if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin

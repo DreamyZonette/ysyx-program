@@ -1,5 +1,6 @@
 `timescale 1ns/1ns
 `define PLATFORM_NPC  // 匹配顶层模块的PLATFORM_NPC宏
+`define ITRACE  // 匹配顶层模块的PLATFORM_NPC宏
 
 module npc_tb;
 
@@ -81,9 +82,14 @@ always #1 clock = ~clock;
 // ==============================================
 // 4. 存储器初始化（修复绑定失败）
 // ==============================================
+integer i;
 `ifdef __ICARUS__
 initial begin
 
+        for (i = 0; i < 1024*1024*8; i = i + 1) begin
+            ysyx_25020042_inst.mem_u.mem[i] = 32'h00000000;
+        end
+        $display("Memory cleared to 0 successfully!");
     
     // 直接初始化存储器模块的mem数组（最稳定）
     $readmemh("/home/long/ysyx-workbench/npc/simulation/build/iverilog_npc.bin", ysyx_25020042_inst.mem_u.mem);
@@ -179,9 +185,21 @@ end
 always @(posedge clock) begin
     if (!reset) begin
         cycle_cnt <= cycle_cnt + 1'b1;
-        if (cycle_cnt % 10000 == 0) begin
-            $display("Cycle: %0d, PC: 0x%08x", cycle_cnt, ysyx_25020042_inst.PC_u.o_pc);
+        // if (cycle_cnt % 1000 == 0) begin
+        //     $display("Cycle: %0d, PC: 0x%08x", cycle_cnt, ysyx_25020042_inst.PC_u.o_pc);
+        // end
+        `ifdef ITRACE
+        if (ysyx_25020042_inst.WBU_u.wbu_valid) begin
+            case (ysyx_25020042_inst.WBU_u.i_inst)
+            3'b001: $display("pc: %08x\tinstruction: EXU", ysyx_25020042_inst.WBU_u.i_pc_data);
+            3'b010: $display("pc: %08x\tinstruction: JUMP", ysyx_25020042_inst.WBU_u.i_pc_data);
+            3'b011: $display("pc: %08x\tinstruction: LSU", ysyx_25020042_inst.WBU_u.i_pc_data);
+            3'b100: $display("pc: %08x\tinstruction: CSR", ysyx_25020042_inst.WBU_u.i_pc_data);
+            3'b101: $display("pc: %08x\tinstruction: FENCE", ysyx_25020042_inst.WBU_u.i_pc_data);
+            default: $display("pc: %08x\tinstruction: NOP", ysyx_25020042_inst.WBU_u.i_pc_data);
+            endcase
         end
+        `endif
         // 检测ebreak
         if (ysyx_25020042_inst.WBU_u.i_IDU_Exception_Handling[1]) begin
             $display("EBREAK detected! Cycle: %0d", cycle_cnt);
@@ -189,7 +207,7 @@ always @(posedge clock) begin
                 $display("Good Trap!");
             end
             else begin
-                $display("Bad Trap!");
+                $display("Bad Trap! pc at 0x%08x", ysyx_25020042_inst.WBU_u.i_pc_data);
             end
             $finish;
         end
