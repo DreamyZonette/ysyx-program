@@ -49,6 +49,9 @@ static inline bool in_pmem(paddr_t addr) {
   if(addr >= CONFIG_MBASE && addr < CONFIG_MBASE + CONFIG_MSIZE){
     return addr - CONFIG_MBASE < CONFIG_MSIZE;
   }
+  else if (addr >= CLINT_BASE && addr < CLINT_BASE + CLINT_SIZE){
+    return addr - CLINT_BASE < CLINT_SIZE;
+  }
   #ifdef CONFIG_YSYXSOC
   else if(addr >= MROM_BASE && addr < MROM_BASE + MROM_SIZE){
     return addr - MROM_BASE < MROM_SIZE;
@@ -68,9 +71,6 @@ static inline bool in_pmem(paddr_t addr) {
   else if (addr >= UART16550_BASE && addr < UART16550_BASE + UART16550_SIZE){
     return addr - UART16550_BASE < UART16550_SIZE;
   } 
-  else if (addr >= CLINT_BASE && addr < CLINT_BASE + CLINT_SIZE){
-    return addr - CLINT_BASE < CLINT_SIZE;
-  }
   #endif
   else{
     return addr - CONFIG_MBASE < CONFIG_MSIZE;

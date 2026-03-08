@@ -115,10 +115,6 @@ always @(posedge clock) begin
                     state <= READ_WAIT;
                     slave_rvalid <= 1'b1;
                     `ifdef VERILATOR
-                        if (read_addr == 32'h02000000 ) begin
-                            $display("read_addr mem read clint error");
-                            $finish;
-                        end
                     slave_rdata <= slave_rvalid == 0 ? pmem_read(read_addr, 4) : 32'b0;
                     `endif
                     `ifdef __ICARUS__
