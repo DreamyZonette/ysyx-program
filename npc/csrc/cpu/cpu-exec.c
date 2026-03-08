@@ -57,9 +57,9 @@ static void trace_and_difftest() {
   int is_call = 0;
   int is_ret = 0;
 
-  uint32_t opcode = get_instruction() & 0x7F;
-  uint32_t rd = get_instruction() >> 7 & 0x1F;
-  uint32_t rs1 = (get_instruction()) >> 15 & 0x1F;
+  uint32_t opcode = _instruction_data_ & 0x7F;
+  uint32_t rd = _instruction_data_ >> 7 & 0x1F;
+  uint32_t rs1 = (_instruction_data_) >> 15 & 0x1F;
  
 
   if ((opcode == 0x6F && rd == 1) ||  // JAL rd=x1
