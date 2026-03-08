@@ -52,12 +52,9 @@ void difftest_skip_ref() {
   // already write some memory, and the incoming instruction in NPC
   // will load that memory, we will encounter false negative. But such
   // situation is infrequent.
-  if (skip_counter == 0) {
-  skip_counter = 3;
-  }
-  else {
+  
     skip_counter ++;
-  }
+  
   skip_dut_nr_inst = 0;
 }
 
@@ -138,10 +135,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
   if (is_skip_ref) {
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
-    // ref_difftest_exec(1);
-    // ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
-    skip_counter --;
-    if (skip_counter == 0) is_skip_ref = false;
+    is_skip_ref = false;
       
     return;
   }
