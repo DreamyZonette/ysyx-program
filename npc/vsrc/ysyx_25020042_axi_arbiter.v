@@ -121,11 +121,11 @@ module ysyx_25020042_axi_arbiter (
 
     parameter ARB_IDLE = 2'd0, ARB_LSU = 2'd1, ARB_IFU = 2'd2;
 
-    reg io_lsu_arvalid_reg;
+    // reg io_lsu_arvalid_reg;
 
-    always @(posedge clock) begin
-        io_lsu_arvalid_reg <= io_lsu_arvalid;
-    end
+    // always @(posedge clock) begin
+    //     io_lsu_arvalid_reg <= io_lsu_arvalid;
+    // end
 
     always @ (posedge clock) begin
         if (reset) begin
