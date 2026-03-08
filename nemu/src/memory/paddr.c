@@ -207,12 +207,13 @@ word_t paddr_read(paddr_t addr, int len) {
     if (addr >= PSRAM_BASE && addr < PSRAM_BASE + PSRAM_SIZE) return psram_read(addr, len);
     if (addr >= SDRAM_BASE && addr < SDRAM_BASE + SDRAM_SIZE) return sdram_read(addr, len);
     if (addr == 0x10000005) return 0x21;
-    if (addr >= CLINT_BASE && addr < CLINT_BASE + CLINT_SIZE) return 0;
+    // if (addr >= CLINT_BASE && addr < CLINT_BASE + CLINT_SIZE) return 0;
     
  
     // if (addr == 0x10000005) return 0x20;// uart lsr return 0x20 
     return 0;
     #endif
+    if (addr >= CLINT_BASE && addr < CLINT_BASE + CLINT_SIZE) return 0;
 
     return pmem_read(addr, len);
   }
