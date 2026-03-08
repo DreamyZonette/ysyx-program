@@ -49,8 +49,8 @@ uint32_t sdb_mrom_read(int32_t addr){
 #define SERIAL_PORT_LEFT      CONFIG_SERIAL_MMIO
 #define SERIAL_PORT_RIGHT    (CONFIG_SERIAL_MMIO + 7)
 // 时钟
-// #define RTC_ADDR_LEFT  CONFIG_RTC_MMIO
-// #define RTC_ADDR_RIGHT  (CONFIG_RTC_MMIO + 7)
+#define RTC_ADDR_LEFT  0x02000000
+#define RTC_ADDR_RIGHT  (0x02000000 + 7)
 // 键盘
 #define I8042_DATA_ADDR_LEFT (CONFIG_I8042_DATA_MMIO)
 #define I8042_DATA_ADDR_RIGHT (CONFIG_I8042_DATA_MMIO + 3)
@@ -100,6 +100,7 @@ extern "C" int pmem_read(int addr, int len) {
   addr = paddr_t(addr) & 0xfffffffc;
   uint32_t ret;
   if (addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
+      addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
       addr >= I8042_DATA_ADDR_LEFT && addr <= I8042_DATA_ADDR_RIGHT || \
       addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
       addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
@@ -158,6 +159,7 @@ extern "C" void pmem_write(int addr, int len, int data) {
   // printf("len = %d\n", len);
   
   if(addr >= SERIAL_PORT_LEFT && addr <= SERIAL_PORT_RIGHT || \
+      addr >= RTC_ADDR_LEFT && addr <= RTC_ADDR_RIGHT || \
       addr >= I8042_DATA_ADDR_LEFT && addr <= I8042_DATA_ADDR_RIGHT || \
       addr >= VGA_CTL_ADDR_LEFT && addr <= VGA_CTL_ADDR_RIGHT || \
       addr >= AUDIO_CTL_ADDR_LEFT && addr <= AUDIO_CTL_ADDR_RIGHT || \
