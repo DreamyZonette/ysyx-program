@@ -115,7 +115,7 @@ always @(posedge clock) begin
                     state <= READ_WAIT;
                     slave_rvalid <= 1'b1;
                     `ifdef VERILATOR
-                        if (read_addr == 32'h02000004 ) begin
+                        if (read_addr == 32'h02000000 ) begin
                             $display("read_addr mem read clint error");
                             $finish;
                         end
