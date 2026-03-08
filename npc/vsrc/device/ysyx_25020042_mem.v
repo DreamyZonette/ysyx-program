@@ -151,7 +151,7 @@ always @(posedge clock) begin
         WRITE: begin
             `ifdef VERILATOR
             /* verilator lint_off WIDTHEXPAND */
-            $display("mem write addr = %08x, data = %08x", slave_awaddr, slave_wdata);
+            // $display("mem write addr = %08x, data = %08x", slave_awaddr, slave_wdata);
             pmem_write(slave_awaddr, slave_wstrb, slave_wdata);
             /* verilator lint_on WIDTHEXPAND */
             `endif
