@@ -52,7 +52,12 @@ void difftest_skip_ref() {
   // already write some memory, and the incoming instruction in NPC
   // will load that memory, we will encounter false negative. But such
   // situation is infrequent.
-  skip_counter ++;
+  if (skip_counter == 0) {
+  skip_counter = 2;
+  }
+  else {
+    skip_counter ++;
+  }
   skip_dut_nr_inst = 0;
 }
 
