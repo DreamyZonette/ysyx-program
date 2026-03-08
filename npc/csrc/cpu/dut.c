@@ -39,6 +39,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 
 static bool is_skip_ref = false;
 static int skip_dut_nr_inst = 0;
+static int skip_counter = 0;
 
 // this is used to let ref skip instructions which
 // can not produce consistent behavior with NPC
@@ -51,6 +52,7 @@ void difftest_skip_ref() {
   // already write some memory, and the incoming instruction in NPC
   // will load that memory, we will encounter false negative. But such
   // situation is infrequent.
+  skip_counter ++;
   skip_dut_nr_inst = 0;
 }
 
@@ -133,7 +135,9 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
     // ref_difftest_exec(1);
     // ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
-    is_skip_ref = false;
+    skip_counter --;
+    if (skip_counter == 0)
+      is_skip_ref = false;
     return;
   }
     //printf("0x%08x 0x%08x\n", pc, npc);
