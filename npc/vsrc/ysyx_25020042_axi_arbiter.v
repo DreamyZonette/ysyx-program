@@ -248,7 +248,7 @@ module ysyx_25020042_axi_arbiter (
         else if (state == ARB_LSU) begin
             if (clint_active) begin
                 io_clint_araddr =  io_lsu_araddr;
-                io_clint_arvalid = io_lsu_arvalid_reg;
+                io_clint_arvalid = io_lsu_arvalid;
                 io_clint_arid =    io_lsu_arid;
                 io_clint_arlen =   io_lsu_arlen;
                 io_clint_arsize =  io_lsu_arsize;
