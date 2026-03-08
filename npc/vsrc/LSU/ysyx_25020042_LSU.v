@@ -362,6 +362,9 @@ always @(posedge clock) begin
                         lsu_araddr >= 32'h1000_1000 && lsu_araddr < 32'h1000_2000 && lsu_arvalid && lsu_arready) begin
                         difftest_device_skip();
                     end
+                    if (lsu_araddr >= 32'h0200_0000 && lsu_araddr < 32'h0201_0000 && lsu_arvalid && lsu_arready) begin
+                        difftest_device_skip();
+                    end
                 `endif
                 `endif
                 if(lsu_arready) begin
