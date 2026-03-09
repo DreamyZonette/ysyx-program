@@ -1,6 +1,6 @@
 `timescale 1ns/1ns
 `define PLATFORM_NPC  // 匹配顶层模块的PLATFORM_NPC宏
-`define ITRACE  // 匹配顶层模块的PLATFORM_NPC宏
+// `define ITRACE  // 匹配顶层模块的PLATFORM_NPC宏
 
 module npc_tb;
 

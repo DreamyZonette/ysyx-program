@@ -1,5 +1,5 @@
 `timescale 1ns/1ns 
-// `define LSU_MTRACE
+`define LSU_MTRACE
 module ysyx_25020042_LSU(
     input                           clock,
     input                           reset,
