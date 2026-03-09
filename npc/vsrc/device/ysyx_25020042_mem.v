@@ -44,11 +44,11 @@ import "DPI-C" function void pmem_write(
 `endif
 
 `ifdef __ICARUS__
-    reg [31:0] mem[0:1024*1024*8-1];
+    reg [7:0] mem[0:1024*1024*8-1];
 
-    wire [31:0] waddr = slave_awaddr >= 32'h80000000 && slave_awaddr < 32'h90000000 ?(slave_awaddr - 32'h80000000) >> 2 : 0;
-    wire [31:0] raddr = read_addr >= 32'h80000000 && read_addr <= 32'h90000000 ? (read_addr - 32'h80000000) >> 2 : 0;
-    wire [31:0] rdata_test = mem[raddr];
+    wire [31:0] waddr = slave_awaddr >= 32'h80000000 && slave_awaddr < 32'h90000000 ?(slave_awaddr - 32'h80000000): 0;
+    wire [31:0] raddr = read_addr >= 32'h80000000 && read_addr <= 32'h90000000 ? (read_addr - 32'h80000000): 0;
+    wire [31:0] rdata_test = {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]};
 `endif 
 
 reg [2:0] state;
@@ -119,7 +119,7 @@ always @(posedge clock) begin
                     slave_rdata <= slave_rvalid == 0 ? pmem_read(read_addr, 4) : 32'b0;
                     `endif
                     `ifdef __ICARUS__
-                    slave_rdata <= mem[raddr];
+                    slave_rdata <= {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]};
                     // $display("read_addr = %08x  raddr = %08x: %08x", slave_araddr, raddr, mem[raddr]);
                     `endif
                 end
@@ -130,7 +130,7 @@ always @(posedge clock) begin
                         slave_rdata <= pmem_read(read_addr, 4);
                         `endif
                         `ifdef __ICARUS__
-                        slave_rdata <= mem[raddr];
+                        slave_rdata <= {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]};
                         // $display("read_addr = %08x  raddr = %08x: %08x", slave_araddr, raddr, mem[raddr]);
                         `endif
                      end
@@ -160,10 +160,10 @@ always @(posedge clock) begin
             if (slave_awaddr == 32'ha00003f8)
             $write("%c", slave_wdata[7:0]);
             else begin
-            if(slave_wstrb[0]) mem[waddr][7:0]   <= slave_wdata[7:0];
-            if(slave_wstrb[1]) mem[waddr][15:8]  <= slave_wdata[15:8];
-            if(slave_wstrb[2]) mem[waddr][23:16] <= slave_wdata[23:16];
-            if(slave_wstrb[3]) mem[waddr][31:24] <= slave_wdata[31:24];
+            if(slave_wstrb[0]) mem[waddr]   <= slave_wdata[7:0];
+            if(slave_wstrb[1]) mem[waddr+1]  <= slave_wdata[15:8];
+            if(slave_wstrb[2]) mem[waddr+2] <= slave_wdata[23:16];
+            if(slave_wstrb[3]) mem[waddr+3] <= slave_wdata[31:24];
             end
             `endif
             state <= WRITE_WAIT;

@@ -86,14 +86,14 @@ integer i;
 `ifdef __ICARUS__
 initial begin
 
-        for (i = 0; i < 1024*1024*8; i = i + 1) begin
-            ysyx_25020042_inst.mem_u.mem[i] = 32'h00000000;
-        end
-        $display("Memory cleared to 0 successfully!");
+        // for (i = 0; i < 1024*1024*8; i = i + 1) begin
+        //     ysyx_25020042_inst.mem_u.mem[i] = 8'h0;
+        // end
+        // $display("Memory cleared to 0 successfully!");x
     
     // 直接初始化存储器模块的mem数组（最稳定）
     $readmemh("/home/long/ysyx-workbench/npc/simulation/build/iverilog_npc.bin", ysyx_25020042_inst.mem_u.mem);
-    $display("mem[0] = 0x%08x", ysyx_25020042_inst.mem_u.mem[0]);
+    $display("mem[0] = 0x%08x", {ysyx_25020042_inst.mem_u.mem[3], ysyx_25020042_inst.mem_u.mem[2], ysyx_25020042_inst.mem_u.mem[1], ysyx_25020042_inst.mem_u.mem[0]});
     $display("Memory initialized from: /home/long/ysyx-workbench/npc/simulation/build/iverilog_npc.bin");
 end
 `endif
