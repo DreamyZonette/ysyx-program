@@ -1,5 +1,7 @@
+`timescale 1ns/1ns 
 module ysyx_25020042_mem(
     input clock,
+    input reset,
     // axi 握手信号
     input [31:0]      slave_araddr    ,
     input             slave_arvalid   ,
@@ -41,6 +43,14 @@ import "DPI-C" function void pmem_write(
     input int addr, int len, input int data);
 `endif
 
+`ifdef __ICARUS__
+    reg [7:0] mem[0:1024*1024*8-1];
+
+    wire [31:0] waddr = slave_awaddr >= 32'h80000000 && slave_awaddr < 32'h90000000 ?(slave_awaddr - 32'h80000000): 0;
+    wire [31:0] raddr = read_addr >= 32'h80000000 && read_addr <= 32'h90000000 ? (read_addr - 32'h80000000): 0;
+    wire [31:0] rdata_test = {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]};
+`endif 
+
 reg [2:0] state;
 reg [7:0] burst_count;
 wire [31:0] read_addr = slave_araddr + 4 * burst_count;
@@ -52,14 +62,31 @@ localparam WRITE = 3'd3;
 localparam WRITE_WAIT = 3'd4;
 
 always @(posedge clock) begin
-   if (slave_rlast)
+    if (reset) 
+        burst_count <= 0;
+    else if (slave_rlast)
         burst_count <= 0;
     else if (slave_rvalid && state == READ)
         burst_count <= burst_count + 1;
 end
 
 always @(posedge clock) begin
-    case (state)
+    if (reset) begin
+        state <= IDLE;
+        slave_arready <= 1'b0;
+        slave_awready <= 1'b0;
+        slave_wready <= 1'b0;
+        slave_bvalid <= 1'b0;
+        slave_rdata <= 32'b0;
+        slave_rvalid <= 1'b0;
+        slave_rresp <= 2'b00;
+        slave_rlast <= 1'b0;
+        slave_rid <= 4'b0;
+        slave_bid <= 0;
+        slave_bresp <= 2'b00;
+    end
+    else begin
+        case (state)
         IDLE: begin
                 slave_arready <= 1'b1;
                 slave_awready <= 1'b1;
@@ -91,12 +118,20 @@ always @(posedge clock) begin
                     `ifdef VERILATOR
                     slave_rdata <= slave_rvalid == 0 ? pmem_read(read_addr, 4) : 32'b0;
                     `endif
+                    `ifdef __ICARUS__
+                    slave_rdata <= {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]};
+                    // $display("read_addr = %08x  raddr = %08x: %08x", slave_araddr, raddr, mem[raddr]);
+                    `endif
                 end
                 else begin
                      if (slave_rvalid == 1'b0) begin
                         slave_rvalid <= 1'b1;
                         `ifdef VERILATOR
                         slave_rdata <= pmem_read(read_addr, 4);
+                        `endif
+                        `ifdef __ICARUS__
+                        slave_rdata <= {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]};
+                        // $display("read_addr = %08x  raddr = %08x: %08x", slave_araddr, raddr, mem[raddr]);
                         `endif
                      end
                     else begin
@@ -115,14 +150,21 @@ always @(posedge clock) begin
             end
         end
         WRITE: begin
-            // if (slave_awready || slave_wready) begin
-            //     slave_awready <= 1'b0;
-            //     slave_wready <= 1'b0;
-            // end
             `ifdef VERILATOR
             /* verilator lint_off WIDTHEXPAND */
+            // $display("mem write addr = %08x, data = %08x", slave_awaddr, slave_wdata);
             pmem_write(slave_awaddr, slave_wstrb, slave_wdata);
             /* verilator lint_on WIDTHEXPAND */
+            `endif
+            `ifdef __ICARUS__
+            if (slave_awaddr == 32'ha00003f8)
+            $write("%c", slave_wdata[7:0]);
+            else begin
+            if(slave_wstrb[0]) mem[waddr]   <= slave_wdata[7:0];
+            if(slave_wstrb[1]) mem[waddr+1]  <= slave_wdata[15:8];
+            if(slave_wstrb[2]) mem[waddr+2] <= slave_wdata[23:16];
+            if(slave_wstrb[3]) mem[waddr+3] <= slave_wdata[31:24];
+            end
             `endif
             state <= WRITE_WAIT;
             slave_bresp <= 2'b00;
@@ -139,6 +181,7 @@ always @(posedge clock) begin
             state <= IDLE;
         end
     endcase 
+    end
 end
 
 endmodule

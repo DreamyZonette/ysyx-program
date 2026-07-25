@@ -1,3 +1,4 @@
+`timescale 1ns/1ns 
 module ysyx_25020042_IFU(
     input                  clock,
     input                  reset,
@@ -5,32 +6,33 @@ module ysyx_25020042_IFU(
     input                  idu_ready,
     output reg             ifu_valid,
     output reg             ifu_ready,
-    // output                 pc_update,
 
     input                  i_jump_valid,
     input      [31:0]      i_pc,
     input                  fencei_signal,
     output reg [31:0]      o_instruction,
     output wire [31:0]     o_pc_data    ,
-    output                 icache_busy,
+    output [2:0]           o_IFU_Exception_Handling,
 
     `ifdef VERILATOR
     output     [63:0]      o_performance_counter,
+    output reg [63:0]      o_cycles_counter,
+    output reg [63:0]      o_single_cycles_counter,
     `ifdef ICACHE_ON
     output     [63:0]      o_icache_hit_count,
     `endif
     `endif
 
-    output reg [31:0]      ifu_araddr,
-    output reg             ifu_arvalid,
+    output wire [31:0]     ifu_araddr,
+    output wire            ifu_arvalid,
     input                  ifu_arready,
-    output reg [7:0]       ifu_arlen,
-    output reg [3:0]       ifu_arid,
-    output reg [1:0]       ifu_arburst,
-    output reg [2:0]       ifu_arsize,
+    output wire [7:0]      ifu_arlen,
+    output wire [3:0]      ifu_arid,
+    output wire [1:0]      ifu_arburst,
+    output wire [2:0]      ifu_arsize,
     input      [31:0]      ifu_rdata,
     input                  ifu_rvalid,
-    output reg             ifu_rready,
+    output wire            ifu_rready,
     input      [1:0]       ifu_rresp,
     input                  ifu_rlast,
     input      [3:0]       ifu_rid
@@ -38,17 +40,63 @@ module ysyx_25020042_IFU(
 `ifdef VERILATOR
 
     reg [63:0] performance_counter;
+    reg        ifu_busy_signal;
     assign o_performance_counter = performance_counter;
     always @(posedge clock) begin
         if(reset) 
             performance_counter <= 0;
-        else if (idu_ready & ifu_valid)
+        else if (pc_valid & ifu_ready)
             performance_counter <= performance_counter + 1;
+    end
+
+    always @(posedge clock) begin
+        if(reset) 
+            ifu_busy_signal <= 0;
+        else if(i_jump_valid) begin
+            if (state == IDLE && !(pc_valid && ifu_ready)) begin
+                ifu_busy_signal <= 1'b0;
+            end
+            else if (state == READY && instruction_ready) begin
+                ifu_busy_signal <= 1'b0;
+            end
+            else begin
+                ifu_busy_signal <= 1'b1;
+            end
+        end
+        else if(state == READY && instruction_ready && Control_Hazard) begin
+                ifu_busy_signal <= 1'b0;
+        end
+        else if (pc_valid & ifu_ready)
+            ifu_busy_signal <= 1;
+        else if (idu_ready & ifu_valid)
+            ifu_busy_signal <= 0;
+    end
+
+    always @(posedge clock) begin
+        if(reset) begin
+            o_cycles_counter <= 0;
+        end
+        else if (ifu_busy_signal) begin
+            o_cycles_counter <= o_cycles_counter + 1;
+        end
+    end
+
+    always @(posedge clock) begin
+        if(reset) begin
+            o_single_cycles_counter <= 0;
+        end
+        else if (pc_valid && ifu_ready) begin
+            o_single_cycles_counter <= 0;
+        end
+        else 
+            o_single_cycles_counter <= o_single_cycles_counter + 1;
     end
 
 `endif
 
-
+wire Instruction_address_misaligned;
+wire Instruction_access_fault;
+wire Instruction_page_fault;
 wire instruction_ready;
 wire [31:0] instruction;
 reg state ;
@@ -56,9 +104,10 @@ reg Control_Hazard;
 localparam IDLE  = 1'b0;
 localparam READY = 1'b1;
 
-// assign pc_update = instruction_ready & !Control_Hazard;
 assign o_pc_data = i_pc;
-assign icache_busy = state == READY;
+assign o_IFU_Exception_Handling = {Instruction_page_fault, Instruction_access_fault, Instruction_address_misaligned};
+assign Instruction_page_fault = 1'b0;
+assign Instruction_address_misaligned = |i_pc[1:0];
 
 always @(posedge clock) begin
     if(reset) begin
@@ -154,7 +203,7 @@ always @(posedge clock) begin
     end
 end
 
-icache #(
+ysyx_25020042_icache #(
     .CACHE_BLOCK_SIZE(16), //4 * 8
     .CACHE_BLOCK_BANK(4) //2 ^ n
 ) u_icache(
@@ -168,6 +217,7 @@ icache #(
     `endif
     .instruction_ready(instruction_ready),
     .instruction      (instruction),
+    .Instruction_access_fault(Instruction_access_fault),
     .io_icache_arready(ifu_arready),
     .io_icache_arvalid(ifu_arvalid),
     .io_icache_araddr (ifu_araddr),

@@ -118,6 +118,9 @@ endif
 
 $(shell mkdir -p $(BUILD_DIR))
 
+include $(WORK_DIR)/scripts/iverilog.mk
+include $(WORK_DIR)/scripts/summary.mk
+
 BIN = $(BUILD_DIR)/$(TOP_NAME)
 
 all:run wave
@@ -147,7 +150,8 @@ wave: $(BUILD_DIR)/wave.fst
 	
 	gtkwave $(BUILD_DIR)/wave.fst
 
-PHONY: clean test adapt cleanwave perf
+PHONY: clean test adapt cleanwave perf sum 
+
 
 adapt: sim
 	$(MAKE) -C $(CPU_TEST_HOME) ARCH=minirv-npc ALL=$(OBJ)
@@ -167,6 +171,7 @@ perf:
 
 clean:
 	-rm -rf  $(BUILD_DIR)
+
 
 cleanwave:
 	-rm $(BUILD_DIR)/wave.fst

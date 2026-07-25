@@ -1,13 +1,18 @@
+`timescale 1ns/1ns 
 module ysyx_25020042_EXU(
     input wire clock,
     input wire reset,
     input wire idu_valid,
     input wire lsu_ready,
-    output reg exu_ready,
+    output wire exu_ready,
+    // output reg exu_ready,
     output reg exu_valid,
 
     `ifdef VERILATOR
     output reg [63:0] performance_counter,
+    output reg [63:0] cycles_counter,
+    input  wire [63:0]   i_single_cycles_counter,
+    output reg  [63:0]   o_single_cycles_counter,
     `endif
 
     input wire [7:0] i_inst,
@@ -22,6 +27,11 @@ module ysyx_25020042_EXU(
     input wire [31:0] i_mtvec_rdata,
     input wire        i_src1_valid,
     input wire        i_src2_valid,
+    input  wire [2:0]    i_IFU_Exception_Handling,
+    output reg [2:0]     o_IFU_Exception_Handling,
+    input  wire [2:0]    i_IDU_Exception_Handling,
+    output reg [2:0]     o_IDU_Exception_Handling,
+    input  wire [5:0]    i_LSU_Exception_Handling,
     `ifdef VERILATOR
     input  [31:0]     i_instruction_data,
     `endif
@@ -30,6 +40,7 @@ module ysyx_25020042_EXU(
     output reg [11:0]  o_csr_addr,
     output reg  [7:0]  o_idu_inst,
     output reg  [31:0] o_pc_data,
+    output wire        o_fence_i_valid,
     `ifdef VERILATOR
     output reg [31:0] o_instruction_data,
     `endif
@@ -52,42 +63,99 @@ module ysyx_25020042_EXU(
     reg [3:0]  alu_ctrl;
     reg        B_jump_signal;
     reg        jump_valid_signal;
+    reg        Exception_hit_reg;
+    wire Exception_valid0 = |{i_IFU_Exception_Handling, i_IDU_Exception_Handling};
+    wire Exception_valid1 = |i_LSU_Exception_Handling;
     wire [31:0] alu_out;
     wire equal       = (i_src1 == i_src2);
     wire sign_less   = $signed(i_src1) < $signed(i_src2) ? 1'b1 : 1'b0;
     wire unsign_less = (i_src1 < i_src2);
 
     always @(posedge clock) begin
+        if (Exception_valid1) 
+            Exception_hit_reg <= 1'b1;
+        else 
+            Exception_hit_reg <= 1'b0;
+    end
+
+    assign exu_ready = idu_valid & !exu_valid & i_src1_valid & i_src2_valid;
+    always @(posedge clock) begin
         if (reset) begin
-            exu_ready <= 0;
             exu_valid <= 0;
         end
-        else if (!exu_valid & !exu_ready & idu_valid & i_src1_valid & i_src2_valid) begin
-            // $display("idu_valid = %d, i_src1_valid = %d, i_src2_valid = %d", idu_valid, i_src1_valid, i_src2_valid);
-            exu_ready <= 1;
-        end
         else if (idu_valid & exu_ready) begin
-            exu_ready <= 0;
-            // $display("idu_valid = %d, exu_ready = %d", idu_valid, exu_ready);
             exu_valid <= 1;
         end
-        else if (lsu_ready & exu_valid) begin
-            exu_ready <= 0;
+        else if ((lsu_ready | (Exception_valid1 & !Exception_hit_reg)) & exu_valid) begin
             exu_valid <= 0;
         end
     end
 
+    // always @(posedge clock) begin
+    //     if (reset) begin
+    //         exu_ready <= 0;
+    //         exu_valid <= 0;
+    //     end
+    //     else if (!exu_valid & !exu_ready & idu_valid & i_src1_valid & i_src2_valid) begin
+    //         exu_ready <= 1;
+    //     end
+    //     else if (idu_valid & exu_ready) begin
+    //         exu_ready <= 0;
+    //         exu_valid <= 1;
+    //     end
+    //     else if ((lsu_ready | (Exception_valid1 & !Exception_hit_reg)) & exu_valid) begin
+    //         exu_valid <= 0;
+    //         if (idu_valid & i_src1_valid & i_src2_valid)
+    //             exu_ready <= 1;
+    //         else 
+    //             exu_ready <= 0;
+    //     end
+    // end
+
     `ifdef VERILATOR
     // reg [63:0] performance_counter;
+    always @(posedge clock) begin
+        if (reset) begin
+            o_single_cycles_counter <= 0;
+        end
+        else if (idu_valid & exu_ready) begin
+            o_single_cycles_counter <= i_single_cycles_counter;
+        end
+        else begin
+            o_single_cycles_counter <= o_single_cycles_counter + 1;
+        end
+    end
+
+    reg exu_busy_signal;
+
     always @(posedge clock) begin
         if(reset) 
             performance_counter <= 0;
         else if (idu_valid & exu_ready)
             performance_counter <= performance_counter + 1;
     end
+
+    always @(posedge clock) begin
+        if(reset) 
+            exu_busy_signal <= 0;
+        else if (idu_valid & exu_ready)
+            exu_busy_signal <= 1;
+        else if (lsu_ready & exu_valid)
+            exu_busy_signal <= 0;
+    end
+
+    always @(posedge clock) begin
+        if(reset) 
+            cycles_counter <= 0;
+        else if (exu_busy_signal)
+            cycles_counter <= cycles_counter + 1;
+    end
+
+
     `endif
 
-assign jump_valid = jump_valid_signal & exu_valid;
+assign jump_valid = jump_valid_signal & (exu_valid | (Exception_valid1 & !Exception_hit_reg));
+assign o_fence_i_valid = i_inst == 8'b10100001;
 
 always @(posedge clock) begin
     if(reset) begin
@@ -101,7 +169,7 @@ always @(posedge clock) begin
                     jump_pc <= alu_out;
                     jump_valid_signal <= 1'b1;
                 end
-                else if (i_inst[4:0] == 5'b00001 || i_inst[4:0] == 5'b00010) begin
+                else if (i_inst[4:0] == 5'b00001) begin
                     jump_pc <= alu_out;
                     jump_valid_signal <= 1'b1;
                 end
@@ -122,7 +190,16 @@ always @(posedge clock) begin
                     end
                 endcase
             end
+            SPECIAL_INST: begin
+                jump_pc <= i_pc_data + 4;
+                jump_valid_signal <= 1'b1;
+            end 
             default: begin
+                if (Exception_valid0 | Exception_valid1) begin
+                    jump_valid_signal <= 1'b1;
+                    jump_pc <= i_mtvec_rdata;
+                end
+                else
                 jump_valid_signal <= 1'b0;
             end
         endcase
@@ -136,31 +213,29 @@ end
 
     always @(posedge clock) begin
         if (reset) begin
-            // o_data <= 0;
             o_pc_data <= 0;
             o_idu_inst <= 0;
             o_csr_data <= 0;
             o_src2     <= 0;
-            // o_rd       <= 0;
             o_csr_addr <= 0;
+            o_IFU_Exception_Handling <= 0;
+            o_IDU_Exception_Handling <= 0;
             `ifdef VERILATOR
                 o_instruction_data <= 32'b0;
             `endif
         end
         else if (idu_valid & exu_ready) begin
-            // o_data <= alu_out;
             o_pc_data <= i_pc_data;
             o_idu_inst <= i_inst;
             o_csr_data <= i_csr_data;
             o_src2     <= i_src2;
-            // o_rd       <= i_rd;
             o_csr_addr <= i_csr_addr;
+            o_IFU_Exception_Handling <= i_IFU_Exception_Handling;
+            o_IDU_Exception_Handling <= i_IDU_Exception_Handling;
             `ifdef VERILATOR
                 o_instruction_data <= i_instruction_data;
             `endif
         end
-        // else if (lsu_ready & exu_valid)
-        //     o_rd <= 0;
     end
 
     always @(*) begin
@@ -325,41 +400,6 @@ end
                         alu_data2 = i_imm;
                         alu_ctrl = 4'b0000;
                     end
-                    // 5'b00010: begin // jal
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b00011: begin // beq
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b00100: begin // bne
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b00101: begin // bge
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b00110: begin // bgeu
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b00111: begin // blt
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
-                    // 5'b01000: begin // bltu
-                    //     alu_data1 = i_pc_data;
-                    //     alu_data2 = i_imm;
-                    //     alu_ctrl = 4'b0000;
-                    // end
                     default: begin
                         alu_data1 = i_pc_data;
                         alu_data2 = i_imm;
@@ -372,53 +412,6 @@ end
                 alu_data1 = i_src1;
                 alu_data2 = i_imm;
                 alu_ctrl = 4'b0000;
-                // case(i_inst[4:0])
-                //     5'b00001: begin // lw
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00010: begin // lh
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00011: begin // lhu
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00100: begin // lb
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00101: begin // lbu
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00110: begin // sw
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b00111: begin // sh
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     5'b01000: begin // sb
-                //         alu_data1 = i_src1;
-                //         alu_data2 = i_imm;
-                //         alu_ctrl = 4'b0000;
-                //     end
-                //     default: begin
-                //         alu_data1 = 0;
-                //         alu_data2 = 0;
-                //         alu_ctrl = 4'b0011;
-                //     end
-                // endcase
             end
 
             CSR_INST: begin

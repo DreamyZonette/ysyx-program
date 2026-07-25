@@ -1,43 +1,43 @@
+`timescale 1ns/1ns 
 module ysyx_25020042_IDU (
-    input   wire         clock                 ,  
-    input   wire         reset                 ,
-    input   wire         ifu_valid             ,
-    input   wire         exu_ready             ,
-    output  reg          idu_ready             ,
-    output  reg          idu_valid             ,
-    `ifdef VERILATOR
-    output reg  [63:0]   csr_perfomance_counter,
+    input   wire         clock                  ,  
+    input   wire         reset                  ,
+    input   wire         ifu_valid              ,
+    input   wire         exu_ready              ,
+    output  reg          idu_ready              ,
+    output  reg          idu_valid              ,
+    `ifdef VERILATOR 
+    output reg  [63:0]   csr_hit_counter        ,
+    output reg  [63:0]   exu_hit_counter        ,
+    output reg  [63:0]   jump_hit_counter       ,
+    output reg  [63:0]   mem_hit_counter        ,
+    output reg  [63:0]   fence_hit_counter      ,
+    output reg  [63:0]   performance_counter    ,
+    output reg  [63:0]   cycles_counter         ,
+    input  wire [63:0]   i_single_cycles_counter,
+    output reg  [63:0]   o_single_cycles_counter,
     `endif
  
-    input  wire          i_jump_valid          ,
-    input  wire [31:0]   i_inst                ,
-    input  wire [31:0]   i_pc_data             ,
-    // input  wire [4:0]    i_prev_rd_0           ,
-    // input  wire [4:0]    i_prev_rd_1           ,
-    // input  wire [4:0]    i_prev_rd_2           ,
-    output reg  [7:0]    o_instruction_out     ,
-    `ifdef VERILATOR
-    output reg [31:0]    o_instruction_data    ,
-    `endif
-    output reg  [31:0]   o_imm                 ,
-    output reg  [31:0]   o_pc_data             ,
-    output reg  [11:0]   o_csr_addr            ,
-    output reg  [5:0]    o_shamt               ,
-    output reg  [4:0]    o_rd                  ,
-    output reg  [4:0]    o_rs1                 ,
+    input  wire          i_jump_valid           ,
+    input  wire [31:0]   i_inst                 ,
+    input  wire [31:0]   i_pc_data              ,
+    output reg  [7:0]    o_instruction_out      ,
+    input  wire [2:0]    i_IFU_Exception_Handling,
+    output reg [2:0]     o_IFU_Exception_Handling,
+    output wire [2:0]    o_IDU_Exception_Handling,
+    `ifdef VERILATOR 
+    output reg [31:0]    o_instruction_data     ,
+    `endif 
+    output wire          o_fast_jump_valid      ,
+    output wire [31:0]   o_fast_jump_pc         ,
+    output reg  [31:0]   o_imm                  ,
+    output reg  [31:0]   o_pc_data              ,
+    output reg  [11:0]   o_csr_addr             ,
+    output reg  [5:0]    o_shamt                ,
+    output reg  [4:0]    o_rd                   ,
+    output reg  [4:0]    o_rs1                  ,
     output reg  [4:0]    o_rs2
 );
-
-    `ifdef VERILATOR
-        always @(posedge clock) begin
-            if (reset) begin
-                csr_perfomance_counter <= 0;
-            end
-            if (exu_ready & idu_valid & csr_valid) begin
-                csr_perfomance_counter <= csr_perfomance_counter + 1;
-            end
-        end
-    `endif
 
     localparam  NOP_INST     = 3'b000;
     localparam  EXU_INST     = 3'b001;
@@ -60,6 +60,9 @@ module ysyx_25020042_IDU (
     wire [31:0]  j_imm = {{11{i_inst[31]}}, i_inst[31], i_inst[19:12], i_inst[20], i_inst[30:21], 1'b0};
     wire [24:20] shamt = i_inst[24:20];
     wire [11:0] csr_addr = i_inst[31:20];
+    wire ebreak_signal  = (o_instruction_out == 8'b10000101);
+    wire ecall_signal   = (o_instruction_out  == 8'b10000011);
+    wire illegal_signal = (o_instruction_out[4:0]  == 5'b0);
 
     wire u_type_signal = (opcode == 7'b0110111 | opcode == 7'b0010111);
     wire i_type_signal = (opcode == 7'b1100111 | opcode == 7'b0000011 | opcode == 7'b0010011 | opcode == 7'b0001111 | opcode == 7'b1110011);
@@ -68,50 +71,77 @@ module ysyx_25020042_IDU (
     wire j_type_signal = (opcode == 7'b1101111);
     wire r_type_signal = (opcode == 7'b0110011);
 
-    // reg  raw_hit;
-    // // reg  raw_hit_reg;
-    // reg  raw_hit_itype;
-    // wire o_rs1_hit = (i_prev_rd_0 == o_rs1) | (i_prev_rd_1 == o_rs1) | (i_prev_rd_2 == o_rs1) && o_rs1 != 0;
-    // wire o_rs2_hit = (i_prev_rd_0 == o_rs2) | (i_prev_rd_1 == o_rs2) | (i_prev_rd_2 == o_rs2) && o_rs2 != 0;
-    // wire rs1_hit = (i_prev_rd_0 == rs1) | (i_prev_rd_1 == rs1) | (i_prev_rd_2 == rs1) && rs1 != 0;
-    // wire rs2_hit = (i_prev_rd_0 == rs2) | (i_prev_rd_1 == rs2) | (i_prev_rd_2 == rs2) && rs2 != 0;
-    // always @(*) begin
-    //     raw_hit = 1'b0;
-    //     if (rd != 0) begin
-    //         if (i_type_signal | raw_hit_itype)
-    //             raw_hit = rs1_hit | o_rs1_hit ? 1'b1 : 1'b0;
-    //         else 
-    //             raw_hit = rs1_hit | rs2_hit | o_rs1_hit | o_rs2_hit ? 1'b1 : 1'b0;
+    assign o_IDU_Exception_Handling = {ecall_signal, ebreak_signal, illegal_signal};
+    assign o_fast_jump_valid = j_type_signal & ifu_valid & idu_ready;
+    assign o_fast_jump_pc    = i_pc_data + j_imm;
 
-    //         // case (1'b1)
-    //         //     i_type_signal:  begin
-    //         //         raw_hit = rs1_hit | o_rs1_hit ? 1'b1 : 1'b0;
-    //         //     end
-    //         //     s_type_signal:  begin
-    //         //         raw_hit = rs1_hit | rs2_hit | o_rs1_hit | o_rs2_hit ? 1'b1 : 1'b0;
-    //         //     end
-    //         //     b_type_signal:  begin
-    //         //         raw_hit = rs1_hit | rs2_hit | o_rs1_hit | o_rs2_hit ? 1'b1 : 1'b0;
-    //         //     end
-    //         //     r_type_signal:  begin
-    //         //         raw_hit = rs1_hit | rs2_hit | o_rs1_hit | o_rs2_hit ? 1'b1 : 1'b0;
-    //         //     end
-    //         //     default: raw_hit = 1'b0;
-    //         // endcase
-    //     end
-    // end
+`ifdef VERILATOR
+    reg idu_busy_signal;
+    always @(posedge clock) begin
+        if (reset) begin
+            csr_hit_counter <= 0;
+            exu_hit_counter <= 0;
+            jump_hit_counter <= 0;
+            mem_hit_counter <= 0;
+            fence_hit_counter <= 0;
+        end
+        else if (exu_ready & idu_valid) begin
+            case (o_instruction_out[7:5])
+            CSR_INST:  csr_hit_counter <= csr_hit_counter + 1;
+            MEM_INST:  mem_hit_counter <= mem_hit_counter + 1;
+            SPECIAL_INST:fence_hit_counter <= fence_hit_counter + 1;
+            JUMP_INST: jump_hit_counter <= jump_hit_counter + 1;
+            default:    exu_hit_counter <= exu_hit_counter + 1;
+            endcase
+        end
+    end
 
-    // always @(posedge clock) begin
-    //     if (reset) begin
-    //         raw_hit_itype <= 1'b0;
-    //     end
-    //     else if (raw_hit) begin
-    //         raw_hit_itype <= i_type_signal;
-    //     end
-    //     else if (~o_rs1_hit) begin
-    //         raw_hit_itype <= 1'b0;
-    //     end
-    // end
+    always @(posedge clock) begin
+        if (reset) begin
+            o_single_cycles_counter <= 0;
+        end
+        else if (ifu_valid & idu_ready) begin
+            o_single_cycles_counter <= i_single_cycles_counter;
+        end
+        else begin
+            o_single_cycles_counter <= o_single_cycles_counter + 1;
+        end
+    end
+
+    always @(posedge clock) begin
+        if (reset) begin
+            performance_counter <= 0;
+        end
+        else if (exu_ready & idu_valid) begin
+            performance_counter <= performance_counter + 1;
+        end
+    end
+
+    always @(posedge clock) begin
+        if (reset) begin
+            idu_busy_signal <= 0;
+        end 
+        else if (i_jump_valid) begin
+            idu_busy_signal <= 0;
+        end
+        else if (ifu_valid & idu_ready) begin
+            idu_busy_signal <= 1;
+        end
+        else if (idu_valid & exu_ready) begin
+            idu_busy_signal <= 0;
+        end
+    end
+
+    always @(posedge clock) begin
+        if (reset) begin
+            cycles_counter <= 0;
+        end
+        else if (idu_busy_signal) begin
+            cycles_counter <= cycles_counter + 1;
+        end
+    end
+
+`endif
 
     always @ (posedge clock) begin
         if (reset) begin
@@ -160,6 +190,16 @@ module ysyx_25020042_IDU (
                 o_rs1 <= rs1;
             else 
                 o_rs1 <= 5'b0;
+        end
+    end
+
+    always @ (posedge clock) begin
+        if (reset)
+            o_IFU_Exception_Handling <= 3'b0;
+        else if (i_jump_valid)
+            o_IFU_Exception_Handling <= 3'b0;
+        else if (ifu_valid & idu_ready) begin
+                o_IFU_Exception_Handling <= i_IFU_Exception_Handling;
         end
     end
 

@@ -1,8 +1,8 @@
-module clint(
+`timescale 1ns/1ns 
+module ysyx_25020042_clint(
     input clock,
     input reset,
     // axi 握手信号
-    /* verilator lint_off UNUSEDSIGNAL */
     input [31:0]      slave_araddr    ,
     input             slave_arvalid   ,
     output reg        slave_arready   ,
@@ -36,7 +36,6 @@ module clint(
     input             slave_bready    ,
     output reg [1:0]  slave_bresp     ,
     output reg [3:0]  slave_bid    
-    /* verilator lint_on UNUSEDSIGNAL */
 );
 
 
@@ -48,6 +47,8 @@ localparam WRITE = 3'd3;
 localparam WRITE_WAIT = 3'd4;
 reg [31:0] mtime;
 reg [31:0] mtimeh;
+wire read_valid = ~|slave_arlen && slave_arsize == 3'b010 && ~|slave_arburst;
+wire write_valid =  ~|slave_awlen && slave_awsize == 3'b010 && ~|slave_awburst && slave_wlast == 1'b1 && slave_wstrb == 4'hf;
 
 always @(posedge clock) begin
     if (reset) begin
@@ -55,19 +56,37 @@ always @(posedge clock) begin
         mtimeh <= 32'b0;
     end
     else begin
+        if (state == WRITE && write_valid) begin
+            if (slave_awaddr == 32'h0200_0000) 
+                mtime <= slave_wdata;
+            else if (slave_awaddr == 32'h0200_0004) 
+                mtimeh <= slave_wdata;
+        end
         mtime <= mtime + 1;
         mtimeh <= mtime == 32'hffffffff ? mtimeh + 1 : mtimeh;
     end
 end
 
 always @(posedge clock) begin
+    if (reset) begin
+        state <= IDLE;
+        slave_arready <= 1'b0;
+        slave_awready <= 1'b0;
+        slave_rid <= 0;
+        slave_bid <= 0;
+        slave_wready <= 1'b0;
+        slave_bvalid <= 1'b0;
+        slave_rdata <= 32'b0;
+        slave_rvalid <= 0;
+        slave_rlast <= 0;
+        slave_rresp <= 2'b00;
+    end
     case (state)
         IDLE: begin
             if (slave_arvalid) begin
                 slave_arready <= 1'b1;
                 state <= READ;
                 slave_rid <= slave_arid;
-                // $display("CLINT: Read Address: %08x", slave_araddr);
             end
             else if (slave_awvalid && slave_wvalid) begin
                 slave_awready <= 1'b1;
@@ -80,13 +99,11 @@ always @(posedge clock) begin
             if (slave_arready) begin
                 slave_arready <= 1'b0;
             end
-            if (slave_araddr == 32'h0200_0000) begin
+            if (slave_araddr == 32'h0200_0000 && read_valid) begin
                 slave_rdata <= mtime;
-                // $display("CLINT: Read MTIME: %08x", mtime);
             end
-            else if (slave_araddr == 32'h0200_0004) begin
+            else if (slave_araddr == 32'h0200_0004 && read_valid) begin
                 slave_rdata <= mtimeh;
-                // $display("CLINT: Read MTIMEH: %08x", mtimeh);
             end
             else begin
                 slave_rdata <= 32'b0;
@@ -101,6 +118,7 @@ always @(posedge clock) begin
                 slave_rvalid <= 1'b0;
                 slave_rresp <= 2'b00;
                 slave_rdata <= 32'b0;
+                slave_rlast <= 0;
                 state <= IDLE;
             end
         end

@@ -1,17 +1,17 @@
 #include <am.h>
 #include <riscv/riscv.h>
 
-#define DEVICE_BASE 0xa0000000
-#define RTC_ADDR  (DEVICE_BASE + 0x0000048)
+// #define DEVICE_BASE 0xa0000000
+// #define RTC_ADDR  (DEVICE_BASE + 0x0000048)
+#define RTC_ADDR  (0x02000000)
 
 static uint64_t base_time = 0;
 static uint64_t base_rtc = 0;
 
 static uint64_t am_get_time() {
-  inl(RTC_ADDR + 4); // clear pending interrupts
   uint32_t hi, lo;
-  lo = inl(RTC_ADDR);
   hi = inl(RTC_ADDR + 4);
+  lo = inl(RTC_ADDR);
   return ((uint64_t)hi << 32) | lo;
 }
 

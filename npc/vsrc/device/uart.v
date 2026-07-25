@@ -1,3 +1,4 @@
+`timescale 1ns/1ns 
 module uart(
     input clock,
     /* verilator lint_off UNUSEDSIGNAL */
