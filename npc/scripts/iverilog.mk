@@ -4,13 +4,14 @@ TARGET = $(WORK_DIR)/simulation/build/iverilog-npc
 TB_FILE ?= $(WORK_DIR)/simulation/npc_tb.v
 OBJCOPY := riscv64-linux-gnu-objcopy
 AM_HOME ?= /home/long/ysyx-workbench/abstract-machine
-MAINARGS ?= test
+MAINARGS ?= h
 MAINARGS_MAX_LEN ?= 64
 MAINARGS_PLACEHOLDER ?= the_insert-arg_rule_in_Makefile_will_insert_mainargs_here
 CPU_TEST_PATH := /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/
 IMAGE ?= dummy
 # SIM_IMG ?= $(CPU_TEST_PATH)$(IMAGE)-riscv32e-npc.elf ## cputest
-SIM_IMG ?= $(WORK_DIR)/simulation/source/microbench-riscv32e-npc.elf ## microbench
+SIM_IMG ?= /home/long/ysyx-workbench/am-kernels/tests/am-tests/build/amtest-riscv32e-npc.elf
+#  $(WORK_DIR)/simulation/source/microbench-riscv32e-npc.elf ## microbench
 # SIM_IMG ?= $(WORK_DIR)/simulation/source/rtthread-riscv32e-npc.elf ## RTT 
 SIM_BIN_TMP := $(WORK_DIR)/simulation/build/$(IMAGE)-iverilog.tmp
 SIM_BIN := $(WORK_DIR)/simulation/build/iverilog_npc.bin
