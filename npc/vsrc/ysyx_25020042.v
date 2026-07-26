@@ -5,7 +5,42 @@
         /* verilator lint_off UNUSEDSIGNAL */
         input             io_interrupt     ,
         /* verilator lint_on UNUSEDSIGNAL */
+        // Master AXI ports: exposed for external memory connection
+        //   1) SoC mode (!PLATFORM_NPC): connected to crossbar
+        //   2) Iverilog mode (PLATFORM_NPC && __ICARUS__): connected to external mem in testbench
+        //   3) Verilator mode (PLATFORM_NPC && !__ICARUS__): NOT present (memory is internal)
         `ifdef PLATFORM_NPC
+            `ifdef __ICARUS__
+            input             io_master_awready,
+            output            io_master_awvalid,
+            output  [31:0]    io_master_awaddr,
+            output  [3:0]     io_master_awid   ,
+            output  [7:0]     io_master_awlen  ,
+            output  [2:0]     io_master_awsize ,
+            output  [1:0]     io_master_awburst,
+            input             io_master_wready ,
+            output            io_master_wvalid ,
+            output  [31:0]    io_master_wdata  ,
+            output  [3:0]     io_master_wstrb  ,
+            output            io_master_wlast  ,
+            output            io_master_bready ,
+            input             io_master_bvalid ,
+            input   [1:0]     io_master_bresp  ,
+            input   [3:0]     io_master_bid    ,
+            input             io_master_arready,
+            output            io_master_arvalid,
+            output  [31:0]    io_master_araddr ,
+            output  [3:0]     io_master_arid   ,
+            output  [7:0]     io_master_arlen  ,
+            output  [2:0]     io_master_arsize ,
+            output  [1:0]     io_master_arburst,
+            output            io_master_rready ,
+            input             io_master_rvalid ,
+            input   [1:0]     io_master_rresp  ,
+            input   [31:0]    io_master_rdata  ,
+            input             io_master_rlast  ,
+            input   [3:0]     io_master_rid    ,
+            `endif
         `else
         input             io_master_awready,
         output            io_master_awvalid,
@@ -467,48 +502,49 @@ ipc_counter ipc_counter_u(
 //------------------------------------------
 // mem实例化
 //------------------------------------------
-// `ifdef VERILATOR
+
 `ifdef PLATFORM_NPC
-ysyx_25020042_mem mem_u (
-    .clock(clock),
-    .reset(reset),
-    // axi 握手信号
-    .slave_araddr(io_master_araddr),
-    .slave_arvalid(io_master_arvalid),
-    .slave_arready(io_master_arready),
-    .slave_arid(io_master_arid),
-    .slave_arlen(io_master_arlen),
-    .slave_arsize(io_master_arsize),
-    .slave_arburst(io_master_arburst),
+    `ifndef __ICARUS__
+    ysyx_25020042_mem mem_u (
+        .clock(clock),
+        .reset(reset),
+        // axi 握手信号
+        .slave_araddr(io_master_araddr),
+        .slave_arvalid(io_master_arvalid),
+        .slave_arready(io_master_arready),
+        .slave_arid(io_master_arid),
+        .slave_arlen(io_master_arlen),
+        .slave_arsize(io_master_arsize),
+        .slave_arburst(io_master_arburst),
 
-    .slave_rdata(io_master_rdata),
-    .slave_rvalid(io_master_rvalid),
-    .slave_rresp(io_master_rresp),
-    .slave_rready(io_master_rready),
-    .slave_rlast(io_master_rlast),
-    .slave_rid(io_master_rid),
+        .slave_rdata(io_master_rdata),
+        .slave_rvalid(io_master_rvalid),
+        .slave_rresp(io_master_rresp),
+        .slave_rready(io_master_rready),
+        .slave_rlast(io_master_rlast),
+        .slave_rid(io_master_rid),
 
-    .slave_awaddr(io_master_awaddr),
-    .slave_awvalid(io_master_awvalid),
-    .slave_awready(io_master_awready),
-    .slave_awid(io_master_awid),
-    .slave_awlen(io_master_awlen),
-    .slave_awsize(io_master_awsize),
-    .slave_awburst(io_master_awburst),
+        .slave_awaddr(io_master_awaddr),
+        .slave_awvalid(io_master_awvalid),
+        .slave_awready(io_master_awready),
+        .slave_awid(io_master_awid),
+        .slave_awlen(io_master_awlen),
+        .slave_awsize(io_master_awsize),
+        .slave_awburst(io_master_awburst),
 
-    .slave_wdata(io_master_wdata),
-    .slave_wstrb(io_master_wstrb),
-    .slave_wvalid(io_master_wvalid),
-    .slave_wready(io_master_wready),
-    .slave_wlast(io_master_wlast),
+        .slave_wdata(io_master_wdata),
+        .slave_wstrb(io_master_wstrb),
+        .slave_wvalid(io_master_wvalid),
+        .slave_wready(io_master_wready),
+        .slave_wlast(io_master_wlast),
 
-    .slave_bvalid(io_master_bvalid),
-    .slave_bready(io_master_bready),
-    .slave_bresp(io_master_bresp),
-    .slave_bid(io_master_bid)
-);
+        .slave_bvalid(io_master_bvalid),
+        .slave_bready(io_master_bready),
+        .slave_bresp(io_master_bresp),
+        .slave_bid(io_master_bid)
+    );
+    `endif
 `endif
-// `endif
 
 //------------------------------------------
 // clint实例化

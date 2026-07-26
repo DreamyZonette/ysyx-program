@@ -165,8 +165,6 @@ always @(posedge clock) begin
             `ifdef __ICARUS__
             if (slave_awaddr == 32'ha00003f8 || slave_awaddr == 32'ha00003fc) begin
                 $write("%c", slave_wdata[7:0]);
-                // $display("[UART] addr=%08x wstrb=%04b wdata=%08x char='%c'(%02x)",
-                //     slave_awaddr, slave_wstrb, slave_wdata, slave_wdata[7:0], slave_wdata[7:0]);
             end
             else begin
             if(slave_wstrb[0]) mem[waddr]   <= slave_wdata[7:0];
