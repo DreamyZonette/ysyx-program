@@ -48,6 +48,7 @@ import "DPI-C" function void pmem_write(
 
     wire [31:0] waddr = slave_awaddr >= 32'h80000000 && slave_awaddr < 32'h90000000 ?(slave_awaddr - 32'h80000000): 0;
     wire [31:0] raddr = read_addr >= 32'h80000000 && read_addr <= 32'h90000000 ? (read_addr - 32'h80000000): 0;
+    wire [31:0] raddr_fix = {raddr[31:2], 2'b0};
     wire [31:0] rdata_test = {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]};
 `endif 
 
@@ -94,6 +95,8 @@ always @(posedge clock) begin
                 slave_rlast <= 1'b0;
 
             if (slave_arvalid) begin
+                // $display("[MEM_REQ] READ  araddr=%08x arlen=%d arsize=%d",
+                //     slave_araddr, slave_arlen, slave_arsize);
                 state <= READ;
                 slave_arready <= 1'b0;
                 slave_awready <= 1'b0;
@@ -101,6 +104,8 @@ always @(posedge clock) begin
                 slave_rid <= slave_arid;
             end
             else if (slave_awvalid && slave_wvalid) begin
+                // $display("[MEM_REQ] WRITE awaddr=%08x wdata=%08x wstrb=%04b",
+                //     slave_awaddr, slave_wdata, slave_wstrb);
                 state <= WRITE;
                 slave_arready <= 1'b0;
                 slave_awready <= 1'b0;
@@ -119,8 +124,9 @@ always @(posedge clock) begin
                     slave_rdata <= slave_rvalid == 0 ? pmem_read(read_addr, 4) : 32'b0;
                     `endif
                     `ifdef __ICARUS__
-                    slave_rdata <= {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]};
-                    // $display("read_addr = %08x  raddr = %08x: %08x", slave_araddr, raddr, mem[raddr]);
+                    slave_rdata <= {mem[raddr_fix+3], mem[raddr_fix+2], mem[raddr_fix+1], mem[raddr_fix]};
+                    // $display("[MEM_RD] araddr=%08x raddr=%08x data=%08x",
+                    //     slave_araddr, raddr, {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]});
                     `endif
                 end
                 else begin
@@ -130,7 +136,7 @@ always @(posedge clock) begin
                         slave_rdata <= pmem_read(read_addr, 4);
                         `endif
                         `ifdef __ICARUS__
-                        slave_rdata <= {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]};
+                        slave_rdata <= {mem[raddr_fix+3], mem[raddr_fix+2], mem[raddr_fix+1], mem[raddr_fix]};
                         // $display("read_addr = %08x  raddr = %08x: %08x", slave_araddr, raddr, mem[raddr]);
                         `endif
                      end
@@ -158,16 +164,10 @@ always @(posedge clock) begin
             `endif
             `ifdef __ICARUS__
             if (slave_awaddr == 32'ha00003f8 || slave_awaddr == 32'ha00003fc) begin
-                // case(slave_wstrb) 
-                // 4'b0001: $write("%c", slave_wdata[7:0]);
-                // 4'b0010: $write("%c", slave_wdata[15:8]);
-                // 4'b0100: $write("%c", slave_wdata[23:16]);
-                // 4'b1000: $write("%c", slave_wdata[31:24]);
-                // default: $write("%c", slave_wdata[7:0]);
-                // endcase
                 $write("%c", slave_wdata[7:0]);
+                // $display("[UART] addr=%08x wstrb=%04b wdata=%08x char='%c'(%02x)",
+                //     slave_awaddr, slave_wstrb, slave_wdata, slave_wdata[7:0], slave_wdata[7:0]);
             end
-            // $write("%c", slave_wdata[7:0]);
             else begin
             if(slave_wstrb[0]) mem[waddr]   <= slave_wdata[7:0];
             if(slave_wstrb[1]) mem[waddr+1]  <= slave_wdata[15:8];
