@@ -157,8 +157,17 @@ always @(posedge clock) begin
             /* verilator lint_on WIDTHEXPAND */
             `endif
             `ifdef __ICARUS__
-            if (slave_awaddr == 32'ha00003f8)
-            $write("%c", slave_wdata[7:0]);
+            if (slave_awaddr == 32'ha00003f8 || slave_awaddr == 32'ha00003fc) begin
+                // case(slave_wstrb) 
+                // 4'b0001: $write("%c", slave_wdata[7:0]);
+                // 4'b0010: $write("%c", slave_wdata[15:8]);
+                // 4'b0100: $write("%c", slave_wdata[23:16]);
+                // 4'b1000: $write("%c", slave_wdata[31:24]);
+                // default: $write("%c", slave_wdata[7:0]);
+                // endcase
+                $write("%c", slave_wdata[7:0]);
+            end
+            // $write("%c", slave_wdata[7:0]);
             else begin
             if(slave_wstrb[0]) mem[waddr]   <= slave_wdata[7:0];
             if(slave_wstrb[1]) mem[waddr+1]  <= slave_wdata[15:8];

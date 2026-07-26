@@ -3,6 +3,10 @@ IVERILOG := iverilog
 TARGET = $(WORK_DIR)/simulation/build/iverilog-npc
 TB_FILE ?= $(WORK_DIR)/simulation/npc_tb.v
 OBJCOPY := riscv64-linux-gnu-objcopy
+AM_HOME ?= /home/long/ysyx-workbench/abstract-machine
+MAINARGS ?= test
+MAINARGS_MAX_LEN ?= 64
+MAINARGS_PLACEHOLDER ?= the_insert-arg_rule_in_Makefile_will_insert_mainargs_here
 CPU_TEST_PATH := /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/
 IMAGE ?= dummy
 # SIM_IMG ?= $(CPU_TEST_PATH)$(IMAGE)-riscv32e-npc.elf ## cputest
@@ -31,11 +35,15 @@ $(TARGET): $(TB_FILE) $(SIM_VSRCS)
 
 $(SIM_BIN): $(SIM_IMG)
 	@mkdir -p $(WORK_DIR)/simulation/build
-	$(OBJCOPY) -S -O verilog \
-	-I elf32-littleriscv \
-	--set-section-flags .bss=alloc,contents \
-	--adjust-vma=-0x80000000 \
-	$(SIM_IMG) $(SIM_BIN)
+	@echo + OBJCOPY "->" $(SIM_BIN)
+	@$(OBJCOPY) -S -O binary \
+		--set-section-flags .bss=alloc,contents \
+		--adjust-vma=-0x80000000 \
+		$(SIM_IMG) $(SIM_BIN_TMP)
+	@echo + INSERT-ARG $(MAINARGS)
+	@python3 $(AM_HOME)/tools/insert-arg.py $(SIM_BIN_TMP) $(MAINARGS_MAX_LEN) $(MAINARGS_PLACEHOLDER) "$(MAINARGS)"
+	@od -An -tx1 -v $(SIM_BIN_TMP) | sed 's/^[[:space:]]*//' > $(SIM_BIN)
+	@rm -f $(SIM_BIN_TMP)
 
 cleaniverilog:
 	rm $(WORK_DIR)/simulation/build/*
