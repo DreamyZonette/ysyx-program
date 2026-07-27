@@ -164,10 +164,14 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset) 
+        if (reset) begin
+
+        end
+            // o_imm <= 32'b0;
+        else if (i_jump_valid) begin
             o_imm <= 32'b0;
-        else if (i_jump_valid)
-            o_imm <= 32'b0;
+        end
+
         else if (ifu_valid & idu_ready) begin
             case (1'b1)
                 u_type_signal: o_imm <= u_imm;
@@ -181,8 +185,9 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
-            o_rs1 <= 5'b0;
+        if (reset) begin
+            // o_rs1 <= 5'b0;
+        end
         else if (i_jump_valid)
             o_rs1 <= 5'b0;
         else if (ifu_valid & idu_ready) begin
@@ -204,8 +209,9 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
-            o_rs2 <= 5'b0;
+        if (reset) begin
+            // o_rs2 <= 5'b0;
+        end
         else if (i_jump_valid)
             o_rs2 <= 5'b0;
         else if (ifu_valid & idu_ready) begin
@@ -218,7 +224,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-            o_pc_data <= 32'b0;
+            // o_pc_data <= 32'b0;
             `ifdef VERILATOR
                 o_instruction_data <= 32'b0;
             `endif
@@ -238,8 +244,9 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
-            o_rd <= 5'b0;
+        if (reset) begin
+            // o_rd <= 5'b0;
+        end
         else if (i_jump_valid)
             o_rd <= 5'b0;
         else if (ifu_valid & idu_ready) begin
@@ -251,8 +258,10 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
-            o_csr_addr <= 12'b0;
+        if (reset) begin
+            // o_csr_addr <= 12'b0;
+        end
+            
         else if (i_jump_valid)
             o_csr_addr <= 12'b0;
         else if (ifu_valid & idu_ready) begin
@@ -264,8 +273,10 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
-            o_shamt <= 6'b0;
+        if (reset) begin
+            // o_shamt <= 6'b0;
+        end
+            
         else if (i_jump_valid)
             o_shamt <= 6'b0;
         else if (ifu_valid & idu_ready) begin
@@ -275,7 +286,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-            o_instruction_out     <= 8'b0;
+            // o_instruction_out     <= 8'b0;
         end
         else if (i_jump_valid)
             o_instruction_out     <= 8'b0;

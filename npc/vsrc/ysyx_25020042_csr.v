@@ -101,7 +101,7 @@ always @(posedge clock) begin
     if(reset) begin
         mstatus   <= 32'h1800;
         mtvec     <= 32'h0;
-        mepc      <= 32'h0;
+        // mepc      <= 32'h0;
         mcause    <= 32'h0;
         mcycle    <= 32'h0;
         mcycleh   <= 32'h0;

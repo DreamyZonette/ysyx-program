@@ -172,7 +172,7 @@ end
 
 always @(posedge clock) begin
     if (reset) begin
-        io_icache_araddr <= 32'h0;
+        // io_icache_araddr <= 32'h0;
         io_icache_arvalid <= 1'b0;
         io_icache_rready <= 1'b0;
         io_icache_arid <= 4'h0;

@@ -192,7 +192,7 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
-        o_instruction <= 32'h0;
+        // o_instruction <= 32'h0;
     end
     else if (i_jump_valid)
         o_instruction <= 32'h0;

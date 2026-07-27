@@ -189,10 +189,10 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
-        inst_reg <= 8'b0;
-        o_pc_data <= 32'b0;
-        o_csr_data <= 32'b0;
-        o_csr_addr <= 12'b0;
+        // inst_reg <= 8'b0;
+        // o_pc_data <= 32'b0;
+        // o_csr_data <= 32'b0;
+        // o_csr_addr <= 12'b0;
         o_IFU_Exception_Handling <= 3'b0;
         o_IDU_Exception_Handling <= 3'b0;
         `ifdef VERILATOR
@@ -260,10 +260,10 @@ always @(posedge clock) begin
         lsu_valid <= 1'b0;
         lsu_arvalid <= 1'b0;
         lsu_awvalid <= 1'b0;
-        lsu_araddr <= 32'b0;
-        lsu_awaddr <= 32'b0;
+        // lsu_araddr <= 32'b0;
+        // lsu_awaddr <= 32'b0;
         lsu_rready <= 1'b0;
-        lsu_wdata <= 32'b0;
+        // lsu_wdata <= 32'b0;
         lsu_wstrb <= 4'b0;
         lsu_wvalid <= 1'b0;
         lsu_bready <= 1'b0;
