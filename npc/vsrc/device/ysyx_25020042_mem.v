@@ -47,6 +47,7 @@ import "DPI-C" function void pmem_write(
     reg [7:0] mem[0:1024*1024*1-1];
 
     wire [31:0] waddr = slave_awaddr >= 32'h80000000 && slave_awaddr < 32'h90000000 ?(slave_awaddr - 32'h80000000): 0;
+    wire [31:0] waddr_fix = {waddr[31:2], 2'b0};
     wire [31:0] raddr = read_addr >= 32'h80000000 && read_addr <= 32'h90000000 ? (read_addr - 32'h80000000): 0;
     wire [31:0] raddr_fix = {raddr[31:2], 2'b0};
     wire [31:0] rdata_test = {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]};
@@ -167,10 +168,10 @@ always @(posedge clock) begin
                 $write("%c", slave_wdata[7:0]);
             end
             else begin
-            if(slave_wstrb[0]) mem[waddr]   <= slave_wdata[7:0];
-            if(slave_wstrb[1]) mem[waddr+1]  <= slave_wdata[15:8];
-            if(slave_wstrb[2]) mem[waddr+2] <= slave_wdata[23:16];
-            if(slave_wstrb[3]) mem[waddr+3] <= slave_wdata[31:24];
+            if(slave_wstrb[0]) mem[waddr_fix]   <= slave_wdata[7:0];
+            if(slave_wstrb[1]) mem[waddr_fix+1]  <= slave_wdata[15:8];
+            if(slave_wstrb[2]) mem[waddr_fix+2] <= slave_wdata[23:16];
+            if(slave_wstrb[3]) mem[waddr_fix+3] <= slave_wdata[31:24];
             end
             `endif
             state <= WRITE_WAIT;
