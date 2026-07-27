@@ -100,15 +100,15 @@ always @(posedge clock) begin
             if (slave_arready) begin
                 slave_arready <= 1'b0;
             end
-            if (slave_araddr == 32'h0200_0000 && read_valid) begin
-                slave_rdata <= mtime;
-            end
-            else if (slave_araddr == 32'h0200_0004 && read_valid) begin
-                slave_rdata <= mtimeh;
-            end
-            else begin
+            // if (slave_araddr == 32'h0200_0000 && read_valid) begin
+            //     slave_rdata <= mtime;
+            // end
+            // else if (slave_araddr == 32'h0200_0004 && read_valid) begin
+            //     slave_rdata <= mtimeh;
+            // end
+            // else begin
                 slave_rdata <= 32'b0;
-            end
+            // end
             slave_rvalid <= 1'b1;
             slave_rlast <= 1'b1;
             slave_rresp <= 2'b00;
