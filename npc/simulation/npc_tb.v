@@ -118,9 +118,9 @@ always #1 clock = ~clock;
 `ifdef __ICARUS__
 // memory初始化
 initial begin
-    $readmemh("/home/long/ysyx-workbench/npc/simulation/build/iverilog_npc.bin", mem_u.mem);
+    $readmemh("/home/long/ysyx-workbench/npc/simulation/build/iverilog_npc.hex", mem_u.mem);
     $display("mem[0] = 0x%08x", {mem_u.mem[3], mem_u.mem[2], mem_u.mem[1], mem_u.mem[0]});
-    $display("Memory initialized from: /home/long/ysyx-workbench/npc/simulation/build/iverilog_npc.bin");
+    $display("Memory initialized from: /home/long/ysyx-workbench/npc/simulation/build/iverilog_npc.hex");
 end
 
 // 外部memory模块 — 通过master总线连接到顶层
