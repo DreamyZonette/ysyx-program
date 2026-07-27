@@ -102,7 +102,7 @@ initial begin
     reset = 1'b0;
 
     // 仿真时长（1ms）
-    #100000000;
+    #1000000;
     $display("Simulation finished: Timeout!");
     $finish;
 end
