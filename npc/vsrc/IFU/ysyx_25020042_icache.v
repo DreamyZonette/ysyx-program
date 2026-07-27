@@ -179,6 +179,7 @@ always @(posedge clock) begin
         io_icache_arsize <= 3'b010;
         io_icache_arburst <= 2'b00; 
         io_icache_arlen <= 8'h0;
+        rresp <= 2'b0;
     end
     else begin
         if (state == IDLE && !hit && pc_valid) begin

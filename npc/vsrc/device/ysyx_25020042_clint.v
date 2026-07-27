@@ -76,6 +76,7 @@ always @(posedge clock) begin
         slave_bid <= 0;
         slave_wready <= 1'b0;
         slave_bvalid <= 1'b0;
+        slave_bresp <= 2'b0;
         slave_rdata <= 32'b0;
         slave_rvalid <= 0;
         slave_rlast <= 0;

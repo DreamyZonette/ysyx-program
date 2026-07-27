@@ -72,7 +72,9 @@ module ysyx_25020042_EXU(
     wire unsign_less = (i_src1 < i_src2);
 
     always @(posedge clock) begin
-        if (Exception_valid1) 
+        if (reset)
+            Exception_hit_reg <= 1'b0;
+        else if (Exception_valid1) 
             Exception_hit_reg <= 1'b1;
         else 
             Exception_hit_reg <= 1'b0;
