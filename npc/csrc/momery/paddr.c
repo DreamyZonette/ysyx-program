@@ -107,7 +107,6 @@ extern "C" int pmem_read(int addr, int len) {
       addr >= SDCARD_CTL_ADDR_LEFT && addr <= SDCARD_CTL_ADDR_RIGHT || \
       addr >= SB_ADDR_LEFT && addr <= SB_ADDR_RIGHT || \
       addr >= FB_ADDR_LEFT && addr <= FB_ADDR_RIGHT) { 
-    difftest_skip_ref();
     ret = mmio_read(addr, len);
   }
   else{
