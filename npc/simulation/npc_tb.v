@@ -243,8 +243,8 @@ ysyx_25020042 ysyx_25020042_inst (
 // 6. 波形导出
 // ==============================================
 initial begin
-    $dumpfile("/home/long/ysyx-workbench/npc/simulation/build/npc_wave.vcd");
-    $dumpvars(0, npc_tb);
+    // $dumpfile("/home/long/ysyx-workbench/npc/simulation/build/npc_wave.vcd");
+    // $dumpvars(0, npc_tb);
 end
 
 // ==============================================
