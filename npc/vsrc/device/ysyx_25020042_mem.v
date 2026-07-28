@@ -44,7 +44,7 @@ import "DPI-C" function void pmem_write(
 `endif
 
 `ifdef __ICARUS__
-    reg [7:0] mem[0:128*1024*1024-1];
+    reg [7:0] mem[0:4*1024*1024-1];
 
     wire [31:0] waddr = slave_awaddr >= 32'h80000000 && slave_awaddr < 32'h90000000 ?(slave_awaddr - 32'h80000000): 0;
     wire [31:0] waddr_fix = {waddr[31:2], 2'b0};

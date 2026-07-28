@@ -8,14 +8,18 @@ CPU_TEST_PATH := /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/
 IMAGE ?= movsx
 # SIM_IMG ?= $(CPU_TEST_PATH)$(IMAGE)-riscv32e-npc.bin ## cputest
 # SIM_IMG ?= /home/long/ysyx-workbench/am-kernels/tests/am-tests/build/amtest-riscv32e-npc.bin
-# SIM_IMG ?= /home/long/ysyx-workbench/am-kernels/benchmarks/microbench/build/microbench-riscv32e-npc.bin ## microbench
-SIM_IMG ?= /home/long/clone/rt-thread-am/bsp/abstract-machine/build/rtthread-riscv32e-npc.bin ## RTT 
+SIM_IMG ?= /home/long/ysyx-workbench/am-kernels/benchmarks/microbench/build/microbench-riscv32e-npc.bin ## microbench
+# SIM_IMG ?= /home/long/clone/rt-thread-am/bsp/abstract-machine/build/rtthread-riscv32e-npc.bin ## RTT 
 SIM_BIN_TMP := $(WORK_DIR)/simulation/build/$(IMAGE)-iverilog.tmp
 SIM_HEX := $(WORK_DIR)/simulation/build/iverilog_npc.hex
 EXCLUDE_FILES := \
     /home/long/ysyx-workbench/npc/vsrc/device/uart.v \
     /home/long/ysyx-workbench/npc/vsrc/crossbar.v
-SIM_VSRCS := $(filter-out $(EXCLUDE_FILES), $(VSRCS))
+# SIM_VSRCS := $(filter-out $(EXCLUDE_FILES), $(VSRCS))
+SIM_VSRCS := /home/long/clone/yosys-sta/result/ysyx_25020042-100MHz/ysyx_25020042.netlist.fixed.v \
+    /home/long/clone/yosys-sta/pdk/nangate45/sim/cells.v \
+    /home/long/ysyx-workbench/npc/vsrc/device/ysyx_25020042_mem.v
+
 
 IVERILOG_FLAGS ?= -Wall -o $(TARGET) 
 
@@ -27,7 +31,7 @@ $(WORK_DIR)/simulation/build/npc_wave.vcd: iverilog
 iverilog: $(SIM_HEX) $(TARGET)
 	vvp $(TARGET)
 
-$(TARGET): $(TB_FILE) $(SIM_VSRCS)
+$(TARGET): $(SIM_VSRCS) $(TB_FILE) 
 	@mkdir -p $(WORK_DIR)/simulation/build
 	$(IVERILOG) $(IVERILOG_FLAGS) $^
 

@@ -266,16 +266,16 @@ always @(posedge clock) begin
         end
         `endif
         // 检测ebreak
-        if (ysyx_25020042_inst.WBU_u.i_IDU_Exception_Handling[1]) begin
-            $display("EBREAK detected! Cycle: %0d", cycle_cnt);
-            if(ysyx_25020042_inst.gpr_u.a0 == 0) begin
-                $display("Good Trap!");
-            end
-            else begin
-                $display("Bad Trap! pc at 0x%08x", ysyx_25020042_inst.WBU_u.i_pc_data);
-            end
-            $finish;
-        end
+        // if (ysyx_25020042_inst.WBU_u.i_IDU_Exception_Handling[1]) begin
+        //     $display("EBREAK detected! Cycle: %0d", cycle_cnt);
+        //     if(ysyx_25020042_inst.gpr_u.a0 == 0) begin
+        //         $display("Good Trap!");
+        //     end
+        //     else begin
+        //         $display("Bad Trap! pc at 0x%08x", ysyx_25020042_inst.WBU_u.i_pc_data);
+        //     end
+        //     $finish;
+        // end
     end else begin
         cycle_cnt <= 32'd0;
     end

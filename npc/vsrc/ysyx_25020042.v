@@ -107,6 +107,17 @@
     /* verilator lint_on UNUSEDSIGNAL */
     );
 
+assign io_slave_rvalid = 1'b0;
+assign io_slave_bvalid = 1'b0;
+assign io_slave_rdata = 32'h0;
+assign io_slave_rresp = 2'b0;
+assign io_slave_rlast = 1'b0;
+assign io_slave_bid = 4'b0;
+assign io_slave_bresp = 2'b0;
+assign io_slave_arready = 1'b0;
+assign io_slave_wready = 1'b0;
+assign io_slave_awready = 1'b0;
+assign io_slave_rid = 4'b0;
 //------------------------------------------
 // 模块间握手信号
 //------------------------------------------
