@@ -50,6 +50,8 @@ static inline bool in_pmem(paddr_t addr) {
     return addr - CONFIG_MBASE < CONFIG_MSIZE;
   }
   else if (addr >= CLINT_BASE && addr < CLINT_BASE + CLINT_SIZE){
+
+    difftest_skip_ref();
     return addr - CLINT_BASE < CLINT_SIZE;
   }
   #ifdef CONFIG_YSYXSOC

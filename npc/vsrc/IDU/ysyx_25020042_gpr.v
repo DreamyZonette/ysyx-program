@@ -36,21 +36,21 @@ module ysyx_25020042_gpr  (
     always @(posedge clock) begin
         if (reset) begin
             zero <= 32'b0;
-            ra   <= 32'b0;
-            sp   <= 32'b0;
-            gp   <= 32'b0;
-            tp   <= 32'b0;
-            t0   <= 32'b0;
-            t1   <= 32'b0;
-            t2   <= 32'b0;
-            s0   <= 32'b0;
-            s1   <= 32'b0;
-            a0   <= 32'b0;
-            a1   <= 32'b0;
-            a2   <= 32'b0;
-            a3   <= 32'b0;
-            a4   <= 32'b0;
-            a5   <= 32'b0;
+            // ra   <= 32'b0;
+            // sp   <= 32'b0;
+            // gp   <= 32'b0;
+            // tp   <= 32'b0;
+            // t0   <= 32'b0;
+            // t1   <= 32'b0;
+            // t2   <= 32'b0;
+            // s0   <= 32'b0;
+            // s1   <= 32'b0;
+            // a0   <= 32'b0;
+            // a1   <= 32'b0;
+            // a2   <= 32'b0;
+            // a3   <= 32'b0;
+            // a4   <= 32'b0;
+            // a5   <= 32'b0;
         end else begin
             if (wen[0]) zero   <= 0;
             if (wen[1]) ra   <= i_data;

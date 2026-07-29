@@ -131,6 +131,9 @@ always @(posedge clock) begin
                     state <= READY;
                 end
             end
+            default: begin
+                state <= state;
+                end
         endcase
     end
 end
@@ -140,14 +143,26 @@ always @(posedge clock) begin
         Control_Hazard <= 1'b0;
     end
     else begin
-        if(i_jump_valid && ((state == READY) || (pc_valid & ifu_ready))) begin
+        if (Control_Hazard & instruction_ready) begin
+            Control_Hazard <= 1'b0;
+        end
+        else if(i_jump_valid && ((state == READY) || (pc_valid & ifu_ready))) begin
             Control_Hazard <= 1'b1;
             if (instruction_ready) begin
                 Control_Hazard <= 1'b0;
             end
         end
-        if (Control_Hazard & instruction_ready)
-            Control_Hazard <= 1'b0;
+        else begin
+            Control_Hazard <= Control_Hazard;
+        end
+        // if(i_jump_valid && ((state == READY) || (pc_valid & ifu_ready))) begin
+        //     Control_Hazard <= 1'b1;
+        //     if (instruction_ready) begin
+        //         Control_Hazard <= 1'b0;
+        //     end
+        // end
+        // if (Control_Hazard & instruction_ready)
+        //     Control_Hazard <= 1'b0;
     end
 end
 

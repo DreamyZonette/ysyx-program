@@ -1,4 +1,4 @@
-`timescale 1ns/1ns 
+
 module ysyx_25020042_icache(
     input              clock            ,
     input              reset            ,
@@ -44,15 +44,17 @@ end
 parameter CACHE_BLOCK_SIZE  = 16;
 parameter CACHE_BLOCK_BANK  = 4;
 parameter CACHE_BLOCK_COUNT = CACHE_BLOCK_SIZE / 4;
-parameter m                 = $clog2(CACHE_BLOCK_SIZE);
-parameter n                 = $clog2(CACHE_BLOCK_BANK);
+// parameter m                 = $clog2(CACHE_BLOCK_SIZE);
+// parameter n                 = $clog2(CACHE_BLOCK_BANK);
+parameter m                 = 4;
+parameter n                 = 2;
 parameter SDRAM_BASE_ADDR   = 32'ha0000000;
 parameter SDRAM_SIZE        = 32'h20000000;
 `ifdef PLATFORM_NPC
 wire                          sdram_valid = 1;
 `else 
-// wire                          sdram_valid = 0;
-wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
+// wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
+wire                          sdram_valid = 1;
 `endif
 wire [31:m+n]                 addr_tag       = pc_addr[31:m+n];
 wire [m+n-1:m]                index          = pc_addr[m+n-1:m];
@@ -76,6 +78,7 @@ localparam READ = 1'b1;
 assign Instruction_access_fault = rresp[1] | rresp[0];
 
 always @(posedge clock) begin
+    state <= state;
     if (reset) begin
         state <= IDLE;
     end
@@ -97,6 +100,9 @@ always @(posedge clock) begin
                 else 
                     state <= READ;
             end
+            default: begin
+                state <= state;
+            end
         endcase
     end
 end
@@ -107,6 +113,7 @@ end
 // +---------+---------+--------+
 
 always @(posedge clock) begin
+    burst_count <= burst_count;
     if (reset) begin
         burst_count <= 0;
     end
@@ -119,19 +126,74 @@ always @(posedge clock) begin
 end
 
 
-integer i;
-integer j;
+// integer i;
+// integer j;
 
 always @(posedge clock) begin
+    instruction <= instruction;
+    instruction_ready <= instruction_ready;
+
+    icache_valid[0] <= icache_valid[0];
+    icache_valid[1] <= icache_valid[1];
+    icache_valid[2] <= icache_valid[2];
+    icache_valid[3] <= icache_valid[3];
+    icache_addr[0]  <= icache_addr[0];
+    icache_addr[1]  <= icache_addr[1];
+    icache_addr[2]  <= icache_addr[2];
+    icache_addr[3]  <= icache_addr[3];
+    icache_data[0][0]  <= icache_data[0][0];
+    icache_data[0][1]  <= icache_data[0][1];
+    icache_data[0][2]  <= icache_data[0][2];
+    icache_data[0][3]  <= icache_data[0][3];
+    icache_data[1][0]  <= icache_data[1][0];
+    icache_data[1][1]  <= icache_data[1][1];
+    icache_data[1][2]  <= icache_data[1][2];
+    icache_data[1][3]  <= icache_data[1][3];
+    icache_data[2][0]  <= icache_data[2][0];
+    icache_data[2][1]  <= icache_data[2][1];
+    icache_data[2][2]  <= icache_data[2][2];
+    icache_data[2][3]  <= icache_data[2][3];
+    icache_data[3][0]  <= icache_data[3][0];
+    icache_data[3][1]  <= icache_data[3][1];
+    icache_data[3][2]  <= icache_data[3][2];
+    icache_data[3][3]  <= icache_data[3][3];
+    
     if (reset) begin
-        for (i = 0; i < CACHE_BLOCK_BANK; i = i + 1) begin
-            icache_valid[i] <= 1'b0;
-            icache_addr[i]  <= 0;
-            for (j = 0; j < CACHE_BLOCK_COUNT; j = j + 1) begin
-                icache_data[i][j]  <= 0;
-            end
-        end
+        // for (i = 0; i < CACHE_BLOCK_BANK; i = i + 1) begin
+        //     icache_valid[i] <= 1'b0;
+        //     icache_addr[i]  <= 0;
+        //     for (j = 0; j < CACHE_BLOCK_COUNT; j = j + 1) begin
+        //         icache_data[i][j]  <= 0;
+        //     end
+        // end
+        icache_valid[0] <= 1'b0;
+        icache_valid[1] <= 1'b0;
+        icache_valid[2] <= 1'b0;
+        icache_valid[3] <= 1'b0;
+        icache_addr[0]  <= 32'b0;
+        icache_addr[1]  <= 32'b0;
+        icache_addr[2]  <= 32'b0;
+        icache_addr[3]  <= 32'b0;
+
+        icache_data[0][0]  <= 32'b0;
+        icache_data[0][1]  <= 32'b0;
+        icache_data[0][2]  <= 32'b0;
+        icache_data[0][3]  <= 32'b0;
+        icache_data[1][0]  <= 32'b0;
+        icache_data[1][1]  <= 32'b0;
+        icache_data[1][2]  <= 32'b0;
+        icache_data[1][3]  <= 32'b0;
+        icache_data[2][0]  <= 32'b0;
+        icache_data[2][1]  <= 32'b0;
+        icache_data[2][2]  <= 32'b0;
+        icache_data[2][3]  <= 32'b0;
+        icache_data[3][0]  <= 32'b0;
+        icache_data[3][1]  <= 32'b0;
+        icache_data[3][2]  <= 32'b0;
+        icache_data[3][3]  <= 32'b0;
+
         instruction <= 0;
+        instruction_ready <= 1'b0;
     end
     else begin
         if (state == READ) begin
@@ -155,9 +217,10 @@ always @(posedge clock) begin
             end
         end
         else if (fencei_signal) begin
-            for (i = 0; i < CACHE_BLOCK_BANK; i = i + 1) begin
-            icache_valid[i] <= 1'b0;
-            end
+            icache_valid[0] <= 1'b0;
+            icache_valid[1] <= 1'b0;
+            icache_valid[2] <= 1'b0;
+            icache_valid[3] <= 1'b0;
         end
         if (state == IDLE) begin
             if (hit & pc_valid) begin
@@ -171,6 +234,14 @@ always @(posedge clock) begin
 end
 
 always @(posedge clock) begin
+    io_icache_arvalid <= io_icache_arvalid;
+    io_icache_araddr <= io_icache_araddr;
+    io_icache_arid <= io_icache_arid;
+    io_icache_arlen <= io_icache_arlen;
+    io_icache_arsize <= io_icache_arsize;
+    io_icache_arburst <= io_icache_arburst;
+    io_icache_rready <= io_icache_rready;
+    rresp <= rresp;
     if (reset) begin
         io_icache_araddr <= 32'h0;
         io_icache_arvalid <= 1'b0;
@@ -179,6 +250,7 @@ always @(posedge clock) begin
         io_icache_arsize <= 3'b010;
         io_icache_arburst <= 2'b00; 
         io_icache_arlen <= 8'h0;
+        rresp <= 2'b0;
     end
     else begin
         if (state == IDLE && !hit && pc_valid) begin

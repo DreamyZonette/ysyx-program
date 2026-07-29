@@ -12,6 +12,7 @@ wire [31:0] shift_out;
 wire [31:0] less_out;
 
 always @(*) begin
+    o_data = 32'h00000000;
     case (ALUctrl[2:0])
         3'b000: o_data = adder_out;
         3'b001: o_data = shift_out;

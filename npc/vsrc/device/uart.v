@@ -72,7 +72,14 @@ always @(posedge clock) begin
                 slave_awready <= 1'b0;
                 slave_wready <= 1'b0;
             end
-            $write("%c", slave_wdata[7:0]);
+            case(slave_wstrb) 
+            4'b0001: $write("%c", slave_wdata[7:0]);
+            4'b0010: $write("%c", slave_wdata[15:8]);
+            4'b0100: $write("%c", slave_wdata[23:16]);
+            4'b1000: $write("%c", slave_wdata[31:24]);
+            default: $write("%c", slave_wdata[7:0]);
+            endcase
+            
             state <= WRITE_WAIT;
             slave_bresp <= 2'b00;
             slave_bvalid <= 1'b1;

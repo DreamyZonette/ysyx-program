@@ -80,7 +80,9 @@ module ysyx_25020042_LSU(
 
 `ifdef PLATFORM_NPC
 `else
+`ifdef VERILATOR
 import "DPI-C" function void difftest_device_skip();
+`endif
 `endif
 
 `ifdef VERILATOR
@@ -276,6 +278,8 @@ always @(posedge clock) begin
         lsu_arburst <= 2'b00;
         lsu_awburst <= 2'b00;
         lsu_wlast <= 1'b0;
+        rresp <= 2'b0;
+        bresp <= 2'b0;
     end
     else begin
         case (state)

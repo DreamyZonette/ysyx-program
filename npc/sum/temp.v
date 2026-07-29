@@ -1,16 +1,51 @@
-// 自动合并生成：2026-03-05 15:18:28
+// 自动合并生成：2026-07-27 20:39:45
 // 合并源文件列表：/home/long/ysyx-workbench/npc/sum/sum_filelist.txt
 // ===========================================
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042.v ----------
-
+`timescale 1ns/1ns 
    module ysyx_25020042 (
         input             clock            ,
         input             reset            ,
         /* verilator lint_off UNUSEDSIGNAL */
         input             io_interrupt     ,
         /* verilator lint_on UNUSEDSIGNAL */
+        // Master AXI ports: exposed for external memory connection
+        //   1) SoC mode (!PLATFORM_NPC): connected to crossbar
+        //   2) Iverilog mode (PLATFORM_NPC && __ICARUS__): connected to external mem in testbench
+        //   3) Verilator mode (PLATFORM_NPC && !__ICARUS__): NOT present (memory is internal)
         `ifdef PLATFORM_NPC
+            `ifdef __ICARUS__
+            input             io_master_awready,
+            output            io_master_awvalid,
+            output  [31:0]    io_master_awaddr,
+            output  [3:0]     io_master_awid   ,
+            output  [7:0]     io_master_awlen  ,
+            output  [2:0]     io_master_awsize ,
+            output  [1:0]     io_master_awburst,
+            input             io_master_wready ,
+            output            io_master_wvalid ,
+            output  [31:0]    io_master_wdata  ,
+            output  [3:0]     io_master_wstrb  ,
+            output            io_master_wlast  ,
+            output            io_master_bready ,
+            input             io_master_bvalid ,
+            input   [1:0]     io_master_bresp  ,
+            input   [3:0]     io_master_bid    ,
+            input             io_master_arready,
+            output            io_master_arvalid,
+            output  [31:0]    io_master_araddr ,
+            output  [3:0]     io_master_arid   ,
+            output  [7:0]     io_master_arlen  ,
+            output  [2:0]     io_master_arsize ,
+            output  [1:0]     io_master_arburst,
+            output            io_master_rready ,
+            input             io_master_rvalid ,
+            input   [1:0]     io_master_rresp  ,
+            input   [31:0]    io_master_rdata  ,
+            input             io_master_rlast  ,
+            input   [3:0]     io_master_rid    ,
+            `endif
         `else
         input             io_master_awready,
         output            io_master_awvalid,
@@ -155,6 +190,8 @@
     wire  [2:0] IDU_Exception_Handling2;
     wire  [5:0] LSU_Exception_Handling0;
     wire        Exception_valid;
+    wire [31:0] fast_jump_pc;
+    wire        fast_jump_valid;
      `ifdef VERILATOR
     wire [31:0] idu_to_exu_instrction_data;
     wire [31:0] exu_to_lsu_instrction_data;
@@ -242,8 +279,8 @@
     wire  [31:0]    io_clint_rdata  ;
     wire            io_clint_rlast  ;
     wire  [3:0]     io_clint_rid    ;
-    `ifdef VERILATOR
     `ifdef PLATFORM_NPC
+    // `ifdef VERILATOR
     wire            io_master_awready;
     wire            io_master_awvalid;
     wire  [31:0]    io_master_awaddr ;
@@ -273,7 +310,7 @@
     wire  [31:0]    io_master_rdata  ;
     wire            io_master_rlast  ;
     wire  [3:0]     io_master_rid    ;
-    `endif
+    // `endif
     `endif
 //------------------------------------------
 // 性能计数器
@@ -468,48 +505,50 @@ ipc_counter ipc_counter_u(
 `endif
 
 //------------------------------------------
-// clint实例化
+// mem实例化
 //------------------------------------------
-`ifdef VERILATOR
+
 `ifdef PLATFORM_NPC
-ysyx_25020042_mem ysyx_25020042_mem_u (
-    .clock(clock),
-    // axi 握手信号
-    .slave_araddr(io_master_araddr),
-    .slave_arvalid(io_master_arvalid),
-    .slave_arready(io_master_arready),
-    .slave_arid(io_master_arid),
-    .slave_arlen(io_master_arlen),
-    .slave_arsize(io_master_arsize),
-    .slave_arburst(io_master_arburst),
+    `ifndef __ICARUS__
+    ysyx_25020042_mem mem_u (
+        .clock(clock),
+        .reset(reset),
+        // axi 握手信号
+        .slave_araddr(io_master_araddr),
+        .slave_arvalid(io_master_arvalid),
+        .slave_arready(io_master_arready),
+        .slave_arid(io_master_arid),
+        .slave_arlen(io_master_arlen),
+        .slave_arsize(io_master_arsize),
+        .slave_arburst(io_master_arburst),
 
-    .slave_rdata(io_master_rdata),
-    .slave_rvalid(io_master_rvalid),
-    .slave_rresp(io_master_rresp),
-    .slave_rready(io_master_rready),
-    .slave_rlast(io_master_rlast),
-    .slave_rid(io_master_rid),
+        .slave_rdata(io_master_rdata),
+        .slave_rvalid(io_master_rvalid),
+        .slave_rresp(io_master_rresp),
+        .slave_rready(io_master_rready),
+        .slave_rlast(io_master_rlast),
+        .slave_rid(io_master_rid),
 
-    .slave_awaddr(io_master_awaddr),
-    .slave_awvalid(io_master_awvalid),
-    .slave_awready(io_master_awready),
-    .slave_awid(io_master_awid),
-    .slave_awlen(io_master_awlen),
-    .slave_awsize(io_master_awsize),
-    .slave_awburst(io_master_awburst),
+        .slave_awaddr(io_master_awaddr),
+        .slave_awvalid(io_master_awvalid),
+        .slave_awready(io_master_awready),
+        .slave_awid(io_master_awid),
+        .slave_awlen(io_master_awlen),
+        .slave_awsize(io_master_awsize),
+        .slave_awburst(io_master_awburst),
 
-    .slave_wdata(io_master_wdata),
-    .slave_wstrb(io_master_wstrb),
-    .slave_wvalid(io_master_wvalid),
-    .slave_wready(io_master_wready),
-    .slave_wlast(io_master_wlast),
+        .slave_wdata(io_master_wdata),
+        .slave_wstrb(io_master_wstrb),
+        .slave_wvalid(io_master_wvalid),
+        .slave_wready(io_master_wready),
+        .slave_wlast(io_master_wlast),
 
-    .slave_bvalid(io_master_bvalid),
-    .slave_bready(io_master_bready),
-    .slave_bresp(io_master_bresp),
-    .slave_bid(io_master_bid)
-);
-`endif
+        .slave_bvalid(io_master_bvalid),
+        .slave_bready(io_master_bready),
+        .slave_bresp(io_master_bresp),
+        .slave_bid(io_master_bid)
+    );
+    `endif
 `endif
 
 //------------------------------------------
@@ -563,6 +602,8 @@ ysyx_25020042_PC PC_u(
     .ifu_handsake(ifu_valid & idu_ready),
     .fault(fault),
     .pc_valid(pc_valid),
+    .i_fast_jump_valid(fast_jump_valid),
+    .i_fast_jump_pc(fast_jump_pc),
     .i_jump_pc(jump_pc),
     .i_jump_valid(jump_valid),
     .o_pc(pc)
@@ -641,6 +682,8 @@ ysyx_25020042_IDU IDU_u (
     .i_IFU_Exception_Handling(IFU_Exception_Handling0),
     .o_IFU_Exception_Handling(IFU_Exception_Handling1),
     .o_IDU_Exception_Handling(IDU_Exception_Handling0),
+    .o_fast_jump_pc(fast_jump_pc),
+    .o_fast_jump_valid(fast_jump_valid),
     .o_instruction_out(idu_inst),
     .o_imm(imm),
     .o_pc_data(idu_to_exu_pc_data),
@@ -901,6 +944,7 @@ ysyx_25020042_gpr gpr_u(
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_icache.v ----------
+`timescale 1ns/1ns 
 module ysyx_25020042_icache(
     input              clock            ,
     input              reset            ,
@@ -1074,13 +1118,14 @@ end
 
 always @(posedge clock) begin
     if (reset) begin
-        io_icache_araddr <= 32'h0;
+        // io_icache_araddr <= 32'h0;
         io_icache_arvalid <= 1'b0;
         io_icache_rready <= 1'b0;
         io_icache_arid <= 4'h0;
         io_icache_arsize <= 3'b010;
         io_icache_arburst <= 2'b00; 
         io_icache_arlen <= 8'h0;
+        rresp <= 2'b0;
     end
     else begin
         if (state == IDLE && !hit && pc_valid) begin
@@ -1115,6 +1160,7 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_icache.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_IFU.v ----------
+`timescale 1ns/1ns 
 module ysyx_25020042_IFU(
     input                  clock,
     input                  reset,
@@ -1139,16 +1185,16 @@ module ysyx_25020042_IFU(
     `endif
     `endif
 
-    output reg [31:0]      ifu_araddr,
-    output reg             ifu_arvalid,
+    output wire [31:0]     ifu_araddr,
+    output wire            ifu_arvalid,
     input                  ifu_arready,
-    output reg [7:0]       ifu_arlen,
-    output reg [3:0]       ifu_arid,
-    output reg [1:0]       ifu_arburst,
-    output reg [2:0]       ifu_arsize,
+    output wire [7:0]      ifu_arlen,
+    output wire [3:0]      ifu_arid,
+    output wire [1:0]      ifu_arburst,
+    output wire [2:0]      ifu_arsize,
     input      [31:0]      ifu_rdata,
     input                  ifu_rvalid,
-    output reg             ifu_rready,
+    output wire            ifu_rready,
     input      [1:0]       ifu_rresp,
     input                  ifu_rlast,
     input      [3:0]       ifu_rid
@@ -1308,7 +1354,7 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
-        o_instruction <= 32'h0;
+        // o_instruction <= 32'h0;
     end
     else if (i_jump_valid)
         o_instruction <= 32'h0;
@@ -1354,8 +1400,8 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_IFU.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_PC.v ----------
-// Modified by Long for NPC project.
-module ysyx_25020042_PC #(PC_LEN = 32)(
+`timescale 1ns/1ns 
+module ysyx_25020042_PC (
     input              clock,
     input              reset,
     input              ifu_ready,
@@ -1364,9 +1410,11 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
     output reg         pc_valid,
 
 
-    input [PC_LEN-1:0] i_jump_pc,
+    input [32-1:0] i_jump_pc,
     input              i_jump_valid,
-    output reg [PC_LEN-1:0] o_pc
+    input [32-1:0] i_fast_jump_pc,
+    input              i_fast_jump_valid,
+    output reg [32-1:0] o_pc
     );
 
     reg [31:0] next_pc;
@@ -1381,6 +1429,9 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
         end
         else if (i_jump_valid) begin
             next_pc <= i_jump_pc + 4;
+        end
+        else if (i_fast_jump_valid) begin
+            next_pc <= i_fast_jump_pc + 4;
         end
         else if (ifu_ready & pc_valid) begin
             next_pc <= o_pc + 4;
@@ -1402,6 +1453,9 @@ module ysyx_25020042_PC #(PC_LEN = 32)(
             end
             else if (i_jump_valid) begin
                 o_pc <= i_jump_pc;
+            end
+            else if (i_fast_jump_valid) begin
+                o_pc <= i_fast_jump_pc;
             end
             else if (ifu_handsake)begin
                 o_pc <= next_pc;
@@ -1427,6 +1481,7 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_PC.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/IDU/ysyx_25020042_IDU.v ----------
+`timescale 1ns/1ns 
 module ysyx_25020042_IDU (
     input   wire         clock                  ,  
     input   wire         reset                  ,
@@ -1456,6 +1511,8 @@ module ysyx_25020042_IDU (
     `ifdef VERILATOR 
     output reg [31:0]    o_instruction_data     ,
     `endif 
+    output wire          o_fast_jump_valid      ,
+    output wire [31:0]   o_fast_jump_pc         ,
     output reg  [31:0]   o_imm                  ,
     output reg  [31:0]   o_pc_data              ,
     output reg  [11:0]   o_csr_addr             ,
@@ -1498,6 +1555,8 @@ module ysyx_25020042_IDU (
     wire r_type_signal = (opcode == 7'b0110011);
 
     assign o_IDU_Exception_Handling = {ecall_signal, ebreak_signal, illegal_signal};
+    assign o_fast_jump_valid = j_type_signal & ifu_valid & idu_ready;
+    assign o_fast_jump_pc    = i_pc_data + j_imm;
 
 `ifdef VERILATOR
     reg idu_busy_signal;
@@ -1588,10 +1647,14 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset) 
+        if (reset) begin
+
+        end
+            // o_imm <= 32'b0;
+        else if (i_jump_valid) begin
             o_imm <= 32'b0;
-        else if (i_jump_valid)
-            o_imm <= 32'b0;
+        end
+
         else if (ifu_valid & idu_ready) begin
             case (1'b1)
                 u_type_signal: o_imm <= u_imm;
@@ -1605,8 +1668,9 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
-            o_rs1 <= 5'b0;
+        if (reset) begin
+            // o_rs1 <= 5'b0;
+        end
         else if (i_jump_valid)
             o_rs1 <= 5'b0;
         else if (ifu_valid & idu_ready) begin
@@ -1628,8 +1692,9 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
-            o_rs2 <= 5'b0;
+        if (reset) begin
+            // o_rs2 <= 5'b0;
+        end
         else if (i_jump_valid)
             o_rs2 <= 5'b0;
         else if (ifu_valid & idu_ready) begin
@@ -1642,7 +1707,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-            o_pc_data <= 32'b0;
+            // o_pc_data <= 32'b0;
             `ifdef VERILATOR
                 o_instruction_data <= 32'b0;
             `endif
@@ -1662,8 +1727,9 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
-            o_rd <= 5'b0;
+        if (reset) begin
+            // o_rd <= 5'b0;
+        end
         else if (i_jump_valid)
             o_rd <= 5'b0;
         else if (ifu_valid & idu_ready) begin
@@ -1675,8 +1741,10 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
-            o_csr_addr <= 12'b0;
+        if (reset) begin
+            // o_csr_addr <= 12'b0;
+        end
+            
         else if (i_jump_valid)
             o_csr_addr <= 12'b0;
         else if (ifu_valid & idu_ready) begin
@@ -1688,8 +1756,10 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
-            o_shamt <= 6'b0;
+        if (reset) begin
+            // o_shamt <= 6'b0;
+        end
+            
         else if (i_jump_valid)
             o_shamt <= 6'b0;
         else if (ifu_valid & idu_ready) begin
@@ -1699,7 +1769,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-            o_instruction_out     <= 8'b0;
+            // o_instruction_out     <= 8'b0;
         end
         else if (i_jump_valid)
             o_instruction_out     <= 8'b0;
@@ -1902,6 +1972,7 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/IDU/ysyx_25020042_IDU.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/IDU/ysyx_25020042_gpr.v ----------
+`timescale 1ns/1ns 
 module ysyx_25020042_gpr  (
     input clock,
     input reset,   
@@ -1939,21 +2010,21 @@ module ysyx_25020042_gpr  (
     always @(posedge clock) begin
         if (reset) begin
             zero <= 32'b0;
-            ra   <= 32'b0;
-            sp   <= 32'b0;
-            gp   <= 32'b0;
-            tp   <= 32'b0;
-            t0   <= 32'b0;
-            t1   <= 32'b0;
-            t2   <= 32'b0;
-            s0   <= 32'b0;
-            s1   <= 32'b0;
-            a0   <= 32'b0;
-            a1   <= 32'b0;
-            a2   <= 32'b0;
-            a3   <= 32'b0;
-            a4   <= 32'b0;
-            a5   <= 32'b0;
+            // ra   <= 32'b0;
+            // sp   <= 32'b0;
+            // gp   <= 32'b0;
+            // tp   <= 32'b0;
+            // t0   <= 32'b0;
+            // t1   <= 32'b0;
+            // t2   <= 32'b0;
+            // s0   <= 32'b0;
+            // s1   <= 32'b0;
+            // a0   <= 32'b0;
+            // a1   <= 32'b0;
+            // a2   <= 32'b0;
+            // a3   <= 32'b0;
+            // a4   <= 32'b0;
+            // a5   <= 32'b0;
         end else begin
             if (wen[0]) zero   <= 0;
             if (wen[1]) ra   <= i_data;
@@ -2005,12 +2076,14 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/IDU/ysyx_25020042_gpr.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/EXU/ysyx_25020042_EXU.v ----------
+`timescale 1ns/1ns 
 module ysyx_25020042_EXU(
     input wire clock,
     input wire reset,
     input wire idu_valid,
     input wire lsu_ready,
-    output reg exu_ready,
+    output wire exu_ready,
+    // output reg exu_ready,
     output reg exu_valid,
 
     `ifdef VERILATOR
@@ -2077,32 +2150,47 @@ module ysyx_25020042_EXU(
     wire unsign_less = (i_src1 < i_src2);
 
     always @(posedge clock) begin
-        if (Exception_valid1) 
+        if (reset)
+            Exception_hit_reg <= 1'b0;
+        else if (Exception_valid1) 
             Exception_hit_reg <= 1'b1;
         else 
             Exception_hit_reg <= 1'b0;
     end
 
+    assign exu_ready = idu_valid & !exu_valid & i_src1_valid & i_src2_valid;
     always @(posedge clock) begin
         if (reset) begin
-            exu_ready <= 0;
             exu_valid <= 0;
         end
-        else if (!exu_valid & !exu_ready & idu_valid & i_src1_valid & i_src2_valid) begin
-            exu_ready <= 1;
-        end
         else if (idu_valid & exu_ready) begin
-            exu_ready <= 0;
             exu_valid <= 1;
         end
         else if ((lsu_ready | (Exception_valid1 & !Exception_hit_reg)) & exu_valid) begin
             exu_valid <= 0;
-            if (idu_valid & i_src1_valid & i_src2_valid)
-                exu_ready <= 1;
-            else 
-                exu_ready <= 0;
         end
     end
+
+    // always @(posedge clock) begin
+    //     if (reset) begin
+    //         exu_ready <= 0;
+    //         exu_valid <= 0;
+    //     end
+    //     else if (!exu_valid & !exu_ready & idu_valid & i_src1_valid & i_src2_valid) begin
+    //         exu_ready <= 1;
+    //     end
+    //     else if (idu_valid & exu_ready) begin
+    //         exu_ready <= 0;
+    //         exu_valid <= 1;
+    //     end
+    //     else if ((lsu_ready | (Exception_valid1 & !Exception_hit_reg)) & exu_valid) begin
+    //         exu_valid <= 0;
+    //         if (idu_valid & i_src1_valid & i_src2_valid)
+    //             exu_ready <= 1;
+    //         else 
+    //             exu_ready <= 0;
+    //     end
+    // end
 
     `ifdef VERILATOR
     // reg [63:0] performance_counter;
@@ -2161,7 +2249,7 @@ always @(posedge clock) begin
                     jump_pc <= alu_out;
                     jump_valid_signal <= 1'b1;
                 end
-                else if (i_inst[4:0] == 5'b00001 || i_inst[4:0] == 5'b00010) begin
+                else if (i_inst[4:0] == 5'b00001) begin
                     jump_pc <= alu_out;
                     jump_valid_signal <= 1'b1;
                 end
@@ -2205,11 +2293,11 @@ end
 
     always @(posedge clock) begin
         if (reset) begin
-            o_pc_data <= 0;
-            o_idu_inst <= 0;
-            o_csr_data <= 0;
-            o_src2     <= 0;
-            o_csr_addr <= 0;
+            // o_pc_data <= 0;
+            // o_idu_inst <= 0;
+            // o_csr_data <= 0;
+            // o_src2     <= 0;
+            // o_csr_addr <= 0;
             o_IFU_Exception_Handling <= 0;
             o_IDU_Exception_Handling <= 0;
             `ifdef VERILATOR
@@ -2477,7 +2565,7 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/EXU/ysyx_25020042_EXU.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/EXU/ysyx_25020042_alu.v ----------
-
+`timescale 1ns/1ns 
 
 module ysyx_25020042_alu (
     input [31:0] data1,
@@ -2598,8 +2686,8 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/EXU/ysyx_25020042_alu.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/LSU/ysyx_25020042_LSU.v ----------
+`timescale 1ns/1ns 
 // `define LSU_MTRACE
-
 module ysyx_25020042_LSU(
     input                           clock,
     input                           reset,
@@ -2618,7 +2706,7 @@ module ysyx_25020042_LSU(
     input  [31:0]                   i_instruction_data,
     `endif
 
-    output reg [7:5]                o_inst,
+    output wire [7:5]                o_inst,
     output reg [31:0]               o_data,
     output reg [31:0]               o_pc_data,
     `ifdef VERILATOR
@@ -2789,10 +2877,10 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
-        inst_reg <= 8'b0;
-        o_pc_data <= 32'b0;
-        o_csr_data <= 32'b0;
-        o_csr_addr <= 12'b0;
+        // inst_reg <= 8'b0;
+        // o_pc_data <= 32'b0;
+        // o_csr_data <= 32'b0;
+        // o_csr_addr <= 12'b0;
         o_IFU_Exception_Handling <= 3'b0;
         o_IDU_Exception_Handling <= 3'b0;
         `ifdef VERILATOR
@@ -2860,10 +2948,10 @@ always @(posedge clock) begin
         lsu_valid <= 1'b0;
         lsu_arvalid <= 1'b0;
         lsu_awvalid <= 1'b0;
-        lsu_araddr <= 32'b0;
-        lsu_awaddr <= 32'b0;
+        // lsu_araddr <= 32'b0;
+        // lsu_awaddr <= 32'b0;
         lsu_rready <= 1'b0;
-        lsu_wdata <= 32'b0;
+        // lsu_wdata <= 32'b0;
         lsu_wstrb <= 4'b0;
         lsu_wvalid <= 1'b0;
         lsu_bready <= 1'b0;
@@ -2876,6 +2964,8 @@ always @(posedge clock) begin
         lsu_arburst <= 2'b00;
         lsu_awburst <= 2'b00;
         lsu_wlast <= 1'b0;
+        rresp <= 2'b0;
+        bresp <= 2'b0;
     end
     else begin
         case (state)
@@ -2963,6 +3053,9 @@ always @(posedge clock) begin
                         lsu_araddr >= 32'h1000_1000 && lsu_araddr < 32'h1000_2000 && lsu_arvalid && lsu_arready) begin
                         difftest_device_skip();
                     end
+                    if (lsu_araddr >= 32'h0200_0000 && lsu_araddr < 32'h0201_0000 && lsu_arvalid && lsu_arready) begin
+                        difftest_device_skip();
+                    end
                 `endif
                 `endif
                 if(lsu_arready) begin
@@ -2972,6 +3065,7 @@ always @(posedge clock) begin
                 if(lsu_awready & lsu_wready) begin
                     lsu_awvalid <= 1'b0;
                     lsu_wvalid <= 1'b0;
+                    lsu_wlast <= 1'b0;
                 end
 
                 if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
@@ -3007,14 +3101,15 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/LSU/ysyx_25020042_LSU.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/WBU/ysyx_25020042_WBU.v ----------
+`timescale 1ns/1ns 
 module ysyx_25020042_WBU(
     `ifdef VERILATOR
     input             clock,
     input             reset,
     `endif
     input             lsu_valid,
-    output reg        wbu_ready,
-    output reg        wbu_valid,
+    output wire       wbu_ready,
+    output wire       wbu_valid,
     
     input [31:0]      i_data,
     input [31:0]      i_pc_data,
@@ -3035,8 +3130,8 @@ module ysyx_25020042_WBU(
     `endif
     input  [11:0]     i_csr_addr,
     input  [31:0]     i_csr_rdata,
-    output reg [31:0] csr_wdata,
-    output reg [11:0] csr_addr,
+    output wire [31:0] csr_wdata,
+    output wire [11:0] csr_addr,
     output reg [31:0] reg_wdata,
     output wire [31:0] o_mepc_wdata,
     output reg [31:0] o_mcause_wdata
@@ -3187,6 +3282,7 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/WBU/ysyx_25020042_WBU.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042_axi_arbiter.v ----------
+`timescale 1ns/1ns 
 module ysyx_25020042_axi_arbiter (
     input              clock,
     input              reset,
@@ -3309,11 +3405,11 @@ module ysyx_25020042_axi_arbiter (
 
     parameter ARB_IDLE = 2'd0, ARB_LSU = 2'd1, ARB_IFU = 2'd2;
 
-    reg io_lsu_arvalid_reg;
+    // reg io_lsu_arvalid_reg;
 
-    always @(posedge clock) begin
-        io_lsu_arvalid_reg <= io_lsu_arvalid;
-    end
+    // always @(posedge clock) begin
+    //     io_lsu_arvalid_reg <= io_lsu_arvalid;
+    // end
 
     always @ (posedge clock) begin
         if (reset) begin
@@ -3436,7 +3532,7 @@ module ysyx_25020042_axi_arbiter (
         else if (state == ARB_LSU) begin
             if (clint_active) begin
                 io_clint_araddr =  io_lsu_araddr;
-                io_clint_arvalid = io_lsu_arvalid_reg;
+                io_clint_arvalid = io_lsu_arvalid;
                 io_clint_arid =    io_lsu_arid;
                 io_clint_arlen =   io_lsu_arlen;
                 io_clint_arsize =  io_lsu_arsize;
@@ -3506,6 +3602,7 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042_axi_arbiter.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042_csr.v ----------
+`timescale 1ns/1ns 
 module ysyx_25020042_csr (
     input clock,
     input reset,
@@ -3608,7 +3705,7 @@ always @(posedge clock) begin
     if(reset) begin
         mstatus   <= 32'h1800;
         mtvec     <= 32'h0;
-        mepc      <= 32'h0;
+        // mepc      <= 32'h0;
         mcause    <= 32'h0;
         mcycle    <= 32'h0;
         mcycleh   <= 32'h0;
@@ -3638,6 +3735,7 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042_csr.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042_data_branch.v ----------
+`timescale 1ns/1ns 
 module ysyx_25020042_data_branch(
     input                clock,
     input                reset,
@@ -3771,6 +3869,7 @@ endmodule
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042_data_branch.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/device/ysyx_25020042_clint.v ----------
+`timescale 1ns/1ns 
 module ysyx_25020042_clint(
     input clock,
     input reset,
@@ -3840,6 +3939,20 @@ always @(posedge clock) begin
 end
 
 always @(posedge clock) begin
+    if (reset) begin
+        state <= IDLE;
+        slave_arready <= 1'b0;
+        slave_awready <= 1'b0;
+        slave_rid <= 0;
+        slave_bid <= 0;
+        slave_wready <= 1'b0;
+        slave_bvalid <= 1'b0;
+        slave_bresp <= 2'b0;
+        slave_rdata <= 32'b0;
+        slave_rvalid <= 0;
+        slave_rlast <= 0;
+        slave_rresp <= 2'b00;
+    end
     case (state)
         IDLE: begin
             if (slave_arvalid) begin
@@ -3877,6 +3990,7 @@ always @(posedge clock) begin
                 slave_rvalid <= 1'b0;
                 slave_rresp <= 2'b00;
                 slave_rdata <= 32'b0;
+                slave_rlast <= 0;
                 state <= IDLE;
             end
         end
