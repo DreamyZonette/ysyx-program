@@ -601,19 +601,19 @@ ysyx_25020042_clint clint_u (
 //------------------------------------------
 // PC实例化
 //------------------------------------------
-ysyx_25020042_PC PC_u(
-    .clock(clock),
-    .reset(reset),
-    .ifu_ready(ifu_ready),
-    .ifu_handsake(ifu_valid & idu_ready),
-    .fault(fault),
-    .pc_valid(pc_valid),
-    .i_fast_jump_valid(fast_jump_valid),
-    .i_fast_jump_pc(fast_jump_pc),
-    .i_jump_pc(jump_pc),
-    .i_jump_valid(jump_valid),
-    .o_pc(pc)
-);
+// ysyx_25020042_PC PC_u(
+//     .clock(clock),
+//     .reset(reset),
+//     .ifu_ready(ifu_ready),
+//     .ifu_handshake(ifu_valid & idu_ready),
+//     .fault(fault),
+//     .pc_valid(pc_valid),
+//     .i_fast_jump_valid(fast_jump_valid),
+//     .i_fast_jump_pc(fast_jump_pc),
+//     .i_jump_pc(jump_pc),
+//     .i_jump_valid(jump_valid),
+//     .o_pc(pc)
+// );
 //------------------------------------------
 // IFU实例化
 //------------------------------------------
@@ -622,14 +622,18 @@ ysyx_25020042_PC PC_u(
 ysyx_25020042_IFU IFU_u (
     .clock(clock),
     .reset(reset),
-    .pc_valid(pc_valid),
+    // .pc_valid(pc_valid),
     .idu_ready(idu_ready),
     .ifu_valid(ifu_valid),
     .ifu_ready(ifu_ready),
 
     .i_jump_valid(jump_valid),
-    .i_pc(pc),
+    .i_jump_pc(jump_pc),
+    .i_fast_jump_pc(fast_jump_pc),
+    .i_fast_jump_valid(fast_jump_valid),
+
     .fencei_signal(fencei_signal),
+    .fault(fault),
     .o_instruction(instruction),
     .o_pc_data(ifu_to_idu_pc_data),
     .o_IFU_Exception_Handling(IFU_Exception_Handling0),

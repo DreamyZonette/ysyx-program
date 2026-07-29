@@ -2277,7 +2277,7 @@ module ysyx_25020042_LSU(
     input [3:0]                     lsu_bid
 );
 
-import "DPI-C" function void difftest_device_skip();
+// import "DPI-C" function void difftest_device_skip();
 
 
 localparam  MEM_INST     = 3'b011;

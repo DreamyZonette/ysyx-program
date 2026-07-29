@@ -80,7 +80,9 @@ module ysyx_25020042_LSU(
 
 `ifdef PLATFORM_NPC
 `else
+`ifdef VERILATOR
 import "DPI-C" function void difftest_device_skip();
+`endif
 `endif
 
 `ifdef VERILATOR
@@ -189,10 +191,10 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
-        // inst_reg <= 8'b0;
-        // o_pc_data <= 32'b0;
-        // o_csr_data <= 32'b0;
-        // o_csr_addr <= 12'b0;
+        inst_reg <= 8'b0;
+        o_pc_data <= 32'b0;
+        o_csr_data <= 32'b0;
+        o_csr_addr <= 12'b0;
         o_IFU_Exception_Handling <= 3'b0;
         o_IDU_Exception_Handling <= 3'b0;
         `ifdef VERILATOR
@@ -260,10 +262,10 @@ always @(posedge clock) begin
         lsu_valid <= 1'b0;
         lsu_arvalid <= 1'b0;
         lsu_awvalid <= 1'b0;
-        // lsu_araddr <= 32'b0;
-        // lsu_awaddr <= 32'b0;
+        lsu_araddr <= 32'b0;
+        lsu_awaddr <= 32'b0;
         lsu_rready <= 1'b0;
-        // lsu_wdata <= 32'b0;
+        lsu_wdata <= 32'b0;
         lsu_wstrb <= 4'b0;
         lsu_wvalid <= 1'b0;
         lsu_bready <= 1'b0;
@@ -339,13 +341,13 @@ always @(posedge clock) begin
                 else begin
                     state <= IDLE;
 
-                    if (lsu_rready) begin
+                    // if (lsu_rready) begin
                         lsu_rready <= 1'b0;
-                    end
+                    // end
 
-                    if (lsu_bready) begin
+                    // if (lsu_bready) begin
                         lsu_bready <= 1'b0;
-                    end
+                    // end
 
                     if(lsu_valid & wbu_ready ) begin
                         lsu_ready <= 1'b1;
@@ -370,9 +372,9 @@ always @(posedge clock) begin
                     end
                 `endif
                 `endif
-                if(lsu_arready) begin
-                    lsu_arvalid <= 1'b0;
-                end
+                // if(lsu_arready) begin
+                    lsu_arvalid <= lsu_arready ? 1'b0 : lsu_arvalid;
+                // end
                 
                 if(lsu_awready & lsu_wready) begin
                     lsu_awvalid <= 1'b0;
@@ -380,7 +382,7 @@ always @(posedge clock) begin
                     lsu_wlast <= 1'b0;
                 end
 
-                if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
+                else if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
                     lsu_rready <= 1'b0;
                     lsu_valid <= 1'b1;
                     rresp <= lsu_rresp;

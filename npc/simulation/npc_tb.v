@@ -98,11 +98,11 @@ initial begin
     io_slave_rready  = 1'b0;
 
     // 复位50ns后释放
-    #4;
+    #40;
     reset = 1'b0;
 
     // 仿真时长（1ms）
-    #100000000;
+    #1000000;
     $display("Simulation finished: Timeout!");
     $finish;
 end
@@ -243,8 +243,8 @@ ysyx_25020042 ysyx_25020042_inst (
 // 6. 波形导出
 // ==============================================
 initial begin
-    // $dumpfile("/home/long/ysyx-workbench/npc/simulation/build/npc_wave.vcd");
-    // $dumpvars(0, npc_tb);
+    $dumpfile("/home/long/ysyx-workbench/npc/simulation/build/npc_wave.vcd");
+    $dumpvars(0, npc_tb);
 end
 
 // ==============================================

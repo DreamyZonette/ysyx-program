@@ -215,11 +215,11 @@ end
 
     always @(posedge clock) begin
         if (reset) begin
-            // o_pc_data <= 0;
-            // o_idu_inst <= 0;
-            // o_csr_data <= 0;
-            // o_src2     <= 0;
-            // o_csr_addr <= 0;
+            o_pc_data <= 0;
+            o_idu_inst <= 0;
+            o_csr_data <= 0;
+            o_src2     <= 0;
+            o_csr_addr <= 0;
             o_IFU_Exception_Handling <= 0;
             o_IDU_Exception_Handling <= 0;
             `ifdef VERILATOR

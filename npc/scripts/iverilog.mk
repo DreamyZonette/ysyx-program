@@ -1,6 +1,7 @@
 
 IVERILOG := iverilog
 TARGET = $(WORK_DIR)/simulation/build/iverilog-npc
+TARGET_NET = $(WORK_DIR)/simulation/build/iverilog-npc-net
 TB_FILE ?= $(WORK_DIR)/simulation/npc_tb.v
 OBJCOPY := riscv64-linux-gnu-objcopy
 AM_HOME ?= /home/long/ysyx-workbench/abstract-machine
@@ -15,25 +16,37 @@ SIM_HEX := $(WORK_DIR)/simulation/build/iverilog_npc.hex
 EXCLUDE_FILES := \
     /home/long/ysyx-workbench/npc/vsrc/device/uart.v \
     /home/long/ysyx-workbench/npc/vsrc/crossbar.v
-# SIM_VSRCS := $(filter-out $(EXCLUDE_FILES), $(VSRCS))
-SIM_VSRCS := /home/long/clone/yosys-sta/result/ysyx_25020042-100MHz/ysyx_25020042.netlist.fixed.v \
-    /home/long/clone/yosys-sta/pdk/nangate45/sim/cells.v \
+SIM_VSRCS := $(filter-out $(EXCLUDE_FILES), $(VSRCS))
+SIM_VSRCS_NET := /home/long/clone/yosys-sta1/result/ysyx_25020042-100MHz/ysyx_25020042.netlist.fixed.v \
+    /home/long/clone/yosys-sta1/pdk/nangate45/sim/cells.v \
     /home/long/ysyx-workbench/npc/vsrc/device/ysyx_25020042_mem.v
 
 
-IVERILOG_FLAGS ?= -Wall -o $(TARGET) 
+IVERILOG_PRE_FLAGS ?= -Wall -g2012 
+IVERILOG_OUT_FLAG = -o $(TARGET)
 
 iwave: $(WORK_DIR)/simulation/build/npc_wave.vcd
 	gtkwave $(WORK_DIR)/simulation/build/npc_wave.vcd
 
-$(WORK_DIR)/simulation/build/npc_wave.vcd: iverilog
+# $(WORK_DIR)/simulation/build/npc_wave.vcd: iverilog
 
 iverilog: $(SIM_HEX) $(TARGET)
 	vvp $(TARGET)
+	$(MAKE) netlist
 
-$(TARGET): $(SIM_VSRCS) $(TB_FILE) 
+netlist: $(SIM_HEX) $(TARGET_NET)
+	@echo + RUN yosys-sta...
+	@$(MAKE) sta -s -C /home/long/clone/yosys-sta1
+	@echo + RUN netlist simulation...
+	vvp $(TARGET_NET)
+
+$(TARGET): $(TB_FILE) $(SIM_VSRCS)
 	@mkdir -p $(WORK_DIR)/simulation/build
-	$(IVERILOG) $(IVERILOG_FLAGS) $^
+	$(IVERILOG) $(IVERILOG_PRE_FLAGS) $^ $(IVERILOG_OUT_FLAG)
+
+$(TARGET_NET): $(TB_FILE) $(SIM_VSRCS_NET)
+	@mkdir -p $(WORK_DIR)/simulation/build
+	$(IVERILOG) $(IVERILOG_PRE_FLAGS) $^ -o $(TARGET_NET)
 
 $(SIM_HEX): $(SIM_IMG)
 	@mkdir -p $(WORK_DIR)/simulation/build
@@ -46,5 +59,5 @@ $(SIM_HEX): $(SIM_IMG)
 cleaniverilog:
 	rm $(WORK_DIR)/simulation/build/*
 
-.PHONY: iverilog cleaniverilog
+.PHONY: iverilog netlist cleaniverilog
 
