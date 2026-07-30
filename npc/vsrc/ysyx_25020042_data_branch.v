@@ -106,44 +106,44 @@ always @(posedge clock) begin
         lsu_rd_valid <= 0;
     end
     else begin
-        // case (1'b1)
-        //     exu_lsu_handshake: begin
-        //         lsu_rd_buffer <= exu_rd_buffer;
-        //         lsu_rd_data_buffer <= exu_rd_data_buffer;
-        //     if (i_exu_to_lsu_inst != 3'b011 && i_exu_to_lsu_inst != 3'b010) begin
-        //         lsu_rd_valid <= 1;
-        //     end
-        //     else 
-        //         lsu_rd_valid <= 0;
-        //     end
-        //     load_valid: begin
-        //         lsu_rd_data_buffer <= i_lsu_rd_data;
-        //         lsu_rd_valid <= 1;
-
-        //     end
-        //     lsu_wbu_handshake: begin
-        //         lsu_rd_buffer <= 0;
-        //     end
-        // endcase
-    
-        if (exu_lsu_handshake) begin
-            lsu_rd_buffer <= exu_rd_buffer;
+        case (1'b1)
+            exu_lsu_handshake: begin
+                lsu_rd_buffer <= exu_rd_buffer;
                 lsu_rd_data_buffer <= exu_rd_data_buffer;
             if (i_exu_to_lsu_inst != 3'b011 && i_exu_to_lsu_inst != 3'b010) begin
                 lsu_rd_valid <= 1;
             end
             else 
                 lsu_rd_valid <= 0;
-        end
+            end
+            load_valid: begin
+                lsu_rd_data_buffer <= i_lsu_rd_data;
+                lsu_rd_valid <= 1;
 
-        if (load_valid) begin
-            lsu_rd_data_buffer <= i_lsu_rd_data;
-            lsu_rd_valid <= 1;
-        end
+            end
+            lsu_wbu_handshake: begin
+                lsu_rd_buffer <= 0;
+            end
+        endcase
+    
+    //     if (exu_lsu_handshake) begin
+    //         lsu_rd_buffer <= exu_rd_buffer;
+    //             lsu_rd_data_buffer <= exu_rd_data_buffer;
+    //         if (i_exu_to_lsu_inst != 3'b011 && i_exu_to_lsu_inst != 3'b010) begin
+    //             lsu_rd_valid <= 1;
+    //         end
+    //         else 
+    //             lsu_rd_valid <= 0;
+    //     end
 
-        if (lsu_wbu_handshake) begin
-            lsu_rd_buffer <= 0;
-        end
+    //     if (load_valid) begin
+    //         lsu_rd_data_buffer <= i_lsu_rd_data;
+    //         lsu_rd_valid <= 1;
+    //     end
+
+    //     if (lsu_wbu_handshake) begin
+    //         lsu_rd_buffer <= 0;
+    //     end
     end
 end
 
