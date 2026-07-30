@@ -17,7 +17,7 @@ module ysyx_25020042_gpr  (
     wire [31:0] reg_file [0:15];
     assign wen = wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
 
-    reg [31:0] zero;
+    // reg [31:0] zero;
     reg [31:0] ra;  
     reg [31:0] sp; 
     reg [31:0] gp;  
@@ -35,7 +35,7 @@ module ysyx_25020042_gpr  (
     reg [31:0] a5; 
     always @(posedge clock) begin
         if (reset) begin
-            zero <= 32'b0;
+            // zero <= 32'b0;
             ra   <= 32'b0;
             sp   <= 32'b0;
             gp   <= 32'b0;
@@ -52,7 +52,7 @@ module ysyx_25020042_gpr  (
             a4   <= 32'b0;
             a5   <= 32'b0;
         end else begin
-            if (wen[0]) zero   <= 0;
+            // if (wen[0]) zero   <= 0;
             if (wen[1]) ra   <= i_data;
             if (wen[2]) sp   <= i_data;
             if (wen[3]) gp   <= i_data;
@@ -70,7 +70,7 @@ module ysyx_25020042_gpr  (
             if (wen[15]) a5  <= i_data;
         end
     end
-    assign reg_file [0] = zero;
+    assign reg_file [0] = 32'h0;
     assign reg_file [1] = ra;
     assign reg_file [2] = sp;
     assign reg_file [3] = gp;

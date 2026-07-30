@@ -4,7 +4,6 @@ module ysyx_25020042_IFU(
     input                  reset,
     input                  idu_ready,
     output reg             ifu_valid,
-    output reg             ifu_ready,
 
     input                  i_jump_valid,
     input      [31:0]      i_jump_pc,
@@ -102,6 +101,7 @@ wire Instruction_access_fault;
 wire Instruction_page_fault;
 wire instruction_ready;
 wire [31:0] instruction;
+reg ifu_ready;
 reg state ;
 reg Control_Hazard;
 localparam IDLE  = 1'b0;
@@ -116,8 +116,8 @@ always @(posedge clock) begin
             `ifdef PLATFORM_NPC
             pc <= 32'h8000_0000;
             `else
-            // o_pc <= 32'h3000_0000;
-            pc <= 32'h8000_0000;
+            pc <= 32'h3000_0000;
+            // pc <= 32'h8000_0000;
             `endif
         end 
         else if (fault)begin

@@ -121,9 +121,7 @@ assign io_slave_rid = 4'b0;
 //------------------------------------------
 // 模块间握手信号
 //------------------------------------------
-    wire pc_valid;
     wire ifu_valid;
-    wire ifu_ready;
     wire idu_valid;
     wire idu_ready;
     wire exu_valid;
@@ -156,7 +154,6 @@ assign io_slave_rid = 4'b0;
     wire [31:0] src2;
     wire [5:0] shamt;
     wire [31:0] jump_pc;
-    wire [31:0] pc;
     wire [31:0] instruction;
     wire [31:0] exu_data;
     wire [31:0] lsu_data;
@@ -599,22 +596,6 @@ ysyx_25020042_clint clint_u (
     .slave_bid(io_clint_bid)
 );
 //------------------------------------------
-// PC实例化
-//------------------------------------------
-// ysyx_25020042_PC PC_u(
-//     .clock(clock),
-//     .reset(reset),
-//     .ifu_ready(ifu_ready),
-//     .ifu_handshake(ifu_valid & idu_ready),
-//     .fault(fault),
-//     .pc_valid(pc_valid),
-//     .i_fast_jump_valid(fast_jump_valid),
-//     .i_fast_jump_pc(fast_jump_pc),
-//     .i_jump_pc(jump_pc),
-//     .i_jump_valid(jump_valid),
-//     .o_pc(pc)
-// );
-//------------------------------------------
 // IFU实例化
 //------------------------------------------
 
@@ -622,10 +603,8 @@ ysyx_25020042_clint clint_u (
 ysyx_25020042_IFU IFU_u (
     .clock(clock),
     .reset(reset),
-    // .pc_valid(pc_valid),
     .idu_ready(idu_ready),
     .ifu_valid(ifu_valid),
-    .ifu_ready(ifu_ready),
 
     .i_jump_valid(jump_valid),
     .i_jump_pc(jump_pc),

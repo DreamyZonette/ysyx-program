@@ -137,6 +137,8 @@ $(BIN):$(VSRCS) $(CSRCS)
 		-o $(abspath $(BIN))
 endif
 
+verilog:sum
+
 sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	
@@ -150,7 +152,7 @@ wave: $(BUILD_DIR)/wave.fst
 	
 	gtkwave $(BUILD_DIR)/wave.fst
 
-PHONY: clean test adapt cleanwave perf sum 
+PHONY: clean test adapt cleanwave perf sum verilog
 
 
 adapt: sim

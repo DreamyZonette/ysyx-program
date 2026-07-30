@@ -1,4 +1,4 @@
-// 自动合并生成：2026-07-27 20:39:45
+// 自动合并生成：2026-07-30 12:46:10
 // 合并源文件列表：/home/long/ysyx-workbench/npc/sum/sum_filelist.txt
 // ===========================================
 
@@ -78,12 +78,21 @@
     /* verilator lint_on UNUSEDSIGNAL */
     );
 
+assign io_slave_rvalid = 1'b0;
+assign io_slave_bvalid = 1'b0;
+assign io_slave_rdata = 32'h0;
+assign io_slave_rresp = 2'b0;
+assign io_slave_rlast = 1'b0;
+assign io_slave_bid = 4'b0;
+assign io_slave_bresp = 2'b0;
+assign io_slave_arready = 1'b0;
+assign io_slave_wready = 1'b0;
+assign io_slave_awready = 1'b0;
+assign io_slave_rid = 4'b0;
 //------------------------------------------
 // 模块间握手信号
 //------------------------------------------
-    wire pc_valid;
     wire ifu_valid;
-    wire ifu_ready;
     wire idu_valid;
     wire idu_ready;
     wire exu_valid;
@@ -116,7 +125,6 @@
     wire [31:0] src2;
     wire [5:0] shamt;
     wire [31:0] jump_pc;
-    wire [31:0] pc;
     wire [31:0] instruction;
     wire [31:0] exu_data;
     wire [31:0] lsu_data;
@@ -428,22 +436,6 @@ ysyx_25020042_clint clint_u (
     .slave_bid(io_clint_bid)
 );
 //------------------------------------------
-// PC实例化
-//------------------------------------------
-ysyx_25020042_PC PC_u(
-    .clock(clock),
-    .reset(reset),
-    .ifu_ready(ifu_ready),
-    .ifu_handsake(ifu_valid & idu_ready),
-    .fault(fault),
-    .pc_valid(pc_valid),
-    .i_fast_jump_valid(fast_jump_valid),
-    .i_fast_jump_pc(fast_jump_pc),
-    .i_jump_pc(jump_pc),
-    .i_jump_valid(jump_valid),
-    .o_pc(pc)
-);
-//------------------------------------------
 // IFU实例化
 //------------------------------------------
 
@@ -451,14 +443,16 @@ ysyx_25020042_PC PC_u(
 ysyx_25020042_IFU IFU_u (
     .clock(clock),
     .reset(reset),
-    .pc_valid(pc_valid),
     .idu_ready(idu_ready),
     .ifu_valid(ifu_valid),
-    .ifu_ready(ifu_ready),
 
     .i_jump_valid(jump_valid),
-    .i_pc(pc),
+    .i_jump_pc(jump_pc),
+    .i_fast_jump_pc(fast_jump_pc),
+    .i_fast_jump_valid(fast_jump_valid),
+
     .fencei_signal(fencei_signal),
+    .fault(fault),
     .o_instruction(instruction),
     .o_pc_data(ifu_to_idu_pc_data),
     .o_IFU_Exception_Handling(IFU_Exception_Handling0),
@@ -713,7 +707,7 @@ ysyx_25020042_gpr gpr_u(
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_icache.v ----------
-`timescale 1ns/1ns 
+
 module ysyx_25020042_icache(
     input              clock            ,
     input              reset            ,
@@ -743,12 +737,14 @@ module ysyx_25020042_icache(
 parameter CACHE_BLOCK_SIZE  = 16;
 parameter CACHE_BLOCK_BANK  = 4;
 parameter CACHE_BLOCK_COUNT = CACHE_BLOCK_SIZE / 4;
-parameter m                 = $clog2(CACHE_BLOCK_SIZE);
-parameter n                 = $clog2(CACHE_BLOCK_BANK);
+// parameter m                 = $clog2(CACHE_BLOCK_SIZE);
+// parameter n                 = $clog2(CACHE_BLOCK_BANK);
+parameter m                 = 4;
+parameter n                 = 2;
 parameter SDRAM_BASE_ADDR   = 32'ha0000000;
 parameter SDRAM_SIZE        = 32'h20000000;
-// wire                          sdram_valid = 0;
 wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
+// wire                          sdram_valid = 1;
 wire [31:m+n]                 addr_tag       = pc_addr[31:m+n];
 wire [m+n-1:m]                index          = pc_addr[m+n-1:m];
 wire [m-1:2]                  offset         = pc_addr[m-1:2];
@@ -771,6 +767,7 @@ localparam READ = 1'b1;
 assign Instruction_access_fault = rresp[1] | rresp[0];
 
 always @(posedge clock) begin
+    state <= state;
     if (reset) begin
         state <= IDLE;
     end
@@ -792,6 +789,9 @@ always @(posedge clock) begin
                 else 
                     state <= READ;
             end
+            default: begin
+                state <= state;
+            end
         endcase
     end
 end
@@ -802,6 +802,7 @@ end
 // +---------+---------+--------+
 
 always @(posedge clock) begin
+    burst_count <= burst_count;
     if (reset) begin
         burst_count <= 0;
     end
@@ -814,19 +815,74 @@ always @(posedge clock) begin
 end
 
 
-integer i;
-integer j;
+// integer i;
+// integer j;
 
 always @(posedge clock) begin
+    instruction <= instruction;
+    instruction_ready <= instruction_ready;
+
+    icache_valid[0] <= icache_valid[0];
+    icache_valid[1] <= icache_valid[1];
+    icache_valid[2] <= icache_valid[2];
+    icache_valid[3] <= icache_valid[3];
+    icache_addr[0]  <= icache_addr[0];
+    icache_addr[1]  <= icache_addr[1];
+    icache_addr[2]  <= icache_addr[2];
+    icache_addr[3]  <= icache_addr[3];
+    icache_data[0][0]  <= icache_data[0][0];
+    icache_data[0][1]  <= icache_data[0][1];
+    icache_data[0][2]  <= icache_data[0][2];
+    icache_data[0][3]  <= icache_data[0][3];
+    icache_data[1][0]  <= icache_data[1][0];
+    icache_data[1][1]  <= icache_data[1][1];
+    icache_data[1][2]  <= icache_data[1][2];
+    icache_data[1][3]  <= icache_data[1][3];
+    icache_data[2][0]  <= icache_data[2][0];
+    icache_data[2][1]  <= icache_data[2][1];
+    icache_data[2][2]  <= icache_data[2][2];
+    icache_data[2][3]  <= icache_data[2][3];
+    icache_data[3][0]  <= icache_data[3][0];
+    icache_data[3][1]  <= icache_data[3][1];
+    icache_data[3][2]  <= icache_data[3][2];
+    icache_data[3][3]  <= icache_data[3][3];
+
     if (reset) begin
-        for (i = 0; i < CACHE_BLOCK_BANK; i = i + 1) begin
-            icache_valid[i] <= 1'b0;
-            icache_addr[i]  <= 0;
-            for (j = 0; j < CACHE_BLOCK_COUNT; j = j + 1) begin
-                icache_data[i][j]  <= 0;
-            end
-        end
+        // for (i = 0; i < CACHE_BLOCK_BANK; i = i + 1) begin
+        //     icache_valid[i] <= 1'b0;
+        //     icache_addr[i]  <= 0;
+        //     for (j = 0; j < CACHE_BLOCK_COUNT; j = j + 1) begin
+        //         icache_data[i][j]  <= 0;
+        //     end
+        // end
+        icache_valid[0] <= 1'b0;
+        icache_valid[1] <= 1'b0;
+        icache_valid[2] <= 1'b0;
+        icache_valid[3] <= 1'b0;
+        icache_addr[0]  <= 32'b0;
+        icache_addr[1]  <= 32'b0;
+        icache_addr[2]  <= 32'b0;
+        icache_addr[3]  <= 32'b0;
+
+        icache_data[0][0]  <= 32'b0;
+        icache_data[0][1]  <= 32'b0;
+        icache_data[0][2]  <= 32'b0;
+        icache_data[0][3]  <= 32'b0;
+        icache_data[1][0]  <= 32'b0;
+        icache_data[1][1]  <= 32'b0;
+        icache_data[1][2]  <= 32'b0;
+        icache_data[1][3]  <= 32'b0;
+        icache_data[2][0]  <= 32'b0;
+        icache_data[2][1]  <= 32'b0;
+        icache_data[2][2]  <= 32'b0;
+        icache_data[2][3]  <= 32'b0;
+        icache_data[3][0]  <= 32'b0;
+        icache_data[3][1]  <= 32'b0;
+        icache_data[3][2]  <= 32'b0;
+        icache_data[3][3]  <= 32'b0;
+
         instruction <= 0;
+        instruction_ready <= 1'b0;
     end
     else begin
         if (state == READ) begin
@@ -850,9 +906,10 @@ always @(posedge clock) begin
             end
         end
         else if (fencei_signal) begin
-            for (i = 0; i < CACHE_BLOCK_BANK; i = i + 1) begin
-            icache_valid[i] <= 1'b0;
-            end
+            icache_valid[0] <= 1'b0;
+            icache_valid[1] <= 1'b0;
+            icache_valid[2] <= 1'b0;
+            icache_valid[3] <= 1'b0;
         end
         if (state == IDLE) begin
             if (hit & pc_valid) begin
@@ -866,8 +923,16 @@ always @(posedge clock) begin
 end
 
 always @(posedge clock) begin
+    io_icache_arvalid <= io_icache_arvalid;
+    io_icache_araddr <= io_icache_araddr;
+    io_icache_arid <= io_icache_arid;
+    io_icache_arlen <= io_icache_arlen;
+    io_icache_arsize <= io_icache_arsize;
+    io_icache_arburst <= io_icache_arburst;
+    io_icache_rready <= io_icache_rready;
+    rresp <= rresp;
     if (reset) begin
-        // io_icache_araddr <= 32'h0;
+        io_icache_araddr <= 32'h0;
         io_icache_arvalid <= 1'b0;
         io_icache_rready <= 1'b0;
         io_icache_arid <= 4'h0;
@@ -913,14 +978,16 @@ endmodule
 module ysyx_25020042_IFU(
     input                  clock,
     input                  reset,
-    input                  pc_valid,
     input                  idu_ready,
     output reg             ifu_valid,
-    output reg             ifu_ready,
 
     input                  i_jump_valid,
-    input      [31:0]      i_pc,
+    input      [31:0]      i_jump_pc,
+    input                  i_fast_jump_valid,
+    input      [31:0]      i_fast_jump_pc,
+
     input                  fencei_signal,
+    input                  fault,
     output reg [31:0]      o_instruction,
     output wire [31:0]     o_pc_data    ,
     output [2:0]           o_IFU_Exception_Handling,
@@ -946,15 +1013,77 @@ wire Instruction_access_fault;
 wire Instruction_page_fault;
 wire instruction_ready;
 wire [31:0] instruction;
+reg ifu_ready;
 reg state ;
 reg Control_Hazard;
 localparam IDLE  = 1'b0;
 localparam READY = 1'b1;
 
-assign o_pc_data = i_pc;
+//-----------------pc------------------
+reg [31:0] pc;
+// reg [31:0] next_pc;
+reg pc_valid;
+always @(posedge clock) begin
+        if (reset)begin
+            pc <= 32'h3000_0000;
+            // pc <= 32'h8000_0000;
+        end 
+        else if (fault)begin
+            pc <= 0;
+        end
+        else if (i_jump_valid) begin
+            pc <= i_jump_pc;
+        end
+        else if (i_fast_jump_valid) begin
+            pc <= i_fast_jump_pc;
+        end
+        else if (ifu_valid & idu_ready)begin
+            pc <= pc + 4;
+        end
+    end
+
+// always @(posedge clock) begin
+//         if (reset) begin
+//             `ifdef PLATFORM_NPC
+//             next_pc <= 32'h8000_0004;
+//             `else
+//             // next_pc <= 32'h3000_0004;
+//             next_pc <= 32'h8000_0004;
+
+//             `endif
+//         end
+//         else if (i_jump_valid) begin
+//             next_pc <= i_jump_pc + 4;
+//         end
+//         else if (i_fast_jump_valid) begin
+//             next_pc <= i_fast_jump_pc + 4;
+//         end
+//         else if (ifu_ready & pc_valid) begin
+//             next_pc <= pc + 4;
+//         end
+//         else begin
+//             next_pc <= next_pc;
+//         end
+//     end
+
+always @(posedge clock) begin
+        if (reset)begin
+            pc_valid <= 1'b1;
+        end 
+        else if (ifu_valid & idu_ready) 
+            pc_valid <= 1'b1;
+        else if (i_jump_valid)
+            pc_valid <= 1'b1;
+        else 
+            pc_valid <= ifu_ready ? 1'b0 :pc_valid;
+            
+    end
+
+//-----------------ifu-------------------
+assign o_pc_data = pc;
 assign o_IFU_Exception_Handling = {Instruction_page_fault, Instruction_access_fault, Instruction_address_misaligned};
 assign Instruction_page_fault = 1'b0;
-assign Instruction_address_misaligned = |i_pc[1:0];
+assign Instruction_address_misaligned = |pc[1:0];
 
 always @(posedge clock) begin
     if(reset) begin
@@ -978,6 +1107,9 @@ always @(posedge clock) begin
                     state <= READY;
                 end
             end
+            default: begin
+                state <= state;
+                end
         endcase
     end
 end
@@ -987,14 +1119,18 @@ always @(posedge clock) begin
         Control_Hazard <= 1'b0;
     end
     else begin
-        if(i_jump_valid && ((state == READY) || (pc_valid & ifu_ready))) begin
+        if (Control_Hazard & instruction_ready) begin
+            Control_Hazard <= 1'b0;
+        end
+        else if(i_jump_valid && ((state == READY) || (pc_valid & ifu_ready))) begin
             Control_Hazard <= 1'b1;
             if (instruction_ready) begin
                 Control_Hazard <= 1'b0;
             end
         end
-        if (Control_Hazard & instruction_ready)
-            Control_Hazard <= 1'b0;
+        else begin
+            Control_Hazard <= Control_Hazard;
+        end
     end
 end
 
@@ -1039,7 +1175,7 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
-        // o_instruction <= 32'h0;
+        o_instruction <= 32'h0;
     end
     else if (i_jump_valid)
         o_instruction <= 32'h0;
@@ -1057,7 +1193,7 @@ ysyx_25020042_icache #(
     .clock            (clock),
     .reset            (reset),
     .pc_valid         (pc_valid & ifu_ready),
-    .pc_addr          (i_pc),
+    .pc_addr          (pc),
     .fencei_signal    (fencei_signal),
     .instruction_ready(instruction_ready),
     .instruction      (instruction),
@@ -1080,79 +1216,6 @@ ysyx_25020042_icache #(
 endmodule
 
 // ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_IFU.v ----------
-
-// ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_PC.v ----------
-`timescale 1ns/1ns 
-module ysyx_25020042_PC (
-    input              clock,
-    input              reset,
-    input              ifu_ready,
-    input              ifu_handsake,
-    input              fault,
-    output reg         pc_valid,
-
-
-    input [32-1:0] i_jump_pc,
-    input              i_jump_valid,
-    input [32-1:0] i_fast_jump_pc,
-    input              i_fast_jump_valid,
-    output reg [32-1:0] o_pc
-    );
-
-    reg [31:0] next_pc;
-
-    always @(posedge clock) begin
-        if (reset) begin
-            next_pc <= 32'h3000_0004;
-        end
-        else if (i_jump_valid) begin
-            next_pc <= i_jump_pc + 4;
-        end
-        else if (i_fast_jump_valid) begin
-            next_pc <= i_fast_jump_pc + 4;
-        end
-        else if (ifu_ready & pc_valid) begin
-            next_pc <= o_pc + 4;
-        end
-    end
-    
-    always @(posedge clock) begin
-        if (reset)begin
-            o_pc <= 32'h3000_0000;
-            pc_valid <= 1'b1;
-        end 
-        else begin
-            if (fault)begin
-                o_pc <= 0;
-            end
-            else if (i_jump_valid) begin
-                o_pc <= i_jump_pc;
-            end
-            else if (i_fast_jump_valid) begin
-                o_pc <= i_fast_jump_pc;
-            end
-            else if (ifu_handsake)begin
-                o_pc <= next_pc;
-            end
-
-            if (ifu_handsake) 
-                pc_valid <= 1'b1;
-            else if (i_jump_valid)
-                pc_valid <= 1'b1;
-            else if (ifu_ready & pc_valid) 
-                pc_valid <= 1'b0;
-            
-        end
-
-    end
-
-
-
-endmodule
-
-
-
-// ---------- 结束：/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_PC.v ----------
 
 // ---------- 开始：/home/long/ysyx-workbench/npc/vsrc/IDU/ysyx_25020042_IDU.v ----------
 `timescale 1ns/1ns 
@@ -1241,7 +1304,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-
+            o_imm <= 32'b0;
         end
             // o_imm <= 32'b0;
         else if (i_jump_valid) begin
@@ -1262,7 +1325,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-            // o_rs1 <= 5'b0;
+            o_rs1 <= 5'b0;
         end
         else if (i_jump_valid)
             o_rs1 <= 5'b0;
@@ -1286,7 +1349,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-            // o_rs2 <= 5'b0;
+            o_rs2 <= 5'b0;
         end
         else if (i_jump_valid)
             o_rs2 <= 5'b0;
@@ -1300,7 +1363,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-            // o_pc_data <= 32'b0;
+            o_pc_data <= 32'b0;
         end
         else if (i_jump_valid) begin
             o_pc_data <= 32'b0;
@@ -1312,7 +1375,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-            // o_rd <= 5'b0;
+            o_rd <= 5'b0;
         end
         else if (i_jump_valid)
             o_rd <= 5'b0;
@@ -1326,7 +1389,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-            // o_csr_addr <= 12'b0;
+            o_csr_addr <= 12'b0;
         end
             
         else if (i_jump_valid)
@@ -1341,7 +1404,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-            // o_shamt <= 6'b0;
+            o_shamt <= 6'b0;
         end
             
         else if (i_jump_valid)
@@ -1353,7 +1416,7 @@ module ysyx_25020042_IDU (
 
     always @ (posedge clock) begin
         if (reset) begin
-            // o_instruction_out     <= 8'b0;
+            o_instruction_out     <= 8'b0;
         end
         else if (i_jump_valid)
             o_instruction_out     <= 8'b0;
@@ -1594,21 +1657,21 @@ module ysyx_25020042_gpr  (
     always @(posedge clock) begin
         if (reset) begin
             zero <= 32'b0;
-            // ra   <= 32'b0;
-            // sp   <= 32'b0;
-            // gp   <= 32'b0;
-            // tp   <= 32'b0;
-            // t0   <= 32'b0;
-            // t1   <= 32'b0;
-            // t2   <= 32'b0;
-            // s0   <= 32'b0;
-            // s1   <= 32'b0;
-            // a0   <= 32'b0;
-            // a1   <= 32'b0;
-            // a2   <= 32'b0;
-            // a3   <= 32'b0;
-            // a4   <= 32'b0;
-            // a5   <= 32'b0;
+            ra   <= 32'b0;
+            sp   <= 32'b0;
+            gp   <= 32'b0;
+            tp   <= 32'b0;
+            t0   <= 32'b0;
+            t1   <= 32'b0;
+            t2   <= 32'b0;
+            s0   <= 32'b0;
+            s1   <= 32'b0;
+            a0   <= 32'b0;
+            a1   <= 32'b0;
+            a2   <= 32'b0;
+            a3   <= 32'b0;
+            a4   <= 32'b0;
+            a5   <= 32'b0;
         end else begin
             if (wen[0]) zero   <= 0;
             if (wen[1]) ra   <= i_data;
@@ -1824,11 +1887,11 @@ end
 
     always @(posedge clock) begin
         if (reset) begin
-            // o_pc_data <= 0;
-            // o_idu_inst <= 0;
-            // o_csr_data <= 0;
-            // o_src2     <= 0;
-            // o_csr_addr <= 0;
+            o_pc_data <= 0;
+            o_idu_inst <= 0;
+            o_csr_data <= 0;
+            o_src2     <= 0;
+            o_csr_addr <= 0;
             o_IFU_Exception_Handling <= 0;
             o_IDU_Exception_Handling <= 0;
         end
@@ -2104,6 +2167,7 @@ wire [31:0] shift_out;
 wire [31:0] less_out;
 
 always @(*) begin
+    o_data = 32'h00000000;
     case (ALUctrl[2:0])
         3'b000: o_data = adder_out;
         3'b001: o_data = shift_out;
@@ -2277,7 +2341,6 @@ module ysyx_25020042_LSU(
     input [3:0]                     lsu_bid
 );
 
-// import "DPI-C" function void difftest_device_skip();
 
 
 localparam  MEM_INST     = 3'b011;
@@ -2330,10 +2393,10 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
-        // inst_reg <= 8'b0;
-        // o_pc_data <= 32'b0;
-        // o_csr_data <= 32'b0;
-        // o_csr_addr <= 12'b0;
+        inst_reg <= 8'b0;
+        o_pc_data <= 32'b0;
+        o_csr_data <= 32'b0;
+        o_csr_addr <= 12'b0;
         o_IFU_Exception_Handling <= 3'b0;
         o_IDU_Exception_Handling <= 3'b0;
     end
@@ -2395,10 +2458,10 @@ always @(posedge clock) begin
         lsu_valid <= 1'b0;
         lsu_arvalid <= 1'b0;
         lsu_awvalid <= 1'b0;
-        // lsu_araddr <= 32'b0;
-        // lsu_awaddr <= 32'b0;
+        lsu_araddr <= 32'b0;
+        lsu_awaddr <= 32'b0;
         lsu_rready <= 1'b0;
-        // lsu_wdata <= 32'b0;
+        lsu_wdata <= 32'b0;
         lsu_wstrb <= 4'b0;
         lsu_wvalid <= 1'b0;
         lsu_bready <= 1'b0;
@@ -2474,13 +2537,13 @@ always @(posedge clock) begin
                 else begin
                     state <= IDLE;
 
-                    if (lsu_rready) begin
+                    // if (lsu_rready) begin
                         lsu_rready <= 1'b0;
-                    end
+                    // end
 
-                    if (lsu_bready) begin
+                    // if (lsu_bready) begin
                         lsu_bready <= 1'b0;
-                    end
+                    // end
 
                     if(lsu_valid & wbu_ready ) begin
                         lsu_ready <= 1'b1;
@@ -2493,9 +2556,9 @@ always @(posedge clock) begin
                 end
             end
             WAIT: begin
-                if(lsu_arready) begin
-                    lsu_arvalid <= 1'b0;
-                end
+                // if(lsu_arready) begin
+                    lsu_arvalid <= lsu_arready ? 1'b0 : lsu_arvalid;
+                // end
                 
                 if(lsu_awready & lsu_wready) begin
                     lsu_awvalid <= 1'b0;
@@ -2503,7 +2566,7 @@ always @(posedge clock) begin
                     lsu_wlast <= 1'b0;
                 end
 
-                if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
+                else if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
                     lsu_rready <= 1'b0;
                     lsu_valid <= 1'b1;
                     rresp <= lsu_rresp;
@@ -3198,24 +3261,44 @@ always @(posedge clock) begin
         lsu_rd_valid <= 0;
     end
     else begin
-        if (exu_lsu_handshake) begin
-            lsu_rd_buffer <= exu_rd_buffer;
+        case (1'b1)
+            exu_lsu_handshake: begin
+                lsu_rd_buffer <= exu_rd_buffer;
                 lsu_rd_data_buffer <= exu_rd_data_buffer;
             if (i_exu_to_lsu_inst != 3'b011 && i_exu_to_lsu_inst != 3'b010) begin
                 lsu_rd_valid <= 1;
             end
             else 
                 lsu_rd_valid <= 0;
-        end
+            end
+            load_valid: begin
+                lsu_rd_data_buffer <= i_lsu_rd_data;
+                lsu_rd_valid <= 1;
 
-        if (load_valid) begin
-            lsu_rd_data_buffer <= i_lsu_rd_data;
-            lsu_rd_valid <= 1;
-        end
+            end
+            lsu_wbu_handshake: begin
+                lsu_rd_buffer <= 0;
+            end
+        endcase
+    
+    //     if (exu_lsu_handshake) begin
+    //         lsu_rd_buffer <= exu_rd_buffer;
+    //             lsu_rd_data_buffer <= exu_rd_data_buffer;
+    //         if (i_exu_to_lsu_inst != 3'b011 && i_exu_to_lsu_inst != 3'b010) begin
+    //             lsu_rd_valid <= 1;
+    //         end
+    //         else 
+    //             lsu_rd_valid <= 0;
+    //     end
 
-        if (lsu_wbu_handshake) begin
-            lsu_rd_buffer <= 0;
-        end
+    //     if (load_valid) begin
+    //         lsu_rd_data_buffer <= i_lsu_rd_data;
+    //         lsu_rd_valid <= 1;
+    //     end
+
+    //     if (lsu_wbu_handshake) begin
+    //         lsu_rd_buffer <= 0;
+    //     end
     end
 end
 

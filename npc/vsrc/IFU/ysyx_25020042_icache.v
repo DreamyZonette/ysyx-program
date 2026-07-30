@@ -53,8 +53,8 @@ parameter SDRAM_SIZE        = 32'h20000000;
 `ifdef PLATFORM_NPC
 wire                          sdram_valid = 1;
 `else 
-// wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
-wire                          sdram_valid = 1;
+wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
+// wire                          sdram_valid = 1;
 `endif
 wire [31:m+n]                 addr_tag       = pc_addr[31:m+n];
 wire [m+n-1:m]                index          = pc_addr[m+n-1:m];
@@ -157,7 +157,7 @@ always @(posedge clock) begin
     icache_data[3][1]  <= icache_data[3][1];
     icache_data[3][2]  <= icache_data[3][2];
     icache_data[3][3]  <= icache_data[3][3];
-    
+
     if (reset) begin
         // for (i = 0; i < CACHE_BLOCK_BANK; i = i + 1) begin
         //     icache_valid[i] <= 1'b0;
