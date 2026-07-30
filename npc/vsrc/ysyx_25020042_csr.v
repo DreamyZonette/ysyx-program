@@ -6,7 +6,7 @@ module ysyx_25020042_csr (
     input [31:0] i_csr_wdata,
     input [11:0] i_csr_addr,
     input [11:0] i_wbu_csr_addr,
-    input [31:0] i_mstatus_wdata,
+    // input [31:0] i_mstatus_wdata,
     input [31:0] i_mtvec_wdata,
     input [31:0] i_mepc_wdata,
     input [31:0] i_mcause_wdata,

@@ -1,7 +1,7 @@
 
 FILELIST = $(WORK_DIR)/sum/sum_filelist.txt
-OUTPUT_FILE = $(WORK_DIR)/build/temp.v
-FIXED_FILE = $(WORK_DIR)/build/ysyx_25020042.v
+OUTPUT_FILE = $(WORK_DIR)/build/ysyx_25020042.v
+FIXED_FILE = $(WORK_DIR)/build/ysyx_25020042_fixed.v
 PYTHON_SUM_SCRIPT := $(WORK_DIR)/tools/merge_files.py
 PYTHON_FIX_SCRIPT := $(WORK_DIR)/tools/clean_verilator.py
 

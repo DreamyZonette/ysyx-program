@@ -116,8 +116,8 @@ always @(posedge clock) begin
             `ifdef PLATFORM_NPC
             pc <= 32'h8000_0000;
             `else
-            pc <= 32'h3000_0000;
-            // pc <= 32'h8000_0000;
+            // pc <= 32'h3000_0000;
+            pc <= 32'h8000_0000;
             `endif
         end 
         else if (fault)begin
