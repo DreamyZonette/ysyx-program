@@ -13,9 +13,36 @@ module ysyx_25020042_gpr  (
     output [31:0] o_src2
     );
     
-    wire [15:0] wen;
+    reg [14:0] wen;
+    // wire [15:0] wen;
     wire [31:0] reg_file [0:15];
-    assign wen = wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
+    // assign wen = wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
+
+    always @(*) begin
+        if (wbu_valid) begin
+        case (i_rd)
+            5'd0 :   wen = 15'b000_0000_0000_0000;
+            5'd1 :   wen = 15'b000_0000_0000_0001;
+            5'd2 :   wen = 15'b000_0000_0000_0010;
+            5'd3 :   wen = 15'b000_0000_0000_0100;
+            5'd4 :   wen = 15'b000_0000_0000_1000;
+            5'd5 :   wen = 15'b000_0000_0001_0000;
+            5'd6 :   wen = 15'b000_0000_0010_0000;
+            5'd7 :   wen = 15'b000_0000_0100_0000;
+            5'd8 :   wen = 15'b000_0000_1000_0000;
+            5'd9 :   wen = 15'b000_0001_0000_0000;
+            5'd10:   wen = 15'b000_0010_0000_0000;
+            5'd11:   wen = 15'b000_0100_0000_0000;
+            5'd12:   wen = 15'b000_1000_0000_0000;
+            5'd13:   wen = 15'b001_0000_0000_0000;
+            5'd14:   wen = 15'b010_0000_0000_0000;
+            5'd15:   wen = 15'b100_0000_0000_0000; // 写使能信号
+            default: wen = 15'b000_0000_0000_0000; // 写使能信号
+        endcase
+        end else begin
+            wen = 15'b0; // 写使能信号
+        end
+    end
 
     // reg [31:0] zero;
     reg [31:0] ra;  
@@ -53,21 +80,21 @@ module ysyx_25020042_gpr  (
             a5   <= 32'b0;
         end else begin
             // if (wen[0]) zero   <= 0;
-            if (wen[1]) ra   <= i_data;
-            if (wen[2]) sp   <= i_data;
-            if (wen[3]) gp   <= i_data;
-            if (wen[4]) tp   <= i_data;
-            if (wen[5]) t0   <= i_data;
-            if (wen[6]) t1   <= i_data;
-            if (wen[7]) t2   <= i_data;
-            if (wen[8]) s0   <= i_data;
-            if (wen[9]) s1   <= i_data;
-            if (wen[10]) a0  <= i_data;
-            if (wen[11]) a1  <= i_data;
-            if (wen[12]) a2  <= i_data;
-            if (wen[13]) a3  <= i_data;
-            if (wen[14]) a4  <= i_data;
-            if (wen[15]) a5  <= i_data;
+            if (wen[0]) ra   <= i_data;
+            if (wen[1]) sp   <= i_data;
+            if (wen[2]) gp   <= i_data;
+            if (wen[3]) tp   <= i_data;
+            if (wen[4]) t0   <= i_data;
+            if (wen[5]) t1   <= i_data;
+            if (wen[6]) t2   <= i_data;
+            if (wen[7]) s0   <= i_data;
+            if (wen[8]) s1   <= i_data;
+            if (wen[9]) a0  <= i_data;
+            if (wen[10]) a1  <= i_data;
+            if (wen[11]) a2  <= i_data;
+            if (wen[12]) a3  <= i_data;
+            if (wen[13]) a4  <= i_data;
+            if (wen[14]) a5  <= i_data;
         end
     end
     assign reg_file [0] = 32'h0;
