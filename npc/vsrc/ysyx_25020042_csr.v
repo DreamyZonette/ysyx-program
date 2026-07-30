@@ -7,7 +7,7 @@ module ysyx_25020042_csr (
     input [11:0] i_csr_addr,
     input [11:0] i_wbu_csr_addr,
     // input [31:0] i_mstatus_wdata,
-    input [31:0] i_mtvec_wdata,
+    // input [31:0] i_mtvec_wdata,
     input [31:0] i_mepc_wdata,
     input [31:0] i_mcause_wdata,
     input wbu_valid,
@@ -31,7 +31,8 @@ wire [31:0] marchid_val;
 // wire [31:0] mcycleh_wdata;
 
 // assign mstatus_wdata = (i_Exception_valid == 1'b1) ? i_mstatus_wdata : i_csr_wdata;
-assign mtvec_wdata   = (i_Exception_valid == 1'b1) ? i_mtvec_wdata   : i_csr_wdata;
+assign mtvec_wdata   = (i_Exception_valid == 1'b1) ? 32'b0   : i_csr_wdata;
+// assign mtvec_wdata   = (i_Exception_valid == 1'b1) ? i_mtvec_wdata   : i_csr_wdata;
 assign mepc_wdata    = (i_Exception_valid == 1'b1) ? i_mepc_wdata    : i_csr_wdata;
 assign mcause_wdata  = (i_Exception_valid == 1'b1) ? i_mcause_wdata  : i_csr_wdata;
 // assign mcycle_wdata  = (wen[4] == 1'b1) ? i_csr_wdata    : mcycle_val + 1;

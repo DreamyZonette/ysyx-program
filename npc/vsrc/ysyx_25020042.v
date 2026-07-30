@@ -164,7 +164,7 @@ assign io_slave_rid = 4'b0;
     wire [31:0] mepc;
     wire [31:0] mcause_wdata;
     // wire [31:0] mstatus_wdata = 32'h0;
-    wire [31:0] mtvec_wdata;
+    // wire [31:0] mtvec_wdata;
     wire [31:0] mepc_wdata;
     wire [31:0] csr_wdata;
     wire [4:0]  rs1;
@@ -905,7 +905,7 @@ ysyx_25020042_csr csr_u (
     .i_wbu_csr_addr(wbu_csr_addr),
     // .i_mstatus_wdata(mstatus_wdata),
     .i_mcause_wdata(mcause_wdata),
-    .i_mtvec_wdata(mtvec_wdata),
+    // .i_mtvec_wdata(mtvec_wdata),
     .i_mepc_wdata(mepc_wdata),
     .wbu_valid(wbu_valid),
     .o_mtvec(mtvec),
