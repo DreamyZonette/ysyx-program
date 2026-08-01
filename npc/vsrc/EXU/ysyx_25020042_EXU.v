@@ -68,7 +68,8 @@ module ysyx_25020042_EXU(
     wire Exception_valid1 = |i_LSU_Exception_Handling;
     wire [31:0] alu_out;
     wire equal       = (i_src1 == i_src2);
-    wire sign_less   = $signed(i_src1) < $signed(i_src2) ? 1'b1 : 1'b0;
+    // 翻转符号位把有符号比较变成无符号比较，避免 $signed，面积更小
+wire sign_less   = ({i_src1[31] ^ 1'b1, i_src1[30:0]}) < ({i_src2[31] ^ 1'b1, i_src2[30:0]});
     wire unsign_less = (i_src1 < i_src2);
 
     always @(posedge clock) begin

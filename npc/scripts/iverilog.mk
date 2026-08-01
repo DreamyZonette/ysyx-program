@@ -17,8 +17,9 @@ EXCLUDE_FILES := \
     /home/long/ysyx-workbench/npc/vsrc/device/uart.v \
     /home/long/ysyx-workbench/npc/vsrc/crossbar.v \
     /home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_PC.v
-SIM_VSRCS := $(filter-out $(EXCLUDE_FILES), $(VSRCS))
-SIM_VSRCS_NET := /home/long/clone/yosys-sta1/result/ysyx_25020042-100MHz/ysyx_25020042.netlist.fixed.v \
+SIM_VSRCS := /home/long/ysyx-workbench/npc/vsrc/device/ysyx_25020042_mem.v \
+	/home/long/ysyx-workbench/npc/build/ysyx_25020042.v
+SIM_VSRCS_NET := /home/long/clone/yosys-sta1/result/ysyx_25020042-100MHz/ysyx_25020042.netlist.syn.v\
     /home/long/clone/yosys-sta1/pdk/nangate45/sim/cells.v \
     /home/long/ysyx-workbench/npc/vsrc/device/ysyx_25020042_mem.v
 

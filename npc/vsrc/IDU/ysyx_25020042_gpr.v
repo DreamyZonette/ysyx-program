@@ -16,7 +16,7 @@ module ysyx_25020042_gpr  (
     reg [14:0] wen;
     // wire [15:0] wen;
     wire [31:0] reg_file [0:15];
-    // assign wen = wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
+    // assign wen = wbu_valid? (15'b1 << i_rd) : 15'b0; // 写使能信号
 
     always @(*) begin
         if (wbu_valid) begin
