@@ -48,12 +48,13 @@ parameter CACHE_BLOCK_COUNT = CACHE_BLOCK_SIZE / 4;
 // parameter n                 = $clog2(CACHE_BLOCK_BANK);
 parameter m                 = 4;
 parameter n                 = 2;
+/* verilator lint_off UNUSEDPARAM */
 parameter SDRAM_BASE_ADDR   = 32'ha0000000;
 parameter SDRAM_SIZE        = 32'h20000000;
-`ifdef PLATFORM_NPC
-wire                          sdram_valid = 1;
+/* verilator lint_on UNUSEDPARAM */
+`ifdef PLATFORM_YSYXSOC
+wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
 `else 
-// wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
 wire                          sdram_valid = 1;
 `endif
 wire [31:m+n]                 addr_tag       = pc_addr[31:m+n];
@@ -157,7 +158,7 @@ always @(posedge clock) begin
     icache_data[3][1]  <= icache_data[3][1];
     icache_data[3][2]  <= icache_data[3][2];
     icache_data[3][3]  <= icache_data[3][3];
-    
+
     if (reset) begin
         // for (i = 0; i < CACHE_BLOCK_BANK; i = i + 1) begin
         //     icache_valid[i] <= 1'b0;

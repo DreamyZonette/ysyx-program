@@ -15,7 +15,8 @@ static inline int check_reg_idx(int idx) {
 static inline uint32_t get_register_value (int idx) {
   #ifdef PLATFORM_YSYXSOC
   switch (idx) {
-    case 0: return top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__gpr_u__DOT__zero;
+    case 0: return 0;
+    // case 0: return top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__gpr_u__DOT__zero;
     case 1: return top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__gpr_u__DOT__ra;
     case 2: return top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__gpr_u__DOT__sp;
     case 3: return top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__gpr_u__DOT__gp;
@@ -36,7 +37,8 @@ static inline uint32_t get_register_value (int idx) {
 
   #else
   switch (idx) {
-    case 0: return top->rootp->ysyx_25020042__DOT__gpr_u__DOT__zero;
+    case 0: return 0;
+    // case 0: return top->rootp->ysyx_25020042__DOT__gpr_u__DOT__zero;
     case 1: return top->rootp->ysyx_25020042__DOT__gpr_u__DOT__ra;
     case 2: return top->rootp->ysyx_25020042__DOT__gpr_u__DOT__sp;
     case 3: return top->rootp->ysyx_25020042__DOT__gpr_u__DOT__gp;
@@ -58,13 +60,15 @@ static inline uint32_t get_register_value (int idx) {
 }
 
 #ifdef PLATFORM_YSYXSOC
-#define _mstatus_data_ top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__csr_u__DOT__mstatus
+#define _mstatus_data_ 0x1800
+// #define _mstatus_data_ top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__csr_u__DOT__mstatus
 #define _mtvec_data_ top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__csr_u__DOT__mtvec
 #define _mepc_data_ top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__csr_u__DOT__mepc
 #define _mcause_data_ top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__csr_u__DOT__mcause
 
 #else
-#define _mstatus_data_ top->rootp->ysyx_25020042__DOT__csr_u__DOT__mstatus
+#define _mstatus_data_ 0x1800
+// #define _mstatus_data_ top->rootp->ysyx_25020042__DOT__csr_u__DOT__mstatus
 #define _mtvec_data_ top->rootp->ysyx_25020042__DOT__csr_u__DOT__mtvec
 #define _mepc_data_ top->rootp->ysyx_25020042__DOT__csr_u__DOT__mepc
 #define _mcause_data_ top->rootp->ysyx_25020042__DOT__csr_u__DOT__mcause

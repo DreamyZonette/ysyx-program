@@ -1,5 +1,4 @@
-`timescale 1ns/1ns 
-   module ysyx_25020042 (
+module ysyx_25020042 (
         input             clock            ,
         input             reset            ,
         /* verilator lint_off UNUSEDSIGNAL */
@@ -121,9 +120,7 @@ assign io_slave_rid = 4'b0;
 //------------------------------------------
 // 模块间握手信号
 //------------------------------------------
-    wire pc_valid;
     wire ifu_valid;
-    wire ifu_ready;
     wire idu_valid;
     wire idu_ready;
     wire exu_valid;
@@ -156,7 +153,6 @@ assign io_slave_rid = 4'b0;
     wire [31:0] src2;
     wire [5:0] shamt;
     wire [31:0] jump_pc;
-    wire [31:0] pc;
     wire [31:0] instruction;
     wire [31:0] exu_data;
     wire [31:0] lsu_data;
@@ -166,8 +162,8 @@ assign io_slave_rid = 4'b0;
     wire [31:0] mtvec;
     wire [31:0] mepc;
     wire [31:0] mcause_wdata;
-    wire [31:0] mstatus_wdata = 32'h0;
-    wire [31:0] mtvec_wdata = 32'h0;
+    // wire [31:0] mstatus_wdata = 32'h0;
+    // wire [31:0] mtvec_wdata;
     wire [31:0] mepc_wdata;
     wire [31:0] csr_wdata;
     wire [4:0]  rs1;
@@ -599,22 +595,6 @@ ysyx_25020042_clint clint_u (
     .slave_bid(io_clint_bid)
 );
 //------------------------------------------
-// PC实例化
-//------------------------------------------
-ysyx_25020042_PC PC_u(
-    .clock(clock),
-    .reset(reset),
-    .ifu_ready(ifu_ready),
-    .ifu_handsake(ifu_valid & idu_ready),
-    .fault(fault),
-    .pc_valid(pc_valid),
-    .i_fast_jump_valid(fast_jump_valid),
-    .i_fast_jump_pc(fast_jump_pc),
-    .i_jump_pc(jump_pc),
-    .i_jump_valid(jump_valid),
-    .o_pc(pc)
-);
-//------------------------------------------
 // IFU实例化
 //------------------------------------------
 
@@ -622,14 +602,16 @@ ysyx_25020042_PC PC_u(
 ysyx_25020042_IFU IFU_u (
     .clock(clock),
     .reset(reset),
-    .pc_valid(pc_valid),
     .idu_ready(idu_ready),
     .ifu_valid(ifu_valid),
-    .ifu_ready(ifu_ready),
 
     .i_jump_valid(jump_valid),
-    .i_pc(pc),
+    .i_jump_pc(jump_pc),
+    .i_fast_jump_pc(fast_jump_pc),
+    .i_fast_jump_valid(fast_jump_valid),
+
     .fencei_signal(fencei_signal),
+    .fault(fault),
     .o_instruction(instruction),
     .o_pc_data(ifu_to_idu_pc_data),
     .o_IFU_Exception_Handling(IFU_Exception_Handling0),
@@ -920,9 +902,9 @@ ysyx_25020042_csr csr_u (
     .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),
     .i_wbu_csr_addr(wbu_csr_addr),
-    .i_mstatus_wdata(mstatus_wdata),
+    // .i_mstatus_wdata(mstatus_wdata),
     .i_mcause_wdata(mcause_wdata),
-    .i_mtvec_wdata(mtvec_wdata),
+    // .i_mtvec_wdata(mtvec_wdata),
     .i_mepc_wdata(mepc_wdata),
     .wbu_valid(wbu_valid),
     .o_mtvec(mtvec),

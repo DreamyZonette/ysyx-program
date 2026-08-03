@@ -1,4 +1,4 @@
-`timescale 1ns/1ns 
+
 // `define LSU_MTRACE
 module ysyx_25020042_LSU(
     input                           clock,
@@ -341,13 +341,13 @@ always @(posedge clock) begin
                 else begin
                     state <= IDLE;
 
-                    if (lsu_rready) begin
+                    // if (lsu_rready) begin
                         lsu_rready <= 1'b0;
-                    end
+                    // end
 
-                    if (lsu_bready) begin
+                    // if (lsu_bready) begin
                         lsu_bready <= 1'b0;
-                    end
+                    // end
 
                     if(lsu_valid & wbu_ready ) begin
                         lsu_ready <= 1'b1;
@@ -372,9 +372,9 @@ always @(posedge clock) begin
                     end
                 `endif
                 `endif
-                if(lsu_arready) begin
-                    lsu_arvalid <= 1'b0;
-                end
+                // if(lsu_arready) begin
+                    lsu_arvalid <= lsu_arready ? 1'b0 : lsu_arvalid;
+                // end
                 
                 if(lsu_awready & lsu_wready) begin
                     lsu_awvalid <= 1'b0;
@@ -382,7 +382,7 @@ always @(posedge clock) begin
                     lsu_wlast <= 1'b0;
                 end
 
-                if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
+                else if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
                     lsu_rready <= 1'b0;
                     lsu_valid <= 1'b1;
                     rresp <= lsu_rresp;

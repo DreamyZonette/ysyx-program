@@ -4,8 +4,8 @@ ifeq ($(PLATFORM),ysyxsoc)
 else 
 	TOP_NAME = ysyx_25020042
 endif
-IMG ?= /home/long/ysyx-workbench/npc/demo/tests/char-test.bin
-#IMG ?= 
+# IMG ?= /home/long/ysyx-workbench/npc/demo/tests/char-test.bin
+IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
@@ -137,6 +137,8 @@ $(BIN):$(VSRCS) $(CSRCS)
 		-o $(abspath $(BIN))
 endif
 
+verilog:sum
+
 sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	
@@ -150,7 +152,7 @@ wave: $(BUILD_DIR)/wave.fst
 	
 	gtkwave $(BUILD_DIR)/wave.fst
 
-PHONY: clean test adapt cleanwave perf sum 
+PHONY: clean test adapt cleanwave perf sum verilog
 
 
 adapt: sim

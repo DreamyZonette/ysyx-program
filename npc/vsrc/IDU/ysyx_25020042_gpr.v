@@ -1,23 +1,26 @@
-`timescale 1ns/1ns 
+
 module ysyx_25020042_gpr  (
     input clock,
     input reset,   
     /* verilator lint_off UNUSEDSIGNAL */
     input  [4:0] i_rs1,
     input  [4:0] i_rs2,
-    /* verilator lint_on UNUSEDSIGNAL */
     input  [4:0] i_rd,
+    /* verilator lint_on UNUSEDSIGNAL */
     input  [31:0] i_data,
     input  wbu_valid,
     output [31:0] o_src1,
     output [31:0] o_src2
     );
     
-    wire [15:0] wen;
-    wire [31:0] reg_file [0:15];
-    assign wen = wbu_valid? (16'b1 << i_rd) : 16'b0; // 写使能信号
+    wire [14:0] wen;
+   /* verilator lint_off UNUSEDSIGNAL */
+    wire [15:0] wen16 = wbu_valid ? (16'b1 << i_rd[3:0]) >> 1 : 16'b0;
+    /* verilator lint_on UNUSEDSIGNAL */
+    assign wen = wen16[14:0];
 
-    reg [31:0] zero;
+    wire [31:0] reg_file [0:15];
+    // reg [31:0] zero;
     reg [31:0] ra;  
     reg [31:0] sp; 
     reg [31:0] gp;  
@@ -35,42 +38,42 @@ module ysyx_25020042_gpr  (
     reg [31:0] a5; 
     always @(posedge clock) begin
         if (reset) begin
-            zero <= 32'b0;
-            // ra   <= 32'b0;
-            // sp   <= 32'b0;
-            // gp   <= 32'b0;
-            // tp   <= 32'b0;
-            // t0   <= 32'b0;
-            // t1   <= 32'b0;
-            // t2   <= 32'b0;
-            // s0   <= 32'b0;
-            // s1   <= 32'b0;
-            // a0   <= 32'b0;
-            // a1   <= 32'b0;
-            // a2   <= 32'b0;
-            // a3   <= 32'b0;
-            // a4   <= 32'b0;
-            // a5   <= 32'b0;
+            // zero <= 32'b0;
+            ra   <= 32'b0;
+            sp   <= 32'b0;
+            gp   <= 32'b0;
+            tp   <= 32'b0;
+            t0   <= 32'b0;
+            t1   <= 32'b0;
+            t2   <= 32'b0;
+            s0   <= 32'b0;
+            s1   <= 32'b0;
+            a0   <= 32'b0;
+            a1   <= 32'b0;
+            a2   <= 32'b0;
+            a3   <= 32'b0;
+            a4   <= 32'b0;
+            a5   <= 32'b0;
         end else begin
-            if (wen[0]) zero   <= 0;
-            if (wen[1]) ra   <= i_data;
-            if (wen[2]) sp   <= i_data;
-            if (wen[3]) gp   <= i_data;
-            if (wen[4]) tp   <= i_data;
-            if (wen[5]) t0   <= i_data;
-            if (wen[6]) t1   <= i_data;
-            if (wen[7]) t2   <= i_data;
-            if (wen[8]) s0   <= i_data;
-            if (wen[9]) s1   <= i_data;
-            if (wen[10]) a0  <= i_data;
-            if (wen[11]) a1  <= i_data;
-            if (wen[12]) a2  <= i_data;
-            if (wen[13]) a3  <= i_data;
-            if (wen[14]) a4  <= i_data;
-            if (wen[15]) a5  <= i_data;
+            // if (wen[0]) zero   <= 0;
+            if (wen[0]) ra   <= i_data;
+            if (wen[1]) sp   <= i_data;
+            if (wen[2]) gp   <= i_data;
+            if (wen[3]) tp   <= i_data;
+            if (wen[4]) t0   <= i_data;
+            if (wen[5]) t1   <= i_data;
+            if (wen[6]) t2   <= i_data;
+            if (wen[7]) s0   <= i_data;
+            if (wen[8]) s1   <= i_data;
+            if (wen[9]) a0  <= i_data;
+            if (wen[10]) a1  <= i_data;
+            if (wen[11]) a2  <= i_data;
+            if (wen[12]) a3  <= i_data;
+            if (wen[13]) a4  <= i_data;
+            if (wen[14]) a5  <= i_data;
         end
     end
-    assign reg_file [0] = zero;
+    assign reg_file [0] = 32'h0;
     assign reg_file [1] = ra;
     assign reg_file [2] = sp;
     assign reg_file [3] = gp;

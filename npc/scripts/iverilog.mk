@@ -7,19 +7,25 @@ OBJCOPY := riscv64-linux-gnu-objcopy
 AM_HOME ?= /home/long/ysyx-workbench/abstract-machine
 CPU_TEST_PATH := /home/long/ysyx-workbench/am-kernels/tests/cpu-tests/build/
 IMAGE ?= movsx
-# SIM_IMG ?= $(CPU_TEST_PATH)$(IMAGE)-riscv32e-npc.bin ## cputest
-# SIM_IMG ?= /home/long/ysyx-workbench/am-kernels/tests/am-tests/build/amtest-riscv32e-npc.bin
-SIM_IMG ?= /home/long/ysyx-workbench/am-kernels/benchmarks/microbench/build/microbench-riscv32e-npc.bin ## microbench
-# SIM_IMG ?= /home/long/clone/rt-thread-am/bsp/abstract-machine/build/rtthread-riscv32e-npc.bin ## RTT 
+# IMG ?= $(CPU_TEST_PATH)$(IMAGE)-riscv32e-npc.bin ## cputest
+# IMG ?= /home/long/ysyx-workbench/am-kernels/tests/am-tests/build/amtest-riscv32e-npc.bin
+IMG ?= /home/long/ysyx-workbench/am-kernels/benchmarks/microbench/build/microbench-riscv32e-npc.bin ## microbench
+# IMG ?= /home/long/clone/rt-thread-am/bsp/abstract-machine/build/rtthread-riscv32e-npc.bin ## RTT 
 SIM_BIN_TMP := $(WORK_DIR)/simulation/build/$(IMAGE)-iverilog.tmp
 SIM_HEX := $(WORK_DIR)/simulation/build/iverilog_npc.hex
 EXCLUDE_FILES := \
-    /home/long/ysyx-workbench/npc/vsrc/device/uart.v \
-    /home/long/ysyx-workbench/npc/vsrc/crossbar.v
-SIM_VSRCS := $(filter-out $(EXCLUDE_FILES), $(VSRCS))
-SIM_VSRCS_NET := /home/long/clone/yosys-sta/result/ysyx_25020042-100MHz/ysyx_25020042.netlist.v.sim \
-    /home/long/clone/yosys-sta/pdk/nangate45/sim/cells.v \
-    /home/long/ysyx-workbench/npc/vsrc/device/ysyx_25020042_mem.v
+    $(WORK_DIR)/vsrc/device/uart.v \
+    $(WORK_DIR)/vsrc/crossbar.v \
+    $(WORK_DIR)/vsrc/IFU/ysyx_25020042_PC.v
+SIM_VSRCS := $(WORK_DIR)/vsrc/device/ysyx_25020042_mem.v \
+	$(WORK_DIR)/build/ysyx_25020042.v
+
+NETLIST ?= /home/long/clone/yosys-sta2/result/ysyx_25020042-500MHz/ysyx_25020042.netlist.fixed.v
+CELLS ?= /home/long/clone/yosys-sta2/nangate45/sim/cells.v
+
+SIM_VSRCS_NET :=  $(NETLIST) \
+    $(CELLS) \
+    $(WORK_DIR)/vsrc/device/ysyx_25020042_mem.v
 
 
 IVERILOG_PRE_FLAGS ?= -Wall -g2012 
@@ -30,14 +36,12 @@ iwave: $(WORK_DIR)/simulation/build/npc_wave.vcd
 
 # $(WORK_DIR)/simulation/build/npc_wave.vcd: iverilog
 
-iverilog: $(SIM_HEX) $(TARGET)
+sim-iverilog: $(SIM_HEX) $(TARGET)
 	vvp $(TARGET)
-	@echo + RUN netlist simulation...
-	$(MAKE) netlist
 
-netlist: $(SIM_HEX) $(TARGET_NET)
+sim-iverilog-netlist: $(SIM_HEX) $(TARGET_NET)
 	@echo + RUN yosys-sta...
-	$(MAKE) sta -C /home/long/clone/yosys-sta
+	@$(MAKE) sta -s -C /home/long/clone/yosys-sta2
 	vvp $(TARGET_NET)
 
 $(TARGET): $(TB_FILE) $(SIM_VSRCS)
@@ -48,10 +52,10 @@ $(TARGET_NET): $(TB_FILE) $(SIM_VSRCS_NET)
 	@mkdir -p $(WORK_DIR)/simulation/build
 	$(IVERILOG) $(IVERILOG_PRE_FLAGS) $^ -o $(TARGET_NET)
 
-$(SIM_HEX): $(SIM_IMG)
+$(SIM_HEX): $(IMG)
 	@mkdir -p $(WORK_DIR)/simulation/build
 	@echo + COPY "->" $(SIM_BIN_TMP)
-	@cp $(SIM_IMG) $(SIM_BIN_TMP)
+	@cp $(IMG) $(SIM_BIN_TMP)
 	@echo + OBJCOPY "->" $(SIM_HEX) "(verilog hex)"
 	@$(OBJCOPY) -I binary -O verilog $(SIM_BIN_TMP) $(SIM_HEX)
 	@rm -f $(SIM_BIN_TMP)

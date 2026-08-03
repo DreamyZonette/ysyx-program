@@ -1,15 +1,17 @@
-`timescale 1ns/1ns 
+
 module ysyx_25020042_IFU(
     input                  clock,
     input                  reset,
-    input                  pc_valid,
     input                  idu_ready,
     output reg             ifu_valid,
-    output reg             ifu_ready,
 
     input                  i_jump_valid,
-    input      [31:0]      i_pc,
+    input      [31:0]      i_jump_pc,
+    input                  i_fast_jump_valid,
+    input      [31:0]      i_fast_jump_pc,
+
     input                  fencei_signal,
+    input                  fault,
     output reg [31:0]      o_instruction,
     output wire [31:0]     o_pc_data    ,
     output [2:0]           o_IFU_Exception_Handling,
@@ -99,15 +101,81 @@ wire Instruction_access_fault;
 wire Instruction_page_fault;
 wire instruction_ready;
 wire [31:0] instruction;
+reg ifu_ready;
 reg state ;
 reg Control_Hazard;
 localparam IDLE  = 1'b0;
 localparam READY = 1'b1;
 
-assign o_pc_data = i_pc;
+//-----------------pc------------------
+reg [31:0] pc;
+// reg [31:0] next_pc;
+reg pc_valid;
+always @(posedge clock) begin
+        if (reset)begin
+            `ifdef PLATFORM_YSYXSOC
+            pc <= 32'h3000_0000;
+            `else
+            // pc <= 32'h3000_0000;
+            pc <= 32'h8000_0000;
+            `endif
+        end 
+        else if (fault)begin
+            pc <= 0;
+        end
+        else if (i_jump_valid) begin
+            pc <= i_jump_pc;
+        end
+        else if (i_fast_jump_valid) begin
+            pc <= i_fast_jump_pc;
+        end
+        else if (ifu_valid & idu_ready)begin
+            pc <= pc + 4;
+        end
+    end
+
+// always @(posedge clock) begin
+//         if (reset) begin
+//             `ifdef PLATFORM_NPC
+//             next_pc <= 32'h8000_0004;
+//             `else
+//             // next_pc <= 32'h3000_0004;
+//             next_pc <= 32'h8000_0004;
+
+//             `endif
+//         end
+//         else if (i_jump_valid) begin
+//             next_pc <= i_jump_pc + 4;
+//         end
+//         else if (i_fast_jump_valid) begin
+//             next_pc <= i_fast_jump_pc + 4;
+//         end
+//         else if (ifu_ready & pc_valid) begin
+//             next_pc <= pc + 4;
+//         end
+//         else begin
+//             next_pc <= next_pc;
+//         end
+//     end
+
+always @(posedge clock) begin
+        if (reset)begin
+            pc_valid <= 1'b1;
+        end 
+        else if (ifu_valid & idu_ready) 
+            pc_valid <= 1'b1;
+        else if (i_jump_valid)
+            pc_valid <= 1'b1;
+        else 
+            pc_valid <= ifu_ready ? 1'b0 :pc_valid;
+            
+    end
+
+//-----------------ifu-------------------
+assign o_pc_data = pc;
 assign o_IFU_Exception_Handling = {Instruction_page_fault, Instruction_access_fault, Instruction_address_misaligned};
 assign Instruction_page_fault = 1'b0;
-assign Instruction_address_misaligned = |i_pc[1:0];
+assign Instruction_address_misaligned = |pc[1:0];
 
 always @(posedge clock) begin
     if(reset) begin
@@ -155,14 +223,6 @@ always @(posedge clock) begin
         else begin
             Control_Hazard <= Control_Hazard;
         end
-        // if(i_jump_valid && ((state == READY) || (pc_valid & ifu_ready))) begin
-        //     Control_Hazard <= 1'b1;
-        //     if (instruction_ready) begin
-        //         Control_Hazard <= 1'b0;
-        //     end
-        // end
-        // if (Control_Hazard & instruction_ready)
-        //     Control_Hazard <= 1'b0;
     end
 end
 
@@ -225,7 +285,7 @@ ysyx_25020042_icache #(
     .clock            (clock),
     .reset            (reset),
     .pc_valid         (pc_valid & ifu_ready),
-    .pc_addr          (i_pc),
+    .pc_addr          (pc),
     .fencei_signal    (fencei_signal),
     `ifdef VERILATOR
     .icache_hit_count (o_icache_hit_count),
