@@ -6,6 +6,7 @@
 !/nanos-lite/*
 !/navy-apps/*
 !/ysyxSoC/*
+!/patch/*
 !/npc/*
 !Makefile
 !README.md
