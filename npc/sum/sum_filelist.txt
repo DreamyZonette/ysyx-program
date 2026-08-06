@@ -1,0 +1,13 @@
+/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042.v
+/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_icache.v
+/home/long/ysyx-workbench/npc/vsrc/IFU/ysyx_25020042_IFU.v
+/home/long/ysyx-workbench/npc/vsrc/IDU/ysyx_25020042_IDU.v
+/home/long/ysyx-workbench/npc/vsrc/IDU/ysyx_25020042_gpr.v
+/home/long/ysyx-workbench/npc/vsrc/EXU/ysyx_25020042_EXU.v
+/home/long/ysyx-workbench/npc/vsrc/EXU/ysyx_25020042_alu.v
+/home/long/ysyx-workbench/npc/vsrc/LSU/ysyx_25020042_LSU.v
+/home/long/ysyx-workbench/npc/vsrc/WBU/ysyx_25020042_WBU.v
+/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042_axi_arbiter.v
+/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042_csr.v
+/home/long/ysyx-workbench/npc/vsrc/ysyx_25020042_data_branch.v
+/home/long/ysyx-workbench/npc/vsrc/device/ysyx_25020042_clint.v
