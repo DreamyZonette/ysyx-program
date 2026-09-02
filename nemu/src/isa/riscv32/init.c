@@ -28,7 +28,11 @@ static const uint32_t img [] = {
 
 static void restart() {
   /* Set the initial program counter. */
+  #ifdef CONFIG_YSYXSOC
+  cpu.pc = FLASH_RESET_VECTOR;
+  #else
   cpu.pc = RESET_VECTOR;
+  #endif
 
   /* The zero register is always 0. */
   cpu.gpr[0] = 0;
@@ -36,7 +40,11 @@ static void restart() {
 
 void init_isa() {
   /* Load built-in image. */
+  #ifdef CONFIG_YSYXSOC
+  memcpy(flash_guest_to_host(FLASH_RESET_VECTOR), img, sizeof(img));
+  #else
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
+  #endif
 
   /* Initialize this virtual computer system. */
   restart();

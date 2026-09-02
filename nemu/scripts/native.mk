@@ -28,7 +28,7 @@ override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
 override ARGS += $(ARGS_DIFF)
 
 # Command to execute NEMU
-IMG ?=
+IMG ?= 
 NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
 run-env: $(BINARY) $(DIFF_REF_SO)
@@ -48,3 +48,9 @@ clean-tools: $(clean-tools)
 clean-all: clean distclean clean-tools
 
 .PHONY: run gdb run-env clean-tools clean-all $(clean-tools)
+
+count:
+	find . \( -name "*.c" -o -name "*.h" \) -exec cat {} + | grep -c '.*'
+	
+cachesim:
+	grep -oP '^0x[0-9a-f]{8}(?=:)' $(NEMU_HOME)/build/nemu-log.txt > $(NEMU_HOME)/build/addresses.txt

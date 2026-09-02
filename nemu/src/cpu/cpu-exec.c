@@ -17,6 +17,8 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
+#include <memory/vaddr.h>
+#include "../monitor/sdb/sdb.h"
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -25,7 +27,15 @@
  */
 #define MAX_INST_TO_PRINT 10
 
-CPU_state cpu = {};
+CPU_state cpu = {
+  // .pc = 0x80000000,
+  .mstatus = 0x1800,
+  .mepc = 0,
+  .mcause = 0,
+  .mtvec = 0,
+  .mvendorid = 0x79737978,
+  .marchid = 0x017DC68A,
+};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
@@ -38,13 +48,57 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+
+#ifdef CONFIG_WATCHPOINT
+	 // 检查监视点
+	 for (int i = 0; i < NR_WP; i ++) {
+		 if (wp_pool[i].is_used) {
+			 bool success = false;
+			 //测试断点
+				if (!wp_pool[i].is_watchpoint) {
+					int arrive = expr(wp_pool[i].expr, &success);
+					if (success){
+						if (arrive){
+							printf("pc达到断点值%x\n", cpu.pc);
+							nemu_state.state = NEMU_STOP;	
+						}
+					}
+					else {
+						printf("Expr error.");
+						assert(0);
+					}
+				}
+				//测试监视点
+				else{
+					wp_pool[i].cur_value = expr(wp_pool[i].expr, &success);
+					// 判断求值是否成功
+					if (success)
+					{
+						// 判断前后的值是否相同
+						if (wp_pool[i].cur_value !=  wp_pool[i].prev_value) {
+							printf("Watchpoint %d: %s changed\n  Old value: 0x%x\n  New value: 0x%x\n",
+									wp_pool[i].NO, wp_pool[i].expr, wp_pool[i].prev_value, wp_pool[i].cur_value);
+
+							nemu_state.state = NEMU_STOP;// 暂停nemu
+							wp_pool[i].prev_value = wp_pool[i].cur_value;// 更新旧值
+						}
+					}
+					else {
+						printf("Expr error.");
+						assert(0);
+					}
+				}
+		 }
+	 }
+#endif
 }
 
-static void exec_once(Decode *s, vaddr_t pc) {
+void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
   cpu.pc = s->dnpc;
+  
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
@@ -69,9 +123,16 @@ static void exec_once(Decode *s, vaddr_t pc) {
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
 #endif
+#ifdef CONFIG_IRINGBUF
+  // 将指令添加到环形缓冲区
+  // word_t vaddr_read(vaddr_t addr, int len);
+  uint32_t iringbuf_inst = vaddr_read(pc, 4);
+  iringbuf_add_inst(s->pc, iringbuf_inst, p);
+#endif
+
 }
 
-static void execute(uint64_t n) {
+void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
     exec_once(&s, cpu.pc);
@@ -92,7 +153,11 @@ static void statistic() {
 }
 
 void assert_fail_msg() {
+#ifdef CONFIG_IRINGBUF
+  print_iringbuf(cpu.pc);
+#else
   isa_reg_display();
+#endif
   statistic();
 }
 
@@ -122,6 +187,11 @@ void cpu_exec(uint64_t n) {
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
+          #ifdef CONFIG_IRINGBUF
+            if(nemu_state.state == NEMU_ABORT){
+              print_iringbuf(nemu_state.halt_pc);
+            }
+          #endif
       // fall through
     case NEMU_QUIT: statistic();
   }

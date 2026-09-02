@@ -1,3 +1,4 @@
+#include <am.h>
 #include <klib.h>
 
 #ifndef __ISA_NATIVE__

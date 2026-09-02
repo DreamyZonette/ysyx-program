@@ -99,8 +99,7 @@ static void init_platform() {
       // allocate temporary memory
       extern char end;
       void *vaddr = (void *)&end - phdr[i].p_memsz;
-      uintptr_t page_size = sysconf(_SC_PAGESIZE);
-      uintptr_t pad = (uintptr_t)vaddr & (page_size - 1);
+      uintptr_t pad = (uintptr_t)vaddr & 0xfff;
       void *vaddr_align = vaddr - pad;
       uintptr_t size = phdr[i].p_memsz + pad;
       void *temp_mem = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);

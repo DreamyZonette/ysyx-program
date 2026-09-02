@@ -33,6 +33,7 @@ static uint32_t screen_size() {
 
 static void *vmem = NULL;
 static uint32_t *vgactl_port_base = NULL;
+#define AM_SYNC_ADDR (CONFIG_VGA_CTL_MMIO + 4)
 
 #ifdef CONFIG_VGA_SHOW_SCREEN
 #ifndef CONFIG_TARGET_AM
@@ -74,6 +75,15 @@ static inline void update_screen() {
 void vga_update_screen() {
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
+  if (vgactl_port_base == NULL) return;
+    
+    // 检查同步寄存器是否被设置
+    if (vgactl_port_base[1] != 0) {
+      IFDEF(CONFIG_VGA_SHOW_SCREEN, update_screen());
+      // printf("vga: update screen: %d\n", vgactl_port_base[1]);
+        
+      vgactl_port_base[1] = 0;
+    }
 }
 
 void init_vga() {

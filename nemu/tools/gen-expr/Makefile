@@ -12,6 +12,11 @@
 #
 # See the Mulan PSL v2 for more details.
 #**************************************************************************************/
+g:gen-expr.c
+	gcc gen-expr.c -o gen
+
+f:
+	gcc func.c -o gen
 
 NAME = gen-expr
 SRCS = gen-expr.c

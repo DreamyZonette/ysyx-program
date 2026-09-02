@@ -15,18 +15,10 @@
 
 REPO_PATH = repo
 ifeq ($(wildcard repo/include/capstone/capstone.h),)
-  $(shell git clone --depth=1 -b 5.0.6 git@github.com:capstone-engine/capstone.git $(REPO_PATH))
+  $(shell git clone --depth=1 -b 5.0.3 git@github.com:capstone-engine/capstone.git $(REPO_PATH))
 endif
 
-ifeq ($(shell uname -s),Linux)
-suffix = so.5
-else ifeq ($(shell uname -s),Darwin)
-suffix = 5.dylib
-else
-  $(error Unsupported OS ($(shell uname -s)))
-endif
-
-CAPSTONE = $(REPO_PATH)/libcapstone.$(suffix)
+CAPSTONE = $(REPO_PATH)/libcapstone.so.5
 $(CAPSTONE):
 	cd $(REPO_PATH) && CAPSTONE_ARCHS="x86|mips|riscv|loongarch" bash make.sh
 

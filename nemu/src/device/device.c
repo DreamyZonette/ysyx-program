@@ -40,8 +40,13 @@ void device_update() {
     return;
   }
   last = now;
-
   IFDEF(CONFIG_HAS_VGA, vga_update_screen());
+
+#ifdef CONFIG_HAS_AUDIO
+  // 添加音频更新处理
+  extern void audio_update(void);
+  audio_update();
+#endif
 
 #ifndef CONFIG_TARGET_AM
   SDL_Event event;
