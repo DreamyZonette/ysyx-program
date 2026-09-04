@@ -51,6 +51,7 @@ LDFLAGS += -lreadline -ltinfo -lSDL2
 
 ifeq ($(PLATFORM),ysyxsoc)
 	CFLAGS += -DPLATFORM_YSYXSOC
+	VFLAGS += -DPLATFORM_YSYXSOC
 	CSRCS += $(filter-out $(EXCLUDE_DIR)/%, $(ALL_CSRCS))
 	VFLAGS += $(NVBOARD_FLAGS)
 	VFLAGS += -I$(VPATH) -I$(SOC_HOME)/perip/uart16550/rtl -I$(SOC_HOME)/perip/spi/rtl
