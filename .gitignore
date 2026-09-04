@@ -11,6 +11,6 @@
 !.gitignore
 !init.sh
 /fceux-am
-/riscv-tests
 /nvboard
 /am-kernels
+/riscv-tests
