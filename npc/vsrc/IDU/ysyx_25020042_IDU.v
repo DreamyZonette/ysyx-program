@@ -164,11 +164,10 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset) begin
-            o_imm <= 32'b0;
-        end
-            // o_imm <= 32'b0;
-        else if (i_jump_valid) begin
+        // if (reset) begin
+        //     o_imm <= 32'b0;
+        // end
+        if (i_jump_valid) begin
             o_imm <= 32'b0;
         end
 
@@ -185,10 +184,10 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset) begin
-            o_rs1 <= 5'b0;
-        end
-        else if (i_jump_valid)
+        // if (reset) begin
+        //     o_rs1 <= 5'b0;
+        // end
+        if (i_jump_valid)
             o_rs1 <= 5'b0;
         else if (ifu_valid & idu_ready) begin
             if (r_type_signal | i_type_signal | j_type_signal | b_type_signal | s_type_signal)
@@ -209,10 +208,10 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset) begin
-            o_rs2 <= 5'b0;
-        end
-        else if (i_jump_valid)
+        // if (reset) begin
+        //     o_rs2 <= 5'b0;
+        // end
+        if (i_jump_valid)
             o_rs2 <= 5'b0;
         else if (ifu_valid & idu_ready) begin
             if (b_type_signal | s_type_signal | r_type_signal)
@@ -223,13 +222,13 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset) begin
-            o_pc_data <= 32'b0;
-            `ifdef VERILATOR
-                o_instruction_data <= 32'b0;
-            `endif
-        end
-        else if (i_jump_valid) begin
+        // if (reset) begin
+        //     o_pc_data <= 32'b0;
+        //     `ifdef VERILATOR
+        //         o_instruction_data <= 32'b0;
+        //     `endif
+        // end
+        if (i_jump_valid) begin
             o_pc_data <= 32'b0;
                 `ifdef VERILATOR
                     o_instruction_data <= 32'b0;
@@ -244,10 +243,10 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset) begin
-            o_rd <= 5'b0;
-        end
-        else if (i_jump_valid)
+        // if (reset) begin
+        //     o_rd <= 5'b0;
+        // end
+        if (i_jump_valid)
             o_rd <= 5'b0;
         else if (ifu_valid & idu_ready) begin
             if (r_type_signal | i_type_signal | u_type_signal | j_type_signal) 
@@ -258,11 +257,11 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset) begin
-            o_csr_addr <= 12'b0;
-        end
+        // if (reset) begin
+        //     o_csr_addr <= 12'b0;
+        // end
             
-        else if (i_jump_valid)
+        if (i_jump_valid)
             o_csr_addr <= 12'b0;
         else if (ifu_valid & idu_ready) begin
             if (csr_valid)
@@ -273,11 +272,11 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset) begin
-            o_shamt <= 6'b0;
-        end
+        // if (reset) begin
+        //     o_shamt <= 6'b0;
+        // end
             
-        else if (i_jump_valid)
+        if (i_jump_valid)
             o_shamt <= 6'b0;
         else if (ifu_valid & idu_ready) begin
             o_shamt <= {1'b0, shamt};
@@ -285,10 +284,10 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset) begin
-            o_instruction_out     <= 8'b0;
-        end
-        else if (i_jump_valid)
+        // if (reset) begin
+        //     o_instruction_out     <= 8'b0;
+        // end
+        if (i_jump_valid)
             o_instruction_out     <= 8'b0;
         else begin
             if (ifu_valid & idu_ready) begin

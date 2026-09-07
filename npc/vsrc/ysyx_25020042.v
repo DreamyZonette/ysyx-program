@@ -897,7 +897,7 @@ ysyx_25020042_WBU WBU_u (
 //------------------------------------------
 ysyx_25020042_csr csr_u (
     .clock(clock),
-    .reset(reset),
+    // .reset(reset),
     .i_Exception_valid(Exception_valid),
     .i_csr_wdata(csr_wdata),
     .i_csr_addr(csr_addr),

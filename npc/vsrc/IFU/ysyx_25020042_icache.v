@@ -15,9 +15,9 @@ module ysyx_25020042_icache(
     input              fencei_signal    ,
     output reg         io_icache_arvalid,
     output reg [31:0]  io_icache_araddr ,
-    output reg [3:0]   io_icache_arid   ,
+    output wire [3:0]  io_icache_arid   ,
     output reg [7:0]   io_icache_arlen  ,
-    output reg [2:0]   io_icache_arsize ,
+    output wire [2:0]  io_icache_arsize ,
     output reg [1:0]   io_icache_arburst,
     output reg         io_icache_rready ,
     input              io_icache_rvalid ,
@@ -133,69 +133,34 @@ end
 // integer j;
 
 always @(posedge clock) begin
-    instruction <= instruction;
-    instruction_ready <= instruction_ready;
-
-    icache_valid[0] <= icache_valid[0];
-    icache_valid[1] <= icache_valid[1];
-    icache_valid[2] <= icache_valid[2];
-    icache_valid[3] <= icache_valid[3];
-    icache_addr[0]  <= icache_addr[0];
-    icache_addr[1]  <= icache_addr[1];
-    icache_addr[2]  <= icache_addr[2];
-    icache_addr[3]  <= icache_addr[3];
-    icache_data[0][0]  <= icache_data[0][0];
-    icache_data[0][1]  <= icache_data[0][1];
-    icache_data[0][2]  <= icache_data[0][2];
-    icache_data[0][3]  <= icache_data[0][3];
-    icache_data[1][0]  <= icache_data[1][0];
-    icache_data[1][1]  <= icache_data[1][1];
-    icache_data[1][2]  <= icache_data[1][2];
-    icache_data[1][3]  <= icache_data[1][3];
-    icache_data[2][0]  <= icache_data[2][0];
-    icache_data[2][1]  <= icache_data[2][1];
-    icache_data[2][2]  <= icache_data[2][2];
-    icache_data[2][3]  <= icache_data[2][3];
-    icache_data[3][0]  <= icache_data[3][0];
-    icache_data[3][1]  <= icache_data[3][1];
-    icache_data[3][2]  <= icache_data[3][2];
-    icache_data[3][3]  <= icache_data[3][3];
-
     if (reset) begin
-        // for (i = 0; i < CACHE_BLOCK_BANK; i = i + 1) begin
-        //     icache_valid[i] <= 1'b0;
-        //     icache_addr[i]  <= 0;
-        //     for (j = 0; j < CACHE_BLOCK_COUNT; j = j + 1) begin
-        //         icache_data[i][j]  <= 0;
-        //     end
-        // end
         icache_valid[0] <= 1'b0;
         icache_valid[1] <= 1'b0;
         icache_valid[2] <= 1'b0;
         icache_valid[3] <= 1'b0;
-        icache_addr[0]  <= 32'b0;
-        icache_addr[1]  <= 32'b0;
-        icache_addr[2]  <= 32'b0;
-        icache_addr[3]  <= 32'b0;
+        // icache_addr[0]  <= 32'b0;
+        // icache_addr[1]  <= 32'b0;
+        // icache_addr[2]  <= 32'b0;
+        // icache_addr[3]  <= 32'b0;
 
-        icache_data[0][0]  <= 32'b0;
-        icache_data[0][1]  <= 32'b0;
-        icache_data[0][2]  <= 32'b0;
-        icache_data[0][3]  <= 32'b0;
-        icache_data[1][0]  <= 32'b0;
-        icache_data[1][1]  <= 32'b0;
-        icache_data[1][2]  <= 32'b0;
-        icache_data[1][3]  <= 32'b0;
-        icache_data[2][0]  <= 32'b0;
-        icache_data[2][1]  <= 32'b0;
-        icache_data[2][2]  <= 32'b0;
-        icache_data[2][3]  <= 32'b0;
-        icache_data[3][0]  <= 32'b0;
-        icache_data[3][1]  <= 32'b0;
-        icache_data[3][2]  <= 32'b0;
-        icache_data[3][3]  <= 32'b0;
+        // icache_data[0][0]  <= 32'b0;
+        // icache_data[0][1]  <= 32'b0;
+        // icache_data[0][2]  <= 32'b0;
+        // icache_data[0][3]  <= 32'b0;
+        // icache_data[1][0]  <= 32'b0;
+        // icache_data[1][1]  <= 32'b0;
+        // icache_data[1][2]  <= 32'b0;
+        // icache_data[1][3]  <= 32'b0;
+        // icache_data[2][0]  <= 32'b0;
+        // icache_data[2][1]  <= 32'b0;
+        // icache_data[2][2]  <= 32'b0;
+        // icache_data[2][3]  <= 32'b0;
+        // icache_data[3][0]  <= 32'b0;
+        // icache_data[3][1]  <= 32'b0;
+        // icache_data[3][2]  <= 32'b0;
+        // icache_data[3][3]  <= 32'b0;
 
-        instruction <= 0;
+        // instruction <= 0;
         instruction_ready <= 1'b0;
     end
     else begin
@@ -236,21 +201,16 @@ always @(posedge clock) begin
     end
 end
 
+assign io_icache_arid = 4'b0;
+assign io_icache_arsize = 3'b010; // 4byte
+
 always @(posedge clock) begin
-    io_icache_arvalid <= io_icache_arvalid;
-    io_icache_araddr <= io_icache_araddr;
-    io_icache_arid <= io_icache_arid;
-    io_icache_arlen <= io_icache_arlen;
-    io_icache_arsize <= io_icache_arsize;
-    io_icache_arburst <= io_icache_arburst;
-    io_icache_rready <= io_icache_rready;
-    rresp <= rresp;
     if (reset) begin
-        io_icache_araddr <= 32'h0;
+        // io_icache_araddr <= 32'h0;
         io_icache_arvalid <= 1'b0;
         io_icache_rready <= 1'b0;
-        io_icache_arid <= 4'h0;
-        io_icache_arsize <= 3'b010;
+        // io_icache_arid <= 4'h0;
+        // io_icache_arsize <= 3'b010;
         io_icache_arburst <= 2'b00; 
         io_icache_arlen <= 8'h0;
         rresp <= 2'b0;

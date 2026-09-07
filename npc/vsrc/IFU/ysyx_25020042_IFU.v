@@ -266,10 +266,10 @@ always @(posedge clock) begin
 end
 
 always @(posedge clock) begin
-    if(reset) begin
-        o_instruction <= 32'h0;
-    end
-    else if (i_jump_valid)
+    // if(reset) begin
+    //     o_instruction <= 32'h0;
+    // end
+    if (i_jump_valid)
         o_instruction <= 32'h0;
     else begin
         if(state == READY && instruction_ready) begin

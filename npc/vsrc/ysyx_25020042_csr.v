@@ -1,7 +1,7 @@
 
 module ysyx_25020042_csr (
     input clock,
-    input reset,
+    // input reset,
     input i_Exception_valid,
     input [31:0] i_csr_wdata,
     input [11:0] i_csr_addr,
@@ -102,17 +102,17 @@ assign o_mepc    = mepc;
 assign mvendorid_val = 32'h79737978;
 assign marchid_val = 32'h017DC68A;
 always @(posedge clock) begin
-    if(reset) begin
-        // mstatus   <= 32'h1800;
-        mtvec     <= 32'h0;
-        // mepc      <= 32'h0;
-        mcause    <= 32'h0;
-        // mcycle    <= 32'h0;
-        // mcycleh   <= 32'h0;
-        // mvendorid <= 32'h79737978;
-        // marchid   <= 32'h017DC68A;
-    end
-    else begin
+    // if(reset) begin
+    //     // mstatus   <= 32'h1800;
+    //     mtvec     <= 32'h0;
+    //     // mepc      <= 32'h0;
+    //     mcause    <= 32'h0;
+    //     // mcycle    <= 32'h0;
+    //     // mcycleh   <= 32'h0;
+    //     // mvendorid <= 32'h79737978;
+    //     // marchid   <= 32'h017DC68A;
+    // end
+    // else begin
         // if(wen[0]) begin
         //     mstatus   <= mstatus_wdata;
         // end
@@ -127,7 +127,7 @@ always @(posedge clock) begin
         end
         // mcycle    <= mcycle_wdata;
         // mcycleh   <= mcycleh_wdata;
-    end
+    // end
 end
 
 endmodule
