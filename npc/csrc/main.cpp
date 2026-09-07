@@ -107,5 +107,6 @@ int main(int argc, char *argv[]){
     sdb_mainloop();
 
     sim_exit();
-    return 0;
+    int is_exit_status_bad();
+    return is_exit_status_bad();
 }

@@ -282,7 +282,7 @@ assign io_slave_rid = 4'b0;
     wire            io_clint_rlast  ;
     wire  [3:0]     io_clint_rid    ;
     `ifdef PLATFORM_NPC
-    // `ifdef VERILATOR
+    `ifndef  __ICARUS__
     wire            io_master_awready;
     wire            io_master_awvalid;
     wire  [31:0]    io_master_awaddr ;
@@ -312,7 +312,7 @@ assign io_slave_rid = 4'b0;
     wire  [31:0]    io_master_rdata  ;
     wire            io_master_rlast  ;
     wire  [3:0]     io_master_rid    ;
-    // `endif
+    `endif
     `endif
 //------------------------------------------
 // 性能计数器
@@ -917,7 +917,7 @@ ysyx_25020042_csr csr_u (
 //------------------------------------------
 ysyx_25020042_gpr gpr_u(
     .clock(clock),
-    .reset(reset), 
+    // .reset(reset), 
     .i_rs1(rs1),
     .i_rs2(rs2),
     .i_rd(wbu_rd),

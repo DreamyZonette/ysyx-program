@@ -37,6 +37,13 @@ module ysyx_25020042_mem(
     output reg [1:0]  slave_bresp     ,
     output reg [3:0]  slave_bid    
 );
+
+
+
+reg [2:0] state;
+reg [7:0] burst_count;
+wire [31:0] read_addr = slave_araddr + 4 * burst_count;
+
 `ifdef VERILATOR
 import "DPI-C" function int pmem_read(input int addr, input int len);
 import "DPI-C" function void pmem_write(
@@ -52,10 +59,6 @@ import "DPI-C" function void pmem_write(
     wire [31:0] raddr_fix = {raddr[31:2], 2'b0};
     wire [31:0] rdata_test = {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]};
 `endif 
-
-reg [2:0] state;
-reg [7:0] burst_count;
-wire [31:0] read_addr = slave_araddr + 4 * burst_count;
 
 localparam IDLE = 3'd0;
 localparam READ = 3'd1;

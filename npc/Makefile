@@ -47,6 +47,7 @@ NVBOARD_FLAGS :=  -MMD -O3
 LDFLAGS += -lreadline -ltinfo -lSDL2
 # LDFLAGS := -LDFLAGS "-lreadline -ltinfo -lSDL2"
 # LDFLAGS += -LDFLAGS -lSDL2
+BATCH ?= 1
 
 
 ifeq ($(PLATFORM),ysyxsoc)

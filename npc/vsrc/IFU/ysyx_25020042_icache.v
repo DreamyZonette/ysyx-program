@@ -52,6 +52,14 @@ parameter n                 = 2;
 parameter SDRAM_BASE_ADDR   = 32'ha0000000;
 parameter SDRAM_SIZE        = 32'h20000000;
 /* verilator lint_on UNUSEDPARAM */
+
+reg [32-1:0]                 icache_data[0:CACHE_BLOCK_BANK-1][0:CACHE_BLOCK_COUNT-1];
+reg [32-1:0]                 icache_addr[0:CACHE_BLOCK_BANK-1];
+reg                          icache_valid[0:CACHE_BLOCK_BANK-1];
+reg                          state;
+reg [m-1:2]                  burst_count;
+reg [1:0]                    rresp;
+
 `ifdef PLATFORM_YSYXSOC
 wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
 `else 
@@ -66,12 +74,6 @@ wire [31:m]                   burst_addr     = io_icache_araddr[31:m];
 wire [m+n-1:m]                burst_index    = burst_addr[m+n-1:m];
 wire [m-1:2]                  burst_offset   = burst_count;
 
-reg [32-1:0]                 icache_data[0:CACHE_BLOCK_BANK-1][0:CACHE_BLOCK_COUNT-1];
-reg [32-1:0]                 icache_addr[0:CACHE_BLOCK_BANK-1];
-reg                          icache_valid[0:CACHE_BLOCK_BANK-1];
-reg                          state;
-reg [m-1:2]                  burst_count;
-reg [1:0]                    rresp;
 
 localparam IDLE = 1'b0;
 localparam READ = 1'b1;

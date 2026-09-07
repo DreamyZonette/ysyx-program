@@ -27,14 +27,14 @@ always @(*) begin
     endcase
 end
 
-adder u_adder (
+ysyx_25020042_adder u_adder (
     .Add(~ALUctrl[3]),
     .x(data1),
     .y(data2),
     .sum(adder_out)
 );
 
-barrel_shifter_param u_shift (
+ysyx_25020042_barrel_shifter_param u_shift (
     .logic_en(~ALUctrl[3]),
     .Right(is_right),
     .data_i(data1),   
@@ -42,7 +42,7 @@ barrel_shifter_param u_shift (
     .data_o(shift_out)  
 );
 
-comparer u_comparer (
+ysyx_25020042_comparer u_comparer (
     .sign(~ALUctrl[3]),
     .x(data1),
     .y(data2),
@@ -51,7 +51,7 @@ comparer u_comparer (
 
 endmodule
 
-module comparer (
+module ysyx_25020042_comparer (
     input sign,
     input [31:0] x,
     input [31:0] y,
@@ -63,7 +63,7 @@ assign less_out = (x_cmp < y_cmp) ? 1'b1 : 1'b0;
 
 endmodule
 
-module adder (
+module ysyx_25020042_adder (
     input Add,
     input [31:0] x,
     input [31:0] y,
@@ -74,7 +74,7 @@ assign sum = Add ? x + y : x + ~y + 1;
 
 endmodule
 
-module barrel_shifter_param (
+module ysyx_25020042_barrel_shifter_param (
     input  logic_en,
     input  Right,
     input  [31:0] data_i,

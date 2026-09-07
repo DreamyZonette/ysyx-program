@@ -17,6 +17,15 @@ module ysyx_25020042_csr (
     output reg [31:0] o_csr_rdata
 );
 
+// reg [31:0] mstatus;  
+reg [31:0] mtvec;    
+reg [31:0] mepc;     
+reg [31:0] mcause;   
+// reg [31:0] mcycle;   
+// reg [31:0] mcycleh;  
+// reg [31:0] mvendorid;
+// reg [31:0] marchid;  
+
 // reg [5:0] wen;
 reg [3:1] wen;
 // wire [31:0] mstatus_wdata;
@@ -84,14 +93,7 @@ always @(*) begin
     
 end
 
-// reg [31:0] mstatus;  
-reg [31:0] mtvec;    
-reg [31:0] mepc;     
-reg [31:0] mcause;   
-// reg [31:0] mcycle;   
-// reg [31:0] mcycleh;  
-// reg [31:0] mvendorid;
-// reg [31:0] marchid;  
+
 assign o_mstatus = 32'h1800;
 assign o_mtvec   = mtvec;
 assign o_mepc    = mepc;

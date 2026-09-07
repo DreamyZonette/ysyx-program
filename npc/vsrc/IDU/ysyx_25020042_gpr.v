@@ -1,7 +1,7 @@
 
 module ysyx_25020042_gpr  (
     input clock,
-    input reset,   
+    // input reset,   
     /* verilator lint_off UNUSEDSIGNAL */
     input  [4:0] i_rs1,
     input  [4:0] i_rs2,
@@ -37,24 +37,24 @@ module ysyx_25020042_gpr  (
     reg [31:0] a4;  
     reg [31:0] a5; 
     always @(posedge clock) begin
-        if (reset) begin
-            // zero <= 32'b0;
-            ra   <= 32'b0;
-            sp   <= 32'b0;
-            gp   <= 32'b0;
-            tp   <= 32'b0;
-            t0   <= 32'b0;
-            t1   <= 32'b0;
-            t2   <= 32'b0;
-            s0   <= 32'b0;
-            s1   <= 32'b0;
-            a0   <= 32'b0;
-            a1   <= 32'b0;
-            a2   <= 32'b0;
-            a3   <= 32'b0;
-            a4   <= 32'b0;
-            a5   <= 32'b0;
-        end else begin
+        // if (reset) begin
+        //     // zero <= 32'b0;
+        //     ra   <= 32'b0;
+        //     sp   <= 32'b0;
+        //     gp   <= 32'b0;
+        //     tp   <= 32'b0;
+        //     t0   <= 32'b0;
+        //     t1   <= 32'b0;
+        //     t2   <= 32'b0;
+        //     s0   <= 32'b0;
+        //     s1   <= 32'b0;
+        //     a0   <= 32'b0;
+        //     a1   <= 32'b0;
+        //     a2   <= 32'b0;
+        //     a3   <= 32'b0;
+        //     a4   <= 32'b0;
+        //     a5   <= 32'b0;
+        // end else begin
             // if (wen[0]) zero   <= 0;
             if (wen[0]) ra   <= i_data;
             if (wen[1]) sp   <= i_data;
@@ -71,7 +71,7 @@ module ysyx_25020042_gpr  (
             if (wen[12]) a3  <= i_data;
             if (wen[13]) a4  <= i_data;
             if (wen[14]) a5  <= i_data;
-        end
+        // end
     end
     assign reg_file [0] = 32'h0;
     assign reg_file [1] = ra;

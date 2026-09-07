@@ -46,8 +46,8 @@ module ysyx_25020042_IDU (
     localparam  CSR_INST     = 3'b100;
     localparam  SPECIAL_INST = 3'b101;
 
-    wire csr_valid = (opcode == 7'b1110011);
     wire [6:0] opcode = i_inst[6:0];
+    wire csr_valid = (opcode == 7'b1110011);
     wire [11:7] rd = i_inst[11:7];
     wire [19:15] rs1 = i_inst[19:15];
     wire [24:20] rs2 = i_inst[24:20];

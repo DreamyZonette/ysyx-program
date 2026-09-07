@@ -27,14 +27,14 @@ module ysyx_25020042_data_branch(
 );
 
 
-wire rs1_hit = i_rs1 != 0 && (i_rs1 == exu_rd_buffer || i_rs1 == lsu_rd_buffer);
-wire rs2_hit = i_rs2 != 0 && (i_rs2 == exu_rd_buffer || i_rs2 == lsu_rd_buffer);
 reg [31:0] exu_rd_data_buffer;
 reg [31:0] lsu_rd_data_buffer;
 reg [4:0]  exu_rd_buffer;
 reg [4:0]  lsu_rd_buffer;
 reg        exu_rd_valid;
 reg        lsu_rd_valid;
+wire rs1_hit = i_rs1 != 0 && (i_rs1 == exu_rd_buffer || i_rs1 == lsu_rd_buffer);
+wire rs2_hit = i_rs2 != 0 && (i_rs2 == exu_rd_buffer || i_rs2 == lsu_rd_buffer);
 
 assign o_exu_rd_data = exu_rd_data_buffer;
 assign o_lsu_rd_data = lsu_rd_data_buffer;
