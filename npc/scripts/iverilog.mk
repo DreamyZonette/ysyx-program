@@ -20,8 +20,8 @@ EXCLUDE_FILES := \
 SIM_VSRCS := $(WORK_DIR)/vsrc/device/ysyx_25020042_mem.v \
 	$(WORK_DIR)/build/ysyx_25020042.v
 
-NETLIST ?= /home/long/clone/yosys-sta2/result/ysyx_25020042-500MHz/ysyx_25020042.netlist.fixed.v
-CELLS ?= /home/long/clone/yosys-sta2/nangate45/sim/cells.v
+NETLIST ?= /home/long/clone/yosys-sta/result/ysyx_25020042-500MHz/ysyx_25020042.netlist.fixed.v
+CELLS ?= /home/long/clone/yosys-sta/nangate45/sim/cells.v
 
 SIM_VSRCS_NET :=  $(NETLIST) \
     $(CELLS) \
@@ -41,7 +41,7 @@ sim-iverilog: $(SIM_HEX) $(TARGET)
 
 sim-iverilog-netlist: $(SIM_HEX) $(TARGET_NET)
 	@echo + RUN yosys-sta...
-	@$(MAKE) sta -s -C /home/long/clone/yosys-sta2
+	@$(MAKE) sta -s -C /home/long/clone/yosys-sta
 	vvp $(TARGET_NET)
 
 $(TARGET): $(TB_FILE) $(SIM_VSRCS)

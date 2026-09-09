@@ -79,7 +79,7 @@ end
 
 always @(posedge clock) begin
     if (reset) begin
-        exu_rd_data_buffer <= 0;
+        // exu_rd_data_buffer <= 0;
         exu_rd_buffer <= 0;
         exu_rd_valid <= 0;
     end
@@ -101,7 +101,7 @@ end
 
 always @(posedge clock) begin
     if (reset) begin
-        lsu_rd_data_buffer <= 0;
+        // lsu_rd_data_buffer <= 0;
         lsu_rd_buffer <= 0;
         lsu_rd_valid <= 0;
     end

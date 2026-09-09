@@ -44,10 +44,10 @@ end
 parameter CACHE_BLOCK_SIZE  = 16;
 parameter CACHE_BLOCK_BANK  = 4;
 parameter CACHE_BLOCK_COUNT = CACHE_BLOCK_SIZE / 4;
-// parameter m                 = $clog2(CACHE_BLOCK_SIZE);
-// parameter n                 = $clog2(CACHE_BLOCK_BANK);
-parameter m                 = 4;
-parameter n                 = 2;
+parameter m                 = $clog2(CACHE_BLOCK_SIZE);
+parameter n                 = $clog2(CACHE_BLOCK_BANK);
+// parameter m                 = 4;
+// parameter n                 = 1;
 /* verilator lint_off UNUSEDPARAM */
 parameter SDRAM_BASE_ADDR   = 32'ha0000000;
 parameter SDRAM_SIZE        = 32'h20000000;
@@ -136,8 +136,8 @@ always @(posedge clock) begin
     if (reset) begin
         icache_valid[0] <= 1'b0;
         icache_valid[1] <= 1'b0;
-        icache_valid[2] <= 1'b0;
-        icache_valid[3] <= 1'b0;
+        // icache_valid[2] <= 1'b0;
+        // icache_valid[3] <= 1'b0;
         // icache_addr[0]  <= 32'b0;
         // icache_addr[1]  <= 32'b0;
         // icache_addr[2]  <= 32'b0;
@@ -187,8 +187,8 @@ always @(posedge clock) begin
         else if (fencei_signal) begin
             icache_valid[0] <= 1'b0;
             icache_valid[1] <= 1'b0;
-            icache_valid[2] <= 1'b0;
-            icache_valid[3] <= 1'b0;
+            // icache_valid[2] <= 1'b0;
+            // icache_valid[3] <= 1'b0;
         end
         if (state == IDLE) begin
             if (hit & pc_valid) begin

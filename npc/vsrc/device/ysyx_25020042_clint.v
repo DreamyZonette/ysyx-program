@@ -72,15 +72,15 @@ always @(posedge clock) begin
         state <= IDLE;
         slave_arready <= 1'b0;
         slave_awready <= 1'b0;
-        slave_rid <= 0;
-        slave_bid <= 0;
+        // slave_rid <= 0;
+        // slave_bid <= 0;
         slave_wready <= 1'b0;
         slave_bvalid <= 1'b0;
         slave_bresp <= 2'b0;
-        slave_rdata <= 32'b0;
+        // slave_rdata <= 32'b0;
         slave_rvalid <= 0;
         slave_rlast <= 0;
-        slave_rresp <= 2'b00;
+        // slave_rresp <= 2'b00;
     end
     case (state)
         IDLE: begin

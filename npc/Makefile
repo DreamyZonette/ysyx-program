@@ -4,7 +4,7 @@ ifeq ($(PLATFORM),ysyxsoc)
 else 
 	TOP_NAME = ysyx_25020042
 endif
-# IMG ?= $(YSYX_HOME)npc/demo/tests/char-test.bin
+# IMG ?= $(YSYX_HOME)/npc/demo/tests/char-test.bin
 IMG ?= 
 ELF ?= $(IMG:.bin=.elf)
 NEMU_SO := $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
@@ -15,7 +15,7 @@ TEST ?=
 TEST_OBJ = $(shell find $(VPATH) -name $(TEST).v)
 VPATH = $(WORK_DIR)/vsrc
 CPATH = $(WORK_DIR)/csrc
-SOC_HOME = $(YSYX_HOME)ysyxSoC
+SOC_HOME = $(YSYX_HOME)/ysyxSoC
 INC_PATH := $(WORK_DIR)/include 
 
 

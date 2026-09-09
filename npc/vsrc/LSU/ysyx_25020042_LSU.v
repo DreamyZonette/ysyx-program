@@ -46,7 +46,7 @@ module ysyx_25020042_LSU(
     output reg [31:0]               lsu_araddr,
     output reg                      lsu_arvalid,
     output reg [3:0]                lsu_arid,
-    output reg [7:0]                lsu_arlen,
+    output reg [7:0]               lsu_arlen,
     output reg [2:0]                lsu_arsize,
     output reg [1:0]                lsu_arburst,
     input                           lsu_arready,
@@ -61,7 +61,7 @@ module ysyx_25020042_LSU(
     output reg [31:0]               lsu_awaddr,
     output reg                      lsu_awvalid,
     output reg [3:0]                lsu_awid,
-    output reg [7:0]                lsu_awlen,
+    output reg [7:0]               lsu_awlen,
     output reg [2:0]                lsu_awsize,
     output reg [1:0]                lsu_awburst,
     input                           lsu_awready,
@@ -254,6 +254,9 @@ always @(*) begin
         default:  o_data = 0;
     endcase
 end
+
+// assign lsu_arlen = 8'b0;
+// assign lsu_awlen = 8'b0;
 
 always @(posedge clock) begin
     if(reset) begin
