@@ -1,6 +1,6 @@
-From 5fba7fb951d8e2508aa7d46d1b8254da23ce05b6 Mon Sep 17 00:00:00 2001
+From c11b43fad8d8e562ac2e9a8ccc03c7eb8d741548 Mon Sep 17 00:00:00 2001
 From: DreamyZonette <lwq2463460061@163.com>
-Date: Fri, 11 Sep 2026 16:41:08 +0800
+Date: Fri, 11 Sep 2026 21:17:12 +0800
 Subject: [PATCH] ci
 
 ---
@@ -21,10 +21,11 @@ Subject: [PATCH] ci
  perip/sdram/sdram_top_axi.v                  |  10 +-
  perip/spi/rtl/spi_top_apb.v                  |  93 ++++-
  perip/spi/rtl/xip.v                          | 238 ++++++++++++
+ perip/uart16550/rtl/uart_tfifo.v             |   4 +-
  perip/vga/vga_ctrl.v                         |  75 ++++
  perip/vga/vga_top_apb.v                      | 120 ++++++
  src/Top.scala                                |   2 +-
- 20 files changed, 1720 insertions(+), 83 deletions(-)
+ 21 files changed, 1722 insertions(+), 85 deletions(-)
  create mode 100644 perip/gpio/seg_decoder.v
  create mode 100644 perip/ps2/ps2_keyboard.v
  create mode 100644 perip/spi/rtl/xip.v
@@ -2081,6 +2082,28 @@ index 00000000..e9fffbf9
 +end
 +
 +endmodule 
+diff --git a/perip/uart16550/rtl/uart_tfifo.v b/perip/uart16550/rtl/uart_tfifo.v
+index 71329116..57adf1bf 100644
+--- a/perip/uart16550/rtl/uart_tfifo.v
++++ b/perip/uart16550/rtl/uart_tfifo.v
+@@ -211,7 +211,7 @@ begin
+             begin
+                 top   <= #1 top_plus_1;
+                 count <= #1 count + 1'b1;
+-                $write("%c", data_in);
++                // $write("%c", data_in);
+             end
+         2'b01 : if(count>0)
+             begin
+@@ -221,7 +221,7 @@ begin
+         2'b11 : begin
+                 bottom <= #1 bottom + 1'b1;
+                 top    <= #1 top_plus_1;
+-                $write("%c", data_in);
++                // $write("%c", data_in);
+                 end
+         default: ;
+         endcase
 diff --git a/perip/vga/vga_ctrl.v b/perip/vga/vga_ctrl.v
 new file mode 100644
 index 00000000..1a9c8f77
