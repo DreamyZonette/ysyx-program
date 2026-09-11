@@ -1,11 +1,9 @@
-From c7409d0fe6c63b3edfb373bea82ebdc3b1b5f73a Mon Sep 17 00:00:00 2001
+From 5fba7fb951d8e2508aa7d46d1b8254da23ce05b6 Mon Sep 17 00:00:00 2001
 From: DreamyZonette <lwq2463460061@163.com>
-Date: Tue, 4 Aug 2026 23:32:08 +0800
+Date: Fri, 11 Sep 2026 16:41:08 +0800
 Subject: [PATCH] ci
 
 ---
- .gitignore                                   |   2 +-
- Makefile                                     |  16 +-
  perip/amba/apb_delayer.v                     |  74 ++++
  perip/amba/axi4_delayer.v                    | 125 ++++++
  perip/bitrev/bitrev.v                        |  57 ++-
@@ -25,57 +23,13 @@ Subject: [PATCH] ci
  perip/spi/rtl/xip.v                          | 238 ++++++++++++
  perip/vga/vga_ctrl.v                         |  75 ++++
  perip/vga/vga_top_apb.v                      | 120 ++++++
- src/SoC.scala                                |   1 +
  src/Top.scala                                |   2 +-
- 23 files changed, 1736 insertions(+), 86 deletions(-)
+ 20 files changed, 1720 insertions(+), 83 deletions(-)
  create mode 100644 perip/gpio/seg_decoder.v
  create mode 100644 perip/ps2/ps2_keyboard.v
  create mode 100644 perip/spi/rtl/xip.v
  create mode 100644 perip/vga/vga_ctrl.v
 
-diff --git a/.gitignore b/.gitignore
-index 3c0160d0..fd3551fe 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -1,2 +1,2 @@
- build/
--out/
-+out/
-\ No newline at end of file
-diff --git a/Makefile b/Makefile
-index c30262ea..a37884d5 100644
---- a/Makefile
-+++ b/Makefile
-@@ -11,10 +11,22 @@ $(V_FILE_FINAL): $(SCALA_FILES)
- # TODO: This can be removed after chisel publishes a new version
- 	@./patch/update-firtool.sh $(FIRTOOL_VERSION) $(FIRTOOL_PATCH_DIR)
- 	CHISEL_FIRTOOL_PATH=$(FIRTOOL_PATCH_DIR)/firtool-$(FIRTOOL_VERSION)/bin \
--	mill -i ysyxsoc.runMain ysyx.Elaborate --target-dir $(@D)
-+	mill -i ysyxsoc.runMain ysyx.Elaborate --target-dir $(@D) 
- 	mv $(V_FILE_GEN) $@
- 	sed -i -e 's/_\(aw\|ar\|w\|r\|b\)_\(\|bits_\)/_\1/g' $@
- 	sed -i '/firrtl_black_box_resource_files.f/, $$d' $@
-+	sed -i 's/ysyx_00000000/ysyx_25020042/g' $@
-+	sed -i '/^\s*sdram_dqm,/d' $@
-+	sed -i "s/output \[1:0\]\s*sdram_ba,/output [1:0]  sdram_ba,\n  output [3:0]  sdram_dqm,/g" $@
-+	sed -i 's/inout  \[15:0\]\s*sdram_dq,/inout  [31:0] sdram_dq,/g' $@
-+	sed -i 's/wire \[1:0\]\s*_asic_sdram_dqm;/wire [3:0]  _asic_sdram_dqm;/g' $@
-+	sed -i 's/wire \[15:0\]\s*_dq_wire;/wire [31:0] _dq_wire;/g' $@
-+	sed -i '/^\s*sdram_bundle_dqm,/d' $@
-+	sed -i "s/output \[1:0\]\s*sdram_bundle_ba,/output [1:0]  sdram_bundle_ba,\n  output [3:0]  sdram_bundle_dqm,/g" $@
-+	sed -i 's/inout  \[15:0\]\s*sdram_bundle_dq/inout  [31:0] sdram_bundle_dq/g' $@
-+	sed -i 's/wire \[12:0\]\s*_asic_sdram_a;/wire [13:0] _asic_sdram_a;/g' $@
-+	sed -i 's/output \[12:0\]\s*sdram_a,/output [13:0] sdram_a,/g' $@
-+	sed -i 's/output \[12:0\]\s*sdram_bundle_a,/output [13:0] sdram_bundle_a,/g' $@
- 
- verilog: $(V_FILE_FINAL)
- 
-@@ -25,4 +37,4 @@ dev-init:
- 	git submodule update --init --recursive
- 	cd rocket-chip && git apply ../patch/rocket-chip.patch
- 
--.PHONY: verilog clean dev-init
-+.PHONY: verilog clean dev-init 
 diff --git a/perip/amba/apb_delayer.v b/perip/amba/apb_delayer.v
 index c0d20764..313c80d5 100644
 --- a/perip/amba/apb_delayer.v
@@ -2338,18 +2292,6 @@ index 5c74cfbe..5b46e847 100644
 +/* verilator lint_on WIDTHTRUNC */
 +
  endmodule
-diff --git a/src/SoC.scala b/src/SoC.scala
-index 1c65cd87..20625044 100644
---- a/src/SoC.scala
-+++ b/src/SoC.scala
-@@ -49,6 +49,7 @@ class ysyxSoCASIC(implicit p: Parameters) extends LazyModule {
- 
-   List(lspi.node, luart.node, lpsram.node, lgpio.node, lkeyboard.node, lvga.node).map(_ := apbxbar)
-   List(apbxbar := APBDelayer() := AXI4ToAPB() := AXI4Buffer(), lmrom.node, sramNode).map(_ := xbar2)
-+ 
-   xbar2 := AXI4UserYanker(Some(1)) := AXI4Fragmenter() := xbar
-   if (Config.sdramUseAXI) lsdram_axi.get.node := ysyx.AXI4Delayer() := xbar
-   else                    lsdram_apb.get.node := apbxbar
 diff --git a/src/Top.scala b/src/Top.scala
 index c00378a6..2913155b 100644
 --- a/src/Top.scala
@@ -2364,5 +2306,5 @@ index c00378a6..2913155b 100644
  
  class ysyxSoCTop extends Module {
 -- 
-2.34.1
+2.43.0
 

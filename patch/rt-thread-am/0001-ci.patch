@@ -1,15 +1,16 @@
-From 1d007f78757182e2e23006fd161d7ee39f723980 Mon Sep 17 00:00:00 2001
+From 39af67b6b2be2d57e191d749d573f570cc2b6d62 Mon Sep 17 00:00:00 2001
 From: DreamyZonette <lwq2463460061@163.com>
-Date: Tue, 4 Aug 2026 22:51:51 +0800
+Date: Fri, 11 Sep 2026 16:44:18 +0800
 Subject: [PATCH] ci
 
 ---
  bsp/abstract-machine/Makefile        |   2 +
+ bsp/abstract-machine/include/extra.h |   1 -
  bsp/abstract-machine/src/context.c   | 133 ++++++++++++++++++++++++++-
  bsp/abstract-machine/src/interrupt.c |   2 +
  bsp/abstract-machine/src/uart.c      |   1 +
  include/rtdef.h                      |   3 +
- 5 files changed, 137 insertions(+), 4 deletions(-)
+ 6 files changed, 137 insertions(+), 5 deletions(-)
 
 diff --git a/bsp/abstract-machine/Makefile b/bsp/abstract-machine/Makefile
 index 8d70f310b..d9a094e35 100644
@@ -25,6 +26,18 @@ index 8d70f310b..d9a094e35 100644
  -include $(FILE_MK)
  -include $(AM_APPS_MK)
  include $(AM_HOME)/Makefile
+diff --git a/bsp/abstract-machine/include/extra.h b/bsp/abstract-machine/include/extra.h
+index 27c72f4a5..69831495d 100644
+--- a/bsp/abstract-machine/include/extra.h
++++ b/bsp/abstract-machine/include/extra.h
+@@ -1,7 +1,6 @@
+ typedef long suseconds_t;
+ typedef unsigned long useconds_t;
+ #include <sys/types.h>
+-
+ #ifdef __ISA_NATIVE__
+ // rename posix API to avoid conflict with glibc in native
+ #define open      rt_open
 diff --git a/bsp/abstract-machine/src/context.c b/bsp/abstract-machine/src/context.c
 index ee38829ae..345dd41fe 100644
 --- a/bsp/abstract-machine/src/context.c
@@ -239,5 +252,5 @@ index 1c3b1a502..150a7820c 100644
  typedef struct rt_thread *rt_thread_t;
  
 -- 
-2.34.1
+2.43.0
 
