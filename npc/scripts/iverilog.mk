@@ -29,6 +29,7 @@ SIM_VSRCS_NET :=  $(NETLIST) \
 
 
 IVERILOG_PRE_FLAGS ?= -Wall -g2012 
+IVERILOG_PRE_FLAGS += -DHEX_FILE=\"$(SIM_HEX)\"
 IVERILOG_OUT_FLAG = -o $(TARGET)
 
 iwave: $(WORK_DIR)/simulation/build/npc_wave.vcd
@@ -41,7 +42,6 @@ sim-iverilog: $(SIM_HEX) $(TARGET)
 
 sim-iverilog-netlist: $(SIM_HEX) $(TARGET_NET)
 	@echo + RUN yosys-sta...
-	@$(MAKE) sta -s -C /home/long/clone/yosys-sta
 	vvp $(TARGET_NET)
 
 $(TARGET): $(TB_FILE) $(SIM_VSRCS)
