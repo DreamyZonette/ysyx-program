@@ -32,7 +32,9 @@ reg [3:1] wen;
 // wire [31:0] mstatus_wdata;
 wire [31:0] mtvec_wdata;
 wire [31:0] mepc_wdata;
+/* verilator lint_off UNUSEDSIGNAL */
 wire [31:0] mcause_wdata;
+/* verilator lint_on UNUSEDSIGNAL */
 // wire [31:0] mcycle_val;
 // wire [31:0] mcycleh_val;
 wire [31:0] mvendorid_val;
