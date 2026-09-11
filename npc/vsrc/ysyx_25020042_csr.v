@@ -20,7 +20,8 @@ module ysyx_25020042_csr (
 // reg [31:0] mstatus;  
 reg [31:0] mtvec;    
 reg [31:0] mepc;     
-reg [31:0] mcause;   
+reg [4:0] mcause;   
+// reg [31:0] mcause;   
 // reg [31:0] mcycle;   
 // reg [31:0] mcycleh;  
 // reg [31:0] mvendorid;
@@ -78,7 +79,7 @@ always @(*) begin
     end else if(i_csr_addr == 12'h341) begin
         o_csr_rdata = o_mepc;
     end else if(i_csr_addr == 12'h342) begin
-        o_csr_rdata = mcause;
+        o_csr_rdata = {27'b0, mcause};
     // end else if(i_csr_addr == 12'hB00) begin
     //     o_csr_rdata = mcycle_val;
     // end else if(i_csr_addr == 12'hB80) begin
@@ -123,7 +124,7 @@ always @(posedge clock) begin
             mepc      <= mepc_wdata;
         end
         if(wen[3]) begin
-            mcause    <= mcause_wdata;
+            mcause    <= mcause_wdata[4:0];
         end
         // mcycle    <= mcycle_wdata;
         // mcycleh   <= mcycleh_wdata;

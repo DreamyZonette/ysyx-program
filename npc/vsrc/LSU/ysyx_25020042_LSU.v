@@ -45,8 +45,8 @@ module ysyx_25020042_LSU(
     // axi 握手信号
     output reg [31:0]               lsu_araddr,
     output reg                      lsu_arvalid,
-    output reg [3:0]                lsu_arid,
-    output reg [7:0]               lsu_arlen,
+    output reg [3:0]               lsu_arid,
+    output reg [7:0]                lsu_arlen,
     output reg [2:0]                lsu_arsize,
     output reg [1:0]                lsu_arburst,
     input                           lsu_arready,
@@ -60,10 +60,10 @@ module ysyx_25020042_LSU(
 
     output reg [31:0]               lsu_awaddr,
     output reg                      lsu_awvalid,
-    output reg [3:0]                lsu_awid,
+    output reg [3:0]               lsu_awid,
     output reg [7:0]               lsu_awlen,
     output reg [2:0]                lsu_awsize,
-    output reg [1:0]                lsu_awburst,
+    output reg [1:0]               lsu_awburst,
     input                           lsu_awready,
 
     output reg [31:0]               lsu_wdata,
@@ -195,8 +195,8 @@ always @(posedge clock) begin
         // o_pc_data <= 32'b0;
         // o_csr_data <= 32'b0;
         // o_csr_addr <= 12'b0;
-        o_IFU_Exception_Handling <= 3'b0;
-        o_IDU_Exception_Handling <= 3'b0;
+        // o_IFU_Exception_Handling <= 3'b0;
+        // o_IDU_Exception_Handling <= 3'b0;
         `ifdef VERILATOR
             o_instruction_data <= 32'b0;
         `endif

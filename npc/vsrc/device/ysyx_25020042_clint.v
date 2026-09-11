@@ -2,148 +2,84 @@
 module ysyx_25020042_clint(
     input clock,
     input reset,
-    // axi 握手信号
-    input [31:0]      slave_araddr    ,
-    input             slave_arvalid   ,
-    output reg        slave_arready   ,
-    input [3:0]       slave_arid      ,
-    input [7:0]       slave_arlen     ,
-    input [2:0]       slave_arsize    ,
-    input [1:0]       slave_arburst   ,
 
-    output reg [31:0] slave_rdata     ,
-    output reg        slave_rvalid    ,
-    output reg [1:0]  slave_rresp     ,
-    input             slave_rready    ,
-    output reg        slave_rlast     ,
-    output reg  [3:0] slave_rid       ,
+    /* verilator lint_off UNUSEDSIGNAL */
+    input  [31:0] slave_araddr,
+    input         slave_arvalid,
+    output        slave_arready,
+    input  [3:0]  slave_arid,
+    input  [7:0]  slave_arlen,
+    input  [2:0]  slave_arsize,
+    input  [1:0]  slave_arburst,
 
-    input [31:0]      slave_awaddr    ,
-    input             slave_awvalid   ,
-    output reg        slave_awready   ,
-    input  [3:0]      slave_awid      ,
-    input  [7:0]      slave_awlen     ,
-    input  [2:0]      slave_awsize    ,
-    input  [1:0]      slave_awburst   ,
+    output [31:0] slave_rdata,
+    output        slave_rvalid,
+    output [1:0]  slave_rresp,
+    input         slave_rready,
+    output        slave_rlast,
+    output [3:0]  slave_rid,
 
-    input [31:0]      slave_wdata     ,
-    input [3:0]       slave_wstrb     ,
-    input             slave_wvalid    ,
-    output reg        slave_wready    ,
-    input             slave_wlast     ,
+    input  [31:0] slave_awaddr,
+    input         slave_awvalid,
+    output        slave_awready,
+    input  [3:0]  slave_awid,
+    input  [7:0]  slave_awlen,
+    input  [2:0]  slave_awsize,
+    input  [1:0]  slave_awburst,
 
-    output reg        slave_bvalid    ,
-    input             slave_bready    ,
-    output reg [1:0]  slave_bresp     ,
-    output reg [3:0]  slave_bid    
+    input  [31:0] slave_wdata,
+    input  [3:0]  slave_wstrb,
+    input         slave_wvalid,
+    output        slave_wready,
+    input         slave_wlast,
+
+    output        slave_bvalid,
+    input         slave_bready,
+    output [1:0]  slave_bresp,
+    output [3:0]  slave_bid
+    /* verilator lint_on UNUSEDSIGNAL */
 );
 
+    // 33 位计数器：{mtimeh, mtime} 整体进位，省掉 32 输入 AND
+    reg [63:0] mtime_cnt;
 
-reg [2:0] state;
-localparam IDLE = 3'd0;
-localparam READ = 3'd1;
-localparam READ_WAIT = 3'd2;
-localparam WRITE = 3'd3;
-localparam WRITE_WAIT = 3'd4;
-reg [31:0] mtime;
-reg [31:0] mtimeh;
-wire read_valid = ~|slave_arlen && slave_arsize == 3'b010 && ~|slave_arburst;
-wire write_valid =  ~|slave_awlen && slave_awsize == 3'b010 && ~|slave_awburst && slave_wlast == 1'b1 && slave_wstrb == 4'hf;
-
-always @(posedge clock) begin
-    if (reset) begin
-        mtime <= 32'b0;
-        mtimeh <= 32'b0;
+    always @(posedge clock) begin
+        if (reset)
+            mtime_cnt <= 64'b0;
+        else
+            mtime_cnt <= mtime_cnt + 1'b1;
     end
-    else begin
-        if (state == WRITE && write_valid) begin
-            if (slave_awaddr == 32'h0200_0000) 
-                mtime <= slave_wdata;
-            else if (slave_awaddr == 32'h0200_0004) 
-                mtimeh <= slave_wdata;
-        end
-        mtime <= mtime + 1;
-        mtimeh <= mtime == 32'hffffffff ? mtimeh + 1 : mtimeh;
-    end
-end
 
-always @(posedge clock) begin
-    if (reset) begin
-        state <= IDLE;
-        slave_arready <= 1'b0;
-        slave_awready <= 1'b0;
-        // slave_rid <= 0;
-        // slave_bid <= 0;
-        slave_wready <= 1'b0;
-        slave_bvalid <= 1'b0;
-        slave_bresp <= 2'b0;
-        // slave_rdata <= 32'b0;
-        slave_rvalid <= 0;
-        slave_rlast <= 0;
-        // slave_rresp <= 2'b00;
-    end
-    case (state)
-        IDLE: begin
-            if (slave_arvalid) begin
-                slave_arready <= 1'b1;
-                state <= READ;
-                slave_rid <= slave_arid;
-            end
-            else if (slave_awvalid && slave_wvalid) begin
-                slave_awready <= 1'b1;
-                slave_wready <= 1'b1;
-                slave_bid <= slave_awid;
-                state <= WRITE;
-            end
-        end
-        READ: begin
-            if (slave_arready) begin
-                slave_arready <= 1'b0;
-            end
-            if (slave_araddr == 32'h0200_0000 && read_valid) begin
-                slave_rdata <= mtime;
-            end
-            else if (slave_araddr == 32'h0200_0004 && read_valid) begin
-                slave_rdata <= mtimeh;
-            end
-            else begin
-                slave_rdata <= 32'b0;
-            end
-            slave_rvalid <= 1'b1;
-            slave_rlast <= 1'b1;
-            slave_rresp <= 2'b00;
-            state <= READ_WAIT;
-        end
-        READ_WAIT: begin
-            if (slave_rready) begin
-                slave_rvalid <= 1'b0;
-                slave_rresp <= 2'b00;
-                slave_rdata <= 32'b0;
-                slave_rlast <= 0;
-                state <= IDLE;
-            end
-        end
-        WRITE: begin
-            if (slave_awready || slave_wready) begin
-                slave_awready <= 1'b0;
-                slave_wready <= 1'b0;
-            end
-            state <= WRITE_WAIT;
-            slave_bresp <= 2'b00;
-            slave_bvalid <= 1'b1;
-        end
-        WRITE_WAIT: begin
-            if (slave_bready) begin
-                slave_bvalid <= 1'b0;
-                slave_bresp <= 2'b00;
-                state <= IDLE;
-            end
-        end
-        default: begin
-            state <= IDLE;
-        end
-    endcase 
-end
+    wire [31:0] mtime  = mtime_cnt[31:0];
+    wire [31:0] mtimeh = mtime_cnt[63:32];
 
+    // 读握手
+    reg rvalid;
+    assign slave_arready = ~rvalid;
+
+    always @(posedge clock) begin
+        if (reset)
+            rvalid <= 1'b0;
+        else if (slave_arvalid && slave_arready)
+            rvalid <= 1'b1;
+        else if (rvalid && slave_rready)
+            rvalid <= 1'b0;
+    end
+
+    assign slave_rvalid = rvalid;
+    assign slave_rlast  = rvalid;
+    assign slave_rresp  = 2'b00;
+    assign slave_rid    = slave_arid;
+
+    assign slave_rdata = (slave_araddr == 32'h0200_0000) ? mtime  :
+                         (slave_araddr == 32'h0200_0004) ? mtimeh :
+                         32'b0;
+
+    // 写通道：不实现
+    assign slave_awready = 1'b0;
+    assign slave_wready  = 1'b0;
+    assign slave_bvalid  = 1'b0;
+    assign slave_bresp   = 2'b00;
+    assign slave_bid     = 4'b00;
 
 endmodule

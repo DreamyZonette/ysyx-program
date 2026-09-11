@@ -221,8 +221,8 @@ end
             // o_csr_data <= 0;
             // o_src2     <= 0;
             // o_csr_addr <= 0;
-            o_IFU_Exception_Handling <= 0;
-            o_IDU_Exception_Handling <= 0;
+            // o_IFU_Exception_Handling <= 0;
+            // o_IDU_Exception_Handling <= 0;
             `ifdef VERILATOR
                 o_instruction_data <= 32'b0;
             `endif

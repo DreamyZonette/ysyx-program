@@ -198,9 +198,9 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        if (reset)
-            o_IFU_Exception_Handling <= 3'b0;
-        else if (i_jump_valid)
+        // if (reset)
+        //     o_IFU_Exception_Handling <= 3'b0;
+        if (i_jump_valid)
             o_IFU_Exception_Handling <= 3'b0;
         else if (ifu_valid & idu_ready) begin
                 o_IFU_Exception_Handling <= i_IFU_Exception_Handling;

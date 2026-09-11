@@ -39,9 +39,9 @@ module ysyx_25020042_WBU(
     // localparam WAIT = 1'b1;
     // reg  state;
     wire [11:0] Exception_Handling = {i_LSU_Exception_Handling, i_IDU_Exception_Handling, i_IFU_Exception_Handling};
-    wire [1:0] MPP = i_mstatus[13:12];
+    wire [1:0] MPP = i_mstatus[12:11];
     assign o_Exception_valid = |Exception_Handling;
-
+/*
     localparam Instruction_address_misaligned = 32'd0;
     localparam Instruction_access_fault       = 32'd1;
     localparam Illegal_instruction            = 32'd2;
@@ -56,6 +56,8 @@ module ysyx_25020042_WBU(
     localparam Instruction_page_fault         = 32'd12;
     localparam Load_page_fault                = 32'd13;
     localparam Store_page_fault               = 32'd15;
+*/
+    localparam Environment_call_from_M_mode   = 32'd11;
 
 `ifdef VERILATOR
 
@@ -130,6 +132,9 @@ module ysyx_25020042_WBU(
 assign o_mepc_wdata = i_pc_data;
 always @(*) begin
     o_mcause_wdata = 32'b0;
+    // only for liupian
+    if (MPP == 2'b11) o_mcause_wdata = Environment_call_from_M_mode;
+/*
     case (1'b1)
         Exception_Handling[0]: o_mcause_wdata = Instruction_address_misaligned;
         Exception_Handling[1]: o_mcause_wdata = Instruction_access_fault;
@@ -153,6 +158,7 @@ always @(*) begin
         Exception_Handling[10]: o_mcause_wdata = Load_page_fault;
         Exception_Handling[11]: o_mcause_wdata = Store_page_fault;
     endcase
+    */
 end
 
 assign wbu_ready = 1'b1;

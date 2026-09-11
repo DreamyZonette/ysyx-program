@@ -137,11 +137,24 @@ void assert_fail_msg() {
 
 static void execute(uint64_t n) {
     if(n <= MAX_INST_TO_PRINT) print_on = 1;
+    uint32_t counter = 0;
   for (;n > 0; n --) {
     uint32_t prev_pc = dut.next_pc;
+    counter = 0;
     while(!sim_finish){
       single_cycle();
-      if(_single_inst_done_) break;
+      if(_single_inst_done_) {
+        counter = 0;
+        break;
+      }
+      else if (counter > 100000) {
+        printf("Error: The simulation seems to be stuck at pc = 0x%08x. Please check your design.\n", prev_pc);
+        sim_finish = true;
+        break;
+      }
+      else {
+        counter++;
+      }
     }
 
       dut.pc = _pc_data_;
