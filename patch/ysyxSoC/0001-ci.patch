@@ -1,9 +1,10 @@
-From c11b43fad8d8e562ac2e9a8ccc03c7eb8d741548 Mon Sep 17 00:00:00 2001
+From 8f29123dc9469c0162193e553c0484b7dfa4af65 Mon Sep 17 00:00:00 2001
 From: DreamyZonette <lwq2463460061@163.com>
-Date: Fri, 11 Sep 2026 21:17:12 +0800
+Date: Fri, 11 Sep 2026 21:31:02 +0800
 Subject: [PATCH] ci
 
 ---
+ Makefile                                     |  16 +-
  perip/amba/apb_delayer.v                     |  74 ++++
  perip/amba/axi4_delayer.v                    | 125 ++++++
  perip/bitrev/bitrev.v                        |  57 ++-
@@ -25,12 +26,46 @@ Subject: [PATCH] ci
  perip/vga/vga_ctrl.v                         |  75 ++++
  perip/vga/vga_top_apb.v                      | 120 ++++++
  src/Top.scala                                |   2 +-
- 21 files changed, 1722 insertions(+), 85 deletions(-)
+ 22 files changed, 1736 insertions(+), 87 deletions(-)
  create mode 100644 perip/gpio/seg_decoder.v
  create mode 100644 perip/ps2/ps2_keyboard.v
  create mode 100644 perip/spi/rtl/xip.v
  create mode 100644 perip/vga/vga_ctrl.v
 
+diff --git a/Makefile b/Makefile
+index c30262ea..a37884d5 100644
+--- a/Makefile
++++ b/Makefile
+@@ -11,10 +11,22 @@ $(V_FILE_FINAL): $(SCALA_FILES)
+ # TODO: This can be removed after chisel publishes a new version
+ 	@./patch/update-firtool.sh $(FIRTOOL_VERSION) $(FIRTOOL_PATCH_DIR)
+ 	CHISEL_FIRTOOL_PATH=$(FIRTOOL_PATCH_DIR)/firtool-$(FIRTOOL_VERSION)/bin \
+-	mill -i ysyxsoc.runMain ysyx.Elaborate --target-dir $(@D)
++	mill -i ysyxsoc.runMain ysyx.Elaborate --target-dir $(@D) 
+ 	mv $(V_FILE_GEN) $@
+ 	sed -i -e 's/_\(aw\|ar\|w\|r\|b\)_\(\|bits_\)/_\1/g' $@
+ 	sed -i '/firrtl_black_box_resource_files.f/, $$d' $@
++	sed -i 's/ysyx_00000000/ysyx_25020042/g' $@
++	sed -i '/^\s*sdram_dqm,/d' $@
++	sed -i "s/output \[1:0\]\s*sdram_ba,/output [1:0]  sdram_ba,\n  output [3:0]  sdram_dqm,/g" $@
++	sed -i 's/inout  \[15:0\]\s*sdram_dq,/inout  [31:0] sdram_dq,/g' $@
++	sed -i 's/wire \[1:0\]\s*_asic_sdram_dqm;/wire [3:0]  _asic_sdram_dqm;/g' $@
++	sed -i 's/wire \[15:0\]\s*_dq_wire;/wire [31:0] _dq_wire;/g' $@
++	sed -i '/^\s*sdram_bundle_dqm,/d' $@
++	sed -i "s/output \[1:0\]\s*sdram_bundle_ba,/output [1:0]  sdram_bundle_ba,\n  output [3:0]  sdram_bundle_dqm,/g" $@
++	sed -i 's/inout  \[15:0\]\s*sdram_bundle_dq/inout  [31:0] sdram_bundle_dq/g' $@
++	sed -i 's/wire \[12:0\]\s*_asic_sdram_a;/wire [13:0] _asic_sdram_a;/g' $@
++	sed -i 's/output \[12:0\]\s*sdram_a,/output [13:0] sdram_a,/g' $@
++	sed -i 's/output \[12:0\]\s*sdram_bundle_a,/output [13:0] sdram_bundle_a,/g' $@
+ 
+ verilog: $(V_FILE_FINAL)
+ 
+@@ -25,4 +37,4 @@ dev-init:
+ 	git submodule update --init --recursive
+ 	cd rocket-chip && git apply ../patch/rocket-chip.patch
+ 
+-.PHONY: verilog clean dev-init
++.PHONY: verilog clean dev-init 
 diff --git a/perip/amba/apb_delayer.v b/perip/amba/apb_delayer.v
 index c0d20764..313c80d5 100644
 --- a/perip/amba/apb_delayer.v
