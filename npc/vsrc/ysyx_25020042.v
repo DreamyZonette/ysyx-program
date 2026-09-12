@@ -161,7 +161,7 @@ assign io_slave_rid = 4'b0;
     wire [31:0] mstatus;
     wire [31:0] mtvec;
     wire [31:0] mepc;
-    wire [31:0] mcause_wdata;
+    wire [3:0] mcause_wdata;
     // wire [31:0] mstatus_wdata = 32'h0;
     // wire [31:0] mtvec_wdata;
     wire [31:0] mepc_wdata;

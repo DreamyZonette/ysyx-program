@@ -191,7 +191,7 @@ end
 
 always @(posedge clock) begin
     if(reset) begin
-        // inst_reg <= 8'b0;
+        inst_reg <= 8'b0;
         // o_pc_data <= 32'b0;
         // o_csr_data <= 32'b0;
         // o_csr_addr <= 12'b0;

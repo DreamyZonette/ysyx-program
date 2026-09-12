@@ -31,7 +31,7 @@ module ysyx_25020042_WBU(
     output wire [11:0] csr_addr,
     output reg [31:0] reg_wdata,
     output wire [31:0] o_mepc_wdata,
-    output reg [31:0] o_mcause_wdata
+    output reg [3:0] o_mcause_wdata
 );
 
 
@@ -57,7 +57,7 @@ module ysyx_25020042_WBU(
     localparam Load_page_fault                = 32'd13;
     localparam Store_page_fault               = 32'd15;
 */
-    localparam Environment_call_from_M_mode   = 32'd11;
+    localparam Environment_call_from_M_mode   = 4'd11;
 
 `ifdef VERILATOR
 
@@ -131,7 +131,7 @@ module ysyx_25020042_WBU(
 
 assign o_mepc_wdata = i_pc_data;
 always @(*) begin
-    o_mcause_wdata = 32'b0;
+    o_mcause_wdata = 4'b0;
     // only for liupian
     if (MPP == 2'b11) o_mcause_wdata = Environment_call_from_M_mode;
 /*

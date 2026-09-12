@@ -161,10 +161,10 @@ assign jump_valid = jump_valid_signal & (exu_valid | (Exception_valid1 & !Except
 assign o_fence_i_valid = i_inst == 8'b10100001;
 
 always @(posedge clock) begin
-    // if(reset) begin
-    //     jump_pc <= 32'h0;
-    //     jump_valid_signal <= 1'b0;
-    // end
+    if(reset) begin
+        jump_pc <= 32'h0;
+        jump_valid_signal <= 1'b0;
+    end
     if (idu_valid & exu_ready) begin
         case(i_inst[7:5])
             JUMP_INST: begin
@@ -217,7 +217,7 @@ end
     always @(posedge clock) begin
         if (reset) begin
             // o_pc_data <= 0;
-            // o_idu_inst <= 0;
+            o_idu_inst <= 0;
             // o_csr_data <= 0;
             // o_src2     <= 0;
             // o_csr_addr <= 0;

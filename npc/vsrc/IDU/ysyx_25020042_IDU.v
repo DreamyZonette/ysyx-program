@@ -284,9 +284,9 @@ module ysyx_25020042_IDU (
     end
 
     always @ (posedge clock) begin
-        // if (reset) begin
-        //     o_instruction_out     <= 8'b0;
-        // end
+        if (reset) begin
+            o_instruction_out     <= 8'b0;
+        end
         if (i_jump_valid)
             o_instruction_out     <= 8'b0;
         else begin

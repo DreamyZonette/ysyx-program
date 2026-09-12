@@ -88,7 +88,7 @@ SECTIONS {
   edata = .;
   _data = .;
 
-  .bss (NOLOAD) : {
+  .bss (NOLOAD) : AT(ALIGN(LOADADDR(.data) + SIZEOF(.data), 8)) {
 	_bss_start = .;
     *(.sbss .sbss.*)
     *(.scommon)
