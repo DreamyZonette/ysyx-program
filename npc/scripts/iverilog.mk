@@ -54,7 +54,7 @@ $(TARGET_NET): $(TB_FILE) $(SIM_VSRCS_NET)
 
 $(SIM_HEX): $(IMG)
 	@mkdir -p $(WORK_DIR)/simulation/build
-	@echo + COPY "->" $(SIM_BIN_TMP)
+	@echo + COPY $(IMG) "->" $(SIM_BIN_TMP)
 	@cp $(IMG) $(SIM_BIN_TMP)
 	@echo + OBJCOPY "->" $(SIM_HEX) "(verilog hex)"
 	@$(OBJCOPY) -I binary -O verilog $(SIM_BIN_TMP) $(SIM_HEX)

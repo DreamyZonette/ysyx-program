@@ -134,30 +134,6 @@ always @(posedge clock) begin
         end
     end
 
-// always @(posedge clock) begin
-//         if (reset) begin
-//             `ifdef PLATFORM_NPC
-//             next_pc <= 32'h8000_0004;
-//             `else
-//             // next_pc <= 32'h3000_0004;
-//             next_pc <= 32'h8000_0004;
-
-//             `endif
-//         end
-//         else if (i_jump_valid) begin
-//             next_pc <= i_jump_pc + 4;
-//         end
-//         else if (i_fast_jump_valid) begin
-//             next_pc <= i_fast_jump_pc + 4;
-//         end
-//         else if (ifu_ready & pc_valid) begin
-//             next_pc <= pc + 4;
-//         end
-//         else begin
-//             next_pc <= next_pc;
-//         end
-//     end
-
 always @(posedge clock) begin
         if (reset)begin
             pc_valid <= 1'b1;

@@ -173,7 +173,7 @@ test:
 perf:
 	gedit ./performance/perf.md
 
-clean:cleaniverilog
+clean:
 	-rm -rf  $(BUILD_DIR)
 
 
