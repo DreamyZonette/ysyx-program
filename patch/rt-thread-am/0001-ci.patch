@@ -1,19 +1,17 @@
-From 39af67b6b2be2d57e191d749d573f570cc2b6d62 Mon Sep 17 00:00:00 2001
+From ce02256960c0b096a99c38496201e52415dabf29 Mon Sep 17 00:00:00 2001
 From: DreamyZonette <lwq2463460061@163.com>
-Date: Fri, 11 Sep 2026 16:44:18 +0800
+Date: Sat, 12 Sep 2026 11:12:24 +0800
 Subject: [PATCH] ci
 
 ---
- bsp/abstract-machine/Makefile        |   2 +
- bsp/abstract-machine/include/extra.h |   1 -
- bsp/abstract-machine/src/context.c   | 133 ++++++++++++++++++++++++++-
- bsp/abstract-machine/src/interrupt.c |   2 +
- bsp/abstract-machine/src/uart.c      |   1 +
- include/rtdef.h                      |   3 +
- 6 files changed, 137 insertions(+), 5 deletions(-)
+ bsp/abstract-machine/Makefile      |   4 +-
+ bsp/abstract-machine/src/context.c | 133 ++++++++++++++++++++++++++++-
+ bsp/abstract-machine/src/uart.c    |   1 +
+ include/rtdef.h                    |   5 +-
+ 4 files changed, 137 insertions(+), 6 deletions(-)
 
 diff --git a/bsp/abstract-machine/Makefile b/bsp/abstract-machine/Makefile
-index 8d70f310b..d9a094e35 100644
+index 8d70f310b..753c16f80 100644
 --- a/bsp/abstract-machine/Makefile
 +++ b/bsp/abstract-machine/Makefile
 @@ -8,7 +8,9 @@ NAME = rtthread
@@ -26,18 +24,13 @@ index 8d70f310b..d9a094e35 100644
  -include $(FILE_MK)
  -include $(AM_APPS_MK)
  include $(AM_HOME)/Makefile
-diff --git a/bsp/abstract-machine/include/extra.h b/bsp/abstract-machine/include/extra.h
-index 27c72f4a5..69831495d 100644
---- a/bsp/abstract-machine/include/extra.h
-+++ b/bsp/abstract-machine/include/extra.h
-@@ -1,7 +1,6 @@
- typedef long suseconds_t;
- typedef unsigned long useconds_t;
- #include <sys/types.h>
--
- #ifdef __ISA_NATIVE__
- // rename posix API to avoid conflict with glibc in native
- #define open      rt_open
+@@ -37,4 +39,4 @@ $(AM_APPS_MK): integrate-am-apps.py
+ 	python3 $^ ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE)
+ endif
+ 
+-.PHONY: init menuconfig update
++.PHONY: init menuconfig update
+\ No newline at end of file
 diff --git a/bsp/abstract-machine/src/context.c b/bsp/abstract-machine/src/context.c
 index ee38829ae..345dd41fe 100644
 --- a/bsp/abstract-machine/src/context.c
@@ -202,22 +195,6 @@ index ee38829ae..345dd41fe 100644
 +//         asm volatile("wfi");
 +//     }
 +// }
-diff --git a/bsp/abstract-machine/src/interrupt.c b/bsp/abstract-machine/src/interrupt.c
-index 1652c5d09..fef1ca22a 100644
---- a/bsp/abstract-machine/src/interrupt.c
-+++ b/bsp/abstract-machine/src/interrupt.c
-@@ -2,9 +2,11 @@
- #include <klib.h>
- 
- void rt_hw_interrupt_enable() {
-+  //return;
-   iset(1);
- }
- 
- void rt_hw_interrupt_disable() {
-+  //return;
-   iset(0);
- }
 diff --git a/bsp/abstract-machine/src/uart.c b/bsp/abstract-machine/src/uart.c
 index e4eb86689..55e8f5229 100644
 --- a/bsp/abstract-machine/src/uart.c
@@ -231,7 +208,7 @@ index e4eb86689..55e8f5229 100644
    return (*p != '\0' ? *(p ++) : -1);
  }
 diff --git a/include/rtdef.h b/include/rtdef.h
-index 1c3b1a502..150a7820c 100644
+index 1c3b1a502..50c4e0eb7 100644
 --- a/include/rtdef.h
 +++ b/include/rtdef.h
 @@ -54,6 +54,7 @@
@@ -242,10 +219,12 @@ index 1c3b1a502..150a7820c 100644
  #ifdef RT_USING_LIBC
  #include <stdint.h>
  #include <stddef.h>
-@@ -853,6 +854,8 @@ struct rt_thread
+@@ -852,7 +853,9 @@ struct rt_thread
+     int tid;
  #endif
  
-     rt_ubase_t user_data;                             /**< private user data beyond this thread */
+-    rt_ubase_t user_data;                             /**< private user data beyond this thread */
++    rt_ubase_t user_data;                                 /**< private user data beyond this thread */
 +    Context** ctx_from;
 +    Context** ctx_to;
  };
