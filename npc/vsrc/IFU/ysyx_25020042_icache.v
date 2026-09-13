@@ -44,16 +44,17 @@ end
 parameter CACHE_BLOCK_SIZE  = 16;
 parameter CACHE_BLOCK_BANK  = 4;
 parameter CACHE_BLOCK_COUNT = CACHE_BLOCK_SIZE / 4;
-parameter m                 = $clog2(CACHE_BLOCK_SIZE);
-parameter n                 = $clog2(CACHE_BLOCK_BANK);
-// parameter m                 = 4;
-// parameter n                 = 1;
+// parameter m                 = $clog2(CACHE_BLOCK_SIZE);
+// parameter n                 = $clog2(CACHE_BLOCK_BANK);
+parameter m                 = 4;
+parameter n                 = 1;
 /* verilator lint_off UNUSEDPARAM */
 parameter SDRAM_BASE_ADDR   = 32'ha0000000;
 parameter SDRAM_SIZE        = 32'h20000000;
 /* verilator lint_on UNUSEDPARAM */
 
-reg [32-1:0]                 icache_data[0:CACHE_BLOCK_BANK-1][0:CACHE_BLOCK_COUNT-1];
+// 展平为一维：索引 {bank_index, word_offset}，等价于原 [bank][word] 二维写法
+reg [32-1:0]                 icache_data[0:CACHE_BLOCK_BANK*CACHE_BLOCK_COUNT-1];
 reg [32-1:0]                 icache_addr[0:CACHE_BLOCK_BANK-1];
 reg                          icache_valid[0:CACHE_BLOCK_BANK-1];
 reg                          state;
@@ -171,12 +172,12 @@ always @(posedge clock) begin
                     icache_addr[burst_index][31:m+n]                        <= burst_addr[31:m+n];
                     icache_addr[burst_index][m+n-1:m]                       <= burst_addr[m+n-1:m];
                     icache_addr[burst_index][m-1:0]                         <= {m{1'b0}};
-                    icache_data[burst_index][burst_offset]           <= io_icache_rdata;
+                    icache_data[{burst_index, burst_offset}]         <= io_icache_rdata;
                 end
                 if (io_icache_rlast) begin
                     instruction_ready            <= 1'b1;
                     if (sdram_valid) begin
-                        instruction <= (offset == {(m-2){1'b1}})? io_icache_rdata : icache_data[index][offset];
+                        instruction <= (offset == {(m-2){1'b1}})? io_icache_rdata : icache_data[{index, offset}];
                     end
                     else begin
                         instruction <= io_icache_rdata;
@@ -193,7 +194,7 @@ always @(posedge clock) begin
         if (state == IDLE) begin
             if (hit & pc_valid) begin
                 instruction_ready <= 1'b1;
-                instruction       <= icache_data[index][offset];
+                instruction       <= icache_data[{index, offset}];
             end
             if (instruction_ready)
                 instruction_ready <= 1'b0;

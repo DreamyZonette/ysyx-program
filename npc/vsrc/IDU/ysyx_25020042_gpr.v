@@ -19,7 +19,9 @@ module ysyx_25020042_gpr  (
     /* verilator lint_on UNUSEDSIGNAL */
     assign wen = wen16[14:0];
 
-    wire [31:0] reg_file [0:15];
+    // wire [31:0] reg_file [0:15];
+    reg [31:0] src1;
+    reg [31:0] src2;
     // reg [31:0] zero;
     reg [31:0] ra;  
     reg [31:0] sp; 
@@ -73,27 +75,53 @@ module ysyx_25020042_gpr  (
             if (wen[14]) a5  <= i_data;
         // end
     end
-    assign reg_file [0] = 32'h0;
-    assign reg_file [1] = ra;
-    assign reg_file [2] = sp;
-    assign reg_file [3] = gp;
-    assign reg_file [4] = tp;
-    assign reg_file [5] = t0;
-    assign reg_file [6] = t1;
-    assign reg_file [7] = t2;
-    assign reg_file [8] = s0;
-    assign reg_file [9] = s1;
-    assign reg_file [10] = a0;
-    assign reg_file [11] = a1;
-    assign reg_file [12] = a2;
-    assign reg_file [13] = a3;
-    assign reg_file [14] = a4;
-    assign reg_file [15] = a5;
+
+    always @(*) begin
+        case (i_rs1[3:0])
+            4'd1: src1 = ra;
+            4'd2: src1 = sp;
+            4'd3: src1 = gp;
+            4'd4: src1 = tp;
+            4'd5: src1 = t0;
+            4'd6: src1 = t1;
+            4'd7: src1 = t2;
+            4'd8: src1 = s0;
+            4'd9: src1 = s1;
+            4'd10: src1 = a0;
+            4'd11: src1 = a1;
+            4'd12: src1 = a2;
+            4'd13: src1 = a3;
+            4'd14: src1 = a4;
+            4'd15: src1 = a5;
+            default: src1 = 32'h0;
+        endcase
+    end
+
+    always @(*) begin
+        case (i_rs2[3:0])
+            4'd1: src2 = ra;
+            4'd2: src2 = sp;
+            4'd3: src2 = gp;
+            4'd4: src2 = tp;
+            4'd5: src2 = t0;
+            4'd6: src2 = t1;
+            4'd7: src2 = t2;
+            4'd8: src2 = s0;
+            4'd9: src2 = s1;
+            4'd10: src2 = a0;
+            4'd11: src2 = a1;
+            4'd12: src2 = a2;
+            4'd13: src2 = a3;
+            4'd14: src2 = a4;
+            4'd15: src2 = a5;
+            default: src2 = 32'h0;
+        endcase
+    end
 
 
 // 读取寄存器
-    assign o_src1 = reg_file[i_rs1[3:0]];
-    assign o_src2 = reg_file[i_rs2[3:0]];
+    assign o_src1 = src1;
+    assign o_src2 = src2;
 
 endmodule
 
