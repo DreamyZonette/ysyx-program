@@ -1,7 +1,7 @@
 From ce02256960c0b096a99c38496201e52415dabf29 Mon Sep 17 00:00:00 2001
 From: DreamyZonette <lwq2463460061@163.com>
 Date: Sat, 12 Sep 2026 11:12:24 +0800
-Subject: [PATCH] ci
+Subject: [PATCH 1/2] ci
 
 ---
  bsp/abstract-machine/Makefile      |   4 +-

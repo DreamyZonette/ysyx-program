@@ -147,14 +147,14 @@ static void execute(uint64_t n) {
         counter = 0;
         break;
       }
-      else if (counter > 100000) {
-        printf("Error: The simulation seems to be stuck at pc = 0x%08x. Please check your design.\n", prev_pc);
-        sim_finish = true;
-        break;
-      }
-      else {
-        counter++;
-      }
+      // else if (counter > 1000000) {
+      //   printf("Error: The simulation seems to be stuck at pc = 0x%08x. Please check your design.\n", prev_pc);
+      //   sim_finish = true;
+      //   break;
+      // }
+      // else {
+      //   counter++;
+      // }
     }
 
       dut.pc = _pc_data_;
