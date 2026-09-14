@@ -44,7 +44,7 @@ sim-iverilog-netlist: $(SIM_HEX) $(TARGET_NET)
 	@echo + RUN yosys-sta...
 	vvp $(TARGET_NET)
 
-$(TARGET): $(TB_FILE) $(l)
+$(TARGET): $(TB_FILE) $(SIM_VSRCS)
 	@mkdir -p $(WORK_DIR)/simulation/build
 	$(IVERILOG) $(IVERILOG_PRE_FLAGS) $^ $(IVERILOG_OUT_FLAG)
 
