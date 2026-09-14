@@ -113,11 +113,10 @@ reg [31:0] pc;
 reg pc_valid;
 always @(posedge clock) begin
         if (reset)begin
-            `ifdef PLATFORM_YSYXSOC
-            pc <= 32'h3000_0000;
-            `else
-            // pc <= 32'h3000_0000;
+            `ifdef PLATFORM_NPC
             pc <= 32'h8000_0000;
+            `else
+            pc <= 32'h3000_0000;
             `endif
         end 
         else if (fault)begin

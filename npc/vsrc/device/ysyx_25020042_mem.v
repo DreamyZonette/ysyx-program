@@ -22,9 +22,9 @@ module ysyx_25020042_mem(
     input             slave_awvalid   ,
     output reg        slave_awready   ,
     input  [3:0]      slave_awid      ,
-    input  [7:0]      slave_awlen     ,
-    input  [2:0]      slave_awsize    ,
-    input  [1:0]      slave_awburst   ,
+    input [7:0]       slave_awlen     ,
+    input  [2:0]       slave_awsize    ,
+    input [1:0]       slave_awburst   ,
 
     input [31:0]      slave_wdata     ,
     input [3:0]       slave_wstrb     ,
@@ -43,6 +43,18 @@ module ysyx_25020042_mem(
 reg [2:0] state;
 reg [7:0] burst_count;
 wire [31:0] read_addr = slave_araddr + 4 * burst_count;
+
+// ============================================================
+// 引导程序（Boot）：0x30000000 -> 0x80000000
+//   0x30000000: lui  t0, 0x80000   => 32'h800002B7
+//   0x30000004: jalr x0, 0(t0)     => 32'h00028067
+// ============================================================
+wire        is_boot_vec = (read_addr == 32'h30000000) ||
+                          (read_addr == 32'h30000004);
+
+wire [31:0] boot_instr  = (read_addr == 32'h30000000)
+                          ? 32'h800002B7   // lui  t0, 0x80000
+                          : 32'h00028067;  // jalr x0, 0(t0)
 
 `ifdef VERILATOR
 import "DPI-C" function int pmem_read(input int addr, input int len);
@@ -125,10 +137,12 @@ always @(posedge clock) begin
                     state <= READ_WAIT;
                     slave_rvalid <= 1'b1;
                     `ifdef VERILATOR
-                    slave_rdata <= slave_rvalid == 0 ? pmem_read(read_addr, 4) : 32'b0;
+                    slave_rdata <= is_boot_vec ? boot_instr
+                                               : (slave_rvalid == 0 ? pmem_read(read_addr, 4) : 32'b0);
                     `endif
                     `ifdef __ICARUS__
-                    slave_rdata <= {mem[raddr_fix+3], mem[raddr_fix+2], mem[raddr_fix+1], mem[raddr_fix]};
+                    slave_rdata <= is_boot_vec ? boot_instr
+                                               : {mem[raddr_fix+3], mem[raddr_fix+2], mem[raddr_fix+1], mem[raddr_fix]};
                     // $display("[MEM_RD] araddr=%08x raddr=%08x data=%08x",
                     //     slave_araddr, raddr, {mem[raddr+3], mem[raddr+2], mem[raddr+1], mem[raddr]});
                     `endif
@@ -137,10 +151,11 @@ always @(posedge clock) begin
                      if (slave_rvalid == 1'b0) begin
                         slave_rvalid <= 1'b1;
                         `ifdef VERILATOR
-                        slave_rdata <= pmem_read(read_addr, 4);
+                        slave_rdata <= is_boot_vec ? boot_instr : pmem_read(read_addr, 4);
                         `endif
                         `ifdef __ICARUS__
-                        slave_rdata <= {mem[raddr_fix+3], mem[raddr_fix+2], mem[raddr_fix+1], mem[raddr_fix]};
+                        slave_rdata <= is_boot_vec ? boot_instr
+                                                   : {mem[raddr_fix+3], mem[raddr_fix+2], mem[raddr_fix+1], mem[raddr_fix]};
                         // $display("read_addr = %08x  raddr = %08x: %08x", slave_araddr, raddr, mem[raddr]);
                         `endif
                      end
