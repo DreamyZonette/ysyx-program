@@ -18,7 +18,7 @@ EXCLUDE_FILES := \
     $(WORK_DIR)/vsrc/crossbar.v \
     $(WORK_DIR)/vsrc/IFU/ysyx_25020042_PC.v
 SIM_VSRCS := $(WORK_DIR)/vsrc/device/ysyx_25020042_mem.v \
-	$(WORK_DIR)/build/ysyx_25020042.v
+	$(WORK_DIR)/build/ysyx_25020042_total.v
 
 NETLIST ?= /home/long/clone/yosys-sta/result/ysyx_25020042-500MHz/ysyx_25020042.netlist.fixed.v
 CELLS ?= /home/long/clone/yosys-sta/nangate45/sim/cells.v
