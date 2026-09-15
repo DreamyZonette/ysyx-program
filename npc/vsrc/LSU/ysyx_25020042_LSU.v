@@ -385,7 +385,7 @@ always @(posedge clock) begin
                     lsu_wlast <= 1'b0;
                 end
 
-                else if (lsu_rvalid & lsu_rlast & lsu_rid == lsu_arid) begin
+                else if (lsu_rvalid & lsu_rlast) begin
                     lsu_rready <= 1'b0;
                     lsu_valid <= 1'b1;
                     rresp <= lsu_rresp;
@@ -394,7 +394,7 @@ always @(posedge clock) begin
                         $display("LSU: read addr: %x data: %x", lsu_araddr, shifted_rdata);
                     `endif
                 end
-                else if (lsu_bvalid & lsu_bid == lsu_awid) begin
+                else if (lsu_bvalid) begin
                     lsu_bready <= 1'b1;
                     lsu_valid <= 1'b1;
                     bresp <= lsu_bresp;

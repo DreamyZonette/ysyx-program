@@ -166,7 +166,7 @@ always @(posedge clock) begin
     end
     else begin
         if (state == READ) begin
-            if (io_icache_rvalid && io_icache_rid == io_icache_arid) begin
+            if (io_icache_rvalid) begin
                 if (sdram_valid) begin
                     icache_valid[burst_index]                               <= 1'b1;
                     icache_addr[burst_index][31:m+n]                        <= burst_addr[31:m+n];
