@@ -75,7 +75,9 @@ module ysyx_25020042_LSU(
     input                           lsu_bvalid,
     output reg                      lsu_bready,
     input [1:0]                     lsu_bresp,
+    /* verilator lint_off UNUSEDSIGNAL */
     input [3:0]                     lsu_bid
+    /* verilator lint_on UNUSEDSIGNAL */
 );
 
 `ifdef PLATFORM_NPC
