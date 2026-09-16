@@ -59,7 +59,13 @@ reg [32-1:0]                 icache_addr[0:CACHE_BLOCK_BANK-1];
 reg                          icache_valid[0:CACHE_BLOCK_BANK-1];
 reg                          state;
 reg [m-1:2]                  burst_count;
-reg [1:0]                    rresp;
+reg                          instr_access_fault;
+
+// 发起 AR 时锁存本次请求的信息。READ 期间 pc_addr 可能因跳转改变，
+// 若直接用组合的 index/offset/sdram_valid 会填错 bank 或误拒填充。
+reg                          req_sdram_valid;
+reg [m+n-1:m]                req_index;
+reg [m-1:2]                  req_offset;
 
 `ifdef PLATFORM_YSYXSOC
 wire                          sdram_valid    = (pc_addr >= SDRAM_BASE_ADDR) && (pc_addr < SDRAM_BASE_ADDR + SDRAM_SIZE);
@@ -72,14 +78,14 @@ wire [m-1:2]                  offset         = pc_addr[m-1:2];
 wire [31:m+n]                 icache_tag     = icache_addr[index][31:m+n];
 wire                          hit            = (icache_tag == addr_tag) && (icache_valid[index]);
 wire [31:m]                   burst_addr     = io_icache_araddr[31:m];
-wire [m+n-1:m]                burst_index    = burst_addr[m+n-1:m];
 wire [m-1:2]                  burst_offset   = burst_count;
 
 
 localparam IDLE = 1'b0;
 localparam READ = 1'b1;
 
-assign Instruction_access_fault = rresp[1] | rresp[0];
+// 只在交付指令时刷新，避免一次 access fault 之后永久粘滞
+assign Instruction_access_fault = instr_access_fault;
 
 always @(posedge clock) begin
     state <= state;
@@ -122,62 +128,51 @@ always @(posedge clock) begin
         burst_count <= 0;
     end
     else begin
-        if (io_icache_rlast & sdram_valid)
+        if (io_icache_rlast & req_sdram_valid)
             burst_count <= 0;
-        else if (io_icache_rvalid & sdram_valid) 
-            burst_count <= burst_count + 1;        
+        else if (io_icache_rvalid & req_sdram_valid)
+            burst_count <= burst_count + 1;
+    end
+end
+
+// 发起 AR 时锁存请求信息，READ 期间不再依赖 pc_addr
+always @(posedge clock) begin
+    if (reset) begin
+        req_sdram_valid <= 1'b0;
+        req_index       <= 0;
+        req_offset      <= 0;
+    end
+    else if (state == IDLE && !hit && pc_valid) begin
+        req_sdram_valid <= sdram_valid;
+        req_index       <= index;
+        req_offset      <= offset;
     end
 end
 
 
-// integer i;
-// integer j;
 
 always @(posedge clock) begin
     if (reset) begin
         icache_valid[0] <= 1'b0;
         icache_valid[1] <= 1'b0;
-        // icache_valid[2] <= 1'b0;
-        // icache_valid[3] <= 1'b0;
-        // icache_addr[0]  <= 32'b0;
-        // icache_addr[1]  <= 32'b0;
-        // icache_addr[2]  <= 32'b0;
-        // icache_addr[3]  <= 32'b0;
-
-        // icache_data[0][0]  <= 32'b0;
-        // icache_data[0][1]  <= 32'b0;
-        // icache_data[0][2]  <= 32'b0;
-        // icache_data[0][3]  <= 32'b0;
-        // icache_data[1][0]  <= 32'b0;
-        // icache_data[1][1]  <= 32'b0;
-        // icache_data[1][2]  <= 32'b0;
-        // icache_data[1][3]  <= 32'b0;
-        // icache_data[2][0]  <= 32'b0;
-        // icache_data[2][1]  <= 32'b0;
-        // icache_data[2][2]  <= 32'b0;
-        // icache_data[2][3]  <= 32'b0;
-        // icache_data[3][0]  <= 32'b0;
-        // icache_data[3][1]  <= 32'b0;
-        // icache_data[3][2]  <= 32'b0;
-        // icache_data[3][3]  <= 32'b0;
-
-        // instruction <= 0;
         instruction_ready <= 1'b0;
+        instr_access_fault <= 1'b0;
     end
     else begin
         if (state == READ) begin
             if (io_icache_rvalid) begin
-                if (sdram_valid) begin
-                    icache_valid[burst_index]                               <= 1'b1;
-                    icache_addr[burst_index][31:m+n]                        <= burst_addr[31:m+n];
-                    icache_addr[burst_index][m+n-1:m]                       <= burst_addr[m+n-1:m];
-                    icache_addr[burst_index][m-1:0]                         <= {m{1'b0}};
-                    icache_data[{burst_index, burst_offset}]         <= io_icache_rdata;
+                if (req_sdram_valid) begin
+                    icache_valid[req_index]                         <= 1'b1;
+                    icache_addr[req_index][31:m+n]                  <= burst_addr[31:m+n];
+                    icache_addr[req_index][m+n-1:m]                 <= burst_addr[m+n-1:m];
+                    icache_addr[req_index][m-1:0]                   <= {m{1'b0}};
+                    icache_data[{req_index, burst_offset}]          <= io_icache_rdata;
                 end
                 if (io_icache_rlast) begin
                     instruction_ready            <= 1'b1;
-                    if (sdram_valid) begin
-                        instruction <= (offset == {(m-2){1'b1}})? io_icache_rdata : icache_data[{index, offset}];
+                    instr_access_fault           <= io_icache_rresp[1] | io_icache_rresp[0];
+                    if (req_sdram_valid) begin
+                        instruction <= (req_offset == {(m-2){1'b1}})? io_icache_rdata : icache_data[{req_index, req_offset}];
                     end
                     else begin
                         instruction <= io_icache_rdata;
@@ -185,19 +180,19 @@ always @(posedge clock) begin
                 end
             end
         end
-        else if (fencei_signal) begin
-            icache_valid[0] <= 1'b0;
-            icache_valid[1] <= 1'b0;
-            // icache_valid[2] <= 1'b0;
-            // icache_valid[3] <= 1'b0;
-        end
         if (state == IDLE) begin
             if (hit & pc_valid) begin
-                instruction_ready <= 1'b1;
-                instruction       <= icache_data[{index, offset}];
+                instruction_ready  <= 1'b1;
+                instr_access_fault <= 1'b0;
+                instruction        <= icache_data[{index, offset}];
             end
             if (instruction_ready)
                 instruction_ready <= 1'b0;
+        end
+        // fencei 无条件生效（包括填充进行中），放在最后以免被上面的写回覆盖
+        if (fencei_signal) begin
+            icache_valid[0] <= 1'b0;
+            icache_valid[1] <= 1'b0;
         end
     end
 end
@@ -212,9 +207,8 @@ always @(posedge clock) begin
         io_icache_rready <= 1'b0;
         // io_icache_arid <= 4'h0;
         // io_icache_arsize <= 3'b010;
-        io_icache_arburst <= 2'b00; 
+        io_icache_arburst <= 2'b00;
         io_icache_arlen <= 8'h0;
-        rresp <= 2'b0;
     end
     else begin
         if (state == IDLE && !hit && pc_valid) begin
@@ -222,7 +216,7 @@ always @(posedge clock) begin
                 io_icache_araddr  <= {pc_addr[31:m], {m{1'b0}}};
                 io_icache_arvalid <= 1'b1;
                 io_icache_arburst <= 2'b01; // INCR 01
-                io_icache_arlen   <= 8'h3; // 4beat  3
+                io_icache_arlen   <= CACHE_BLOCK_COUNT - 1; // 覆盖整个 cache block
             end
             else begin
                 io_icache_arburst <= 2'b00;
@@ -239,7 +233,6 @@ always @(posedge clock) begin
             
         if (io_icache_rlast && io_icache_rvalid && io_icache_rid == io_icache_arid) begin
             io_icache_rready <= 1'b0;
-            rresp <= io_icache_rresp;
         end
     end
 end

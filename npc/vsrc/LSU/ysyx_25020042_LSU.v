@@ -166,6 +166,7 @@ wire Store_page_fault;
 wire [31:0] shifted_rdata = lsu_rdata >> (lsu_araddr[1:0] * 8);
 reg wen;
 reg ren;
+reg is_write;   // 当前事务方向，发起时锁存，避免读/写响应分支互相干扰
 reg [3:0] wmask;
 
 assign o_LSU_Exception_Handling = {Store_page_fault, Load_page_fault, Store_access_fault, Store_address_misaligned, Load_access_fault, Load_address_misaligned};
@@ -283,6 +284,7 @@ always @(posedge clock) begin
         lsu_arburst <= 2'b00;
         lsu_awburst <= 2'b00;
         lsu_wlast <= 1'b0;
+        is_write <= 1'b0;
         rresp <= 2'b0;
         bresp <= 2'b0;
     end
@@ -293,10 +295,11 @@ always @(posedge clock) begin
                     if (wen || ren) begin
                         state <= WAIT;
                         lsu_ready <= 1'b0;
+                        is_write <= wen;
                         lsu_wdata <= wdata;
                         lsu_wstrb <= wstrb;
                         lsu_araddr <= i_data;
-                        lsu_awaddr <= i_data;  
+                        lsu_awaddr <= i_data;
 
                         case (i_inst[4:0])
                             5'b00110: begin // sw
@@ -327,7 +330,8 @@ always @(posedge clock) begin
                         if (wen) begin
                             lsu_awvalid <= 1'b1;
                             lsu_wvalid <= 1'b1;
-                            lsu_wlast <= 1'b1; 
+                            lsu_wlast <= 1'b1;
+                            lsu_bready <= 1'b1;
                             `ifdef LSU_MTRACE
                                 $display("LSU: write addr: %x data: %x", i_data, wdata);
                             `endif
@@ -377,33 +381,44 @@ always @(posedge clock) begin
                     end
                 `endif
                 `endif
-                // if(lsu_arready) begin
-                    lsu_arvalid <= lsu_arready ? 1'b0 : lsu_arvalid;
-                // end
-                
-                if(lsu_awready & lsu_wready) begin
+                // AR / AW / W 是三条独立通道，VALID 各自在本通道 READY 拉高后撤销。
+                // 原来要求 awready & wready 同拍才撤，awready/wready 不同拍时会重复握手或死锁。
+                if (lsu_arvalid & lsu_arready)
+                    lsu_arvalid <= 1'b0;
+
+                if (lsu_awvalid & lsu_awready)
                     lsu_awvalid <= 1'b0;
+
+                if (lsu_wvalid & lsu_wready) begin
                     lsu_wvalid <= 1'b0;
                     lsu_wlast <= 1'b0;
                 end
 
-                else if (lsu_rvalid & lsu_rlast) begin
-                    lsu_rready <= 1'b0;
-                    lsu_valid <= 1'b1;
-                    rresp <= lsu_rresp;
-                    state <= IDLE;
-                    `ifdef LSU_MTRACE
-                        $display("LSU: read addr: %x data: %x", lsu_araddr, shifted_rdata);
-                    `endif
+                // 按事务方向分流，读响应不会被写通道的握手条件吞掉
+                if (is_write) begin
+                    if (lsu_bvalid) begin
+                        lsu_bready <= 1'b0;
+                        lsu_valid <= 1'b1;
+                        bresp <= lsu_bresp;
+                        state <= IDLE;
+                    end
+                    else begin
+                        state <= WAIT;
+                    end
                 end
-                else if (lsu_bvalid) begin
-                    lsu_bready <= 1'b1;
-                    lsu_valid <= 1'b1;
-                    bresp <= lsu_bresp;
-                    state <= IDLE;
-                end
-                else begin 
-                    state <= WAIT;
+                else begin
+                    if (lsu_rvalid & lsu_rlast & (lsu_rid == lsu_arid)) begin
+                        lsu_rready <= 1'b0;
+                        lsu_valid <= 1'b1;
+                        rresp <= lsu_rresp;
+                        state <= IDLE;
+                        `ifdef LSU_MTRACE
+                            $display("LSU: read addr: %x data: %x", lsu_araddr, shifted_rdata);
+                        `endif
+                    end
+                    else begin
+                        state <= WAIT;
+                    end
                 end
             end
             default: begin
