@@ -338,9 +338,7 @@ assign io_slave_rid = 4'b0;
     wire [63:0] exu_single_cycles_counter;
     wire [63:0] lsu_single_cycles_counter;
     wire [63:0] wbu_single_cycles_counter;
-        `ifdef ICACHE_ON
     wire [63:0]      icache_hit_count;
-    `endif
     `endif
 
 //------------------------------------------
@@ -620,9 +618,7 @@ ysyx_25020042_IFU IFU_u (
     .o_performance_counter(ifu_performance_counter),
     .o_cycles_counter(ifu_cycles_counter),
     .o_single_cycles_counter(ifu_single_cycles_counter),
-    `ifdef ICACHE_ON
     .o_icache_hit_count(icache_hit_count),
-    `endif
     `endif
 
     .ifu_araddr(io_ifu_araddr),

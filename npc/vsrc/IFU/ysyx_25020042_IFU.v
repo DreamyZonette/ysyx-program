@@ -20,9 +20,7 @@ module ysyx_25020042_IFU(
     output     [63:0]      o_performance_counter,
     output reg [63:0]      o_cycles_counter,
     output reg [63:0]      o_single_cycles_counter,
-    `ifdef ICACHE_ON
     output     [63:0]      o_icache_hit_count,
-    `endif
     `endif
 
     output wire [31:0]     ifu_araddr,
