@@ -15,13 +15,19 @@ SECTIONS {
 
   .text : {
     _entry_start = .;
-    *(entry) 
+    *(entry)
     _entry_end = .;
     _boot_loader_start = .;
     *(.text.boot)
     _boot_loader_end = .;
     _text_start = .;
     *(.text*)
+    /* app 侧代码段若被改名前缀化成 __am_apps.text*，也归到 .text，
+       否则它会成为孤儿段（GNU ld 下靠名字猜测，lld 下会掉到 SDRAM） */
+    *(__am_apps.text*)
+    /* 让 .text 长度是 4 的倍数，避免不同链接器在 .text 与 .rodata 之间
+       插入长度不一的填充，导致 flash 里的 LMA 出现空洞 */
+    . = ALIGN(4);
   } > sdram AT> flash : text
 
   etext = .;
@@ -29,7 +35,7 @@ SECTIONS {
   entry_lma_addr = LOADADDR(.text);
   text_lma_addr = entry_lma_addr - _entry_start + _boot_loader_end;
 
-  
+
   /* _boot_loader_end = _boot_loader_start + SIZEOF(.text.boot); */
 
   /* . = ORIGIN(psram) + SIZEOF(.bootloader); */
@@ -39,6 +45,9 @@ SECTIONS {
     *(.rodata*)
     *(.srodata*)
     *(.srodata.*)
+    *(__am_apps.rodata*)
+    *(__am_apps.srodata*)
+    *(.gcc_except_table*)
     . = ALIGN(4);
     _rodata_end = .;
   } > sdram AT> flash : rodata
@@ -77,6 +86,18 @@ SECTIONS {
     __am_apps_data_start = .;
     *(__am_apps.data*)
     *(__am_apps.sdata*)
+    /* 全局构造/析构表与 GOT：本工程都被 --gc-sections 丢掉，这里只做兜底，
+       保证万一被某个链接器保留下来时拿到 flash 里的 LMA 而不是 SDRAM 的 VMA */
+    *(.init_array*)
+    *(.fini_array*)
+    *(.preinit_array*)
+    *(__am_apps.init_array*)
+    *(__am_apps.fini_array*)
+    *(.ctors*)
+    *(.dtors*)
+    *(.jcr*)
+    *(.got*)
+    *(.tdata*)
     __am_apps_data_end = .;
 
     . = ALIGN(4);
@@ -88,7 +109,7 @@ SECTIONS {
   edata = .;
   _data = .;
 
-  .bss (NOLOAD) : AT(ALIGN(LOADADDR(.data) + SIZEOF(.data), 8)) {
+  .bss : AT(ALIGN(LOADADDR(.data) + SIZEOF(.data), 8)) {
 	_bss_start = .;
     *(.sbss .sbss.*)
     *(.scommon)
@@ -101,9 +122,22 @@ SECTIONS {
     *(__am_apps.scommon*)
     __am_apps_bss_end = .;
     . = ALIGN(8);
-    
+
     _bss_end = .;
   } > sdram : data
+
+  /* 裸机上用不到的段，显式丢弃。
+     .eh_frame 是这里最要紧的一条：GNU ld 在 --gc-sections 下会把
+     没人引用的 .eh_frame 整个丢掉，而 lld 会为每个存活函数保留 FDE，
+     于是 .eh_frame 在 lld 下变成一个没被脚本匹配的 alloc 孤儿段，
+     被追加到 SDRAM，LMA == VMA，objcopy 就会把 bin 撑到 ~1.8GB。 */
+  /DISCARD/ : {
+    *(.eh_frame)
+    *(.eh_frame.*)
+    *(__am_apps.eh_frame)
+    *(__am_apps.eh_frame.*)
+    *(.note.gnu.build-id)
+  }
 
   /* _heap_start = _bss_end; */
   _heap_start = ORIGIN(psram);
@@ -114,7 +148,7 @@ SECTIONS {
   _stack_bottom = ORIGIN(sram);
 
 
-  
+
   end = .;
   _end = .;
 }
