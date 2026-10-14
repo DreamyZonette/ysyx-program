@@ -86,8 +86,6 @@ SECTIONS {
     __am_apps_data_start = .;
     *(__am_apps.data*)
     *(__am_apps.sdata*)
-    /* 全局构造/析构表与 GOT：本工程都被 --gc-sections 丢掉，这里只做兜底，
-       保证万一被某个链接器保留下来时拿到 flash 里的 LMA 而不是 SDRAM 的 VMA */
     *(.init_array*)
     *(.fini_array*)
     *(.preinit_array*)
@@ -125,12 +123,7 @@ SECTIONS {
 
     _bss_end = .;
   } > sdram : data
-
-  /* 裸机上用不到的段，显式丢弃。
-     .eh_frame 是这里最要紧的一条：GNU ld 在 --gc-sections 下会把
-     没人引用的 .eh_frame 整个丢掉，而 lld 会为每个存活函数保留 FDE，
-     于是 .eh_frame 在 lld 下变成一个没被脚本匹配的 alloc 孤儿段，
-     被追加到 SDRAM，LMA == VMA，objcopy 就会把 bin 撑到 ~1.8GB。 */
+  
   /DISCARD/ : {
     *(.eh_frame)
     *(.eh_frame.*)
