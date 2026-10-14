@@ -22,11 +22,7 @@ SECTIONS {
     _boot_loader_end = .;
     _text_start = .;
     *(.text*)
-    /* app 侧代码段若被改名前缀化成 __am_apps.text*，也归到 .text，
-       否则它会成为孤儿段（GNU ld 下靠名字猜测，lld 下会掉到 SDRAM） */
     *(__am_apps.text*)
-    /* 让 .text 长度是 4 的倍数，避免不同链接器在 .text 与 .rodata 之间
-       插入长度不一的填充，导致 flash 里的 LMA 出现空洞 */
     . = ALIGN(4);
   } > sdram AT> flash : text
 
@@ -123,7 +119,7 @@ SECTIONS {
 
     _bss_end = .;
   } > sdram : data
-  
+
   /DISCARD/ : {
     *(.eh_frame)
     *(.eh_frame.*)
