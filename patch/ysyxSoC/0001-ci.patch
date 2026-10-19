@@ -1,7 +1,7 @@
 From 8f29123dc9469c0162193e553c0484b7dfa4af65 Mon Sep 17 00:00:00 2001
 From: DreamyZonette <lwq2463460061@163.com>
 Date: Fri, 11 Sep 2026 21:31:02 +0800
-Subject: [PATCH] ci
+Subject: [PATCH 1/2] ci
 
 ---
  Makefile                                     |  16 +-
