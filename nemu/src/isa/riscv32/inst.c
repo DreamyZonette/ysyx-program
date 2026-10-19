@@ -20,7 +20,7 @@
 
 #ifdef CONFIG_FTRACE
 #include "../../monitor/elf_reader.h"
-  int count = 0;
+  int elf_count = 0;
 #endif
 
 
@@ -174,11 +174,11 @@ int isa_exec_once(Decode *s) {
   char blank [40];
   int j = 0;
   if (is_call) {
-    count += 2;
-    for(j = 0; j < count; j ++){
+    elf_count += 2;
+    for(j = 0; j < elf_count; j ++){
       blank[j] = ' ';
     }
-    blank[count] = '\0';
+    blank[elf_count] = '\0';
     for(int i = 0; i < functab_count; i ++){
       if(functab[i].value == s->dnpc){
         log_write("0x%08x:%s call [%s@0x%08x]", s->pc, blank, functab[i].func_name, functab[i].value);
@@ -188,11 +188,11 @@ int isa_exec_once(Decode *s) {
     }
   }
   else if (is_ret) {
-    count -= 2;
-    for(j = 0; j < count; j ++){
+    elf_count -= 2;
+    for(j = 0; j < elf_count; j ++){
       blank[j] = ' ';
     }
-    blank[count] = '\0';
+    blank[elf_count] = '\0';
     printf("0x%08x:%s ret [0x%08x]\n", s->pc, blank, R(1));
     log_write("0x%08x:%s ret [0x%08x]\n", s->pc, blank, R(1));
     // for(int i = 0; i < functab_count; i ++){

@@ -82,7 +82,7 @@ module ysyx_25020042_barrel_shifter_param (
     output [31:0] data_o
 );
 
-wire sign = logic_en ? 1'b0 : data_i[31];
+wire sign = logic_en ?  1'b0 :data_i[31];
 
 wire [31:0] data_rev = {
     data_i[ 0], data_i[ 1], data_i[ 2], data_i[ 3],

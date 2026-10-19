@@ -87,28 +87,56 @@ static uint32_t key_code_lut(uint32_t keycode){
     case 0xe011: return AM_KEY_RALT;
     case 0xe014: return AM_KEY_RCTRL;
     case 0xe075: return AM_KEY_UP;
+    case 0x75: return AM_KEY_UP;
     case 0xe072: return AM_KEY_DOWN;
+    case 0x72: return AM_KEY_DOWN;
     case 0xe06b: return AM_KEY_LEFT;
+    case 0x6b: return AM_KEY_LEFT;
     case 0xe074: return AM_KEY_RIGHT;
+    case 0x74: return AM_KEY_RIGHT;
     case 0xe070: return AM_KEY_INSERT;
+    case 0x70: return AM_KEY_INSERT;
     case 0xe071: return AM_KEY_DELETE;
+    case 0x71: return AM_KEY_DELETE;
     case 0xe06c: return AM_KEY_HOME;
+    case 0x6c: return AM_KEY_HOME;
     case 0xe069: return AM_KEY_END;
+    case 0x69: return AM_KEY_END;
     case 0xe07d: return AM_KEY_PAGEUP;
+    case 0x7d: return AM_KEY_PAGEUP;
     case 0xe07a: return AM_KEY_PAGEDOWN;
+    case 0x7a: return AM_KEY_PAGEDOWN;
     default: return AM_KEY_NONE;
   }
 }
 
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
-  uint32_t value = am_get_keycode();
-
-  kbd->keydown = (value & KEYCODE_MASK) != 0xf000;  
-  uint32_t raw_code = key_code_lut(value & KEYCODE_MASK);
-  kbd->keycode = raw_code;
-
-  if (kbd->keycode == 0) {
-    kbd->keycode = AM_KEY_NONE;
+  uint32_t value = 0;
+  value = am_get_keycode();
+  uint32_t kcode = value & 0xFF;
+  if (kcode == 0xF0) {
+    kbd->keydown = false;
+    kbd->keycode = key_code_lut(am_get_keycode()) & 0xFF;
+    return;
+  }
+  else if (kcode == 0xE0) {
+    uint32_t keycode_temp = (am_get_keycode() & 0xFF) ;
+    if (keycode_temp == 0xF0) {
+      kbd->keydown = false;
+      kbd->keycode = key_code_lut(am_get_keycode()) & 0xFF;
+    return;
+    }
+    else {
+      kbd->keydown = true;
+      uint32_t keycode_temp2 = keycode_temp | 0xE000;
+      kbd->keycode = key_code_lut(keycode_temp2);
+      return;
+    }
+  }
+  else {
+    kbd->keydown = true;
+    kbd->keycode = key_code_lut(kcode);
+    return;
   }
 }
 
