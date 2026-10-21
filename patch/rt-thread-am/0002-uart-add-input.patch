@@ -1,7 +1,7 @@
 From e9a08b9d0001a9bbe06ad3202dc9d44380c2c676 Mon Sep 17 00:00:00 2001
 From: DreamyZonette <lwq2463460061@163.com>
 Date: Sun, 13 Sep 2026 10:08:34 +0800
-Subject: [PATCH 2/2] uart add input
+Subject: [PATCH 2/3] uart add input
 
 ---
  bsp/abstract-machine/src/uart.c | 2 +-
