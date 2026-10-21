@@ -13,11 +13,11 @@ AM_SRCS := riscv/ysyxsoc/start.S \
            platform/dummy/vme.c \
            platform/dummy/mpe.c
 
-CFLAGS    += -fdata-sections -ffunction-sections
+CFLAGS    += -fdata-sections -ffunction-sections -DPLATFORM_YSYXSOC
 LDSCRIPTS += $(AM_HOME)/scripts/ysyxsoc-linker.ld
 # LDFLAGS   += --defsym=_mrom_start=0x20000000 --defsym=_entry_offset=0x0
 LDFLAGS   += --gc-sections -e _start
-LDFLAGS   += --print-map 
+# LDFLAGS   += --print-map 
 
 MAINARGS_MAX_LEN = 64
 MAINARGS_PLACEHOLDER = the_insert-arg_rule_in_Makefile_will_insert_mainargs_here
